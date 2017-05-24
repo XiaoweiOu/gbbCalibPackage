@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOMEDIR=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna
+HOMEDIR=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna_improved
 
 cd ${HOMEDIR}
 

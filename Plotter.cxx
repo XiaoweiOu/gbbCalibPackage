@@ -906,9 +906,12 @@ void Plotter::makeFitTemplates(std::vector<TString>& hist_names,std::vector<TStr
       
       tokens=hist_name.Tokenize('_');
       
-      if(tokens->GetLast()>=6) new_hist_name="hData"+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_"+((TObjString*) (*tokens)[2])->GetString()+"_"+((TObjString*) (*tokens)[3])->GetString()+"_"+((TObjString*) (*tokens)[4])->GetString()+"_"+((TObjString*) (*tokens)[5])->GetString()+"_obs_cuts";
-      else new_hist_name="hData"+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_inclusive_obs_cuts";
+      //if(tokens->GetLast()>=6) new_hist_name="hData"+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_"+((TObjString*) (*tokens)[2])->GetString()+"_"+((TObjString*) (*tokens)[3])->GetString()+"_"+((TObjString*) (*tokens)[4])->GetString()+"_"+((TObjString*) (*tokens)[5])->GetString()+"_obs_cuts";
+      //else new_hist_name="hData"+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_inclusive_obs_cuts";
       
+      new_hist_name="hData"+sys_ext+"_"+hist_name;
+
+
       tmp_stacked_data->SetName(new_hist_name.Data());
       tmp_stacked_data->Copy(th1f_stacked_data);
       
@@ -927,14 +930,38 @@ void Plotter::makeFitTemplates(std::vector<TString>& hist_names,std::vector<TStr
     
     hist_name=tmp_stacked_mc->GetName();
     tokens=hist_name.Tokenize('_');
-    if(tokens->GetLast()>=6) new_hist_name="h"+((TObjString*) (*tokens)[1])->GetString()+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_"+((TObjString*) (*tokens)[2])->GetString()+"_"+((TObjString*) (*tokens)[3])->GetString()+"_"+((TObjString*) (*tokens)[4])->GetString()+"_"+((TObjString*) (*tokens)[5])->GetString()+"_obs_cuts";
-    else new_hist_name="h"+((TObjString*) (*tokens)[1])->GetString()+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_inclusive_obs_cuts";
+
+
+
+
+    if(!(hist_name.Contains("mjpt") || hist_name.Contains("nmjpt") || hist_name.Contains("fjpt") )){
+
+	new_hist_name="h"+((TObjString*) (*tokens)[1])->GetString()+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_inclusive_"+((TObjString*) (*tokens)[tokens->GetLast()])->GetString();
+
+    }else{
+	
+      new_hist_name="h"+((TObjString*) (*tokens)[1])->GetString()+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString();
+      
+      for(int i_t=2; i_t<=tokens->GetLast(); i_t++) new_hist_name+="_"+((TObjString*) (*tokens)[i_t])->GetString();
+      
+    }
+    
+      /*   
+      if(tokens->GetLast()>=6 && !hist_name.Contains("POSTTAG")) new_hist_name="h"+((TObjString*) (*tokens)[1])->GetString()+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_"+((TObjString*) (*tokens)[2])->GetString()+"_"+((TObjString*) (*tokens)[3])->GetString()+"_"+((TObjString*) (*tokens)[4])->GetString()+"_"+((TObjString*) (*tokens)[5])->GetString()+"_"+((TObjString*) (*tokens)[6])->GetString();
+      else if(tokens->GetLast()>=6 && hist_name.Contains("POSTTAG")) new_hist_name="h"+((TObjString*) (*tokens)[1])->GetString()+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_"+((TObjString*) (*tokens)[2])->GetString()+"_"+((TObjString*) (*tokens)[3])->GetString()+"_"+((TObjString*) (*tokens)[4])->GetString()+"_"+((TObjString*) (*tokens)[5])->GetString()+"_"+((TObjString*) (*tokens)[6])->GetString()+ "_"+((TObjString*) (*tokens)[7])->GetString();
+      else new_hist_name="h"+((TObjString*) (*tokens)[1])->GetString()+sys_ext+"_"+((TObjString*) (*tokens)[0])->GetString()+"_inclusive_"+((TObjString*) (*tokens)[tokens->GetLast()])->GetString();
+      */
+    
+
 
     tmp_stacked_mc->SetName(new_hist_name);
 
     tmp_stacked_mc->Copy(th1f_stacked_mc);
     
     outfile->cd();
+
+    std::cout<<"Writing: "<<new_hist_name<<std::endl;
+
     th1f_stacked_mc.Write();
 
   }

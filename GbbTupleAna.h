@@ -14,6 +14,7 @@
 #include "FlavourFracCorrector.h"
 #include "TrackSmearer.h"
 #include "TEnv.h"
+#include "TRandom3.h"
 
 struct GbbCandidate{
 
@@ -77,6 +78,7 @@ private:
 	TString m_TrackSmearerFile_1, m_TrackSmearerFile_2;
 	TrackSmearer* m_TrackSmearer; 
 	
+	bool m_doApplyBTaggingSF;
 	
 	bool m_doMergeDiTrkjetCat;
 	std::vector<TString> m_ditrkjet_cat;
@@ -84,8 +86,11 @@ private:
 	std::vector<float> m_muojet_pt_bins;
 	std::vector<float> m_nonmuojet_pt_bins;
 	
+	std::shared_ptr<TRandom3> m_random;
+	bool m_doRandomSplitting;
+	bool m_doFillMujet;
 
-
+	std::vector<float> m_fatjet_pt_bins;
 	
 	
 	bool Processgbb(int i_evt);
@@ -103,11 +108,12 @@ private:
 	int getTruthType(int label);
 	int getCategoryNumber(int muo_truth, int nonmuo_truth, bool doMerged=false);
 	TString getPtLabel(float muojet_pt, float non_muojetpt);
-	
+	TString getFatjetPtLabel(float fatjet_pt);
+
 	float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
 	
 	void FillReweightInfo(int i_trig_jet, float event_weight,TString nametag="");
-	void FillMCStatsInfo(GbbCandidate* gbbcand);
+	void FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag="");
 	void FillTriggerTurnOnHistograms(int i_trigjet, float event_weight);
 	
 	

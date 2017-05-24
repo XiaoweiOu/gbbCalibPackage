@@ -15,14 +15,15 @@ if [ -z "${DO_SYS}" ]
     echo "Running without systematics, to turn on, do: source scripts/submit_gbbTupleAna_array.sh 1"
 fi
 
-INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNTuples_Calib/v_00-00-21TESTMUONFILTER"
-OUTPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output/Output_gbbTupleAna2016"
+#INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNTuples_Calib/v_00-00-21TESTMUONFILTER"
+INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNtuples"
+OUTPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib"
 LOG_FOLDER="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/"
 
 listOfSamples=$(ls -d ${INPATH}/*v00-00-21* | xargs -n1 basename)
 listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-00-21* | xargs -n1 basename)
 
-echo ${listOfSamples}
+#echo ${listOfSamples}
 #echo ${listOfMCSamples}
 
 echo "Logs in: ${LOG_FOLDER}"
@@ -33,9 +34,9 @@ echo "Output in: ${OUTPATH}"
 #Nominal
 #=========================
 
-mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output/Output_gbbTupleAna
+mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib
 
-for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output/Output_gbbTupleAna/*.root
+for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib/*.root
 do
     if [ -d "${dir}" ];
     then
@@ -45,8 +46,8 @@ done
 
 
 
-#for samp in ${listOfSamples}
 for samp in ${listOfSamples}
+#for samp in ${listOfMCSamples}
 do
    echo "Sample is: $samp"
    
@@ -56,9 +57,9 @@ do
    #NJOBS=$(expr ${NJOBS} - 1)
 
    echo "Number of jobs ${NJOBS}"
-   echo "Ntup: ${NTUP}"
+#   echo "Ntup: ${NTUP}"
 
-   qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_Nominal",CONFIGNAME="${CFG_NAME}" scripts/run_gbbTupleAna_array.sh  
+   qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_Nominal",CONFIGNAME="${CFG_NAME}" scripts/NAFScripts/run_gbbTupleAna_array.sh  
 
 done
 
@@ -74,9 +75,9 @@ then
     do
 	for var in __1up __1down
 	do
-	    mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output/Output_gbbTupleAna_${sys}$var
+	    mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib_${sys}$var
 
-	    for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output/Output_gbbTupleAna_${sys}$var/*.root
+	    for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib_${sys}$var/*.root
 	    do
 		if [ -d "${dir}" ];
 		then
@@ -93,7 +94,7 @@ then
 		NJOBS=$(echo ${NTUP} | wc -w)
 		#NJOBS=$(expr ${NJOBS} - 1)
 		
-		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${samp}",TREENAME="FlavourTagging_${sys}${var}" scripts/run_gbbTupleAna_array.sh
+		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${samp}",TREENAME="FlavourTagging_${sys}${var}" scripts/NAFScripts/run_gbbTupleAna_array.sh
 
 	    done
 
@@ -117,9 +118,9 @@ then
     do
 	for var in __1up
 	do
-	     mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output/Output_gbbTupleAna_${sys}$var
+	     mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib_${sys}$var
 
-            for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output/Output_gbbTupleAna_${sys}$var/*.root
+            for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib_${sys}$var/*.root
             do
 		if [ -d "${dir}" ];
 		    then
@@ -136,7 +137,7 @@ then
 		NJOBS=$(echo ${NTUP} | wc -w)
 		#NJOBS=$(expr ${NJOBS} - 1)
 
-		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${samp}",TREENAME="FlavourTagging_${sys}${var}" scripts/run_gbbTupleAna_array.sh
+		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${samp}",TREENAME="FlavourTagging_${sys}${var}" scripts/NAFScripts/run_gbbTupleAna_array.sh
 
             done
 

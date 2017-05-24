@@ -152,10 +152,10 @@ void HistPlotter::makeDataMCPlot(TString hist_name){
 
 	HistogramStack stack=hist_handler.readInHistStack(hist_names,data_hist_name);
 
-	TH1* data_hist=(TH1*)stack.full_data_hist.get()->Clone();
+	TH1* data_hist= stack.full_data_hist.get() ? (TH1*)stack.full_data_hist.get()->Clone() : 0;
 
 	TH1* mc_hist=(TH1*)stack.full_mc_hist.get()->Clone();
-
+	
 	m_canv.get()->cd();
 
 	if(data_hist){
@@ -230,17 +230,21 @@ void HistPlotter::makeDataMCPlot(TString hist_name){
 
 void HistPlotter::makeDataStackedMCPlot(std::vector<TString>& hist_names,TString data_hist_name){
   
-                HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna/",m_sample_info,m_lumi);  
+                HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna2016_withmufilter/",m_sample_info,m_lumi);  
 
                 HistogramStack stack=hist_handler.readInHistStack(hist_names,data_hist_name);
   
-		TH1* data_hist=(TH1*)stack.full_data_hist.get()->Clone();
+		std::cout<<"finished read_in !"<<std::endl;				
+
+		TH1* data_hist=stack.full_data_hist.get() ? (TH1*)stack.full_data_hist.get()->Clone() : 0;
 
 		TH1* full_mc=(TH1*)stack.full_mc_hist.get()->Clone();
 		
 		TH1* tmp_stacked_mc=0;
 
 		std::vector<std::shared_ptr<TH1>> mc_stack_hists=stack.mc_stack_hists;
+
+		std::cout<<"stack size"<<mc_stack_hists.size()<<std::endl;
 
 		m_canv.get()->cd();
 
@@ -270,9 +274,10 @@ void HistPlotter::makeDataStackedMCPlot(std::vector<TString>& hist_names,TString
 			if(m_doNormalized) tmp_stacked_mc->Scale(1./full_mc->Integral());
 
 			mystack->Add(tmp_stacked_mc);
+
 			leg->AddEntry(tmp_stacked_mc,name_arr[i_hist],"f");
 		}
-
+		
 
 		if(data_hist){
 		        //h2_style(data_hist);
@@ -306,16 +311,15 @@ void HistPlotter::makeDataStackedMCPlot(std::vector<TString>& hist_names,TString
 			}
 		}else if(mystack){
 
-			        //h2_style(mystack->GetHistogram());
 				if(m_Rebin) full_mc->Rebin(m_rebin_factor);
-				h2_style(mystack->GetHistogram());
+                                m_pad1.get()->cd();
+                                mystack->Draw("HIST");
+
 				mystack->GetXaxis()->SetTitle(m_xtitle);
 				mystack->GetYaxis()->SetTitle(Form("events/%.1f ",(full_mc->GetBinWidth(1))));
 
-				m_pad1.get()->cd();
-				mystack->Draw();
-
-				//draw full mc for errors                                                                                                                                                                                    
+				//draw full mc for errors     
+				std::cout<<"here2"<<std::endl;
 				full_mc->SetMarkerStyle(20);
 				full_mc->SetMarkerColor(kGray+1);
 				full_mc->SetFillColor(kGray+1);
@@ -323,10 +327,11 @@ void HistPlotter::makeDataStackedMCPlot(std::vector<TString>& hist_names,TString
 				//full_mc->Draw("E3 SAME");
 				//leg->AddEntry(full_mc,"total MC","pf");
 
+
 		}
 
 
-		TH1 *h_ratio;
+		TH1 *h_ratio=0;
 
 		TString text="data/MC N/A";
 		TString text_ks="KS N/A";
@@ -424,7 +429,7 @@ void HistPlotter::makeDataStackedMCPlot(std::vector<TString>& hist_names,TString
                 if(m_showBtagSys) btagsys->Draw("5");
 		
 		m_pad2.get()->cd();
-		h_ratio->Draw("same");
+		if(h_ratio) h_ratio->Draw("same");
 		if(m_showFitSys) leg_sys_1->Draw();
                 if(m_showBtagSys) leg_sys_2->Draw();
                 if(m_showTotalSys) leg_sys_3->Draw();
@@ -460,6 +465,7 @@ void HistPlotter::makeDataStackedMCPlot(std::vector<TString>& hist_names,TString
 
                 if(data_hist_name.Contains("maxSd0")) latex2.DrawLatex(0.6,0.55,text_Chi2.Data());
 
+
 }
 
 
@@ -471,7 +477,7 @@ void HistPlotter::makeDataMCBtagEffPlot(TString var){
 	std::vector<TString> pretag_hist_names={"fatjet_BB_"+var+"_POSTFIT","fatjet_BL_"+var+"_POSTFIT","fatjet_CC_"+var+"_POSTFIT","fatjet_CL_"+var+"_POSTFIT","fatjet_LL_"+var+"_POSTFIT"};
 
 	
-        HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna/",m_sample_info,m_lumi); 
+        HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna2016/",m_sample_info,m_lumi); 
 
         HistogramStack pretag_stack=hist_handler.readInHistStack(pretag_hist_names,pretag_data_hist_name);
 	
@@ -733,7 +739,7 @@ TGraphAsymmErrors* HistPlotter::getFitSys(std::vector<TString> &base_hist_names)
 
   std::vector<TString> sys_hist_names;
 
-  HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna/",m_sample_info,m_lumi);
+  HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna2016/",m_sample_info,m_lumi);
 
   HistogramStack nom_stack=hist_handler.readInHistStack(base_hist_names,"");
   TH1* h_nom=(TH1*)nom_stack.full_mc_hist.get()->Clone();
@@ -1026,7 +1032,7 @@ TGraphAsymmErrors* HistPlotter::getBTagSys(std::vector<TString> &base_hist_names
 
 TGraphAsymmErrors* HistPlotter::getTotalJetSys(std::vector<TString>& base_hist_names){
 
-  HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna/",m_sample_info,m_lumi);
+  HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna2016/",m_sample_info,m_lumi);
   HistogramStack nom_stack=hist_handler.readInHistStack(base_hist_names,"");
 
 
@@ -1051,8 +1057,8 @@ TGraphAsymmErrors* HistPlotter::getTotalJetSys(std::vector<TString>& base_hist_n
 
   for(int i_sys=0; i_sys<m_syslist_up.size(); i_sys++){
     
-    HistogramHandler hist_handler_up(m_base_dir+"Output_gbbTupleAna_"+m_syslist_up[i_sys]+"/",m_sample_info,m_lumi);
-    HistogramHandler hist_handler_down(m_base_dir+"Output_gbbTupleAna_"+m_syslist_down[i_sys]+"/",m_sample_info,m_lumi);
+    HistogramHandler hist_handler_up(m_base_dir+"Output_gbbTupleAna2016_"+m_syslist_up[i_sys]+"/",m_sample_info,m_lumi);
+    HistogramHandler hist_handler_down(m_base_dir+"Output_gbbTupleAna2016_"+m_syslist_down[i_sys]+"/",m_sample_info,m_lumi);
 
     HistogramStack up_stack=hist_handler_up.readInHistStack(base_hist_names,"");
     HistogramStack down_stack=hist_handler_down.readInHistStack(base_hist_names,"");
@@ -1106,7 +1112,7 @@ TGraphAsymmErrors* HistPlotter::getTotalJetSys(std::vector<TString>& base_hist_n
 
   for(int i_sys=0; i_sys<m_syslist_1side.size(); i_sys++){
 
-    HistogramHandler hist_handler_1side(m_base_dir+"Output_gbbTupleAna_"+m_syslist_1side[i_sys]+"/",m_sample_info,m_lumi);
+    HistogramHandler hist_handler_1side(m_base_dir+"Output_gbbTupleAna2016_"+m_syslist_1side[i_sys]+"/",m_sample_info,m_lumi);
 
     HistogramStack side_stack=hist_handler_1side.readInHistStack(base_hist_names,"");
 
@@ -1341,7 +1347,7 @@ void HistPlotter::addSysShades(TH1* nominal_hist){
 
 void HistPlotter::makeComparisonPlot(std::vector<TString>& hist_names, bool doNormalized){
 
-  HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna/",m_sample_info,m_lumi); 
+  HistogramHandler hist_handler(m_base_dir+"Output_gbbTupleAna2016/",m_sample_info,m_lumi); 
 
   MultiHistogramStack stack=hist_handler.readInMultiHistStack(hist_names,hist_names);
 

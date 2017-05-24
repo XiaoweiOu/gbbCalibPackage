@@ -55,7 +55,7 @@ void HistogramHandler::ListFiles(TString in_dir){
 			if (file->IsDirectory() && fname.EndsWith(".root")) {
 			  if(!fname.Contains("data") || fname.EqualTo("user.ruth.data15_13TeV.all.root")){
 			    m_samples.push_back(in_dir+fname);
-			    //std::cout<<"fname is: "<<fname<<std::endl;
+			    std::cout<<"fname is: "<<fname<<std::endl;
 			  }
 
 			}
@@ -65,12 +65,16 @@ void HistogramHandler::ListFiles(TString in_dir){
 
 
 float HistogramHandler::getWeightSample(TString sample_name){
-
+ 
+  std::cout<<"Getting weight"<<std::endl;
 	//get EventCount histogram
 	TFile* f=TFile::Open(sample_name.Data(),"READ");
 	TH1D * h_bkk;
 	f->GetObject("Hist_BookKeeping",h_bkk);
 	float weight=1./h_bkk->GetBinContent(3);
+	
+	std::cout<<"Getting Sample Info: "<<std::endl;
+	std::cout<<"DSID: "<<m_sampinfo->getDSID(sample_name)<<std::endl;
 
 	//std::cout<<"Number of events DAOD: "<<h_bkk->GetBinContent(2)<<std::endl;
 	//std::cout<<"Number of events AOD hist: "<<h_bkk->GetBinContent(1)<<std::endl;
@@ -89,7 +93,7 @@ float HistogramHandler::getWeightSample(TString sample_name){
 	weight*=m_lumi;
 	//std::cout<<"Lumi: "<<m_lumi<<std::endl;
 
-	//std::cout<<"weight: "<<weight<<std::endl;
+	std::cout<<"weight: "<<weight<<std::endl;
 
 	f->Close();
 	
@@ -121,7 +125,7 @@ HistogramStack HistogramHandler::readInHistStack(std::vector<TString>& hist_name
     sample_name=filename(filename.Last('/')+1,filename.Length());
     filename="/merged_hist_"+sample_name;
 
-    // std::cout<<"Open file: "<<m_samples.at(i_samp)+filename<<std::endl;
+    std::cout<<"Open file: "<<m_samples.at(i_samp)+filename<<std::endl;
 
     f=TFile::Open((m_samples.at(i_samp)+filename).Data(),"READ");
 
