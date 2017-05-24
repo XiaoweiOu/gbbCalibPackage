@@ -145,7 +145,7 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   else m_FlavFracCorrector=0;
   
   //TrackSmearingTool
-  if(m_doTrackSmearing) std<<cout<<"Track Smearing should be done on CxAODFramework level! TrackSmearer is obsolete!"<<std::endl;
+  if(m_doTrackSmearing) std::cout<<"Track Smearing should be done on CxAODFramework level! TrackSmearer is obsolete!"<<std::endl;
   //if(m_doTrackSmearing) m_TrackSmearer=new TrackSmearer(m_TrackSmearerFile_1,m_TrackSmearerFile_2,true);
   //else m_TrackSmearer=0;
 
