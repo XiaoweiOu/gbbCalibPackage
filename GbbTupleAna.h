@@ -75,8 +75,6 @@ private:
 	FlavourFracCorrector* m_FlavFracCorrector; 
 	
 	bool m_doTrackSmearing;
-	TString m_TrackSmearerFile_1, m_TrackSmearerFile_2;
-	TrackSmearer* m_TrackSmearer; 
 	
 	bool m_doApplyBTaggingSF;
 	
@@ -124,9 +122,13 @@ private:
 	
 	bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
 	
-	float getTrkjetAssocTrkMaxSd0(unsigned int i_jet,bool doSmeared=false); 
+	float getTrkjetAssocTrkMaxSd0(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
 	bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
-	float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false);
+  
+	float getSd0(unsigned int i_trk, unsigned int i_jet);
+  float getSd0_smeared(unsigned int i_trk, unsigned int i_jet);
+  float getSd0_smeared_sys_up(unsigned int i_trk, unsigned int i_jet);
+  float getSd0_smeared_sys_down(unsigned int i_trk, unsigned int i_jet);
 	
 	float getAssocTrackOldSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0);
 	float getAssocTrackNewSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0);
