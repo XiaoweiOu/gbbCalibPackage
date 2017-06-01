@@ -78,6 +78,12 @@ public :
    vector<vector<float> > *trkjet_assocTrk_eta;
    vector<vector<float> > *trkjet_assocTrk_d0;
    vector<vector<float> > *trkjet_assocTrk_z0;
+   vector<std::vector<float>> *trkjet_assocTrk_d0_smear;
+   vector<std::vector<float>> *trkjet_assocTrk_z0_smear;
+   vector<std::vector<float>> *trkjet_assocTrk_d0_smear_up;
+   vector<std::vector<float>> *trkjet_assocTrk_z0_smear_up;
+   vector<std::vector<float>> *trkjet_assocTrk_d0_smear_down;
+   vector<std::vector<float>> *trkjet_assocTrk_z0_smear_down;
    // vector<vector<float> > *trkjet_assocTrk_z0wrtPV;
    vector<vector<float> > *trkjet_assocTrk_theta;
    vector<vector<float> > *trkjet_assocTrk_qoverp;
@@ -88,6 +94,11 @@ public :
    vector<vector<int> > *trkjet_assocTrk_nPixelHits;
    vector<vector<int> > *trkjet_assocTrk_nSCTHits;
    vector<vector<int> > *trkjet_assocTrk_nIBLHits;
+   vector<std::vector<int>> *trkjet_assocTrk_expectIBLHit;
+   vector<std::vector<int>> *trkjet_assocTrk_nBLayerHits;
+   vector<std::vector<int>> *trkjet_assocTrk_expectBLayerHit;
+   vector<std::vector<int>> *trkjet_assocTrk_isLoose;
+   vector<std::vector<int>> *trkjet_assocTrk_isTightPrimary;
    vector<float>   *fat_E;
    vector<float>   *fat_pt;
    vector<float>   *fat_phi;
@@ -184,7 +195,13 @@ public :
    TBranch        *b_trkjet_assocTrk_eta;   //!
    TBranch        *b_trkjet_assocTrk_d0;   //!
    TBranch        *b_trkjet_assocTrk_z0;   //!
-   //   TBranch        *b_trkjet_assocTrk_z0wrtPV;   //!                                                                                                   
+   TBranch        *b_trkjet_assocTrk_d0_smear; //!
+   TBranch        *b_trkjet_assocTrk_z0_smear; //!
+   TBranch        *b_trkjet_assocTrk_d0_smear_up; //!
+   TBranch        *b_trkjet_assocTrk_z0_smear_up; //!
+   TBranch        *b_trkjet_assocTrk_d0_smear_down; //!
+   TBranch        *b_trkjet_assocTrk_z0_smear_down; //!
+   //   TBranch        *b_trkjet_assocTrk_z0wrtPV;   //!
    TBranch        *b_trkjet_assocTrk_theta;   //!
    TBranch        *b_trkjet_assocTrk_qoverp;   //!
    TBranch        *b_trkjet_assocTrk_d0err;   //!
@@ -193,7 +210,12 @@ public :
    TBranch        *b_trkjet_assocTrk_phi0err;   //!
    TBranch        *b_trkjet_assocTrk_nPixelHits;   //!                                                                                                                                                                                     
    TBranch        *b_trkjet_assocTrk_nSCTHits;   //!
-   TBranch        *b_trkjet_assocTrk_nIBLHits;   //!                                                                                                                                                                                        
+   TBranch        *b_trkjet_assocTrk_nIBLHits;   //!
+   TBranch        *b_trkjet_assocTrk_expectIBLHit; //!
+   TBranch        *b_trkjet_assocTrk_nBLayerHits;//!
+   TBranch        *b_trkjet_assocTrk_expectBLayerHit;//!
+   TBranch        *b_trkjet_assocTrk_isLoose;//!
+   TBranch        *b_trkjet_assocTrk_isTightPrimary;//!
    TBranch        *b_fat_E; //!
    TBranch        *b_fat_pt;   //!
    TBranch        *b_fat_phi;   //!
@@ -235,9 +257,6 @@ public :
    TBranch        *b_trkjet_assocMuon_n;   //!
    TBranch        *b_trkjet_isMuonJet; //!
    TBranch        *b_trkjet_isNonMuonJet; //!
-   TBranch        *b_trigjet_pt;   //!
-   TBranch        *b_trigjet_phi;   //!
-   TBranch        *b_trigjet_eta;   //! 
 
    TupleAna();
    TupleAna(TTree *tree);
@@ -329,7 +348,13 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocTrk_eta = 0;
    trkjet_assocTrk_d0 = 0;
    trkjet_assocTrk_z0 = 0;
-   //trkjet_assocTrk_z0wrtPV = 0;
+   trkjet_assocTrk_d0_smear = 0;
+   trkjet_assocTrk_z0_smear = 0;
+   trkjet_assocTrk_d0_smear_up = 0;
+   trkjet_assocTrk_z0_smear_up = 0;
+   trkjet_assocTrk_d0_smear_down = 0;
+   trkjet_assocTrk_z0_smear_down = 0;
+   //trkjet _assocTrk_z0wrtPV = 0;
    trkjet_assocTrk_theta = 0;
    trkjet_assocTrk_qoverp = 0;
    trkjet_assocTrk_d0err = 0;
@@ -339,6 +364,11 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocTrk_nPixelHits = 0;
    trkjet_assocTrk_nSCTHits = 0;
    trkjet_assocTrk_nIBLHits = 0;
+   trkjet_assocTrk_expectIBLHit = 0;
+   trkjet_assocTrk_nBLayerHits = 0;
+   trkjet_assocTrk_expectBLayerHit = 0;
+   trkjet_assocTrk_isLoose = 0;
+   trkjet_assocTrk_isTightPrimary = 0;
    trkjet_isNonMuonJet = 0;
    trkjet_isMuonJet = 0;
    fat_E = 0;
@@ -380,9 +410,6 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocMuon_dR = 0;
    trkjet_assocMuon_index = 0;
    trkjet_assocMuon_n = 0;
-   trigjet_pt = 0;
-   trigjet_phi = 0;
-   trigjet_eta = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -439,6 +466,12 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocTrk_eta", &trkjet_assocTrk_eta, &b_trkjet_assocTrk_eta);
    fChain->SetBranchAddress("trkjet_assocTrk_d0", &trkjet_assocTrk_d0, &b_trkjet_assocTrk_d0);
    fChain->SetBranchAddress("trkjet_assocTrk_z0", &trkjet_assocTrk_z0, &b_trkjet_assocTrk_z0);
+   fChain->SetBranchAddress("trkjet_assocTrk_d0_smear", &trkjet_assocTrk_d0_smear, &b_trkjet_assocTrk_d0_smear);
+   fChain->SetBranchAddress("trkjet_assocTrk_z0_smear", &trkjet_assocTrk_z0_smear, &b_trkjet_assocTrk_z0_smear);
+   fChain->SetBranchAddress("trkjet_assocTrk_d0_smear_up", &trkjet_assocTrk_d0_smear_up, &b_trkjet_assocTrk_d0_smear_up);
+   fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_up", &trkjet_assocTrk_z0_smear_up, &b_trkjet_assocTrk_z0_smear_up);
+   fChain->SetBranchAddress("trkjet_assocTrk_d0_smear_down", &trkjet_assocTrk_d0_smear_down, &b_trkjet_assocTrk_d0_smear_down);
+   fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_down", &trkjet_assocTrk_z0_smear_down, &b_trkjet_assocTrk_z0_smear_down);
    //fChain->SetBranchAddress("trkjet_assocTrk_z0wrtPV", &trkjet_assocTrk_z0wrtPV, &b_trkjet_assocTrk_z0wrtPV);
    fChain->SetBranchAddress("trkjet_assocTrk_theta", &trkjet_assocTrk_theta, &b_trkjet_assocTrk_theta);
    fChain->SetBranchAddress("trkjet_assocTrk_qoverp", &trkjet_assocTrk_qoverp, &b_trkjet_assocTrk_qoverp);
@@ -449,6 +482,11 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocTrk_nPixelHits", &trkjet_assocTrk_nPixelHits, &b_trkjet_assocTrk_nPixelHits);
    fChain->SetBranchAddress("trkjet_assocTrk_nSCTHits", &trkjet_assocTrk_nSCTHits, &b_trkjet_assocTrk_nSCTHits);
    fChain->SetBranchAddress("trkjet_assocTrk_nIBLHits", &trkjet_assocTrk_nIBLHits, &b_trkjet_assocTrk_nIBLHits);
+   fChain->SetBranchAddress("trkjet_assocTrk_expectIBLHit", &trkjet_assocTrk_expectIBLHit, &b_trkjet_assocTrk_expectIBLHit);
+   fChain->SetBranchAddress("trkjet_assocTrk_nBLayerHits", &trkjet_assocTrk_nBLayerHits, &b_trkjet_assocTrk_nBLayerHits);
+   fChain->SetBranchAddress("trkjet_assocTrk_expectBLayerHit", &trkjet_assocTrk_expectBLayerHit, &b_trkjet_assocTrk_expectBLayerHit);
+  fChain->SetBranchAddress("trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
+   fChain->SetBranchAddress("trkjet_assocTrk_isTightPrimary", &trkjet_assocTrk_isTightPrimary, &b_trkjet_assocTrk_isTightPrimary);
    fChain->SetBranchAddress("fat_E", &fat_E, &b_fat_E);
    fChain->SetBranchAddress("fat_pt", &fat_pt, &b_fat_pt);
    fChain->SetBranchAddress("fat_phi", &fat_phi, &b_fat_phi);
@@ -490,9 +528,6 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocMuon_n", &trkjet_assocMuon_n, &b_trkjet_assocMuon_n);
    fChain->SetBranchAddress("trkjet_isMuonJet", &trkjet_isMuonJet, &b_trkjet_isMuonJet);
    fChain->SetBranchAddress("trkjet_isNonMuonJet", &trkjet_isNonMuonJet, &b_trkjet_isNonMuonJet);
-   fChain->SetBranchAddress("trigjet_pt", &trigjet_pt, &b_trigjet_pt);
-   fChain->SetBranchAddress("trigjet_phi", &trigjet_phi, &b_trigjet_phi);
-   fChain->SetBranchAddress("trigjet_eta", &trigjet_eta, &b_trigjet_eta);
    Notify();
 
 
