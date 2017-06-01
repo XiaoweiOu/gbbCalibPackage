@@ -78,11 +78,11 @@ private:
 
 	CalibResult CalculateScaleFactorsAndErrors();
 	void MakeCalibrationPlots(CalibResult cl_result, TString plot_type);
-	void ReadInFatJetHists(TString &var);
+	void ReadInFatJetHists(std::vector<TString>& var, std::vector<TString>& sys);
 
 	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1F> dataHist,std::vector<std::shared_ptr<TH1F>> templateHists, TString& channel, TString& region, TString &sys, int rebin);
 
-	void MakeFatJetControlPlots(bool isPosttag, bool applyFitCorrection, TString& sys, bool doPrintByRegion=false, TString region="DEFAULT");
+	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, TString& sys, bool doPrintByRegion=false, TString region="DEFAULT");
 
 };
 

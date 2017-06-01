@@ -148,20 +148,27 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   //start calibration sequence
   TString pt_name="pt", pt_posttag_name="pt_PREFITPOSTTAG";
   
-  this->ReadInFatJetHists(pt_name);
-  this->ReadInFatJetHists(pt_posttag_name);
+  std::vector<TString> variables={"pt"};
+  std::vector<TString> sys={"Nom"};
+  std::vector<TString> variables_posttag;
+  for(auto& el : variables)variables_posttag.push_back(TString(el)+"_PREFITPOSTTAG");
+  
+  this->ReadInFatJetHists(variables,sys);
+  this->ReadInFatJetHists(variables_posttag,sys);
 
+  TString ts_pt="pt";
+  
   //fat jet control plots
-  this->MakeFatJetControlPlots(false,false,nominal);
-  this->MakeFatJetControlPlots(false,true,nominal);
-  this->MakeFatJetControlPlots(true,false,nominal);
-  this->MakeFatJetControlPlots(true,true,nominal);
+  this->MakeFatJetControlPlots(ts_pt,false,false,nominal);
+  this->MakeFatJetControlPlots(ts_pt,false,true,nominal);
+  this->MakeFatJetControlPlots(ts_pt,true,false,nominal);
+  this->MakeFatJetControlPlots(ts_pt,true,true,nominal);
 
   //fat jet binning control plots
   for(auto& reg : regions){
-    this->MakeFatJetControlPlots(false,false,nominal,true,reg);
-    this->MakeFatJetControlPlots(false,true,nominal,true,reg);
-    this->MakeFatJetControlPlots(true,true,nominal,true,reg);
+    this->MakeFatJetControlPlots(ts_pt,false,false,nominal,true,reg);
+    this->MakeFatJetControlPlots(ts_pt,false,true,nominal,true,reg);
+    this->MakeFatJetControlPlots(ts_pt,true,true,nominal,true,reg);
   }
   
   CalibResult c_res=this->CalculateScaleFactorsAndErrors();
@@ -201,10 +208,12 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
   for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
 
   for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    
+    TString mc_name=regions[i_reg]+"_pt_Nom";
 
     for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
-      help=(TH1F*)m_fatjet_histograms_pretag[regions[i_reg]][i_p]->Clone();
+      help=(TH1F*)m_fatjet_histograms_pretag[mc_name][i_p]->Clone();
       help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
       
       if(doPseudo)help_rebinned->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
@@ -212,7 +221,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
       
       hist_pretag_mc[i_p]->Add(help_rebinned);
 
-      help=(TH1F*)m_fatjet_histograms_posttag[regions[i_reg]][i_p]->Clone();
+      help=(TH1F*)m_fatjet_histograms_posttag[mc_name][i_p]->Clone();
       help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
       
       if(doPseudo)help_rebinned->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
@@ -223,11 +232,13 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
 
     }
 
-    help=(TH1F*)m_fatjet_histograms_pretag_data[regions[i_reg]]->Clone();
+    TString data_name=regions[i_reg]+"_pt";
+    
+    help=(TH1F*)m_fatjet_histograms_pretag_data[data_name]->Clone();
     help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
     hist_pretag_data->Add(help_rebinned);
     
-    help=(TH1F*)m_fatjet_histograms_posttag_data[regions[i_reg]]->Clone();
+    help=(TH1F*)m_fatjet_histograms_posttag_data[data_name]->Clone();
     help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
     hist_posttag_data->Add(help_rebinned);
 
@@ -664,7 +675,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 }
 
 
-void ScaleFactorCalculator::ReadInFatJetHists(TString &var){
+void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::vector<TString>& sys){
   
   std::vector<TString> hist_mc;
   TString hist_data;
@@ -677,47 +688,58 @@ void ScaleFactorCalculator::ReadInFatJetHists(TString &var){
 
   TH1F* tmp=0, *clone_tmp=0;
 
-  TString jettype="fatjet", nominal="Nom";
-
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
-
-    //Get Data Hist for region i_reg
-    hist_data=m_config->GetDataHistName(jettype,regions[i_reg], var);
-        
-    infile->GetObject(hist_data.Data(),tmp);
+  
+  for(int i_var=0; i_var<var.size(); i_var++){
+  
+    TString jettype="fatjet";
     
-    std::cout<<"Read in"<<hist_data<<"!!"<<std::endl;
-
-    if(tmp) std::cout<<"Read in "<<hist_data<<std::endl;
-    else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_data<<std::endl;
-
-    clone_tmp=(TH1F*)tmp->Clone();
-    clone_tmp->SetDirectory(0);
-
-    if(var.Contains("POSTTAG")) m_fatjet_histograms_posttag_data[regions[i_reg]]=std::shared_ptr<TH1F>((TH1F*)clone_tmp);
-    else m_fatjet_histograms_pretag_data[regions[i_reg]]=std::shared_ptr<TH1F>((TH1F*)clone_tmp);
-
-
-
-    //Get MC Hists for region
-    hist_mc=m_config->GetMCHistNames(jettype, regions[i_reg],nominal,var);
-   
-    for(int i_h=0; i_h<hist_mc.size(); i_h++){
- 
-      infile->GetObject(hist_mc[i_h],tmp);
+    for(int i_reg=0; i_reg<regions.size(); i_reg++){
       
-      if(tmp) std::cout<<"Read in "<<hist_mc[i_h]<<std::endl;
-      else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_mc[i_h]<<std::endl;
-
+      //Get Data Hist for region i_reg
+      hist_data=m_config->GetDataHistName(jettype,regions[i_reg], var[i_var]);
+      
+      infile->GetObject(hist_data.Data(),tmp);
+      
+      std::cout<<"Read in"<<hist_data<<"!!"<<std::endl;
+      
+      if(tmp) std::cout<<"Read in "<<hist_data<<std::endl;
+      else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_data<<std::endl;
+      
       clone_tmp=(TH1F*)tmp->Clone();
       clone_tmp->SetDirectory(0);
       
-      if(var.Contains("POSTTAG")) m_fatjet_histograms_posttag[regions[i_reg]].push_back(std::shared_ptr<TH1F>((TH1F*)clone_tmp));
-      else  m_fatjet_histograms_pretag[regions[i_reg]].push_back(std::shared_ptr<TH1F>((TH1F*)clone_tmp));
- 
-
+      TString name_data=regions[i_reg]+"_"+var[i_var];
+      
+      if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag_data[name_data]=std::shared_ptr<TH1F>((TH1F*)clone_tmp);
+      else m_fatjet_histograms_pretag_data[name_data]=std::shared_ptr<TH1F>((TH1F*)clone_tmp);
+      
+      for(int i_sys=0; i_sys<sys.size(); i_sys++){
+        
+        
+        
+        //Get MC Hists for region
+        hist_mc=m_config->GetMCHistNames(jettype, regions[i_reg],sys[i_sys],var[i_var]);
+        
+        for(int i_h=0; i_h<hist_mc.size(); i_h++){
+          
+          infile->GetObject(hist_mc[i_h],tmp);
+          
+          if(tmp) std::cout<<"Read in "<<hist_mc[i_h]<<std::endl;
+          else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_mc[i_h]<<std::endl;
+          
+          clone_tmp=(TH1F*)tmp->Clone();
+          clone_tmp->SetDirectory(0);
+          
+          TString name_mc=regions[i_reg]+"_"+var[i_var]+"_"+sys[i_sys];
+          
+          if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag[name_mc].push_back(std::shared_ptr<TH1F>((TH1F*)clone_tmp));
+          else  m_fatjet_histograms_pretag[name_mc].push_back(std::shared_ptr<TH1F>((TH1F*)clone_tmp));
+          
+          
+        }
+        
+      }
     }
-
   }
   
   infile->Close();
@@ -841,7 +863,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 }
 
 
-void ScaleFactorCalculator::MakeFatJetControlPlots(bool isPosttag, bool applyFitCorrection, TString& sys, bool doPrintByRegion, TString region){
+void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, bool applyFitCorrection, TString& sys, bool doPrintByRegion, TString region){
   
   std::shared_ptr<TCanvas> canv(new TCanvas("canv","",600,800));
   canv.get()->cd();
@@ -885,15 +907,17 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(bool isPosttag, bool applyFit
   for(int i_reg=0; i_reg<regions.size(); i_reg++){
 
     if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
+    
+    TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
 
     for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
-      help=(TH1F*)m_fatjet_histograms_pretag[regions[i_reg]][i_p]->Clone();
+      help=(TH1F*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
       help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
       if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
       hist_pretag_mc[i_p]->Add(help_rebinned);
 
-      help=(TH1F*)m_fatjet_histograms_posttag[regions[i_reg]][i_p]->Clone();
+      help=(TH1F*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
       help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
       if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
       //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
@@ -901,11 +925,13 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(bool isPosttag, bool applyFit
 
     }
 
-    help=(TH1F*)m_fatjet_histograms_pretag_data[regions[i_reg]]->Clone();
+    TString name_data=regions[i_reg]+"_"+var;
+    
+    help=(TH1F*)m_fatjet_histograms_pretag_data[name_data]->Clone();
     help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
     hist_pretag_data->Add(help_rebinned);
     
-    help=(TH1F*)m_fatjet_histograms_posttag_data[regions[i_reg]]->Clone();
+    help=(TH1F*)m_fatjet_histograms_posttag_data[name_data]->Clone();
     help_rebinned=(TH1F*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
     hist_posttag_data->Add(help_rebinned);
 
@@ -965,7 +991,9 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(bool isPosttag, bool applyFit
   h_ratio->SetTitle("");
   h_ratio->SetMarkerStyle(20);
   h_ratio->SetYTitle("Data/MC");
-  h_ratio->SetXTitle("Large-R Jet p_{T} [GeV]"); 
+  if(var=="pt") h_ratio->SetXTitle("Large-R Jet p_{T} [GeV]");
+  else if (var=="m")h_ratio->SetXTitle("Large-R Jet Mass [GeV]");
+  else if (var=="D2")h_ratio->SetXTitle("Large-R Jet D2");
   h_ratio->SetLabelSize(0.08,"X");
   h_ratio->SetLabelSize(0.08,"Y");
   h_ratio->SetTitleSize(0.08,"X");
@@ -994,13 +1022,13 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(bool isPosttag, bool applyFit
   if(doPrintByRegion){
 
     if(isPosttag){
-      name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_posttag_")+region+TString("_pt.pdf") : TString("./ctrl_plots/FatJet_prefit_posttag_")+region+TString("_pt.pdf"); 
-    }else name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_pretag_")+region+TString("_pt.pdf") : TString("./ctrl_plots/FatJet_prefit_pretag_")+region+TString("_pt.pdf");
+      name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_posttag_")+region+TString("_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_posttag_")+region+TString("_")+var+TString(".pdf");
+    }else name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_pretag_")+region+TString("_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_pretag_")+region+TString("_")+var+TString(".pdf");
     
   }else{
     if(isPosttag){
-      name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_posttag_pt.pdf") : TString("./ctrl_plots/FatJet_prefit_posttag_pt.pdf"); 
-    }else name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_pretag_pt.pdf") : TString("./ctrl_plots/FatJet_prefit_pretag_pt.pdf");
+      name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_posttag_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_posttag_")+var+TString(".pdf");
+    }else name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_pretag_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_pretag")+var+TString(".pdf");
   }
   canv->SaveAs(name.Data());
 
