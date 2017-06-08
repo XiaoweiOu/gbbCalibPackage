@@ -11,7 +11,9 @@
 # 
 
 echo "Execute hadd for Nominal"
-bash scripts/NAFScripts/hadd_hist.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib
+#bash scripts/NAFScripts/hadd_hist.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib
+bash scripts/NAFScripts/hadd_hist.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_TrigTurnOn
+
 
 for sys in JET_Rtrk_Baseline_D2 JET_Rtrk_Tracking_D2 JET_Rtrk_Modelling_D2 JET_Rtrk_TotalStat_D2 JET_Rtrk_Baseline_Kin JET_Rtrk_Tracking_Kin JET_Rtrk_Modelling_Kin JET_Rtrk_TotalStat_Kin 
 do

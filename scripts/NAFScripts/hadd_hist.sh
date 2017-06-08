@@ -28,9 +28,9 @@ echo "File directory:  ${FILEDIR}"
 #lsetup "root 6.02.12-x86_64-slc6-gcc48-opt --quiet"
 
 
-if [ -d "${FILEDIR}/user.ruth.data15_13TeV.all.root/" ]
+if [ -d "${FILEDIR}/user.ruth.data1516_13TeV.all.root/" ]
 then
-    rm -r "${FILEDIR}/user.ruth.data15_13TeV.all.root/"
+    rm -r "${FILEDIR}/user.ruth.data1516_13TeV.all.root/"
 
 fi
 
@@ -49,26 +49,26 @@ do
 
     echo `hadd merged_hist_${dir} *.root*`  
 
-    if [ ! -d "${FILEDIR}/user.ruth.data15_13TeV.all.root/" ]
+    if [ ! -d "${FILEDIR}/user.ruth.data1516_13TeV.all.root/" ]
     then
-	mkdir "${FILEDIR}/user.ruth.data15_13TeV.all.root/"
+	mkdir "${FILEDIR}/user.ruth.data1516_13TeV.all.root/"
 
     fi
 
-    cp "merged_hist_${dir}" "${FILEDIR}/user.ruth.data15_13TeV.all.root/"
+    cp "merged_hist_${dir}" "${FILEDIR}/user.ruth.data1516_13TeV.all.root/"
     cd ${FILEDIR}
 done
 
 
 
-cd "${FILEDIR}/user.ruth.data15_13TeV.all.root"
+cd "${FILEDIR}/user.ruth.data1516_13TeV.all.root"
 
-if [ -e "merged_hist_user.ruth.data15_13TeV.all.root" ]
+if [ -e "merged_hist_user.ruth.data1516_13TeV.all.root" ]
 then
-    rm "merged_hist_user.ruth.data15_13TeV.all.root"
+    rm "merged_hist_user.ruth.data1516_13TeV.all.root"
 fi
 
-echo `hadd merged_hist_user.ruth.data15_13TeV.all.root *.root*`
+echo `hadd merged_hist_user.ruth.data1516_13TeV.all.root *.root*`
 
 cd ${FILEDIR}
 

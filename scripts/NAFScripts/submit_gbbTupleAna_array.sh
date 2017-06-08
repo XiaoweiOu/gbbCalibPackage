@@ -15,13 +15,13 @@ if [ -z "${DO_SYS}" ]
     echo "Running without systematics, to turn on, do: source scripts/submit_gbbTupleAna_array.sh 1"
 fi
 
-#INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNTuples_Calib/v_00-00-21TESTMUONFILTER"
-INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNtuples"
-OUTPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib"
+INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNTuples_Calib/v00-01-02/"
+#INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNtuples"
+OUTPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_TrigTurnOn"
 LOG_FOLDER="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/"
 
-listOfSamples=$(ls -d ${INPATH}/*v00-00-21* | xargs -n1 basename)
-listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-00-21* | xargs -n1 basename)
+listOfSamples=$(ls -d ${INPATH}/*v00-01-02* | xargs -n1 basename)
+listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-02* | xargs -n1 basename)
 
 #echo ${listOfSamples}
 #echo ${listOfMCSamples}
@@ -34,13 +34,14 @@ echo "Output in: ${OUTPATH}"
 #Nominal
 #=========================
 
-mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib
+mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_TrigTurnOn
 
-for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Calib/*.root
+for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_TrigTurnOn/${OUT_TAG}_*.root
 do
     if [ -d "${dir}" ];
     then
 	rm -rv $dir
+	#echo "directory exists: ${dir}"
     fi
 done
 
