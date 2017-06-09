@@ -161,12 +161,12 @@ std::vector<TString> Config::GetAllRegions(){
 
 
 
-std::vector<TString> Config::GetMCHistNames(TString& jettype, TString& pt_region, TString &sys, TString &variable){
+std::vector<TString> Config::GetMCHistNames(TString& pt_region, TString &sys, TString &variable){
 
   std::vector<TString> hist_names;
   for(auto fp : m_pairs){
     
-    hist_names.push_back("h"+fp+sys+"_"+jettype+"_"+pt_region+"_"+variable);
+    hist_names.push_back("h"+fp+sys+"_"+pt_region+"_"+variable);
 	  
   }
   
@@ -175,9 +175,9 @@ std::vector<TString> Config::GetMCHistNames(TString& jettype, TString& pt_region
 }
 
 
-TString Config::GetDataHistName(TString& jettype, TString& pt_region, TString &variable){
+TString Config::GetDataHistName(TString& pt_region, TString &variable){
 
-  TString name="hDataNom_"+jettype+"_other_"+pt_region+"_"+variable;
+  TString name="hDataNom_other_"+pt_region+"_"+variable;
   return name;
 }
 

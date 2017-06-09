@@ -57,20 +57,22 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
   TString muo_name="muojet";
   TString nonmuo_name="nonmuojet";
-  TString maxSd0="maxSd0";
+  TString mj_maxSd0="mjmaxSd0";
+  TString nmj_maxSd0="nmjmaxSd0";
+
 
   TString nominal="Nom";
 
   for(int i_reg=0; i_reg<regions.size(); i_reg++){
     
-    tmpl_muo_data=m_config->GetDataHistName(muo_name, regions[i_reg],maxSd0);
-    tmpl_nonmuo_data=m_config->GetDataHistName(nonmuo_name, regions[i_reg],maxSd0);
+    tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
+    tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
     
 
     for(int i_sys=0; i_sys<systematics.size(); i_sys++){
       
-      tmpl_muo_mc=m_config->GetMCHistNames(muo_name, regions[i_reg],systematics[i_sys],maxSd0);
-      tmpl_nonmuo_mc=m_config->GetMCHistNames(nonmuo_name, regions[i_reg],systematics[i_sys],maxSd0);
+      tmpl_muo_mc=m_config->GetMCHistNames(regions[i_reg],systematics[i_sys],mj_maxSd0);
+      tmpl_nonmuo_mc=m_config->GetMCHistNames(regions[i_reg],systematics[i_sys],nmj_maxSd0);
   
       m_fitdata->SetHistogramNames(chans[0],tmpl_muo_data,tmpl_muo_mc);
       m_fitdata->SetHistogramNames(chans[1],tmpl_nonmuo_data,tmpl_nonmuo_mc);
@@ -124,11 +126,11 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   std::vector<std::vector<double>> help;
 
   for(int i_reg=0; i_reg<regions.size(); i_reg++){
-    tmpl_muo_data=m_config->GetDataHistName(muo_name, regions[i_reg],maxSd0);
-    tmpl_nonmuo_data=m_config->GetDataHistName(nonmuo_name, regions[i_reg],maxSd0);
+    tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
+    tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
     
-    tmpl_muo_mc=m_config->GetMCHistNames(muo_name, regions[i_reg],nominal,maxSd0);
-    tmpl_nonmuo_mc=m_config->GetMCHistNames(nonmuo_name, regions[i_reg],nominal,maxSd0);
+    tmpl_muo_mc=m_config->GetMCHistNames(regions[i_reg],nominal,mj_maxSd0);
+    tmpl_nonmuo_mc=m_config->GetMCHistNames(regions[i_reg],nominal,nmj_maxSd0);
     
     m_fitdata->SetHistogramNames(chans[0],tmpl_muo_data,tmpl_muo_mc);
     m_fitdata->SetHistogramNames(chans[1],tmpl_nonmuo_data,tmpl_nonmuo_mc);
@@ -696,7 +698,7 @@ void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::ve
     for(int i_reg=0; i_reg<regions.size(); i_reg++){
       
       //Get Data Hist for region i_reg
-      hist_data=m_config->GetDataHistName(jettype,regions[i_reg], var[i_var]);
+      hist_data=m_config->GetDataHistName(regions[i_reg], var[i_var]);
       
       infile->GetObject(hist_data.Data(),tmp);
       
@@ -718,7 +720,7 @@ void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::ve
         
         
         //Get MC Hists for region
-        hist_mc=m_config->GetMCHistNames(jettype, regions[i_reg],sys[i_sys],var[i_var]);
+        hist_mc=m_config->GetMCHistNames(regions[i_reg],sys[i_sys],var[i_var]);
         
         for(int i_h=0; i_h<hist_mc.size(); i_h++){
           

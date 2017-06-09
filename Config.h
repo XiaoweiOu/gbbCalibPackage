@@ -81,8 +81,8 @@ class Config{
   std::vector<TString> GetSystematics(){ return m_systematics; }
   std::vector<TString> GetAllRegions();
 
-  std::vector<TString> GetMCHistNames(TString& jettype, TString& pt_region,TString &sys, TString &variable);
-  TString GetDataHistName(TString& jettype, TString& pt_region, TString &variable);
+  std::vector<TString> GetMCHistNames(TString& pt_region,TString &sys, TString &variable);
+  TString GetDataHistName(TString& pt_region, TString &variable);
 
 };
 
