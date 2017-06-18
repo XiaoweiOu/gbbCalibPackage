@@ -168,7 +168,7 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   //=========================================
   
   //std::vector<TString> trig_slices={"HLT_j110","HLT_j150","HLT_j175","HLT_j200","HLT_j260","HLT_j300","HLT_j320","HLT_j360"};
-  std::vector<TString> trig_slices={"HLT_j85","HLT_j110","HLT_j150","HLT_j175","HLT_j260","HLT_j360","HLT_j380"};
+  std::vector<TString> trig_slices={"HLT_j150","HLT_j175","HLT_j260","HLT_j380"};
 
   if(m_doJetPtReweighting) for(auto& elem : trig_slices) this->setReweightHisto(m_JetPtReweightFile,elem);
 
@@ -320,45 +320,18 @@ bool GbbTupleAna::Processgbb(int i_evt){
   TString trigger_passed="none";
  
 
-/*  if(trjet_pt>117e3 && trjet_pt<=136e3 && this->eve_HLT_j85){
-  	  trigger_passed="HLT_j85";
-  	  if(this->eve_isMC) prescale=1.5708e-4;
-  }else if(trjet_pt>136e3 && trjet_pt<=148e3 && this->eve_HLT_j100){
-        trigger_passed="HLT_j100";
-        if(this->eve_isMC) prescale=2.979e-4;
-	}else*/
-  
   if(m_RunMode.Contains("TriggerTurnOn")){
     prescale=1.;
-  }else if(/*trjet_pt>148e3 &&*/ trjet_pt<=198e3 && this->eve_HLT_j110){
-  	  trigger_passed="HLT_j110";
-	  //if(this->eve_isMC) prescale=4.456e-4;
-	  if(this->eve_isMC) prescale=4.324e-4;
   }else if(trjet_pt>198e3 && trjet_pt<=229e3 && this->eve_HLT_j150){
-	  trigger_passed="HLT_j150";
-	  //if(this->eve_isMC) prescale=1.655e-3;
-	  if(this->eve_isMC) prescale=1.607e-3;
-  }else if(trjet_pt>229e3 && trjet_pt<=260e3 && this->eve_HLT_j175){
-          trigger_passed="HLT_j175";
-          //if(this->eve_isMC) prescale=3.25e-3;
-	  if(this->eve_isMC) prescale=3.209e-3;
-  }else if(trjet_pt>260e3 && trjet_pt<=334e3 && this->eve_HLT_j200){
-          trigger_passed="HLT_j200";
-          //if(this->eve_isMC) prescale=6.087e-3;
-	  if(this->eve_isMC) prescale=5.909e-3;
-  }else if(trjet_pt>334e3 && trjet_pt<=383e3 && this->eve_HLT_j260){
-	  trigger_passed="HLT_j260";
-	  //if(this->eve_isMC) prescale=2.1164e-2;
-	  if(this->eve_isMC) prescale=2.051e-2;
-  }else if(trjet_pt>383e3 && trjet_pt<=408e3 && this->eve_HLT_j300){
-          trigger_passed="HLT_j300";
-          //if(this->eve_isMC) prescale=4.141e-2;
-	  if(this->eve_isMC) prescale=4.075e-2;
-  }else if(trjet_pt>408e3 && trjet_pt<=430e3 && this->eve_HLT_j320){
-          trigger_passed="HLT_j320";
-          //if(this->eve_isMC) prescale=5.824e-2;
-	  if(this->eve_isMC) prescale=5.737e-2;
-  }else if(trjet_pt>430e3 && this->eve_HLT_j360) trigger_passed="HLT_j360";
+    trigger_passed="HLT_j150";
+    if(this->eve_isMC) prescale=7.633e-4;
+  }else if(trjet_pt>229e3 && trjet_pt<=334e3 && this->eve_HLT_j175){
+    trigger_passed="HLT_j175";
+    if(this->eve_isMC) prescale=3.945e-3;
+  }else if(trjet_pt>334e3 && trjet_pt<=430e3 && this->eve_HLT_j260){
+    trigger_passed="HLT_j260";
+    if(this->eve_isMC) prescale=2.453e-2;
+  }else if(trjet_pt>430e3 && this->eve_HLT_j380) trigger_passed="HLT_j380";
   else return false;
 
   total_evt_weight*=prescale;
@@ -438,10 +411,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //=========================================  
 
 
-  //If mode is: FillReweightHists Fill possible new reweighting histogram before event_weight is changed
-  if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
+  //  //If mode is: FillReweightHists Fill possible new reweighting histogram before event_weight is changed
+  //if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
 
-  if(m_doJetPtReweighting && m_reweightHistos[trigger_passed].get() && this->eve_isMC){
+  if(m_doJetPtReweighting && !m_RunMode.Contains("FillReweightHists")  && m_reweightHistos[trigger_passed].get() && this->eve_isMC){
 	  float trig_weight=this->getTrigJetWeight(i_trigjet,trigger_passed);
 
 	  if(TMath::Abs(trig_weight)<1e-10) trig_weight=1.;
@@ -478,7 +451,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   std::vector<unsigned int> CutsWith2Btags={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMu2Btags};
 
   //0.) Only presence of trigger jet
-  if(passSpecificCuts(eventFlag, CutsNoBtag)){
+  if(passSpecificCuts(eventFlag, CutsTriggerTurnOn)){
     if(m_RunMode.Contains("TriggerTurnOn")) FillTriggerTurnOnHistograms(i_trigjet,total_evt_weight);
   } 
 
@@ -493,6 +466,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_RunMode.Contains("FillFatJetProperties")) FillFatJetProperties(&gbbcand,total_evt_weight);
     if(m_RunMode.Contains("FillAdvancedProperties")) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight);
     if(m_RunMode.Contains("FillMCStatsInfo")) FillMCStatsInfo(&gbbcand);
+    if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
+
 
     //for crosscheck: Fill Even and Odd Templates
     if(this->eve_isMC && m_doEvenOddTemplates && m_RunMode.Contains("FillTemplates")){
