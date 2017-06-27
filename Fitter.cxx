@@ -464,7 +464,12 @@ std::vector<double> Fitter::CovarianceMatrix(){
 
   //Todo: Treat Nuisance Parameters
 
-  std::vector<double> v_cov_mat(cov_mat,cov_mat+sizeof cov_mat/ sizeof cov_mat[0]);
+  std::vector<double> v_cov_mat; //(cov_mat,cov_mat+sizeof cov_mat/ sizeof cov_mat[0]);
+
+  for(int i=0; i<n_par*n_par; i++){
+    v_cov_mat.push_back(cov_mat[i]);
+  }
+
 
   return v_cov_mat;
 

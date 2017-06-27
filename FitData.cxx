@@ -272,7 +272,7 @@ void FitData::CheckHistograms(TString &channel){
   float xlow_data=0., xhigh_data=0.;
   float xlow_mc=0., xhigh_mc=0.;
 
-  TH1F* data_hist;
+  TH1D* data_hist;
 
   for(int i_chan=0; i_chan<m_chans.size(); i_chan++){
     data_hist=m_dataHistMap[channel].get();
@@ -358,7 +358,7 @@ void FitData::AutoRebinHistograms(TString& channel, int N_force){
 		  
       //if((TMath::Sqrt(err_mc_template[i])/n_mc_template[i])>0.25) hasStatsTemplates=false;
 		  
-      if(TMath::Abs(n_mc_template[i])<1e-10) hasStatsTemplates=false;
+      if(TMath::Abs(n_mc_template[i])<1e-10 || (TMath::Sqrt(err_mc_template[i])/n_mc_template[i])>0.5) hasStatsTemplates=false;
 
     }
 
@@ -408,17 +408,17 @@ void FitData::AutoRebinHistograms(TString& channel, int N_force){
 
 
   //Rebin Data and MC histograms
-  TH1F* temp_data=(TH1F*)m_dataHistMap[channel].get()->Rebin(nbins,m_dataHistMap[channel].get()->GetName(),&xbins[0]);
+  TH1D* temp_data=(TH1D*)m_dataHistMap[channel].get()->Rebin(nbins,m_dataHistMap[channel].get()->GetName(),&xbins[0]);
 	
-  m_dataHistMap[channel]=std::shared_ptr<TH1F>(new TH1F(*temp_data));
+  m_dataHistMap[channel]=std::shared_ptr<TH1D>(new TH1D(*temp_data));
 
   std::cout<<"Data histogram has"<<m_dataHistMap[channel].get()->GetNbinsX()<<" bins"<<std::endl;                                                                                                                            
 
 
   for(int i_mc=0; i_mc<m_templateHistsMap[channel].size(); i_mc++){
 
-    TH1F* temp_mc=(TH1F*) m_templateHistsMap[channel][i_mc].get()->Rebin(nbins,m_templateHistsMap[channel][i_mc].get()->GetName(),&xbins[0]);
-    m_templateHistsMap[channel][i_mc]=std::shared_ptr<TH1F>(new TH1F(*temp_mc));
+    TH1D* temp_mc=(TH1D*) m_templateHistsMap[channel][i_mc].get()->Rebin(nbins,m_templateHistsMap[channel][i_mc].get()->GetName(),&xbins[0]);
+    m_templateHistsMap[channel][i_mc]=std::shared_ptr<TH1D>(new TH1D(*temp_mc));
 	  
 
 
@@ -465,7 +465,7 @@ void FitData::KernelSmoothTemplates(float scale){
 
     for(int j=0; j<m_templateHistsMap[m_chans[i]].size(); j++){
   
-      TH1F* hist_temp=(TH1F*)m_templateHistsMap[m_chans[i]][j].get()->Clone();
+      TH1D* hist_temp=(TH1D*)m_templateHistsMap[m_chans[i]][j].get()->Clone();
 
       float area=m_templateHistsMap[m_chans[i]][j].get()->Integral(1,m_templateHistsMap[m_chans[i]][j]->GetNbinsX());
   
@@ -492,7 +492,7 @@ void FitData::KernelSmoothTemplates(float scale){
       //scale to match old norm
       hist_temp->Scale(area/hist_temp->Integral(1,m_templateHistsMap[m_chans[i]][j]->GetNbinsX()));
 
-      std::shared_ptr<TH1F> hist_new(hist_temp);
+      std::shared_ptr<TH1D> hist_new(hist_temp);
       
       m_templateHistsMap[m_chans[i]][j]=hist_new;
 
@@ -576,16 +576,16 @@ double FitData::GetDataNorm(TString &channel){
 
 void FitData::ReadInHistograms(TString &channel){
 
-  TH1F* tmp, *clone_tmp;
+  TH1D* tmp, *clone_tmp;
 
   m_infile.get()->GetObject(m_Data_HistNamesMap[channel].Data(),tmp);
 
   if(tmp) std::cout<<"Read in "<<m_Data_HistNamesMap[channel]<<std::endl;
-  else std::cout<<"Error in FitData::ReadInHistograms(): Can't find histogram "<<m_Data_HistNamesMap[channel]<<std::endl;
+  else std::cout<<"Error in FitData::ReadInHistograms(): Can't find histogram"<<m_Data_HistNamesMap[channel]<<"!"<<std::endl;
 
-  clone_tmp=(TH1F*)tmp->Clone();
+  clone_tmp=(TH1D*)tmp->Clone();
   clone_tmp->SetDirectory(0);
-  m_dataHistMap[channel]=std::shared_ptr<TH1F>(clone_tmp);
+  m_dataHistMap[channel]=std::shared_ptr<TH1D>(clone_tmp);
 
   for(int i=0; i<m_MC_HistNamesMap[channel].size(); i++){
 
@@ -594,10 +594,10 @@ void FitData::ReadInHistograms(TString &channel){
     if(tmp) std::cout<<"Read in "<<m_MC_HistNamesMap[channel][i]<<std::endl;
     else std::cout<<"Error in FitData::ReadInHistograms(): Can't find histogram "<<m_MC_HistNamesMap[channel][i]<<std::endl;
 
-    clone_tmp=(TH1F*)tmp->Clone();
+    clone_tmp=(TH1D*)tmp->Clone();
     clone_tmp->SetDirectory(0);
 
-    m_templateHistsMap[channel].push_back(std::shared_ptr<TH1F>(clone_tmp));
+    m_templateHistsMap[channel].push_back(std::shared_ptr<TH1D>(clone_tmp));
   }
 
 
@@ -632,18 +632,18 @@ void FitData::PrintHistograms(TFile* file){
 
 float FitData::GetParamStartValue(){
 
-  TH1F* data_tmp, *mc_tmp;
+  TH1D* data_tmp, *mc_tmp;
 
   for(int i_chan=0; i_chan<m_chans.size(); i_chan++){
 
     for(int j=0; j<m_templateHistsMap[m_chans[i_chan]].size(); j++){
      
-      if(i_chan==0 && j==0) mc_tmp=(TH1F*)m_templateHistsMap[m_chans[i_chan]][j].get()->Clone();
+      if(i_chan==0 && j==0) mc_tmp=(TH1D*)m_templateHistsMap[m_chans[i_chan]][j].get()->Clone();
       else mc_tmp->Add(m_templateHistsMap[m_chans[i_chan]][j].get());
 
     }
 
-    if(i_chan==0)data_tmp=(TH1F*)m_dataHistMap[m_chans[i_chan]].get()->Clone();
+    if(i_chan==0)data_tmp=(TH1D*)m_dataHistMap[m_chans[i_chan]].get()->Clone();
     else data_tmp->Add(m_dataHistMap[m_chans[i_chan]].get());
 
   }
@@ -658,11 +658,11 @@ float FitData::GetParamStartValue(){
 
 void FitData::GetMCStatsNPInitVal(TString &channel, std::vector<double>& par, std::vector<double>& par_err ){
 
-  TH1F* mc_tmp;
+  TH1D* mc_tmp;
 
   for(int j=0; j<m_templateHistsMap[channel].size(); j++){
 
-    if(j==0) mc_tmp=(TH1F*)m_templateHistsMap[channel][j].get()->Clone();
+    if(j==0) mc_tmp=(TH1D*)m_templateHistsMap[channel][j].get()->Clone();
     else mc_tmp->Add(m_templateHistsMap[channel][j].get());
 
   }

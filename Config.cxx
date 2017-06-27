@@ -177,7 +177,7 @@ std::vector<TString> Config::GetMCHistNames(TString& pt_region, TString &sys, TS
 
 TString Config::GetDataHistName(TString& pt_region, TString &variable){
 
-  TString name="hDataNom_other_"+pt_region+"_"+variable;
+  TString name="hDataNom_"+pt_region+"_"+variable;
   return name;
 }
 

@@ -87,6 +87,11 @@ class Fitter {
 
   double getTotalFitError();
 
+  TString getFitStatus(){
+    
+    return TString(m_Minuit->fCstatu.Data());
+  }
+
 };
 
 #endif /* FITTER_H_ */

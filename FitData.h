@@ -10,7 +10,7 @@
 
 #include "TFile.h"
 #include "TString.h"
-#include "TH1F.h"
+#include "TH1D.h"
 #include <vector>
 #include <map>
 #include <iostream>
@@ -26,8 +26,8 @@ class FitData {
   std::shared_ptr<TFile> m_infile;
   std::shared_ptr<TRandom3> m_rndm;
 
-  std::map<TString,std::shared_ptr<TH1F>> m_dataHistMap;
-  std::map<TString,std::vector<std::shared_ptr<TH1F>>> m_templateHistsMap;
+  std::map<TString,std::shared_ptr<TH1D>> m_dataHistMap;
+  std::map<TString,std::vector<std::shared_ptr<TH1D>>> m_templateHistsMap;
 
   std::map<TString,std::vector<double>> m_BootStrapDataMap;
   std::map<TString,std::vector<std::vector<double>>> m_BootStrapTemplateMap;
@@ -62,8 +62,8 @@ class FitData {
     for(auto chan : m_chans) ReadInHistograms(chan);
   }
 
-  std::shared_ptr<TH1F> GetDataHist(TString &channel){ return m_dataHistMap[channel]; }
-  std::vector<std::shared_ptr<TH1F>> GetMCHists(TString &channel){ return m_templateHistsMap[channel]; }
+  std::shared_ptr<TH1D> GetDataHist(TString &channel){ return m_dataHistMap[channel]; }
+  std::vector<std::shared_ptr<TH1D>> GetMCHists(TString &channel){ return m_templateHistsMap[channel]; }
 
 
   void CheckHistograms(TString &channel);

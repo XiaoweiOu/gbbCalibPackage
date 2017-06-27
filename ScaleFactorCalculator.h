@@ -11,7 +11,7 @@
 
 #include "TFile.h"
 #include "TString.h"
-#include "TH1F.h"
+#include "TH1D.h"
 #include <vector>
 #include <map>
 #include <iostream>
@@ -21,6 +21,7 @@
 #include "FitData.h"
 #include "Fitter.h"
 #include "Config.h"
+#include "TGraphAsymmErrors.h"
 
 struct CalibResult{
 
@@ -59,11 +60,11 @@ private:
   Config* m_config;
 
 
-  std::map<TString,std::shared_ptr<TH1F>> m_fatjet_histograms_pretag_data;
-  std::map<TString,std::shared_ptr<TH1F>> m_fatjet_histograms_posttag_data;
+  std::map<TString,std::shared_ptr<TH1D>> m_fatjet_histograms_pretag_data;
+  std::map<TString,std::shared_ptr<TH1D>> m_fatjet_histograms_posttag_data;
  
-  std::map<TString,std::vector<std::shared_ptr<TH1F>>> m_fatjet_histograms_pretag; //key: <ptregion>_<sys>, element: hists all pairs
-  std::map<TString,std::vector<std::shared_ptr<TH1F>>> m_fatjet_histograms_posttag;
+  std::map<TString,std::vector<std::shared_ptr<TH1D>>> m_fatjet_histograms_pretag; //key: <ptregion>_<sys>, element: hists all pairs
+  std::map<TString,std::vector<std::shared_ptr<TH1D>>> m_fatjet_histograms_posttag;
   std::map<TString,std::vector<double>> m_fit_params;
   std::map<TString,std::vector<double>> m_nom_cov_mats; //key: <ptregion>, element: nominal covariance matrix
   
@@ -80,9 +81,13 @@ private:
 	void MakeCalibrationPlots(CalibResult cl_result, TString plot_type);
 	void ReadInFatJetHists(std::vector<TString>& var, std::vector<TString>& sys);
 
-	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1F> dataHist,std::vector<std::shared_ptr<TH1F>> templateHists, TString& channel, TString& region, TString &sys, int rebin);
+	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys, int rebin);
 
 	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, TString& sys, bool doPrintByRegion=false, TString region="DEFAULT");
+  
+  TGraphAsymmErrors* getFitUncert(TString& var, bool isPosttag);
+  TGraphAsymmErrors* getBTagUncert(TString &name);
+  TGraphAsymmErrors* getExperimentUncert(TString &name);
 
 };
 
