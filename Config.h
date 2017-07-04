@@ -11,6 +11,7 @@
 #include "TString.h"
 #include <vector>
 #include <iostream>
+#include <map>
 
 class Config{
 
@@ -27,6 +28,10 @@ class Config{
   std::vector<TString> m_systematics;
   std::vector<TString> m_chans;
   std::vector<TString> m_params_names;
+
+  std::map<TString,std::vector<float>> m_binning;
+  std::vector<TString> m_plotvariables;
+
 
   std::vector<float> m_mutrackjetbins;
   std::vector<float> m_nonmutrackjetbins; 
@@ -56,6 +61,8 @@ class Config{
   bool DoMCStatsNP(){ return m_doMCStatsNP; }
   bool DoFitInFatJetPtBins(){return m_doFitInFatJetPtBins;}
 
+  std::vector<float> GetBins(TString& var){ return m_binning[var]; }
+
   std::vector<float> GetMuTrackJetBins(){ return m_mutrackjetbins; }
   std::vector<float> GetNonmuTrackJetBins(){ return m_nonmutrackjetbins; }
 
@@ -64,6 +71,7 @@ class Config{
   std::vector<TString> GetPairs(){return m_pairs;}
   std::vector<TString> GetChans(){ return m_chans; };
   std::vector<TString> GetParamNames(){ return m_params_names; }
+  std::vector<TString> GetPlotVariables(){ return m_plotvariables; }
 
   int GetNPseudoExp(){return m_N_pseudo_exp;}
 

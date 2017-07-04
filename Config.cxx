@@ -47,6 +47,19 @@ Config::Config(TString& cfg_path){
   m_nonmutrackjetbins=SplitStringD(config->GetValue("NonmuTrackJetBins",""),',');
   std::cout<<"NonmuTrackJetBins: "<<config->GetValue("NonmuTrackJetBins","")<<std::endl;
 
+  m_plotvariables=SplitString(config->GetValue("PlotVariables",""),',');
+  std::cout<<"PlotVariables: "<<config->GetValue("PlotVariables","")<<std::endl;
+
+  for(int i=0; i<m_plotvariables.size(); i++){
+    TString name="PlotBins"+m_plotvariables[i];
+    TString name_posttag=name+"_PREFITPOSTTAG";
+    TString plotvar_posttag=m_plotvariables[i]+"_PREFITPOSTTAG";
+    m_binning[m_plotvariables[i]]=SplitStringD(config->GetValue(name.Data(),""),',');
+    m_binning[plotvar_posttag]=SplitStringD(config->GetValue(name.Data(),""),',');
+    std::cout<<name<<config->GetValue(name.Data(),"")<<std::endl;
+  }
+
+
   m_fatjetbins=SplitStringD(config->GetValue("FatJetBins",""),',');
   std::cout<<"FatJetBins: "<<config->GetValue("FatJetBins","")<<std::endl;
   

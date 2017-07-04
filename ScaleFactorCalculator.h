@@ -85,8 +85,10 @@ private:
 
 	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, TString& sys, bool doPrintByRegion=false, TString region="DEFAULT");
   
-  TGraphAsymmErrors* getFitUncert(TString& var, bool isPosttag);
-  TGraphAsymmErrors* getBTagUncert(TString &name);
+	TGraphAsymmErrors* getFitUncert(TString& var, bool isPosttag);
+	TGraphAsymmErrors* getTemplateFitUncert(bool applyFitCorrection,std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin);
+	
+  TGraphAsymmErrors* getBTagUncert(TString &var, bool applyFitCorrection);
   TGraphAsymmErrors* getExperimentUncert(TString &name);
 
 };

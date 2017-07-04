@@ -1,0 +1,6 @@
+17/07/04
+- edit Config to have different binning for fjm and fjpt
+- edit ScaleFactorCalculator to allow different binning for variables
+- edit ScaleFactorCalculator: include fit systematics and b-tagging systematics for plotting (fat jet control plots and template control plots)
+- add config/config_CrossCheck.cfg to illustrate use of new binning options
+- add ChangeLog :)

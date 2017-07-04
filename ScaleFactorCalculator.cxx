@@ -163,14 +163,21 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   //start calibration sequence
   TString pt_name="fjpt", pt_posttag_name="pt_PREFITPOSTTAG";
   
-  std::vector<TString> variables={"fjpt"};
+  //  std::vector<TString> variables={"fjpt","fjm"};
+  std::vector<TString> variables=m_config->GetPlotVariables();
   std::vector<TString> sys={"Nom"};
-  std::vector<TString> variables_posttag;
+  std::vector<TString> nominal_only={"Nom"};
+  std::vector<TString> variables_posttag, variables_posttag_btagsys;
   for(auto& el : variables)variables_posttag.push_back(TString(el)+"_PREFITPOSTTAG");
+  for(auto& el : variables_posttag){
+    variables_posttag_btagsys.push_back(TString(el)+"_BTAGUP");
+    variables_posttag_btagsys.push_back(TString(el)+"_BTAGDOWN");
+  }
   
   this->ReadInFatJetHists(variables,sys);
   this->ReadInFatJetHists(variables_posttag,sys);
-
+  this->ReadInFatJetHists(variables_posttag_btagsys,nominal_only);
+  
   TString ts_pt="fjpt";
   
   for(int i_var=0; i_var<variables.size(); i_var++){
@@ -852,7 +859,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   //ratio
   TH1D *h_ratio=(TH1D*)data_hist->Clone();
   h_ratio->Divide(full_mc);
-  h_ratio->SetMinimum();
+  //h_ratio->SetMinimum();
 
   h_ratio->SetTitle("");
   h_ratio->SetMarkerStyle(20);
@@ -868,6 +875,25 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   pad2->SetGrid();
   pad2->cd();
   h_ratio->Draw("EP");
+
+  //get Fit systematics band
+  TGraphAsymmErrors* fitsys=0;
+  
+  if(applyFitCorrection){
+    
+    fitsys=this->getTemplateFitUncert(applyFitCorrection,templateHists,region,sys,rebin);
+    fitsys->SetFillColor(kGreen+1);
+    fitsys->SetFillStyle(3001);
+    
+    pad2->cd();
+    fitsys->Draw("2");
+    //leg_sys_1->AdEntry(fitsys,"Fit Uncertainty","f");
+    h_ratio->Draw("EPsame");
+    h_ratio->GetYaxis()->SetRangeUser(0.,2);
+  }
+
+
+
 
   double chi2=data_hist->Chi2Test(full_mc,"UW CHI2/NDF");
   TString text_Chi2=Form("Chi2/NDF = %f",chi2);
@@ -914,7 +940,11 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
-  std::vector<float> fj_bins=m_config->GetFatJetBins();
+  std::vector<float> fj_bins=m_config->GetBins(var);
+
+  std::cout<<"Bins for variable:"<<var<<std::endl;
+  for(auto &el : fj_bins) std::cout<<el<<std::endl;
+
   std::vector<TString> regions=m_config->GetAllRegions();
   
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
@@ -1055,11 +1085,22 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
       
       pad2->cd();
       fitsys->Draw("2");
-      //leg_sys_1->AddEntry(fitsys,"Fit Uncertainty","f");
+      //leg_sys_1->AdEntry(fitsys,"Fit Uncertainty","f");
       h_ratio->Draw("EPsame");
       h_ratio->GetYaxis()->SetRangeUser(0.5,1.5);
   }
 
+  if(isPosttag){
+    
+    btagsys=this->getBTagUncert(var,applyFitCorrection);
+    btagsys->SetLineColor(kRed);
+    btagsys->SetFillStyle(0);
+    pad2->cd();
+    btagsys->Draw("5");
+    h_ratio->Draw("EPsame");
+    //leg_sys_2->AddEntry(btagsys,"B-tagging Uncertainty","l");
+    
+  }
   
   double chi2=data_hist->Chi2Test(full_mc,"UW CHI2/NDF");
   TString text_Chi2=Form("Chi2/NDF = %f",chi2);
@@ -1094,15 +1135,97 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 
 }
 
+TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin){
+
+  TH1D* tmp_stacked_mc, *hist_total;
+  std::vector<float> flavour_norms;
+ 
+  for(int i_p=0; i_p<templateHists.size(); i_p++){
+
+    if(!(templateHists[i_p].get())) continue;
+    
+    tmp_stacked_mc=(TH1D*)templateHists[i_p].get()->Clone();
+
+    if(applyFitCorrection) tmp_stacked_mc->Scale(m_fit_params[region+"_"+sys][i_p]);
+
+    if(rebin>1) tmp_stacked_mc->Rebin(rebin);
+
+    if(i_p==0) hist_total=(TH1D*)tmp_stacked_mc->Clone();
+    else hist_total->Add(tmp_stacked_mc);
+
+    flavour_norms.push_back(tmp_stacked_mc->Integral());
+ }
+
+  TVector v(flavour_norms.size(),&flavour_norms[0]);
+      
+  TVector v2=v;
+  
+  std::vector<float> matrix;
+  for(int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
+    
+    //std::cout<<"size of matrix"<<m_nom_cov_mats[regions[i_reg]].size()<<std::endl;
+    matrix.push_back((float)(m_nom_cov_mats[region][i_entry])); //get region covariance matrix
+    //std::cout<<"matrix element: "<<m_nom_cov_mats[regions[i_reg]][i_entry]<<std::endl;
+    
+  }
+  //for(int j=0; j<matrix.size(); j++) std::cout<<"Matrix "<<j<<" "<<matrix[j]<<std::endl;
+  
+  TMatrix mat(flavour_norms.size(),flavour_norms.size(),&matrix[0]);
+  
+  v2*=mat;
+  
+  float fit_total_error_slice=v2*v;
+
+  
+  int n_bins=hist_total->GetNbinsX();
+  
+  double fiterrors_up[n_bins],fiterrors_down[n_bins],tot_err_sq[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  
+  for(int ib=0; ib<n_bins; ib++){
+    
+    tot_err_sq[ib]=fit_total_error_slice;
+
+  }
+
+  for(int i=1; i<=hist_total->GetNbinsX(); i++){
+    x_values[i-1]=hist_total->GetBinCenter(i);
+    x_error_up[i-1]=hist_total->GetBinWidth(i)/2;
+    x_error_down[i-1]=hist_total->GetBinWidth(i)/2;
+    y_values[i-1]=1.;
+    
+    std::cout<<"total error squared"<<(tot_err_sq[i-1])<<std::endl;
+    
+    std::cout<<"evts"<<(hist_total->GetBinContent(i))<<std::endl;
+    
+    
+    if(hist_total->GetBinContent(i)) fiterrors_up[i-1]=TMath::Sqrt(tot_err_sq[i-1])/hist_total->GetBinContent(i);
+    else fiterrors_up[i-1]=0;
+    
+    if(hist_total->GetBinContent(i)) fiterrors_down[i-1]=TMath::Sqrt(tot_err_sq[i-1])/hist_total->GetBinContent(i);
+    else fiterrors_down[i-1]=0;
+    
+    std::cout<<"FitError is:"<<fiterrors_up[i-1]<<std::endl;
+    
+  }
+  
+  TGraphAsymmErrors *g_fiterrors= new TGraphAsymmErrors(n_bins,x_values,y_values,x_error_down,x_error_up,fiterrors_down,fiterrors_up);
+  
+  return g_fiterrors;
+
+
+}
+
 
 
 
 TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPosttag){
   
+  //Calculate fit errors from covariance matrix for each flavour pair and each fit region, add errors in fit regions in qudrature.
+  
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
   TString name_pretag, name_posttag;
  
-  std::vector<float> fj_bins=m_config->GetFatJetBins();
+  std::vector<float> fj_bins=m_config->GetBins(var);
   std::vector<TString> regions=m_config->GetAllRegions();
   
   TH1D* help, *help_rebinned;
@@ -1119,7 +1242,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   std::vector<std::vector<double>> region_norms(regions.size(), help_norms);
   
   for(int i_reg=0; i_reg<regions.size(); i_reg++){
-    
+
     help_norms.assign(fj_bins.size()-1,0.);
     
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
@@ -1202,7 +1325,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   for(int i_bin=1; i_bin<=n_bins; i_bin++){
 
     for(int i_reg=0; i_reg<regions.size(); i_reg++){
-      
+
       if(hist_total->GetBinContent(i_bin)) tot_err_sq[i_bin-1]+=fit_total_error_slice[i_reg]*region_norms[i_reg][i_bin-1]/hist_total->GetBinContent(i_bin);
       
       //std::cout<<"fit_total_error_slice"<<fit_total_error_slice[i_reg]<<std::endl;
@@ -1240,8 +1363,114 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   
   return g_fiterrors;
 
-
 }
+
+
+
+TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool applyFitCorrection){
+  
+  //Get B-tagging systematics (up or down already defined as going in positive/negative direction)
+  std::vector<float> fj_bins=m_config->GetBins(var);
+  std::vector<TString> regions=m_config->GetAllRegions();
+  
+
+  
+  TH1D *h_nom=new TH1D("h_nom","",fj_bins.size()-1,&(fj_bins[0]));
+  TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
+  TH1D *h_down=new TH1D("h_down","",fj_bins.size()-1,&(fj_bins[0]));
+  
+  
+  TH1D* help, *help_rebinned;
+  
+  double d_fj_bins[fj_bins.size()];
+  
+  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  
+  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    
+    //if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
+    
+    TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
+    TString name_mc_up=regions[i_reg]+"_"+var+"_"+"BTAGUP_Nom";
+    TString name_mc_down=regions[i_reg]+"_"+var+"_"+"BTAGDOWN_Nom";
+    std::cout<<"name_mc: "<<name_mc<<std::endl;
+    std::cout<<"name_mc btag up: "<<name_mc_up<<std::endl;
+    std::cout<<"name_mc btag down: "<<name_mc_down<<std::endl;
+
+    
+    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+        help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
+        help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+        if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+        //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+        h_nom->Add(help_rebinned);
+      
+        help=(TH1D*)m_fatjet_histograms_posttag[name_mc_up][i_p]->Clone();
+        help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+        if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+        //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+        h_up->Add(help_rebinned);
+      
+        help=(TH1D*)m_fatjet_histograms_posttag[name_mc_down][i_p]->Clone();
+        help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+        if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+        //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+        h_down->Add(help_rebinned);
+      
+    }
+  }
+  
+  
+  //normalized option
+  
+  /*if(m_doNormalized){
+    
+    h_up->Scale(1./h_up->Integral());
+    h_down->Scale(1./h_down->Integral());
+    h_nom->Scale(1./h_nom->Integral());
+    
+  }*/
+  
+  //rebin up and down histogram if necessary
+  /*if(m_Rebin){
+    h_nom->Rebin(m_rebin_factor);
+    h_up->Rebin(m_rebin_factor);
+    h_down->Rebin(m_rebin_factor);
+  }*/
+  
+  int n_bins=h_nom->GetNbinsX();
+  
+  double btagerrors_up[n_bins],btagerrors_down[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  
+  TH1* h_diff_up=(TH1*)h_nom->Clone();
+  TH1* h_diff_down=(TH1*)h_nom->Clone();
+  
+  h_diff_up->Add(h_up,h_nom,1,-1);
+  h_diff_down->Add(h_nom,h_down,1,-1);
+  
+  
+  for(int i=1; i<=h_nom->GetNbinsX(); i++){
+    x_values[i-1]=h_nom->GetBinCenter(i);
+    x_error_up[i-1]=h_nom->GetBinWidth(i)/2;
+    x_error_down[i-1]=h_nom->GetBinWidth(i)/2;
+    y_values[i-1]=1.;
+    
+    if(h_nom->GetBinContent(i)) btagerrors_up[i-1]=h_diff_up->GetBinContent(i)/h_nom->GetBinContent(i);
+    else btagerrors_up[i-1]=0;
+    
+    if(h_nom->GetBinContent(i)) btagerrors_down[i-1]=h_diff_down->GetBinContent(i)/h_nom->GetBinContent(i);
+    else btagerrors_down[i-1]=0;
+    
+  }
+  
+  
+  TGraphAsymmErrors *g_btagerrors= new TGraphAsymmErrors(n_bins,x_values,y_values,x_error_down,x_error_up,btagerrors_down,btagerrors_up);
+  
+  return g_btagerrors;
+  
+  
+}
+
 
 
 
