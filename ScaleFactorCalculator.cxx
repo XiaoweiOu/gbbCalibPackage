@@ -101,7 +101,6 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
       m_fitter.Initialize();      
 
       for(int i_chan=0; i_chan<chans.size(); i_chan++) m_fitdata->AutoRebinHistograms(chans[i_chan],1);
-
       m_fitter.PrintParameters("Simple");
       m_fitter.fit();
       m_fitter.PrintParameters("Simple");
@@ -165,7 +164,8 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   
   //  std::vector<TString> variables={"fjpt","fjm"};
   std::vector<TString> variables=m_config->GetPlotVariables();
-  std::vector<TString> sys={"Nom"};
+  std::vector<TString> sys={"Nom","JET_Rtrk_Baseline_Kin__1up","JET_Rtrk_Baseline_Kin__1down"};
+  std::vector<TString> sys_only={"JET_Rtrk_Baseline_Kin"};
   std::vector<TString> nominal_only={"Nom"};
   std::vector<TString> variables_posttag, variables_posttag_btagsys;
   for(auto& el : variables)variables_posttag.push_back(TString(el)+"_PREFITPOSTTAG");
@@ -182,10 +182,10 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   
   for(int i_var=0; i_var<variables.size(); i_var++){
     //fat jet control plots
-    this->MakeFatJetControlPlots(variables[i_var],false,false,nominal);
-    this->MakeFatJetControlPlots(variables[i_var],false,true,nominal);
-    this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,nominal);
-    this->MakeFatJetControlPlots(variables_posttag[i_var],true,true,nominal);
+    this->MakeFatJetControlPlots(variables[i_var],false,false,sys_only);
+    this->MakeFatJetControlPlots(variables[i_var],false,true,sys_only);
+    this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only);
+    this->MakeFatJetControlPlots(variables_posttag[i_var],true,true,sys_only);
       
       /*  //fat jet binning control plots
       for(auto& reg : regions){
@@ -721,23 +721,26 @@ void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::ve
     for(int i_reg=0; i_reg<regions.size(); i_reg++){
       
       //Get Data Hist for region i_reg
-      hist_data=m_config->GetDataHistName(regions[i_reg], var[i_var]);
+      if( ! (var[i_var].Contains("BTAGUP") || var[i_var].Contains("BTAGDOWN") ) ){
+	hist_data=m_config->GetDataHistName(regions[i_reg], var[i_var]);
+	
+	infile->GetObject(hist_data.Data(),tmp);
+	
+	std::cout<<"Read in"<<hist_data<<"!!"<<std::endl;
+	
+	if(tmp) std::cout<<"Read in "<<hist_data<<std::endl;
+	else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_data<<std::endl;
+	
+	clone_tmp=(TH1D*)tmp->Clone();
+	clone_tmp->SetDirectory(0);
+	
+	TString name_data=regions[i_reg]+"_"+var[i_var];
       
-      infile->GetObject(hist_data.Data(),tmp);
-      
-      std::cout<<"Read in"<<hist_data<<"!!"<<std::endl;
-      
-      if(tmp) std::cout<<"Read in "<<hist_data<<std::endl;
-      else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_data<<std::endl;
-      
-      clone_tmp=(TH1D*)tmp->Clone();
-      clone_tmp->SetDirectory(0);
-      
-      TString name_data=regions[i_reg]+"_"+var[i_var];
-      
-      if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
-      else m_fatjet_histograms_pretag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
-      
+	if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
+	else m_fatjet_histograms_pretag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
+	
+      }
+
       for(int i_sys=0; i_sys<sys.size(); i_sys++){
         
         
@@ -924,7 +927,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 }
 
 
-void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, bool applyFitCorrection, TString& sys, bool doPrintByRegion, TString region){
+void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, bool doPrintByRegion, TString region){
   
   std::shared_ptr<TCanvas> canv(new TCanvas("canv","",600,800));
   canv.get()->cd();
@@ -981,12 +984,12 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
       if(!isPosttag){
 	help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
 	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-	if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
+	if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
 	hist_pretag_mc[i_p]->Add(help_rebinned);
       }else{
 	help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
 	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-	if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
+	if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
 	//std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
 	hist_posttag_mc[i_p]->Add(help_rebinned);
       }
@@ -1075,7 +1078,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   h_ratio->Draw("EP");
   
   //get Fit systematics band
-  TGraphAsymmErrors* fitsys=0, *btagsys=0;
+  TGraphAsymmErrors* fitsys=0, *btagsys=0, *expsys=0, *mcstat=0, *totsys=0;
   
   if(applyFitCorrection){
     
@@ -1084,9 +1087,9 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
       fitsys->SetFillStyle(3001);
       
       pad2->cd();
-      fitsys->Draw("2");
+      //fitsys->Draw("2");
       //leg_sys_1->AdEntry(fitsys,"Fit Uncertainty","f");
-      h_ratio->Draw("EPsame");
+      //h_ratio->Draw("EPsame");
       h_ratio->GetYaxis()->SetRangeUser(0.5,1.5);
   }
 
@@ -1095,12 +1098,26 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
     btagsys=this->getBTagUncert(var,applyFitCorrection);
     btagsys->SetLineColor(kRed);
     btagsys->SetFillStyle(0);
-    pad2->cd();
-    btagsys->Draw("5");
-    h_ratio->Draw("EPsame");
+    //pad2->cd();
+    //btagsys->Draw("5");
+    //h_ratio->Draw("EPsame");
     //leg_sys_2->AddEntry(btagsys,"B-tagging Uncertainty","l");
     
   }
+
+  expsys=this->getExperimentalUncert(var,sys,applyFitCorrection, isPosttag);
+  mcstat=this->getMCStat(full_mc);
+ 
+  totsys=getTotalSys(fitsys,btagsys,expsys,mcstat);
+  totsys->SetFillColor(kBlack);
+  totsys->SetFillStyle(3005);
+  totsys->SetLineColor(kBlack);
+  pad2->cd();
+  totsys->Draw("5");
+  if(btagsys) btagsys->Draw("5");
+  if(fitsys) fitsys->Draw("2");
+  h_ratio->Draw("EPsame");
+  
   
   double chi2=data_hist->Chi2Test(full_mc,"UW CHI2/NDF");
   TString text_Chi2=Form("Chi2/NDF = %f",chi2);
@@ -1360,7 +1377,6 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   
   
   TGraphAsymmErrors *g_fiterrors= new TGraphAsymmErrors(n_bins,x_values,y_values,x_error_down,x_error_up,fiterrors_down,fiterrors_up);
-  
   return g_fiterrors;
 
 }
@@ -1467,6 +1483,238 @@ TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool apply
   TGraphAsymmErrors *g_btagerrors= new TGraphAsymmErrors(n_bins,x_values,y_values,x_error_down,x_error_up,btagerrors_down,btagerrors_up);
   
   return g_btagerrors;
+  
+  
+}
+
+TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag){
+  
+  std::vector<float> fj_bins=m_config->GetBins(var);
+  std::vector<TString> regions=m_config->GetAllRegions();
+  
+  TH1D *h_nom=new TH1D("h_nom","",fj_bins.size()-1,&(fj_bins[0]));
+  TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
+  TH1D *h_down=new TH1D("h_down","",fj_bins.size()-1,&(fj_bins[0]));
+  
+  
+  TH1D* help, *help_rebinned;
+  
+  double d_fj_bins[fj_bins.size()];
+  
+  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  
+  
+  int n_bins=fj_bins.size()-1;
+  
+  double total_errors_up[n_bins],total_errors_down[n_bins], total_errsquare_up[n_bins],total_errsquare_down[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  
+  for(int i=1; i<=n_bins; i++){
+    total_errsquare_down[i-1]=0;
+    total_errsquare_up[i-1]=0;
+    
+  }
+  
+  for(int i_sys=0; i_sys<sys.size(); i_sys++){
+    bool isOneSided=false;
+    
+    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+      
+      //if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
+      
+      TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
+      TString name_mc_up=regions[i_reg]+"_"+var+"_"+sys[i_sys]+"__1up";
+      TString name_mc_down=regions[i_reg]+"_"+var+"_"+sys[i_sys]+"__1down";
+      std::cout<<"name_mc: "<<name_mc<<std::endl;
+      std::cout<<"name_mc sys up: "<<name_mc_up<<std::endl;
+      std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
+      
+      
+      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+
+	if(isPosttag){
+	  if(i_sys==0){
+	    //only need to get nominal once
+	    help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
+	    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	    if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	    //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+	    h_nom->Add(help_rebinned);
+	  }
+	  
+	  help=(TH1D*)m_fatjet_histograms_posttag[name_mc_up][i_p]->Clone();
+	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	  //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+	  h_up->Add(help_rebinned);
+	  
+	  if(m_fatjet_histograms_posttag.find(name_mc_down)==m_fatjet_histograms_posttag.end()){
+	    //systematic is one-sided
+	    isOneSided=true;
+	    continue;
+	  }
+	 
+	  help=(TH1D*)m_fatjet_histograms_posttag[name_mc_down][i_p]->Clone();
+	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	  //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+	  h_down->Add(help_rebinned);
+        }else{
+	  if(i_sys==0){
+	    //only need to get nominal once
+	    help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
+	    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	    if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	    //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+	    h_nom->Add(help_rebinned);
+	  }
+	  
+	  help=(TH1D*)m_fatjet_histograms_pretag[name_mc_up][i_p]->Clone();
+	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	  //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+	  h_up->Add(help_rebinned);
+	  
+	  if(m_fatjet_histograms_pretag.find(name_mc_down)==m_fatjet_histograms_pretag.end()){
+	    //systematic is one-sided
+	    isOneSided=true;
+	    continue;
+	  }
+	 
+	  help=(TH1D*)m_fatjet_histograms_pretag[name_mc_down][i_p]->Clone();
+	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	  //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+	  h_down->Add(help_rebinned);
+          
+	}
+
+
+      }
+    }
+    
+    if(isOneSided){
+      
+      for(int i=1; i<=n_bins; i++){
+        
+        float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
+        
+        if(delta_up>0) total_errsquare_up[i-1]+=delta_up*delta_up;
+        else total_errsquare_down[i-1]+=delta_up*delta_up;
+        
+      }
+      
+    }else{
+      
+      for(int i=1; i<=n_bins; i++){
+        
+        float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
+        float delta_down=h_down->GetBinContent(i)-h_nom->GetBinContent(i);
+        
+        if(delta_up*delta_down<0){
+          
+          if(delta_up>0){
+            total_errsquare_up[i-1]+=delta_up*delta_up;
+            total_errsquare_down[i-1]+=delta_down*delta_down;
+          }else{
+            total_errsquare_down[i-1]+=delta_up*delta_up;
+            total_errsquare_up[i-1]+=delta_down*delta_down;
+          }
+          
+        }else{
+          
+          float bigger_delta= std::max(TMath::Abs(delta_up),TMath::Abs(delta_down));
+          if(delta_up>0) total_errsquare_up[i-1]+=bigger_delta*bigger_delta;
+          else total_errsquare_down[i-1]+=bigger_delta*bigger_delta;
+          
+        }
+        
+      }
+      
+      
+    }
+  }
+  
+  for(int i=1; i<=n_bins; i++){
+    
+    x_values[i-1]=h_nom->GetBinCenter(i);
+    x_error_up[i-1]=h_nom->GetBinWidth(i)/2;
+    x_error_down[i-1]=h_nom->GetBinWidth(i)/2;
+    y_values[i-1]=1.;
+    
+    if(h_nom->GetBinContent(i)) total_errors_up[i-1]=TMath::Sqrt(total_errsquare_up[i-1])/h_nom->GetBinContent(i);
+    else total_errors_up[i-1]=0;
+    
+    if(h_nom->GetBinContent(i)) total_errors_down[i-1]=TMath::Sqrt(total_errsquare_down[i-1])/h_nom->GetBinContent(i);
+    else total_errors_down[i-1]=0;
+    
+  }
+
+  
+  TGraphAsymmErrors *g_totaljeterrors= new TGraphAsymmErrors(n_bins,x_values,y_values,x_error_down,x_error_up,total_errors_down,total_errors_up);
+  
+  return g_totaljeterrors;
+
+
+}
+
+TGraphAsymmErrors* ScaleFactorCalculator::getTotalSys(TGraphAsymmErrors* fitsysgraph, TGraphAsymmErrors* btagsysgraph, TGraphAsymmErrors* jetsysgraph, TGraphAsymmErrors* stat){
+  
+  int n_points=stat->GetN();
+  
+  double err_squared_tot_up[n_points],err_squared_tot_down[n_points],err_tot_up[n_points],err_tot_down[n_points];
+  
+  
+  for(int i=0; i<n_points; i++){
+    
+    err_squared_tot_up[i]=0.;
+    err_squared_tot_down[i]=0.;
+    
+    if(fitsysgraph) err_squared_tot_up[i]+=fitsysgraph->GetErrorYhigh(i)*fitsysgraph->GetErrorYhigh(i);
+    if(btagsysgraph) err_squared_tot_up[i]+=btagsysgraph->GetErrorYhigh(i)*btagsysgraph->GetErrorYhigh(i);
+    if(jetsysgraph) err_squared_tot_up[i]+=jetsysgraph->GetErrorYhigh(i)*jetsysgraph->GetErrorYhigh(i);
+    if(stat) err_squared_tot_up[i]+=stat->GetErrorYhigh(i)*stat->GetErrorYhigh(i);
+    
+    if(fitsysgraph) err_squared_tot_down[i]+=fitsysgraph->GetErrorYlow(i)*fitsysgraph->GetErrorYlow(i);
+    if(btagsysgraph) err_squared_tot_down[i]+=btagsysgraph->GetErrorYlow(i)*btagsysgraph->GetErrorYlow(i);
+    if(jetsysgraph) err_squared_tot_down[i]+=jetsysgraph->GetErrorYlow(i)*jetsysgraph->GetErrorYlow(i);
+    if(stat) err_squared_tot_down[i]+=stat->GetErrorYlow(i)*stat->GetErrorYlow(i);
+    
+    
+    err_tot_up[i]=TMath::Sqrt(err_squared_tot_up[i]);
+    err_tot_down[i]=TMath::Sqrt(err_squared_tot_down[i]);
+    
+  }
+  
+  TGraphAsymmErrors *g_totalerrors= new TGraphAsymmErrors(n_points,jetsysgraph->GetX(),jetsysgraph->GetY(),jetsysgraph->GetEXlow(),jetsysgraph->GetEXhigh(),err_tot_down,err_tot_up);
+  
+  return g_totalerrors;
+  
+} 
+
+TGraphAsymmErrors* ScaleFactorCalculator::getMCStat(TH1* full_mc){
+  
+  int nbins=full_mc->GetNbinsX();
+  
+  double x_values[nbins], y_values[nbins], x_error_up[nbins],x_error_down[nbins],y_error_up[nbins],y_error_down[nbins];
+  
+  for(int i=1; i<=full_mc->GetNbinsX(); i++){
+    
+    x_values[i-1]=full_mc->GetBinCenter(i);
+    x_error_up[i-1]=full_mc->GetBinWidth(i)/2;
+    x_error_down[i-1]=full_mc->GetBinWidth(i)/2;
+    y_values[i-1]=1.;
+    
+    if(full_mc->GetBinContent(i)) y_error_up[i-1]=full_mc->GetBinError(i)/full_mc->GetBinContent(i);
+    else y_error_up[i-1]=0;
+    
+    if(full_mc->GetBinContent(i)) y_error_down[i-1]=full_mc->GetBinError(i)/full_mc->GetBinContent(i);
+    else y_error_down[i-1]=0;
+    
+  }
+  
+  TGraphAsymmErrors *g_mc_stat_errors= new TGraphAsymmErrors(nbins,x_values,y_values,x_error_down,x_error_up,y_error_down,y_error_up);
+  
+  return g_mc_stat_errors;
   
   
 }
