@@ -50,6 +50,9 @@ void GbbTupleAna::ReadConfig(TString &config_path){
   m_JetPtReweightFile = config->GetValue("JetPtEtaReweightingFile","");
   std::cout<<"JetPtEtaReweightingFile: "<<m_JetPtReweightFile<<std::endl;
 
+  m_JetPtReweightFileInclusive = config->GetValue("JetPtEtaReweightingFileInclusive","");
+  std::cout<<"JetPtEtaReweightingFileInclusive: "<<m_JetPtReweightFileInclusive<<std::endl;
+
   m_doTrackSmearing = config->GetValue("doTrackSmearing",false);
   std::cout<<"doTrackSmearing: "<<m_doTrackSmearing<<std::endl;
 
@@ -170,7 +173,13 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   //std::vector<TString> trig_slices={"HLT_j110","HLT_j150","HLT_j175","HLT_j200","HLT_j260","HLT_j300","HLT_j320","HLT_j360"};
   std::vector<TString> trig_slices={"HLT_j150","HLT_j175","HLT_j260","HLT_j380"};
 
-  if(m_doJetPtReweighting) for(auto& elem : trig_slices) this->setReweightHisto(m_JetPtReweightFile,elem);
+  if(m_doJetPtReweighting){
+    if(infilename.Contains("361023") || infilename.Contains("361024") || infilename.Contains("361025") || infilename.Contains("361026") || infilename.Contains("361027")){
+      for(auto& elem : trig_slices) this->setReweightHisto(m_JetPtReweightFileInclusive,elem);
+    }else{
+      for(auto& elem : trig_slices) this->setReweightHisto(m_JetPtReweightFile,elem);
+    }
+  }
 
  
   //=========================================
@@ -187,8 +196,7 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
 void GbbTupleAna::Finalize(){
   
   m_HistogramService->FastFillTH1D("Hist_BookKeeping",6,6,0.5,6.5,m_SumWeightTuple);
-  m_HistogramService->FastFillTH1D("Hist_BookKeeping",3,6,0.5,6.5,m_nevtTuple);
-  
+  m_HistogramService->FastFillTH1D("Hist_BookKeeping",3,6,0.5,6.5,m_nevtTuple);  
   m_HistogramService->WriteRootFile(m_Outputname);
   
 }
@@ -487,6 +495,19 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_RunMode.Contains("FillTrackJetProperties")) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode.Contains("FillMCStatsInfo")) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG");
+
+    if(m_isNominal){
+      
+      if(m_RunMode.Contains("FillTemplates") && !m_RunMode.Contains("ForFitOnly")) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
+      if(m_RunMode.Contains("FillTrackJetProperties")) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
+      if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
+
+      if(m_RunMode.Contains("FillTemplates") && !m_RunMode.Contains("ForFitOnly")) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
+      if(m_RunMode.Contains("FillTrackJetProperties")) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
+      if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
+
+      
+    }
 
   }
 
@@ -902,20 +923,20 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   
   if(m_doRandomSplitting){
     
-    if(m_doFillMujet) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,40,-40,80,event_weight);
-    else m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,40,-40,80,event_weight);
+    if(m_doFillMujet) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+    else m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
     
   }else{
 
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,40,-40,80,event_weight);
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,40,-40,80,event_weight);
+    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
 
   }
 
   //in Fat jet pt bins
   TString fatptlabel=this->getFatjetPtLabel(this->fat_pt->at(gbbcand->fat_index)/1e3);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,40,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,40,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
 
   
 
@@ -927,19 +948,22 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     
+   
+
+    
     if(this->eve_isMC){
       
       float muojet_maxsd0_up=this->getTrkjetAssocTrkMaxSd0(gbbcand->muojet_index, m_doTrackSmearing,"up");
       float nonmuojet_maxsd0_up=this->getTrkjetAssocTrkMaxSd0(gbbcand->nonmuojet_index,m_doTrackSmearing,"up");
       
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,40,-40,80,event_weight);
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,40,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
       
       float muojet_maxsd0_down=this->getTrkjetAssocTrkMaxSd0(gbbcand->muojet_index, m_doTrackSmearing,"down");
       float nonmuojet_maxsd0_down=this->getTrkjetAssocTrkMaxSd0(gbbcand->nonmuojet_index,m_doTrackSmearing,"down");
       
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,40,-40,80,event_weight);
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,40,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
       
     }
 
@@ -970,15 +994,26 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   int nonmuojet_truth=this->trkjet_truth->at(gbbcand->nonmuojet_index);
   
   TString hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
+
+  //In Pt Bins
+  TString ptlabel=this->getPtLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
   
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,25,0.,1000.,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_fjD2"+nametag,this->fat_D2->at(gbbcand->fat_index),25,0.,4.5,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_fjtau21"+nametag,this->fat_tau21->at(gbbcand->fat_index),25,0.,0.9,event_weight);
+  //inclusive only for pt and eta
+  if(m_isNominal) m_HistogramService->FastFillTH1D("hIncl_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+  if(m_isNominal) m_HistogramService->FastFillTH1D("hIncl_fjeta"+nametag,this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
+
+  if(m_isNominal) m_HistogramService->FastFillTH1D("hNom"+hist_name+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+  if(m_isNominal) m_HistogramService->FastFillTH1D("hNom"+hist_name+"_fjeta"+nametag,this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
+
+
+  if(!m_isNominal) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjD2"+nametag,this->fat_D2->at(gbbcand->fat_index),250,0.,4.5,event_weight);
+  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjtau21"+nametag,this->fat_tau21->at(gbbcand->fat_index),250,0.,0.9,event_weight);
   
   TLorentzVector fatjet;
   fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand->fat_index),this->fat_eta->at(gbbcand->fat_index),this->fat_phi->at(gbbcand->fat_index),this->fat_E->at(gbbcand->fat_index));
   
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_fjm"+nametag,fatjet.M()/1e3,25,0.,500.,event_weight);
+  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjm"+nametag,fatjet.M()/1e3,25,0.,500.,event_weight);
 
 }
 

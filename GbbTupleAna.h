@@ -59,6 +59,7 @@ private:
 
 	bool m_doJetPtReweighting;
 	TString m_JetPtReweightFile;
+	TString m_JetPtReweightFileInclusive;
 	
 	bool m_isNominal;
 	TString m_SysVarName;
