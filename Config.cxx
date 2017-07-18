@@ -87,7 +87,7 @@ Config::Config(TString& cfg_path){
   m_plot_label   = config->GetValue("PlotLabel",         "Internal");
   std::cout<<"PlotLabel: "<<m_plot_label<<std::endl;
  
-  m_sub_label   = config->GetValue("SubLabel",         "#sqrt{s}=13 TeV    #int L dt = 3.2 fb^{-1}");
+  m_sub_label   = config->GetValue("SubLabel",         "#sqrt{s}=13 TeV, 36.1 fb^{-1}");
   std::cout<<"SubLabel: "<<m_sub_label<<std::endl;
    
   m_subsub_label   = config->GetValue("SubSubLabel",         "#bf{g #rightarrow bb calibration}");

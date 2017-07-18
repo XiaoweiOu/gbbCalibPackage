@@ -35,7 +35,7 @@ ScaleFactorCalculator::~ScaleFactorCalculator() {
 ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
   gStyle->SetOptStat(0);
-  TGaxis::SetMaxDigits(3);
+  TGaxis::SetMaxDigits(4);
 
   std::cout<<"==================================================="<<std::endl;
   std::cout<<"| HELLO THIS IS THE GBB SCALE FACTOR CALCULATOR!   "<<std::endl;
@@ -157,16 +157,17 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
     m_fitdata->ResetHists();
 
   }
-  */
+Se  */
 
   //start calibration sequence
   TString pt_name="fjpt", pt_posttag_name="pt_PREFITPOSTTAG";
   
   //  std::vector<TString> variables={"fjpt","fjm"};
   std::vector<TString> variables=m_config->GetPlotVariables();
-  std::vector<TString> sys={"Nom","JET_Rtrk_Baseline_Kin__1up","JET_Rtrk_Baseline_Kin__1down"};
-  std::vector<TString> sys_only={"JET_Rtrk_Baseline_Kin"};
+  std::vector<TString> sys={"Nom","JET_Rtrk_Baseline_Kin__1up","JET_Rtrk_Baseline_Kin__1down","JET_Rtrk_Modelling_Kin__1up", "JET_Rtrk_Modelling_Kin__1down", "JET_Rtrk_Tracking_Kin__1up", "JET_Rtrk_Tracking_Kin__1down", "JET_Rtrk_TotalStat_Kin__1up", "JET_Rtrk_TotalStat_Kin__1down", "JET_Rtrk_Baseline_D2__1up", "JET_Rtrk_Baseline_D2__1down","JET_Rtrk_Modelling_D2__1up", "JET_Rtrk_Modelling_D2__1down", "JET_Rtrk_Tracking_D2__1up","JET_Rtrk_Tracking_D2__1down", "JET_Rtrk_TotalStat_D2__1up", "JET_Rtrk_TotalStat_D2__1down", "FATJET_JMR__1up","FATJET_JER__1up"};
+  std::vector<TString> sys_only={"JET_Rtrk_Baseline_Kin", "JET_Rtrk_Modelling_Kin", "JET_Rtrk_Tracking_Kin", "JET_Rtrk_TotalStat_Kin", "JET_Rtrk_Baseline_D2","JET_Rtrk_Modelling_D2","JET_Rtrk_Tracking_D2","JET_Rtrk_TotalStat_D2","FATJET_JMR","FATJET_JER"};
   std::vector<TString> nominal_only={"Nom"};
+  std::vector<TString> none={};
   std::vector<TString> variables_posttag, variables_posttag_btagsys;
   for(auto& el : variables)variables_posttag.push_back(TString(el)+"_PREFITPOSTTAG");
   for(auto& el : variables_posttag){
@@ -187,12 +188,12 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
     this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only);
     this->MakeFatJetControlPlots(variables_posttag[i_var],true,true,sys_only);
       
-      /*  //fat jet binning control plots
+      //fat jet binning control plots
       for(auto& reg : regions){
-      this->MakeFatJetControlPlots(ts_pt,false,false,nominal,true,reg);
-      this->MakeFatJetControlPlots(ts_pt,false,true,nominal,true,reg);
-      this->MakeFatJetControlPlots(ts_pt,true,true,nominal,true,reg);
-      }*/
+	//this->MakeFatJetControlPlots(ts_pt,false,false,nominal,true,reg);
+	this->MakeFatJetControlPlots(ts_pt,false,true,none,true,reg);
+	//this->MakeFatJetControlPlots(ts_pt,true,true,nominal,true,reg);
+      }
   
   }
   /*
@@ -726,10 +727,10 @@ void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::ve
 	
 	infile->GetObject(hist_data.Data(),tmp);
 	
-	std::cout<<"Read in"<<hist_data<<"!!"<<std::endl;
+	//std::cout<<"Read in"<<hist_data<<"!!"<<std::endl;
 	
-	if(tmp) std::cout<<"Read in "<<hist_data<<std::endl;
-	else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_data<<std::endl;
+	//if(tmp) std::cout<<"Read in "<<hist_data<<std::endl;
+	if(!tmp) std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_data<<std::endl;
 	
 	clone_tmp=(TH1D*)tmp->Clone();
 	clone_tmp->SetDirectory(0);
@@ -752,14 +753,14 @@ void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::ve
           
           infile->GetObject(hist_mc[i_h],tmp);
           
-          if(tmp) std::cout<<"Read in "<<hist_mc[i_h]<<std::endl;
-          else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_mc[i_h]<<std::endl;
+          //if(tmp) std::cout<<"Read in "<<hist_mc[i_h]<<std::endl;
+          if(!tmp) std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_mc[i_h]<<std::endl;
           
           clone_tmp=(TH1D*)tmp->Clone();
           clone_tmp->SetDirectory(0);
           
           TString name_mc=regions[i_reg]+"_"+var[i_var]+"_"+sys[i_sys];
-	  std::cout<<"name_mc read-in: "<<name_mc<<std::endl;
+	  //std::cout<<"name_mc read-in: "<<name_mc<<std::endl;
           
           if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
           else  m_fatjet_histograms_pretag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
@@ -826,6 +827,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
     else full_mc->Add(tmp_stacked_mc);
 
     tmp_stacked_mc->SetFillColor(color[i_p]);
+    tmp_stacked_mc->SetLineColor(kBlack);
 
     mystack->Add(tmp_stacked_mc);
 
@@ -864,6 +866,9 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   h_ratio->Divide(full_mc);
   //h_ratio->SetMinimum();
 
+  if(applyFitCorrection) std::cout<<"Normalization ratio in region "<<region<<" : "<<data_hist->Integral()/full_mc->Integral()<<std::endl;
+
+
   h_ratio->SetTitle("");
   h_ratio->SetMarkerStyle(20);
   h_ratio->SetYTitle("data/MC");
@@ -898,7 +903,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
 
 
-  double chi2=data_hist->Chi2Test(full_mc,"UW CHI2/NDF");
+  double chi2=data_hist->Chi2Test(full_mc,"WW CHI2/NDF");
   TString text_Chi2=Form("Chi2/NDF = %f",chi2);
   
   pad1->cd();
@@ -929,24 +934,26 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
 void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, bool doPrintByRegion, TString region){
   
-  std::shared_ptr<TCanvas> canv(new TCanvas("canv","",600,800));
+  std::shared_ptr<TCanvas> canv(new TCanvas("canv","",700,800));
   canv.get()->cd();
   std::shared_ptr<TPad> pad1(new TPad("pad1","pad1",0,0.25,1,1));
   pad1.get()->SetLeftMargin(0.15);
   pad1.get()->Draw();
+  pad1.get()->SetTicks();
   canv->cd();
   std::shared_ptr<TPad> pad2 = std::shared_ptr<TPad>(new TPad("pad2","pad2",0,0.0,1,0.3));
   pad2.get()->SetLeftMargin(0.15);
-  pad2->SetTopMargin(0);
-  pad2->SetBottomMargin(0.2);
+  pad2->SetTopMargin(0.05);
+  pad2->SetBottomMargin(0.3);
   pad2.get()->Draw();
+  pad2.get()->SetTicks();
 
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
   std::vector<float> fj_bins=m_config->GetBins(var);
 
-  std::cout<<"Bins for variable:"<<var<<std::endl;
-  for(auto &el : fj_bins) std::cout<<el<<std::endl;
+  //std::cout<<"Bins for variable:"<<var<<std::endl;
+  //for(auto &el : fj_bins) std::cout<<el<<std::endl;
 
   std::vector<TString> regions=m_config->GetAllRegions();
   
@@ -977,7 +984,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
     if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
     
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
-    std::cout<<"name_mc: "<<name_mc<<std::endl;
+    //std::cout<<"name_mc: "<<name_mc<<std::endl;
 
     for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
@@ -985,12 +992,15 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 	help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
 	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
 	if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_pretag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
 	hist_pretag_mc[i_p]->Add(help_rebinned);
       }else{
 	help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
 	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-	if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	//std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
+	if(applyFitCorrection){
+	  help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	  std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_posttag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
+	}
 	hist_posttag_mc[i_p]->Add(help_rebinned);
       }
     }
@@ -1010,7 +1020,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   }
 
   //prepare Legend                                                                                                                                                                                                             
-  TLegend *leg=new TLegend(0.68,0.5,0.88,0.85);
+  TLegend *leg=new TLegend(0.55,0.4,0.88,0.75);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
 
@@ -1031,6 +1041,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 
 
     tmp_stacked_mc->SetFillColor(color[i_p]);
+    tmp_stacked_mc->SetLineColor(kBlack);
 
     mystack->Add(tmp_stacked_mc);
 
@@ -1040,16 +1051,20 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   
   data_hist->SetTitle("");
   data_hist->SetLabelSize(0,"X");
-  data_hist->SetYTitle(Form("events/%.1f",(data_hist->GetBinWidth(1))));
+  if(var.Contains("fjpt")||var.Contains("fjm")) data_hist->SetYTitle(Form("events/%.0f GeV",(data_hist->GetBinWidth(1))));
+  else data_hist->SetYTitle(Form("events/%.1f",(data_hist->GetBinWidth(1))));
   data_hist->SetMarkerStyle(20);
-  data_hist->SetTitleOffset(1.5,"Y");
+  data_hist->SetTitleOffset(1.1,"Y");
+  data_hist->SetTitleSize(0.05,"Y");
+  data_hist->SetLabelSize(0.04, "Y");
 
-  leg->AddEntry(data_hist,"Data","epl");
+  leg->AddEntry(data_hist,"data","epl");
   
   data_hist->SetMinimum(0);
   
   pad1->cd();
   data_hist->Draw("EP");
+  data_hist->GetYaxis()->SetRangeUser(0.,data_hist->GetMaximum()*1.2);
   mystack->Draw("HIST SAME");
   data_hist->Draw("EP SAME");
   
@@ -1063,14 +1078,18 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   h_ratio->SetTitle("");
   h_ratio->SetMarkerStyle(20);
   h_ratio->SetYTitle("Data/MC");
-  if(var=="pt") h_ratio->SetXTitle("Large-R Jet p_{T} [GeV]");
-  else if (var=="m")h_ratio->SetXTitle("Large-R Jet Mass [GeV]");
-  else if (var=="D2")h_ratio->SetXTitle("Large-R Jet D2");
-  h_ratio->SetLabelSize(0.08,"X");
-  h_ratio->SetLabelSize(0.08,"Y");
-  h_ratio->SetTitleSize(0.08,"X");
-  h_ratio->SetTitleSize(0.08,"Y");
-  h_ratio->SetTitleOffset(0.6,"Y");
+  if(var.Contains("fjpt")) h_ratio->SetXTitle("large-R jet p_{T} [GeV]");
+  else if (var.Contains("fjm"))h_ratio->SetXTitle("large-R jet mass [GeV]");
+  else if (var.Contains("fjD2"))h_ratio->SetXTitle("large-R jet D2");
+  h_ratio->SetLabelSize(0.1,"X");
+  h_ratio->SetTickLength(0.05,"X");
+  h_ratio->SetLabelSize(0.1,"Y");
+  h_ratio->SetLabelOffset(0.02,"X");
+  h_ratio->SetTitleSize(0.12,"X");
+  h_ratio->SetTitleSize(0.12,"Y");
+  h_ratio->SetTitleOffset(0.4,"Y");
+  h_ratio->SetTitleOffset(1.0,"X");
+  h_ratio->GetYaxis()->SetNdivisions(505);
 
 
   pad2->SetGrid();
@@ -1088,9 +1107,10 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
       
       pad2->cd();
       //fitsys->Draw("2");
-      //leg_sys_1->AdEntry(fitsys,"Fit Uncertainty","f");
+      leg->AddEntry(fitsys,"fit uncertainty","f");
       //h_ratio->Draw("EPsame");
-      h_ratio->GetYaxis()->SetRangeUser(0.5,1.5);
+      h_ratio->GetYaxis()->SetRangeUser(0.,2.);
+ 
   }
 
   if(isPosttag){
@@ -1101,24 +1121,51 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
     //pad2->cd();
     //btagsys->Draw("5");
     //h_ratio->Draw("EPsame");
-    //leg_sys_2->AddEntry(btagsys,"B-tagging Uncertainty","l");
+    leg->AddEntry(btagsys,"b-tagging uncertainty","l");
     
   }
 
-  expsys=this->getExperimentalUncert(var,sys,applyFitCorrection, isPosttag);
+  if(sys.size()>0)expsys=this->getExperimentalUncert(var,sys,applyFitCorrection, isPosttag);
   mcstat=this->getMCStat(full_mc);
  
-  totsys=getTotalSys(fitsys,btagsys,expsys,mcstat);
-  totsys->SetFillColor(kBlack);
-  totsys->SetFillStyle(3005);
-  totsys->SetLineColor(kBlack);
-  pad2->cd();
-  totsys->Draw("5");
-  if(btagsys) btagsys->Draw("5");
+  if(expsys){
+    totsys=getTotalSys(fitsys,btagsys,expsys,mcstat);
+    totsys->SetFillColor(kBlack);
+    //totsys->SetFillStMyle(3005);
+    totsys->SetFillStyle(3245);
+    gStyle->SetHatchesLineWidth(1.5);
+    totsys->SetLineColor(kBlack);
+    pad2->cd();
+    leg->AddEntry(totsys,"total uncertainty","f");
+    totsys->Draw("5");
+  }
+  
   if(fitsys) fitsys->Draw("2");
+  if(btagsys) btagsys->Draw("5");
   h_ratio->Draw("EPsame");
+
   
+  //Draw errors in main pad
+  TGraphAsymmErrors* tot_err=0;
+  if(totsys){
+    tot_err=(TGraphAsymmErrors*)totsys->Clone();
+    for(int point=0; point<tot_err->GetN(); point++){
+      double x,y;
+      tot_err->GetPoint(point,x,y);
+      
+      tot_err->SetPoint(point,x,full_mc->GetBinContent(point+1));
+      tot_err->SetPointEYhigh(point,tot_err->GetErrorYhigh(point)*full_mc->GetBinContent(point+1));
+      tot_err->SetPointEYlow(point,tot_err->GetErrorYlow(point)*full_mc->GetBinContent(point+1));
+      tot_err->SetFillColor(kBlack);
+      tot_err->SetLineColor(kBlack);
+      tot_err->SetFillStyle(3245);
+    }
   
+    pad1->cd();
+    tot_err->Draw("5");
+    data_hist->Draw("EP SAME");
+  }
+
   double chi2=data_hist->Chi2Test(full_mc,"UW CHI2/NDF");
   TString text_Chi2=Form("Chi2/NDF = %f",chi2);
   
@@ -1130,6 +1177,34 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   latex2.SetTextAlign(12);
   latex2.SetTextSize(0.04);
   //latex2.DrawLatex(0.5,0.8,text_Chi2.Data());
+
+  //Add ATLAS label
+  TLatex *tex0 = new TLatex();
+  double lx = 0.55; double ly = 0.825;
+  TString text_0="#font[72]{ATLAS} "+m_config->GetPlotLabel();
+  tex0= new TLatex(lx,ly,text_0.Data());
+  tex0->SetNDC();
+  tex0->SetTextSize(0.04);
+  tex0->SetTextColor(1);
+  tex0->SetTextFont(42);
+
+  TLatex *tex1 = new TLatex();
+  lx=0.55;
+  ly=0.78;
+  tex1= new TLatex(lx,ly,m_config->GetSubLabel());
+  tex1->SetNDC();
+  tex1->SetTextSize(0.03);
+  tex1->SetTextColor(1);
+  tex1->SetTextFont(42);
+ 
+  pad1->cd();
+  tex0->Draw("same");
+  tex1->Draw("same");
+  
+
+
+
+
 
   TString name;
 
@@ -1210,9 +1285,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorr
     x_error_down[i-1]=hist_total->GetBinWidth(i)/2;
     y_values[i-1]=1.;
     
-    std::cout<<"total error squared"<<(tot_err_sq[i-1])<<std::endl;
+    //std::cout<<"total error squared"<<(tot_err_sq[i-1])<<std::endl;
     
-    std::cout<<"evts"<<(hist_total->GetBinContent(i))<<std::endl;
+    //std::cout<<"evts"<<(hist_total->GetBinContent(i))<<std::endl;
     
     
     if(hist_total->GetBinContent(i)) fiterrors_up[i-1]=TMath::Sqrt(tot_err_sq[i-1])/hist_total->GetBinContent(i);
@@ -1221,7 +1296,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorr
     if(hist_total->GetBinContent(i)) fiterrors_down[i-1]=TMath::Sqrt(tot_err_sq[i-1])/hist_total->GetBinContent(i);
     else fiterrors_down[i-1]=0;
     
-    std::cout<<"FitError is:"<<fiterrors_up[i-1]<<std::endl;
+    //std::cout<<"FitError is:"<<fiterrors_up[i-1]<<std::endl;
     
   }
   
@@ -1263,7 +1338,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
     help_norms.assign(fj_bins.size()-1,0.);
     
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
-    std::cout<<"name_mc: "<<name_mc<<std::endl;
+    //std::cout<<"name_mc: "<<name_mc<<std::endl;
     
     std::vector<float> flavour_norms(m_config->GetPairs().size(),0.);
     
@@ -1275,7 +1350,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
         help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
         hist_total->Add(help_rebinned);
         flavour_norms[i_p]=help_rebinned->Integral();
-        std::cout<<"flavour_norm: "<<flavour_norms[i_p]<<std::endl;
+        //std::cout<<"flavour_norm: "<<flavour_norms[i_p]<<std::endl;
         
         for(int i_bin=1; i_bin<=help_rebinned->GetNbinsX(); i_bin++){
           help_norms[i_bin-1]+=help_rebinned->GetBinContent(i_bin);
@@ -1288,7 +1363,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
         //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
         hist_total->Add(help_rebinned);
         flavour_norms[i_p]=help_rebinned->Integral();
-        std::cout<<"flavour_norm: "<<flavour_norms[i_p]<<std::endl;
+        //std::cout<<"flavour_norm: "<<flavour_norms[i_p]<<std::endl;
         for(int i_bin=1; i_bin<=help_rebinned->GetNbinsX(); i_bin++){
           help_norms[i_bin-1]+=help_rebinned->GetBinContent(i_bin);
         }
@@ -1359,9 +1434,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
     x_error_down[i-1]=hist_total->GetBinWidth(i)/2;
     y_values[i-1]=1.;
     
-    std::cout<<"total error squared"<<(tot_err_sq[i-1])<<std::endl;
+    //std::cout<<"total error squared"<<(tot_err_sq[i-1])<<std::endl;
     
-    std::cout<<"evts"<<(hist_total->GetBinContent(i))<<std::endl;
+    //std::cout<<"evts"<<(hist_total->GetBinContent(i))<<std::endl;
     
     
     if(hist_total->GetBinContent(i)) fiterrors_up[i-1]=TMath::Sqrt(tot_err_sq[i-1])/hist_total->GetBinContent(i);
@@ -1370,7 +1445,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
     if(hist_total->GetBinContent(i)) fiterrors_down[i-1]=TMath::Sqrt(tot_err_sq[i-1])/hist_total->GetBinContent(i);
     else fiterrors_down[i-1]=0;
     
-    std::cout<<"FitError is:"<<fiterrors_up[i-1]<<std::endl;
+    //std::cout<<"FitError is:"<<fiterrors_up[i-1]<<std::endl;
     
   }
   
@@ -1409,9 +1484,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool apply
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
     TString name_mc_up=regions[i_reg]+"_"+var+"_"+"BTAGUP_Nom";
     TString name_mc_down=regions[i_reg]+"_"+var+"_"+"BTAGDOWN_Nom";
-    std::cout<<"name_mc: "<<name_mc<<std::endl;
-    std::cout<<"name_mc btag up: "<<name_mc_up<<std::endl;
-    std::cout<<"name_mc btag down: "<<name_mc_down<<std::endl;
+    //std::cout<<"name_mc: "<<name_mc<<std::endl;
+    //std::cout<<"name_mc btag up: "<<name_mc_up<<std::endl;
+    //std::cout<<"name_mc btag down: "<<name_mc_down<<std::endl;
 
     
     for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
@@ -1493,8 +1568,6 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
   std::vector<TString> regions=m_config->GetAllRegions();
   
   TH1D *h_nom=new TH1D("h_nom","",fj_bins.size()-1,&(fj_bins[0]));
-  TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
-  TH1D *h_down=new TH1D("h_down","",fj_bins.size()-1,&(fj_bins[0]));
   
   
   TH1D* help, *help_rebinned;
@@ -1516,6 +1589,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
   
   for(int i_sys=0; i_sys<sys.size(); i_sys++){
     bool isOneSided=false;
+
+    TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
+    TH1D *h_down=new TH1D("h_down","",fj_bins.size()-1,&(fj_bins[0]));
+
     
     for(int i_reg=0; i_reg<regions.size(); i_reg++){
       
@@ -1524,9 +1601,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
       TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
       TString name_mc_up=regions[i_reg]+"_"+var+"_"+sys[i_sys]+"__1up";
       TString name_mc_down=regions[i_reg]+"_"+var+"_"+sys[i_sys]+"__1down";
-      std::cout<<"name_mc: "<<name_mc<<std::endl;
-      std::cout<<"name_mc sys up: "<<name_mc_up<<std::endl;
-      std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
+      //std::cout<<"name_mc: "<<name_mc<<std::endl;
+      //std::cout<<"name_mc sys up: "<<name_mc_up<<std::endl;
+      //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
       
       for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
@@ -1597,7 +1674,8 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
       for(int i=1; i<=n_bins; i++){
         
         float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
-        
+	//std::cout<<"delta up one-sided: "<< sys[i_sys]<<" : "<<delta_up<<std::endl;
+
         if(delta_up>0) total_errsquare_up[i-1]+=delta_up*delta_up;
         else total_errsquare_down[i-1]+=delta_up*delta_up;
         
@@ -1609,6 +1687,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
         
         float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
         float delta_down=h_down->GetBinContent(i)-h_nom->GetBinContent(i);
+	//std::cout<<"delta up: "<< sys[i_sys]<<" : "<<delta_up<<std::endl;
+	//std::cout<<"delta down: "<< sys[i_sys]<<" : "<<delta_down<<std::endl;
+
         
         if(delta_up*delta_down<0){
           
@@ -1646,7 +1727,11 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
     
     if(h_nom->GetBinContent(i)) total_errors_down[i-1]=TMath::Sqrt(total_errsquare_down[i-1])/h_nom->GetBinContent(i);
     else total_errors_down[i-1]=0;
-    
+
+    //std::cout<<"Exp error up: "<<total_errors_up[i-1]<<std::endl;
+    //std::cout<<"Exp error down: "<<total_errors_down[i-1]<<std::endl;
+
+
   }
 
   
