@@ -48,7 +48,7 @@ OPT      = -ggdb -Wshadow # for debug
 #OPT      = -O3   # optimized
 GCC       = g++
 SOFLAGS   = -shared 
-SHAREDLIB = $(shell echo ${PWD})/ScaleFactorCalculator.so
+SHAREDLIB = $(shell echo ${PWD})/gbbAna.so
 #---------DEFAULT ACTION-------------------------
 all: $(PROGRAMS)
 
