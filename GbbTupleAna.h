@@ -61,6 +61,7 @@ private:
 	TString m_JetPtReweightFile;
 	TString m_JetPtReweightFileInclusive;
 	
+	
 	bool m_isNominal;
 	TString m_SysVarName;
 		
@@ -91,7 +92,10 @@ private:
 
 	std::vector<float> m_fatjet_pt_bins;
 	
-	
+	bool m_doPostfitPtReweighting;
+	TString m_PostfitPtReweightingFile;
+	TH1D* m_postfit_reweight_hist;
+
 	bool Processgbb(int i_evt);
 	
 	bool passR4CaloJetCuts(unsigned int i_jet);
@@ -124,6 +128,7 @@ private:
 	bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
 	
 	float getTrkjetAssocTrkMaxSd0(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
+	float getTrkjetAssocTrkMaxSd0DR(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
 	bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
   
 	float getSd0(unsigned int i_trk, unsigned int i_jet);
@@ -146,7 +151,7 @@ private:
 	bool passSpecificCuts(const unsigned long int flag, const std::vector<unsigned int> &cuts);
 	bool passAllCutsUpTo(const unsigned long int flag, const unsigned int cut, const std::vector<unsigned int> &excludeCuts);
 
-
+	float getCMd0Difference(unsigned int i_trk, unsigned int j_trk, GbbCandidate* gbbcand);
 
 };
 
@@ -162,6 +167,7 @@ namespace GbbCuts {
     DRTrigJetMuJet,
     MuNonMu1Btag,
     MuNonMu2Btags,
+    MuNonMuAnti2Btags
   };
   
 }
