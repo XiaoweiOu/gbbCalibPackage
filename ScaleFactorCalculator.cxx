@@ -39,7 +39,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
   std::cout<<"==================================================="<<std::endl;
   std::cout<<"| HELLO THIS IS THE GBB SCALE FACTOR CALCULATOR!   "<<std::endl;
-  std::cout<<"| Brumm... "<<std::endl;
+  //std::cout<<"| Brumm... "<<std::endl;
   std::cout<<"==================================================="<<std::endl;
 
   
@@ -196,6 +196,13 @@ Se  */
       }
   
   }
+
+  //BTagging Rate Plots
+  this->MakeBTaggingRatePlots();
+
+  TString reweight_name="test_reweight_hists.root";
+  this->SaveReweightHists(pt_name, reweight_name);
+  
   /*
    CalibResult c_res=this->CalculateScaleFactorsAndErrors();
   this->MakeCalibrationPlots(c_res,"SF");
@@ -546,7 +553,6 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(){
 
 
 void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString plot_type){
-
   std::cout<<"INFO: ScaleFactorCalculator::MakeCalibrationPlots(): Making Calibration Plots of type: "<<plot_type<<std::endl;
 
   std::vector<float> fj_bins=m_config->GetFatJetBins();
@@ -1081,6 +1087,10 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   if(var.Contains("fjpt")) h_ratio->SetXTitle("large-R jet p_{T} [GeV]");
   else if (var.Contains("fjm"))h_ratio->SetXTitle("large-R jet mass [GeV]");
   else if (var.Contains("fjD2"))h_ratio->SetXTitle("large-R jet D2");
+  else if (var.Contains("nmjpt"))h_ratio->SetXTitle("non-muon jet p_{T} [GeV]");
+  else if (var.Contains("mjpt"))h_ratio->SetXTitle("muon jet p_{T} [GeV]");
+  else if (var.Contains("nmjeta"))h_ratio->SetXTitle("non-muon jet #eta");
+  else if (var.Contains("mjeta"))h_ratio->SetXTitle("muon jet #eta");
   h_ratio->SetLabelSize(0.1,"X");
   h_ratio->SetTickLength(0.05,"X");
   h_ratio->SetLabelSize(0.1,"Y");
@@ -1226,6 +1236,211 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   delete leg;
 
 }
+
+
+void ScaleFactorCalculator::MakeBTaggingRatePlots(){
+
+  TString var="fjpt";
+
+  std::shared_ptr<TCanvas> canv(new TCanvas("canv","",700,800));
+  canv.get()->cd();
+  std::shared_ptr<TPad> pad1(new TPad("pad1","pad1",0,0.25,1,1));
+  pad1.get()->SetLeftMargin(0.15);
+  pad1.get()->Draw();
+  pad1.get()->SetTicks();
+  canv->cd();
+  std::shared_ptr<TPad> pad2 = std::shared_ptr<TPad>(new TPad("pad2","pad2",0,0.0,1,0.3));
+  pad2.get()->SetLeftMargin(0.15);
+  pad2->SetTopMargin(0.05);
+  pad2->SetBottomMargin(0.3);
+  pad2.get()->Draw();
+  pad2.get()->SetTicks();
+
+  std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
+
+  std::vector<float> fj_bins=m_config->GetBins(var);
+
+  //std::cout<<"Bins for variable:"<<var<<std::endl;
+  //for(auto &el : fj_bins) std::cout<<el<<std::endl;
+
+  std::vector<TString> regions=m_config->GetAllRegions();
+  
+  std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
+  TString name_pretag, name_posttag;
+
+  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+
+    name_pretag="hist_pretag_mc_"+(m_config->GetPairs())[i_p];
+    name_posttag="hist_posttag_mc_"+(m_config->GetPairs())[i_p];
+
+    hist_pretag_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
+    hist_posttag_mc.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
+
+  }  
+
+  TH1D *hist_pretag_data=new TH1D("hist_pretag_data","",fj_bins.size()-1,&(fj_bins[0]));
+  TH1D *hist_posttag_data=new TH1D("hist_posttag_data","",fj_bins.size()-1,&(fj_bins[0])); 
+  
+  TH1D* help, *help_rebinned;
+
+  double d_fj_bins[fj_bins.size()];
+
+  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+
+  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+
+    TString name_mc_pretag=regions[i_reg]+"_"+var+"_"+"Nom";
+    TString name_mc_posttag=regions[i_reg]+"_"+var+"_PREFITPOSTTAG"+"_"+"Nom";
+    //std::cout<<"name_mc: "<<name_mc<<std::endl;
+
+    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      
+    	help=(TH1D*)m_fatjet_histograms_pretag[name_mc_pretag][i_p]->Clone();
+	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	//std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_pretag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
+	hist_pretag_mc[i_p]->Add(help_rebinned);
+  
+	help=(TH1D*)m_fatjet_histograms_posttag[name_mc_posttag][i_p]->Clone();
+	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+	help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+	//std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_posttag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
+	hist_posttag_mc[i_p]->Add(help_rebinned);
+      
+    }
+
+    TString name_data=regions[i_reg]+"_"+var;
+    TString name_data_posttag=regions[i_reg]+"_"+var+"_PREFITPOSTTAG";
+    
+    help=(TH1D*)m_fatjet_histograms_pretag_data[name_data]->Clone();
+    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+    hist_pretag_data->Add(help_rebinned);
+    help=(TH1D*)m_fatjet_histograms_posttag_data[name_data_posttag]->Clone();
+    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+    hist_posttag_data->Add(help_rebinned);
+      
+  }
+
+//prepare Legend                                                                                                                                                                                                             
+  TLegend *leg=new TLegend(0.55,0.4,0.88,0.75);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  
+  //calculate data rate
+  hist_posttag_data->Divide(hist_pretag_data);
+
+  TH1D *full_mc_pretag, *full_mc_posttag;
+
+  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+
+    if(i_p==0){
+      full_mc_pretag=(TH1D*)hist_pretag_mc[i_p]->Clone();
+      full_mc_posttag=(TH1D*)hist_posttag_mc[i_p]->Clone();      
+    }else{
+      full_mc_pretag->Add(hist_pretag_mc[i_p]);
+      full_mc_posttag->Add(hist_posttag_mc[i_p]);
+    }
+
+  }
+  
+  //calculate MC rate
+  full_mc_posttag->Divide(full_mc_pretag);
+
+  hist_posttag_data->SetTitle("");
+  hist_posttag_data->SetLabelSize(0,"X");
+  hist_posttag_data->SetYTitle("double-b-tagging rate");
+  hist_posttag_data->SetMarkerStyle(20);
+  hist_posttag_data->SetLineColor(kBlack);
+  hist_posttag_data->SetTitleOffset(1.1,"Y");
+  hist_posttag_data->SetTitleSize(0.05,"Y");
+  hist_posttag_data->SetLabelSize(0.04, "Y");
+
+  leg->AddEntry(hist_posttag_data,"data","epl");
+  
+  hist_posttag_data->SetMinimum(0);
+  
+  pad1->cd();
+  hist_posttag_data->Draw("EP");
+  hist_posttag_data->GetYaxis()->SetRangeUser(0.,hist_posttag_data->GetMaximum()*1.2);
+
+  hist_posttag_data->Draw("EP SAME");
+
+  full_mc_posttag->SetMarkerStyle(20);
+  full_mc_posttag->SetMarkerColor(2);
+  full_mc_posttag->SetLineColor(kBlack);
+  full_mc_posttag->Draw("EP SAME");
+
+  leg->AddEntry(full_mc_posttag,"Pythia8 MC","epl");
+
+  canv->cd();
+
+  //ratio
+  TH1D *h_ratio=(TH1D*)hist_posttag_data->Clone();
+  h_ratio->Divide(full_mc_posttag);
+  h_ratio->SetMinimum(0);
+
+  h_ratio->SetTitle("");
+  h_ratio->SetMarkerStyle(20);
+  h_ratio->SetYTitle("Data/MC");
+  if(var.Contains("fjpt")) h_ratio->SetXTitle("large-R jet p_{T} [GeV]");
+  else if (var.Contains("fjm"))h_ratio->SetXTitle("large-R jet mass [GeV]");
+  else if (var.Contains("fjD2"))h_ratio->SetXTitle("large-R jet D2");
+  else if (var.Contains("nmjpt"))h_ratio->SetXTitle("non-muon jet p_{T} [GeV]");
+  else if (var.Contains("mjpt"))h_ratio->SetXTitle("muon jet p_{T} [GeV]");
+  else if (var.Contains("nmjeta"))h_ratio->SetXTitle("non-muon jet #eta");
+  else if (var.Contains("mjeta"))h_ratio->SetXTitle("muon jet #eta");
+  h_ratio->SetLabelSize(0.1,"X");
+  h_ratio->SetTickLength(0.05,"X");
+  h_ratio->SetLabelSize(0.1,"Y");
+  h_ratio->SetLabelOffset(0.02,"X");
+  h_ratio->SetTitleSize(0.12,"X");
+  h_ratio->SetTitleSize(0.12,"Y");
+  h_ratio->SetTitleOffset(0.4,"Y");
+  h_ratio->SetTitleOffset(1.0,"X");
+  h_ratio->GetYaxis()->SetNdivisions(505);
+  h_ratio->GetYaxis()->SetRangeUser(0.,2.);
+
+  pad2->SetGrid();
+  pad2->cd();
+  h_ratio->Draw("EP");
+
+
+    //Add ATLAS label
+  TLatex *tex0 = new TLatex();
+  double lx = 0.55; double ly = 0.825;
+  TString text_0="#font[72]{ATLAS} "+m_config->GetPlotLabel();
+  tex0= new TLatex(lx,ly,text_0.Data());
+  tex0->SetNDC();
+  tex0->SetTextSize(0.04);
+  tex0->SetTextColor(1);
+  tex0->SetTextFont(42);
+
+  TLatex *tex1 = new TLatex();
+  lx=0.55;
+  ly=0.78;
+  tex1= new TLatex(lx,ly,m_config->GetSubLabel());
+  tex1->SetNDC();
+  tex1->SetTextSize(0.03);
+  tex1->SetTextColor(1);
+  tex1->SetTextFont(42);
+ 
+  pad1->cd();
+  tex0->Draw("same");
+  tex1->Draw("same");
+  
+  leg->Draw();
+
+  TString name;
+  name= TString("./ctrl_plots/BTaggingRate.pdf");
+  
+  canv->SaveAs(name.Data());
+
+  delete leg;
+
+
+}
+
+
 
 TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin){
 
@@ -1562,13 +1777,15 @@ TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool apply
   
 }
 
-TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag){
+TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff){
   
   std::vector<float> fj_bins=m_config->GetBins(var);
   std::vector<TString> regions=m_config->GetAllRegions();
   
   TH1D *h_nom=new TH1D("h_nom","",fj_bins.size()-1,&(fj_bins[0]));
   
+  //for efficiency plot
+  TH1D *h_nom_eff_pretag=new TH1D("h_nom_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
   
   TH1D* help, *help_rebinned;
   
@@ -1593,7 +1810,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
     TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
     TH1D *h_down=new TH1D("h_down","",fj_bins.size()-1,&(fj_bins[0]));
 
-    
+    //for efficiency plot
+    TH1D *h_up_eff_pretag=new TH1D("h_up_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
+    TH1D *h_down_eff_pretag=new TH1D("h_down_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
+
     for(int i_reg=0; i_reg<regions.size(); i_reg++){
       
       //if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
@@ -1608,7 +1828,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
       
       for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
-	if(isPosttag){
+	if(isPosttag || isEff){
 	  if(i_sys==0){
 	    //only need to get nominal once
 	    help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
@@ -1616,6 +1836,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
 	    if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
 	    //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
 	    h_nom->Add(help_rebinned);
+
 	  }
 	  
 	  help=(TH1D*)m_fatjet_histograms_posttag[name_mc_up][i_p]->Clone();
@@ -1635,22 +1856,23 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
 	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
 	  //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
 	  h_down->Add(help_rebinned);
-        }else{
+        }else if(!isPosttag || isEff){
 	  if(i_sys==0){
 	    //only need to get nominal once
 	    help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
 	    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
 	    if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
 	    //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
-	    h_nom->Add(help_rebinned);
+	    if(!isEff) h_nom->Add(help_rebinned);
+	    else h_nom_eff_pretag->Add(help_rebinned);
 	  }
 	  
 	  help=(TH1D*)m_fatjet_histograms_pretag[name_mc_up][i_p]->Clone();
 	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
 	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
 	  //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
-	  h_up->Add(help_rebinned);
-	  
+	  if(!isEff) h_up->Add(help_rebinned);
+	  else h_up_eff_pretag->Add(help_rebinned);
 	  if(m_fatjet_histograms_pretag.find(name_mc_down)==m_fatjet_histograms_pretag.end()){
 	    //systematic is one-sided
 	    isOneSided=true;
@@ -1661,12 +1883,20 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
 	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
 	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
 	  //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
-	  h_down->Add(help_rebinned);
+	  if(!isEff) h_down->Add(help_rebinned);
+	  else h_down_eff_pretag->Add(help_rebinned);
           
 	}
 
 
       }
+    }
+
+    if(isEff){
+      h_nom->Divide(h_nom_eff_pretag);
+      h_up->Divide(h_up_eff_pretag);
+      if(!isOneSided) h_down->Divide(h_down_eff_pretag);
+      
     }
     
     if(isOneSided){
@@ -1805,6 +2035,83 @@ TGraphAsymmErrors* ScaleFactorCalculator::getMCStat(TH1* full_mc){
 }
 
 
+void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename){
+
+   std::vector<float> fj_bins=m_config->GetBins(var);
+  std::vector<TString> regions=m_config->GetAllRegions();
+  
+  std::vector<TH1D*> hist_prefit_mc, hist_postfit_mc;
+  TString name_pretag;
+
+  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+
+    name_pretag="hist_prefit_mc_"+(m_config->GetPairs())[i_p];
+
+    hist_prefit_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
+
+    name_pretag="hist_postfit_mc_"+(m_config->GetPairs())[i_p];
+
+    hist_postfit_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
+    
+
+  }  
+
+  TH1D* help, *help_rebinned;
+
+  double d_fj_bins[fj_bins.size()];
+
+  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+
+  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+
+    TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
+    //std::cout<<"name_mc: "<<name_mc<<std::endl;
+
+    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
+      help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
+      hist_prefit_mc[i_p]->Add(help_rebinned);
+      help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+      std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_pretag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
+      hist_postfit_mc[i_p]->Add(help_rebinned);
+    }
+  }
+
+  TH1D* tmp_stacked_mc;
+  
+  TH1D *full_mc, *full_mc_postfit, *scale_factors;
+
+  scale_factors=new TH1D("scale_factors","",fj_bins.size()-1,&(fj_bins[0]));
+
+  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+
+    tmp_stacked_mc=(TH1D*)hist_prefit_mc[i_p]->Clone();
+
+    if(i_p==0) full_mc=(TH1D*)tmp_stacked_mc->Clone();
+    else full_mc->Add(tmp_stacked_mc);
+
+    tmp_stacked_mc=(TH1D*)hist_postfit_mc[i_p]->Clone();
+
+    if(i_p==0) full_mc_postfit=(TH1D*)tmp_stacked_mc->Clone();
+    else full_mc_postfit->Add(tmp_stacked_mc);
+    
+  }
+
+  full_mc->SetName("full_mc");
+  full_mc_postfit->SetName("full_mc_postfit");
+
+  scale_factors->Divide(full_mc_postfit,full_mc);
+  scale_factors->SetName("scale_factors");
+
+  TFile *outfile=TFile::Open(outfilename.Data(),"RECREATE");
+  outfile->cd();
+  full_mc->Write();
+  full_mc_postfit->Write();
+  scale_factors->Write();
+  outfile->Close();
+
+
+}
 
 
 //  LocalWords:  ReadInHistograms

@@ -84,14 +84,18 @@ private:
 	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys, int rebin);
 
 	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, bool doPrintByRegion=false, TString region="DEFAULT");
+
+	void MakeBTaggingRatePlots();
   
 	TGraphAsymmErrors* getFitUncert(TString& var, bool isPosttag);
 	TGraphAsymmErrors* getTemplateFitUncert(bool applyFitCorrection,std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin);
 	
   TGraphAsymmErrors* getBTagUncert(TString &var, bool applyFitCorrection);
-  TGraphAsymmErrors* getExperimentalUncert(TString &name, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag);
+  TGraphAsymmErrors* getExperimentalUncert(TString &name, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff=false);
   TGraphAsymmErrors* getTotalSys(TGraphAsymmErrors* fitsysgraph, TGraphAsymmErrors* btagsysgraph, TGraphAsymmErrors* jetsysgraph, TGraphAsymmErrors* stat);
   TGraphAsymmErrors* getMCStat(TH1* full_mc);
+  
+  void SaveReweightHists(TString &var, TString &outfilename);
 
 };
 

@@ -5,5 +5,8 @@
 - add config/config_CrossCheck.cfg to illustrate use of new binning options
 - add ChangeLog :)
 
-17/04/06
+17/07/06
 - ScaleFactorCalculator: added calculation of experimental uncertainties & total Sys band
+
+17/08/10
+- ScaleFactorCalculator: include b-tagging rate plots, track jet pt/eta plots
