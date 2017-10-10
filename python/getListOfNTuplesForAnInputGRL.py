@@ -8,8 +8,12 @@ stderr_log = []
 grlpath = sys.argv[1]
 grlfile = open(grlpath,'r')
 
+mode = sys.argv[2]
+
 runlist = []
 filelist = []
+
+print 'mode: '+mode
 
 for line in grlfile :
     if not '<Metadata Name="RunList">' in line : 
@@ -22,9 +26,17 @@ for line in grlfile :
         print 'list of good runs:',runlist
 
 if 'data15_13TeV' in grlpath :
-    command = 'rucio list-dids user.ruth.data15_13TeV.*FTNtupCalib.gbb_v00-01-02*p2950_tuple.root --short | sort'
+    if 'DAOD' in mode:
+        command = 'rucio list-dids data15_13TeV.*.physics_Main.merge.DAOD_FTAG1*p2950 --short | sort'
+    else:
+        command = 'rucio list-dids user.ruth.data15_13TeV.*FTNtupCalib.gbb_v00-01-04*p2950_tuple.root --short | sort'
 else : 
-    command = 'rucio list-dids user.ruth.data16_13TeV.*FTNtupCalib.gbb_v00-01-02*p2950_tuple.root --short | sort'
+    if 'DAOD' in mode:
+        command = 'rucio list-dids data16_13TeV.*.physics_Main.merge.DAOD_FTAG1*p2950 --short | sort'
+    else:
+        command = 'rucio list-dids user.ruth.data16_13TeV.*FTNtupCalib.gbb_v00-01-04*p2950_tuple.root --short | sort'
+
+print 'execute command: '+command
 
 # execute the command
 p = subprocess.Popen([command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)

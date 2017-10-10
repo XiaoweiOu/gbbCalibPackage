@@ -257,6 +257,9 @@ public :
    TBranch        *b_trkjet_assocMuon_n;   //!
    TBranch        *b_trkjet_isMuonJet; //!
    TBranch        *b_trkjet_isNonMuonJet; //!
+   TBranch        *b_trigjet_pt; //!
+   TBranch        *b_trigjet_eta;//!
+   TBranch        *b_trigjet_phi; //!
 
    TupleAna();
    TupleAna(TTree *tree);
@@ -410,6 +413,9 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocMuon_dR = 0;
    trkjet_assocMuon_index = 0;
    trkjet_assocMuon_n = 0;
+   trigjet_pt=0;
+   trigjet_eta=0;
+   trigjet_phi=0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -528,9 +534,10 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocMuon_n", &trkjet_assocMuon_n, &b_trkjet_assocMuon_n);
    fChain->SetBranchAddress("trkjet_isMuonJet", &trkjet_isMuonJet, &b_trkjet_isMuonJet);
    fChain->SetBranchAddress("trkjet_isNonMuonJet", &trkjet_isNonMuonJet, &b_trkjet_isNonMuonJet);
+   fChain->SetBranchAddress("trigjet_pt", &trigjet_pt, &b_trigjet_pt);
+   fChain->SetBranchAddress("trigjet_eta", &trigjet_eta, &b_trigjet_eta);
+   fChain->SetBranchAddress("trigjet_phi", &trigjet_phi, &b_trigjet_phi);
    Notify();
-
-
 }
 
 Bool_t TupleAna::Notify()

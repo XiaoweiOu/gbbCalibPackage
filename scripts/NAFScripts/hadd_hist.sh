@@ -47,7 +47,8 @@ do
 	rm "merged_hist_${dir}"
     fi
 
-    echo `hadd merged_hist_${dir} *.root*`  
+    echo `hadd -k merged_hist_${dir} *.root*`  
+    #hadd merged_hist_${dir} *.root*
 
     if [ ! -d "${FILEDIR}/user.ruth.data1516_13TeV.all.root/" ]
     then
@@ -68,7 +69,8 @@ then
     rm "merged_hist_user.ruth.data1516_13TeV.all.root"
 fi
 
-echo `hadd merged_hist_user.ruth.data1516_13TeV.all.root *.root*`
+echo `hadd -k merged_hist_user.ruth.data1516_13TeV.all.root *.root*`
+#hadd merged_hist_user.ruth.data1516_13TeV.all.root *.root*
 
 cd ${FILEDIR}
 
@@ -79,7 +81,8 @@ do
     then
         rm "merged_hist_${dir}"
     fi
-    echo `hadd merged_hist_${dir} *.root*`
+    echo `hadd -k merged_hist_${dir} *.root*`
+    #hadd merged_hist_${dir} *.root*
     
     cd ${FILEDIR}
 

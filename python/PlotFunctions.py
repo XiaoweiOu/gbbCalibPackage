@@ -45,11 +45,22 @@ tobject_collector = []
 ##
 ## FullFormatCanvasDefault is a collection of functions for easy "1-step" plotting.
 ##
-def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionaltext2='',additionaltext3='',additionaltext4='',additionaltext5='',preliminary=False,ignoreErrors=False) :
+def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionaltext2='',additionaltext3='',additionaltext4='',additionaltext5='',preliminary=False,simulation=False,ignoreErrors=False, doLogx=False, doLogy=False) :
     FormatCanvasAxes(can)
     SetColors(can)
+
+    stat = ''
+    if simulation and not preliminary:
+        stat = 'Simulation Internal'
+    elif simulation:
+        stat = 'Simulation Preliminary'
+    elif not simulation and preliminary:
+        stat = 'Preliminary'
+    else:
+        stat = 'Internal'
+            
     text_lines = []
-    text_lines += [GetAtlasInternalText()]
+    text_lines += [GetAtlasInternalText(stat)]
 
     if sqrts and lumi : text_lines += [GetSqrtsText(sqrts)+', '+ GetLuminosityText(lumi)]
     elif sqrts : text_lines += [GetSqrtsText(sqrts)]
@@ -69,13 +80,26 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
 #        DrawText(can,text_lines,.40,.73,.70,.94,totalentries=4)
 #        MakeLegend(can,0.35, 0.5, 0.62, 0.7,totalentries=3)
     if can.GetPrimitive('pad_top') :
-        DrawText(can,text_lines,.10,.67,.65,.9,totalentries=4)
+        if simulation:
+            DrawText(can,text_lines,.10,.67,.65,.9,totalentries=4)
+        else :
+            DrawText(can,text_lines,.05,.67,.65,.9,totalentries=4)
 #        MakeLegend(can,0.25, 0.47, 0.65, 0.65,totalentries=4)
         MakeLegend(can,0.55, 0.57, 0.92, 0.9,totalentries=8)
     else :
-        DrawText(can,text_lines,.2,.7,.50,.92,totalentries=4)
-        MakeLegend(can,0.55, 0.7, 0.92, 0.93,totalentries=4)
+        if simulation:
+            DrawText(can,text_lines,.1,.7,.50,.92,textsize=22,totalentries=4)
+        else:
+            DrawText(can,text_lines,.2,.7,.50,.92,textsize=22,totalentries=4)
+    MakeLegend(can,0.55, 0.6, 0.92, 0.93,textsize=22,totalentries=4)
     AutoFixAxes(can,ignoreErrors)
+
+    if doLogx :
+        can.SetLogx()
+    if doLogy :
+        SetYaxisRanges(can,MinimumForLog(can),10);
+        can.SetLogy()
+    
     return
 
 ##
@@ -268,8 +292,8 @@ def SetLineStyles(can,these_styles=[],width=2) :
                     j.SetLineWidth(width)
                     can.GetPrimitive('pad_bot').Modified()
                     can.GetPrimitive('pad_bot').Update()
-            color_count += 1
-        if color_count >= len(these_colors) :
+            style_count += 1
+        if style_count >= len(these_styles) :
             break
 
     can.Modified()
@@ -655,4 +679,19 @@ def AddRatio(can,hist,ref_hist,divide='',drawopt='pE1') :
     ratioplot.Divide(hist,ref_hist,1.,1.,divide)
     AddHistogram(can.GetPrimitive('pad_top'),hist,drawopt)
     AddHistogram(can.GetPrimitive('pad_bot'),ratioplot,drawopt)
+    return
+
+##
+##
+## Draw a line in the ratio plot
+##
+##
+
+def DrawLineRatio(can,x1,y1,x2,y2) :
+    from ROOT import TLine
+    ratiopad=GetBotPad(can)
+    line=TLine(x1,y1,x2,y2)
+    line.SetLineStyle(2)
+    ratiopad.cd()
+    line.Draw("same")
     return
