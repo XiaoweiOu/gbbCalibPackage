@@ -42,7 +42,7 @@ ROOTSYS   = $(shell echo $ROOTSYS)
 # -fPIC option needed only for compilation into a shared library
 CXXFLAGS = $(shell root-config --cflags) -fPIC
 ROOTLIBS = $(shell root-config --libs)
-LIBS     = $(ROOTLIBS)
+LIBS     = $(ROOTLIBS) -lMinuit
 OPT      = -ggdb -Wshadow # for debug
 #OPT      = -ggdb -Wold-style-cast -Wshadow # for debug
 #OPT      = -O3   # optimized
