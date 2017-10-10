@@ -1,3 +1,9 @@
+17/10/10
+- many cross checks for GbbTupleAna
+- add Trigger matching & trigger-level jet containers in GbbTupleAna and TupleAna
+- add alternative gbb selection function (without muon containers)
+- updated configs and submission scripts
+
 17/07/04
 - edit Config to have different binning for fjm and fjpt
 - edit ScaleFactorCalculator to allow different binning for variables
@@ -10,3 +16,4 @@
 
 17/08/10
 - ScaleFactorCalculator: include b-tagging rate plots, track jet pt/eta plots
+

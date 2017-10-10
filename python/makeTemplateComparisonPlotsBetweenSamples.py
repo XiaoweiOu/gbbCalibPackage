@@ -36,11 +36,11 @@ pathJZ6W = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.427106.DAOD_FTAG1
 pathJZ7W = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5839_s2726_r7773_r7676_p2949_tuple.root' 
 
 
-pathJZ3W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ4W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ5W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ6W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3569_s2608_s2183_r7725_r7676_p2949_tuple.root'
-pathJZ7W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2608_s2183_r7725_r7676_p2949_tuple.root'
+pathJZ3W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
+pathJZ4W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
+pathJZ5W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
+pathJZ6W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3569_s2608_s2183_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3569_s2608_s2183_r7725_r7676_p2949_tuple.root'
+pathJZ7W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2608_s2183_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2608_s2183_r7725_r7676_p2949_tuple.root'
 
 
 ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
@@ -82,7 +82,7 @@ colors.append([ROOT.kOrange,ROOT.kOrange])
 #index=0
 hists = []
 for name in ListOfNames:
-    hists.append([]):
+    hists.append([])
 
 
 for histname in ListOfHists :
@@ -102,10 +102,10 @@ for histname in ListOfHists :
 
         bookkeep_hist_incl=file_curr_incl.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
         weight_incl=ListOfCrossSections_incl[index]*ListOfFilterEfficiencies_incl[index]/bookkeep_hist_incl.GetBinContent(3)*Lumi
-        print("weight is: "+str(weight))
+        print("inclusive weight is: "+str(weight))
 
 
-        if not file_curr.GetListOfKeys().Contains(histname) or file_curr_incl.GetListOfKeys().Contains(histname):
+        if not file_curr.GetListOfKeys().Contains(histname) or not file_curr_incl.GetListOfKeys().Contains(histname):
             print("Cannot find first hist "+histname)
         elif index is 0 :
             hist_0=file_curr.Get(histname)
@@ -132,7 +132,7 @@ for histname in ListOfHists :
             print(hist_0)
             print(hist_0_incl)
 
-    hist_0.SetName(ListOfNames[hist_index])
+    hist_0.SetName(ListOfNames[hist_index]+ " #mu-filtered dijet")
     hist_0_incl.SetName(ListOfNames[hist_index]+" inclusive dijet")
 
     #Print Integral
@@ -146,10 +146,8 @@ for histname in ListOfHists :
     hist_0.Scale(1./hist_0.Integral())
     hist_0_incl.Scale(1./hist_0_incl.Integral())
 
-    for name in ListOfNames:
-        name_index = ListOfNames.index(name)
-        hists[name_index].append(hist_0)
-        hists[name_index].append(hist_0_incl)
+    hists[hist_index].append(hist_0)
+    hists[hist_index].append(hist_0_incl)
 
     #get data histogram
     #file_data=ROOT.TFile(pathData,"READ")
@@ -168,8 +166,8 @@ for i in range(0,len(ListOfCanvasses)) :
             SetAxisLabels(ListOfCanvasses[i],'Non-muon-associated Track Jet S_{d0}','Normalised to Unity')
 
     FullFormatCanvasDefault(ListOfCanvasses[i],36)
-    SetColors(ListOfCanvasses[i],colors[i])
-    SetLineStyles(ListOfCanvasses[i])
+    #SetColors(ListOfCanvasses[i],colors[i])
+    #SetLineStyles(ListOfCanvasses[i])
     ListOfCanvasses[i].Print(outfilename+'_'+ListOfHists[i]+'.pdf')
 
         

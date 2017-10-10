@@ -107,6 +107,31 @@ def SetYaxisRanges(can,ymin,ymax) :
     can.Modified()
     can.Update()
     return
+
+##                                                                                                                                                                                                             
+## Set the y-axis ranges of a canvas ratio                                                                                                                                                                          
+##                                                                                                                                                                                                              
+def SetYaxisRangesRatio(can,ymin,ymax) :
+    if can.GetPrimitive('pad_bot') :
+        SetYaxisRanges(can.GetPrimitive('pad_bot'),ymin,ymax)
+    from ROOT import TGraph,TH1
+    yaxis = 0
+    for i in can.GetListOfPrimitives() :
+        if issubclass(type(i),TGraph) :
+            yaxis = i.GetHistogram().GetYaxis()
+            break
+        if issubclass(type(i),TH1) :
+            yaxis = i.GetYaxis()
+            break
+    if not yaxis :
+        print 'Warning: SetYaxisRange had no effect. Check that your canvas has plots in it.'
+        return
+    yaxis.SetRangeUser(ymin,ymax)
+    can.Modified()
+    can.Update()
+    return
+
+
     
 ##
 ## Set the axis label of a canvas

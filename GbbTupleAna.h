@@ -102,16 +102,22 @@ private:
 	bool passR10CaloJetCuts(unsigned int i_jet);
 	bool passR2TrackJetCuts(unsigned int i_jet);
 	unsigned int getLeadingObjIndex(std::vector<float> *quantity);
+	unsigned int getNthLeadingObjIndex(unsigned int n, std::vector<float> *quantity);
 	int getAssocObjIndex(std::vector<int>* part_ind, int assoc_index);
 	
 	bool hasBadJet();
 	bool passMuonSelection(unsigned int i_muon);
 
 	GbbCandidate constructGbbCandidate();
+	GbbCandidate constructGbbCandidateAlternative();
+
 	int getTruthType(int label);
 	int getCategoryNumber(int muo_truth, int nonmuo_truth, bool doMerged=false);
 	TString getPtLabel(float muojet_pt, float non_muojetpt);
 	TString getFatjetPtLabel(float fatjet_pt);
+	TString getFatjetPhiLabel(float fatjet_phi);
+	TString getFatjetEtaLabel(float fatjet_eta);
+
 
 	float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
 	
@@ -152,7 +158,10 @@ private:
 	bool passAllCutsUpTo(const unsigned long int flag, const unsigned int cut, const std::vector<unsigned int> &excludeCuts);
 
 	float getCMd0Difference(unsigned int i_trk, unsigned int j_trk, GbbCandidate* gbbcand);
-
+	float getScaledFatPt(float fjpt){
+	  return fjpt*(0.9725+(1e-5)*fjpt);
+	  //	  return fjpt*(0.95+((2.86e-5)*fjpt));
+	}
 };
 
 namespace GbbCuts {
