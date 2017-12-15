@@ -449,7 +449,6 @@ void FitData::MergeTemplates(int tmp1, int tmp2){
 
 }
 
-
 void FitData::KernelSmoothTemplates(float scale){
 
 
@@ -457,9 +456,9 @@ void FitData::KernelSmoothTemplates(float scale){
   std::cout<<"| Smooth templates using Gaussian kernel"<<std::endl;
   std::cout<<"=================================="<<std::endl;
 
-  float entry;
+  float entry, entry_numerator;
 
-  
+      float scale_previous=scale;  
 
   for(int i=0; i<m_chans.size(); i++){
 
@@ -471,20 +470,60 @@ void FitData::KernelSmoothTemplates(float scale){
   
       int Nbinsx = m_templateHistsMap[m_chans[i]][j].get()->GetNbinsX();
 
-      scale=TMath::Power(4./3./area,1./5.)*m_templateHistsMap[m_chans[i]][j].get()->GetStdDev()/m_templateHistsMap[m_chans[i]][j].get()->GetBinWidth(1);
+      std::vector<float> new_entries(Nbinsx,0.);
+
+
       std::cout<<"Scale: "<<scale<<std::endl;
+      float lowbin,highbin;
+      float gauss_scale=1;
+
+
+      for(int i_bin=1; i_bin<=Nbinsx; i_bin++){
+	new_entries[i_bin-1]=m_templateHistsMap[m_chans[i]][j].get()->GetBinContent(i_bin);
+	if(TMath::Abs(m_templateHistsMap[m_chans[i]][j].get()->GetBinLowEdge(i_bin))<10) continue;
+	if(m_templateHistsMap[m_chans[i]][j].get()->GetBinLowEdge(i_bin)<=-10){
+	  lowbin=1;
+	  highbin=m_templateHistsMap[m_chans[i]][j].get()->FindBin(-10)+5;
+	  if(highbin>Nbinsx)highbin=Nbinsx;
+	}else if(m_templateHistsMap[m_chans[i]][j].get()->GetBinLowEdge(i_bin)>=10){
+	  lowbin=m_templateHistsMap[m_chans[i]][j].get()->FindBin(10)-5;
+	  if(lowbin<1) lowbin=1;
+	  highbin=Nbinsx;
+	}
+
+
+	entry=0;
+	entry_numerator=0;
+	gauss_scale=scale;
+
+	
+	for(int j_bin=lowbin; j_bin<=highbin; j_bin++){
+	  //if(i_bin==j_bin) continue;
+	  //if(TMath::Abs(m_templateHistsMap[m_chans[i]][j].get()->GetBinLowEdge(j_bin))<10) continue;
+
+	  float x_i_bin=m_templateHistsMap[m_chans[i]][j].get()->GetBinCenter(i_bin);
+	  float x_j_bin=m_templateHistsMap[m_chans[i]][j].get()->GetBinCenter(j_bin);
+	  
+	  std::cout<<"difference: "<<x_i_bin-x_j_bin<<std::endl;
+	  std::cout<<"gauss_scale: "<<gauss_scale<<std::endl;
+
+	  entry+=TMath::Exp(-((x_i_bin-j_bin)*(x_i_bin-x_j_bin)/(2*gauss_scale)))*m_templateHistsMap[m_chans[i]][j].get()->GetBinContent(j_bin)/m_templateHistsMap[m_chans[i]][j].get()->GetBinWidth(j_bin);
+	  entry_numerator+=TMath::Exp(-((x_i_bin-x_j_bin)*(x_i_bin-x_j_bin)/(2*gauss_scale)));
+	}
+
+	std::cout<<"entry: "<<entry<<std::endl;
+	std::cout<<"entry_numerator: "<<entry_numerator<<std::endl;
+
+	new_entries[i_bin-1]=entry/entry_numerator*m_templateHistsMap[m_chans[i]][j].get()->GetBinWidth(i_bin);
+	std::cout<<"New entries for bin"<<i_bin<<": "<<new_entries[i_bin-1]<<std::endl;
+
+	
+      }
+
       
       for(int i_bin=1; i_bin<=Nbinsx; i_bin++){
 	
-	entry=0;
-	
-	for(int j_bin=1; j_bin<=Nbinsx; j_bin++){
-	  
-	  entry+=TMath::Exp(-((i_bin-j_bin)*(i_bin-j_bin)/(2*scale)))*m_templateHistsMap[m_chans[i]][j].get()->GetBinContent(j_bin);
-
-	}
-
-	hist_temp->SetBinContent(i_bin,entry);
+	hist_temp->SetBinContent(i_bin,new_entries[i_bin-1]);
 	hist_temp->SetBinError(i_bin,m_templateHistsMap[m_chans[i]][j].get()->GetBinError(i_bin));
 	
       }
@@ -503,6 +542,109 @@ void FitData::KernelSmoothTemplates(float scale){
 
 
 }
+
+
+void FitData::FitTemplateSlopes(float lowgap, float highgap){
+
+
+  std::cout<<"=================================="<<std::endl;
+  std::cout<<"| Smooth templates using functions fit to sides"<<std::endl;
+  std::cout<<"=================================="<<std::endl;
+
+
+  for(int i=0; i<m_chans.size(); i++){
+
+    for(int j=0; j<m_templateHistsMap[m_chans[i]].size(); j++){
+  
+      TH1D* hist_temp=(TH1D*)m_templateHistsMap[m_chans[i]][j].get()->Clone();
+
+      float area=m_templateHistsMap[m_chans[i]][j].get()->Integral(1,m_templateHistsMap[m_chans[i]][j]->GetNbinsX());
+    
+
+      //left hand side: fit gaussian
+    
+      TF1 *g1= new TF1("g1","gaus",-40.,lowgap);
+      g1->FixParameter(1,0.);
+
+      TF1 *g2= new TF1("g2","expo",highgap,80.);
+      
+      TF1 *dg= new TF1("dg","gaus(0)+gaus(3)",-40.,lowgap);
+
+      
+      TCanvas *c = new TCanvas("c","",800,700);
+      c->cd();
+      
+      TH1D *hist_temp0=(TH1D*)hist_temp->Clone();
+      
+      hist_temp0->SetLineColor(1);
+      //hist_temp0->Draw("HIST");
+      
+      for(int i_bin=1; i_bin<=hist_temp->GetNbinsX(); i_bin++){
+	
+	//hist_temp->SetBinContent(i_bin,hist_temp->GetBinContent(i_bin)/hist_temp->GetBinWidth(i_bin));
+	
+      }
+    
+      hist_temp->Fit(g1,"","",-40.,lowgap);
+      hist_temp->Fit(g2,"+","",highgap,80.);
+
+
+      double par[6];
+      g1->GetParameters(&par[0]);
+
+      g1->GetParameters(&par[3]);
+
+      par[3]*=1e-2;
+      par[6]*=10;
+
+      dg->SetParameters(par);
+
+      dg->FixParameter(1,0.);
+      dg->FixParameter(4,0.);
+
+      hist_temp->Fit(dg,"+","",-40.,lowgap);
+      
+
+
+      TH1D* hist_temp2=(TH1D*)hist_temp->Clone();
+
+      hist_temp2->SetLineColor(2);
+      hist_temp2->Draw("HIST");
+      hist_temp->GetFunction("dg")->SetLineColor(2);
+      hist_temp->GetFunction("dg")->Draw("lsame");
+      hist_temp->GetFunction("g2")->SetLineColor(4);
+      hist_temp->GetFunction("g2")->Draw("lsame");
+    
+
+      for(int i_bin=1; i_bin<=hist_temp->GetNbinsX(); i_bin++){
+	float xbin=hist_temp->GetBinCenter(i_bin);
+	//float xbinwidth=hist_temp->GetBinWidth(i_bin);
+	if(xbin<=lowgap) hist_temp->SetBinContent(i_bin,hist_temp->GetFunction("dg")->Eval(xbin));
+	else if(xbin>=highgap) hist_temp->SetBinContent(i_bin,hist_temp->GetFunction("g2")->Eval(xbin));
+	else hist_temp->SetBinContent(i_bin,hist_temp->GetBinContent(i_bin));
+      }
+
+      TH1D* hist_temp3=(TH1D*)hist_temp->Clone();
+      hist_temp3->SetLineColor(4);
+      hist_temp3->Draw("histsame");
+      c->SetLogy();
+
+      TString name=TString("./ctrl_plots/fitslopes_ctrl_")+TString(hist_temp->GetName())+TString(".pdf");
+      c->SaveAs(name.Data());
+      delete c;
+    
+      
+      //scale to match old norm                                                                                                                                                        
+      //hist_temp->Scale(area/hist_temp->Integral(1,m_templateHistsMap[m_chans[i]][j]->GetNbinsX()));
+      std::shared_ptr<TH1D> hist_new(hist_temp);
+      m_templateHistsMap[m_chans[i]][j]=hist_new;
+
+    }
+    
+  }
+
+}
+
 
 void FitData::RescaleTemplate(int tmp1, double factor, bool doKeepNorm){
 
@@ -574,7 +716,7 @@ double FitData::GetDataNorm(TString &channel){
 }
 
 
-void FitData::ReadInHistograms(TString &channel){
+void FitData::ReadInHistograms(TString &channel, int smooth_Ntimes){
 
   TH1D* tmp, *clone_tmp;
 
@@ -585,6 +727,7 @@ void FitData::ReadInHistograms(TString &channel){
 
   clone_tmp=(TH1D*)tmp->Clone();
   clone_tmp->SetDirectory(0);
+
   m_dataHistMap[channel]=std::shared_ptr<TH1D>(clone_tmp);
 
   for(int i=0; i<m_MC_HistNamesMap[channel].size(); i++){
@@ -596,6 +739,7 @@ void FitData::ReadInHistograms(TString &channel){
 
     clone_tmp=(TH1D*)tmp->Clone();
     clone_tmp->SetDirectory(0);
+    if(smooth_Ntimes) clone_tmp->Smooth(smooth_Ntimes);
 
     m_templateHistsMap[channel].push_back(std::shared_ptr<TH1D>(clone_tmp));
   }

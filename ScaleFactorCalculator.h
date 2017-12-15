@@ -76,8 +76,8 @@ private:
 	virtual ~ScaleFactorCalculator();
 	
 	SFCalcResult CalculateScaleFactors(TString &sys, bool doPseudo=false, int i_pseudo=0);
-
-	CalibResult CalculateScaleFactorsAndErrors();
+	SFCalcResult CalculateScaleFactorsByRegion(TString &sys, bool doPseudo=false, int i_pseudo=0);
+	CalibResult CalculateScaleFactorsAndErrors(bool doByRegion=false);
 	void MakeCalibrationPlots(CalibResult cl_result, TString plot_type);
 	void ReadInFatJetHists(std::vector<TString>& var, std::vector<TString>& sys);
 
@@ -85,17 +85,24 @@ private:
 
 	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, bool doPrintByRegion=false, TString region="DEFAULT");
 
-	void MakeBTaggingRatePlots();
+	void MakeBTaggingRatePlots(std::vector<TString> &sys);
+
+	TString MakeFlavourFractionTable(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region);
+
   
 	TGraphAsymmErrors* getFitUncert(TString& var, bool isPosttag);
 	TGraphAsymmErrors* getTemplateFitUncert(bool applyFitCorrection,std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin);
+	TGraphAsymmErrors* getFitUncertBTagRate();
 	
-  TGraphAsymmErrors* getBTagUncert(TString &var, bool applyFitCorrection);
-  TGraphAsymmErrors* getExperimentalUncert(TString &name, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff=false);
-  TGraphAsymmErrors* getTotalSys(TGraphAsymmErrors* fitsysgraph, TGraphAsymmErrors* btagsysgraph, TGraphAsymmErrors* jetsysgraph, TGraphAsymmErrors* stat);
-  TGraphAsymmErrors* getMCStat(TH1* full_mc);
+	TGraphAsymmErrors* getBTagUncert(TString &var, bool applyFitCorrection);
+	TGraphAsymmErrors* getExperimentalUncert(TString &name, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff=false);
+
+	std::vector<TGraphAsymmErrors*> getExperimentalUncertSeparate(TString &var, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff=false);
+	TGraphAsymmErrors* getTotalSys(TGraphAsymmErrors* fitsysgraph, TGraphAsymmErrors* btagsysgraph, TGraphAsymmErrors* jetsysgraph, TGraphAsymmErrors* stat);
+
+	TGraphAsymmErrors* getMCStat(TH1* full_mc);
   
-  void SaveReweightHists(TString &var, TString &outfilename);
+	void SaveReweightHists(TString &var, TString &outfilename);
 
 };
 
