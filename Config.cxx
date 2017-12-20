@@ -47,6 +47,9 @@ Config::Config(TString& cfg_path){
   m_nonmutrackjetbins=SplitStringD(config->GetValue("NonmuTrackJetBins",""),',');
   std::cout<<"NonmuTrackJetBins: "<<config->GetValue("NonmuTrackJetBins","")<<std::endl;
 
+  m_Ntimes_smooth=config->GetValue("smoothTemplatesNtimes",0);
+  std::cout<<"smoothTemplatesNtimes: "<<m_Ntimes_smooth<<std::endl;
+
   m_plotvariables=SplitString(config->GetValue("PlotVariables",""),',');
   std::cout<<"PlotVariables: "<<config->GetValue("PlotVariables","")<<std::endl;
 
@@ -152,6 +155,7 @@ std::vector<TString> Config::GetAllRegions(){
       for(auto& nmb : nonmu_pt_regions){
 
 	name=mb+"_"+nmb;
+	//if(name.EqualTo("mjpt_l100_nmjpt_l20")) continue;
 	pt_all_regions.push_back(name);
 	    
       }

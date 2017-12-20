@@ -19,6 +19,8 @@
 #include <memory>
 #include "TMath.h"
 #include "TRandom3.h"
+#include "TCanvas.h"
+#include "TF1.h"
 
 class FitData {
 
@@ -57,9 +59,9 @@ class FitData {
     m_Data_HistNamesMap[channel]=data_name;
   }
 
-  void ReadInHistograms(TString &channel);
-  void ReadInHistograms(){
-    for(auto chan : m_chans) ReadInHistograms(chan);
+  void ReadInHistograms(TString &channel, int smooth_Ntimes=0);
+  void ReadInHistograms(int smooth_Ntimes=0){
+    for(auto chan : m_chans) ReadInHistograms(chan, smooth_Ntimes);
   }
 
   std::shared_ptr<TH1D> GetDataHist(TString &channel){ return m_dataHistMap[channel]; }
@@ -72,6 +74,7 @@ class FitData {
   void RescaleTemplate(int tmp1, double factor, bool doKeepNorm=false);
 
   void KernelSmoothTemplates(float scale);
+  void FitTemplateSlopes(float lowgap, float highgap);
 
   double GetFlavourFraction(TString &channel,int i_flav_pair);
   double GetFlavourNorm(TString &channel,int i_flav_pair);

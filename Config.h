@@ -19,6 +19,7 @@ class Config{
   TString m_inputfile;
   int m_NParams;
   int m_N_pseudo_exp;
+  int m_Ntimes_smooth;
 
   bool m_Debug;
   bool m_doMCStatsNP;
@@ -65,6 +66,8 @@ class Config{
 
   std::vector<float> GetMuTrackJetBins(){ return m_mutrackjetbins; }
   std::vector<float> GetNonmuTrackJetBins(){ return m_nonmutrackjetbins; }
+
+  int GetSmoothNtimes(){return m_Ntimes_smooth; }
 
   std::vector<float> GetFatJetBins(){ return m_fatjetbins; }
 
