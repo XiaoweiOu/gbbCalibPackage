@@ -53,7 +53,7 @@ ListOfHists = ['hBBNom_mjmaxSd0','hBLNom_mjmaxSd0','hCCNom_mjmaxSd0','hCLNom_mjm
 
 ListOfInclusiveHists = ['hLLNom_mjmaxSd0','hLLNom_nmjmaxSd0']
 
-ListOfNames = ['BB','BL','CC','CL','LL','BB','BL','CC','CL','LL']
+ListOfNames = ['BB','BL','CC','CL','BB','BL','CC','CL']
 
 
 #make Canvas
@@ -100,6 +100,7 @@ for histname in ListOfHists :
 
             print(hist_0)
     hist_0.SetName(ListOfNames[hist_index])
+    print('Setting name to'+ListOfNames[hist_index])
     #Normalize to Unity
     hist_0.Scale(1./hist_0.Integral())
     if 'nmjmaxSd0' in histname :
@@ -140,7 +141,8 @@ for histname in ListOfInclusiveHists :
             hist_0.Add(hist_tmp,weight)
 
             print(hist_0)
-    hist_0.SetName(ListOfNames[hist_index])
+    hist_0.SetName('LL')
+    print('Setting Name to LL')
     #Normalize to Unity
     hist_0.Scale(1./hist_0.Integral())
     if 'nmjmaxSd0' in histname :

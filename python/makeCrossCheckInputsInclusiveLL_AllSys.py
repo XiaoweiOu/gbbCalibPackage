@@ -41,11 +41,11 @@ for sys in ListOfSystematics:
     else:
         sysdir='Output_CrossCheck_'+sys
 
-    pathJZ3W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-    pathJZ4W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-    pathJZ5W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-    pathJZ6W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root' 
-    pathJZ7W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root' 
+    pathJZ3W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5660_s2726_r7773_r7676_p2949_tuple.root' 
+    pathJZ4W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5660_s2726_r7773_r7676_p2949_tuple.root' 
+    pathJZ5W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5660_s2726_r7773_r7676_p2949_tuple.root' 
+    pathJZ6W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5839_s2726_r7773_r7676_p2949_tuple.root' 
+    pathJZ7W = basepath + sysdir + '/CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04c.e5839_s2726_r7773_r7676_p2949_tuple.root' 
 
     
     ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
@@ -60,10 +60,10 @@ for sys in ListOfSystematics:
 
     ListOfInclusiveMCPaths = [ pathJZ3W_incl, pathJZ4W_incl, pathJZ5W_incl, pathJZ6W_incl, pathJZ7W_incl ]
     ListOfInclusiveMCPathsSys.append(ListOfInclusiveMCPaths)
-    
+   
 
 #ListOfVariables = [ 'fjpt', 'nmjpt', 'mjpt', 'mjmaxSd0', 'nmjmaxSd0' ]
-ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'nmjmaxSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjpt_PREFITPOSTTAG_BTAGUP', 'fjm_PREFITPOSTTAG_BTAGUP', 'fjD2_PREFITPOSTTAG_BTAGUP','mjpt_PREFITPOSTTAG_BTAGUP','nmjpt_PREFITPOSTTAG_BTAGUP','mjeta_PREFITPOSTTAG_BTAGUP','nmjeta_PREFITPOSTTAG_BTAGUP', 'fjpt_PREFITPOSTTAG_BTAGDOWN', 'fjm_PREFITPOSTTAG_BTAGDOWN', 'fjD2_PREFITPOSTTAG_BTAGDOWN','mjpt_PREFITPOSTTAG_BTAGDOWN','nmjpt_PREFITPOSTTAG_BTAGDOWN','mjeta_PREFITPOSTTAG_BTAGDOWN','nmjeta_PREFITPOSTTAG_BTAGDOWN','trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt' ]
+ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'nmjmaxSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjpt_PREFITPOSTTAG_BTAGUP', 'fjm_PREFITPOSTTAG_BTAGUP', 'fjD2_PREFITPOSTTAG_BTAGUP','mjpt_PREFITPOSTTAG_BTAGUP','nmjpt_PREFITPOSTTAG_BTAGUP','mjeta_PREFITPOSTTAG_BTAGUP','nmjeta_PREFITPOSTTAG_BTAGUP','fjptsc_PREFITPOSTTAG_BTAGUP', 'fjpt_PREFITPOSTTAG_BTAGDOWN', 'fjm_PREFITPOSTTAG_BTAGDOWN', 'fjD2_PREFITPOSTTAG_BTAGDOWN','mjpt_PREFITPOSTTAG_BTAGDOWN','nmjpt_PREFITPOSTTAG_BTAGDOWN','mjeta_PREFITPOSTTAG_BTAGDOWN','nmjeta_PREFITPOSTTAG_BTAGDOWN','fjptsc_PREFITPOSTTAG_BTAGDOWN','trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
 
 #fatjet pt in eta/phi bins
 #BinFragments=['g-2l-1','g-1l0','g0l1','g1l2']
@@ -85,7 +85,7 @@ ListOfTJpt=['mjpt_l100_nmjpt_l20','mjpt_l100_nmjpt_g20l50','mjpt_l100_nmjpt_g50l
             'mjpt_g100l200_nmjpt_l20','mjpt_g100l200_nmjpt_g20l50','mjpt_g100l200_nmjpt_g50l80','mjpt_g100l200_nmjpt_g80',
             'mjpt_g200_nmjpt_l20','mjpt_g200_nmjpt_g20l50','mjpt_g200_nmjpt_g50l80', 'mjpt_g200_nmjpt_g80']
 
-outfilename = '171009_testinputsLLinclusive_TrigMatch_AllSys.root'
+outfilename = '171219_testinputsLLinclusive_pt500_AllSys.root'
 
 #make list of histograms in Data
 ListOfDataHists = []
@@ -94,9 +94,10 @@ for tjpt in ListOfTJpt :
         ListOfDataHists.append('hDataNom_'+tjpt+'_'+var)
         print('hDataNom_'+tjpt+'_'+var)
 
+ListOfDataHists.append('CutFlow');
+
 #open output file
 outfile=ROOT.TFile(outfilename,"RECREATE")
-
 
 
 
@@ -116,9 +117,16 @@ for sys in ListOfSystematics:
                     continue
                 if "fjeta" in var and "fjphi" in var and "Nom" not in sys:
                     continue
+                if sys is "Nom" and "maxSd0" in var :
+                    ListOfHists.append('h'+flavour+'SD0Smear__1up_'+tjpt+'_'+var)
+                    ListOfHists.append('h'+flavour+'SD0SMEAR__1down_'+tjpt+'_'+var)
+                    
                 ListOfHists.append('h'+flavour+sys+'_'+tjpt+'_'+var)
                 print('h'+flavour+sys+'_'+tjpt+'_'+var)
-            
+                
+    if sys is 'Nom':
+        ListOfHists.append('CutFlow')
+        
     ListOfLLHists = []
     for flavour in ListOfInclusiveFlavourPairs:
         for tjpt in ListOfTJpt :
@@ -129,9 +137,15 @@ for sys in ListOfSystematics:
                     continue
                 if "fjeta" in var and "fjphi" in var and "Nom" not in sys:
                     continue
+                if sys is "Nom" and "maxSd0" in var :
+                    ListOfLLHists.append('h'+flavour+'SD0Smear__1up_'+tjpt+'_'+var)
+                    ListOfLLHists.append('h'+flavour+'SD0SMEAR__1down_'+tjpt+'_'+var)
+
                 ListOfLLHists.append('h'+flavour+sys+'_'+tjpt+'_'+var)
                 print('h'+flavour+sys+'_'+tjpt+'_'+var)
 
+    if sys is 'Nom':            
+        ListOfLLHists.append('CutFlow')
 
     #loop over MC histograms
     for histname in ListOfHists :
@@ -166,6 +180,10 @@ for sys in ListOfSystematics:
             if index==len(ListOfMCPaths)-1 :
                 outfile.cd()
                 #new_hist_0=(ROOT.TH1F)hist_0
+                if hist_0 is None :
+                    print("ERROR: Could not find "+histname+" in all input Files!")
+                if histname is 'CutFlow':
+                    hist_0.SetName('CutFlow_MC')
                 hist_0.Write()
 
 
@@ -201,6 +219,8 @@ for sys in ListOfSystematics:
 
             if index==len(ListOfInclusiveMCPaths)-1 :
                 outfile.cd()
+                if histname is 'CutFlow':
+                    hist_0.SetName('CutFlow_MC')
                 #new_hist_0=(ROOT.TH1F)hist_0
                 hist_0.Write()
         
@@ -211,8 +231,13 @@ file_curr=ROOT.TFile(pathData,"READ")
 
 for histname in ListOfDataHists :
     hist_0=file_curr.Get(histname)
+    if hist_0 is None :
+        print("Could not find data histogram "+histname)
+        continue
     hist_0.SetDirectory(0)
     #new_hist_0=(ROOT.TH1F)hist_0
+    if histname is 'CutFlow':
+        hist_0.SetName('CutFlow_Data')
     outfile.cd()
     hist_0.Write()
     
