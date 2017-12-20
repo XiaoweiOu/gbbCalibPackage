@@ -248,6 +248,7 @@ void GbbTupleAna::Loop()
 
 
 bool GbbTupleAna::Processgbb(int i_evt){
+  int icut=0;
 
   if(m_Debug) std::cout<<"processgbb(): Start!"<<std::endl;
 
@@ -264,7 +265,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
  
   float total_evt_weight=(this->eve_mc_w*this->eve_pu_w);
 
-  //m_HistogramService->FastFillTH1D("CutFlow",1,15,0.5,15.5,total_evt_weight);
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
   //m_SumWeightTuple+=total_evt_weight;
   m_SumWeightTuple+=this->eve_pu_w;
@@ -296,6 +298,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   updateFlag(eventFlag,GbbCuts::EventCleaning,true);
 
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
   //=========================================                                                                          
   //2.) Trigger jet selection (leading AntiKt4EMTopo Jet)
@@ -331,9 +335,30 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(trigjet_reco.DeltaR(trigjet_trlvl)>0.4) return false;
 
 
+  //Try to match leading R=0.4 and R=1.0 jets to find what causes the trigger bias
+  TLorentzVector largeRjet;
+  double ptratio=-1;
+  double DR_min=999.;
+  double largeRtrigpt=-1, largeRtrigeta=-1;
+
+  for(unsigned int i=0; i<this->fat_pt->size(); i++){
+    largeRjet.SetPtEtaPhiM(this->fat_pt->at(i),this->fat_eta->at(i),this->fat_phi->at(i),0.);
+    if(trigjet_reco.DeltaR(largeRjet)<1.0 && trigjet_reco.DeltaR(largeRjet)<DR_min){
+      ptratio=trigjet_reco.Pt()/largeRjet.Pt();
+      largeRtrigpt=largeRjet.Pt();
+      largeRtrigeta=largeRjet.Eta();
+      DR_min=trigjet_reco.DeltaR(largeRjet);
+    }
+  }
+
+  
+
+
   updateFlag(eventFlag,GbbCuts::TriggerJet,true);
   if(m_Debug) std::cout<<"processgbb(): Got Trigger Jet!"<<std::endl;
  
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
   //FILL TRIGGER TURNONHISTS
   if(m_RunMode.Contains("TriggerTurnOn")) FillTriggerTurnOnHistograms(i_trigjet,total_evt_weight);
@@ -358,8 +383,14 @@ bool GbbTupleAna::Processgbb(int i_evt){
   double prescale=1.;
   TString trigger_passed="none";
  
+  
+  /*if(m_RunMode.Contains("TriggerTurnOn")){
+    prescale=1.;
+  }else if(trjet_pt>500e3 && this->eve_HLT_j380) trigger_passed="HLT_j380";
+  else return false;*/
 
-  if(m_RunMode.Contains("TriggerTurnOn")){
+
+  /*  if(m_RunMode.Contains("TriggerTurnOn")){
     prescale=1.;
   }else if(trjet_pt>198e3 && trjet_pt<=229e3 && this->eve_HLT_j150){
     trigger_passed="HLT_j150";
@@ -371,7 +402,47 @@ bool GbbTupleAna::Processgbb(int i_evt){
     trigger_passed="HLT_j260";
     if(this->eve_isMC) prescale=2.453e-2;
   }else if(trjet_pt>430e3 && this->eve_HLT_j380) trigger_passed="HLT_j380";
+  else return false;*/
+
+  /*  if(m_RunMode.Contains("TriggerTurnOn")){
+    prescale=1.;
+  }else if(trjet_pt>238e3 && trjet_pt<=275e3 && this->eve_HLT_j150){
+    trigger_passed="HLT_j150";
+    if(this->eve_isMC) prescale=7.633e-4;
+  }else if(trjet_pt>275e3 && trjet_pt<=400e3 && this->eve_HLT_j175){
+    trigger_passed="HLT_j175";
+    if(this->eve_isMC) prescale=3.945e-3;
+  }else if(trjet_pt>400e3 && trjet_pt<=516e3 && this->eve_HLT_j260){
+    trigger_passed="HLT_j260";
+    if(this->eve_isMC) prescale=2.453e-2;
+  }else if(trjet_pt>516e3 && this->eve_HLT_j380) trigger_passed="HLT_j380";
   else return false;
+  */
+
+  /*if(largeRtrigpt>250e3 && largeRtrigpt<=280e3 && this->eve_HLT_j150){
+    trigger_passed="HLT_j150";
+    if(this->eve_isMC) prescale=7.633e-4;
+  }else if(largeRtrigpt>280e3 && largeRtrigpt<=380e3 && this->eve_HLT_j175){
+    trigger_passed="HLT_j175";
+    if(this->eve_isMC) prescale=3.945e-3;
+  }else if(largeRtrigpt>380e3 && largeRtrigpt<=500e3 && this->eve_HLT_j260){
+    trigger_passed="HLT_j260";
+    if(this->eve_isMC) prescale=2.453e-2;
+  }else if(largeRtrigpt>500e3 && this->eve_HLT_j380){
+    trigger_passed="HLT_j380";
+  }else{
+    //std::cout<<"Event discarded: pt(R=0.4): "<<trjet_pt<<" pt(R=1.0): "<<largeRtrigpt<<std::endl;  
+    return false;
+    }*/
+
+  if(largeRtrigpt>500e3 && this->eve_HLT_j380){
+    trigger_passed="HLT_j380";
+  }else{
+    //std::cout<<"Event discarded: pt(R=0.4): "<<trjet_pt<<" pt(R=1.0): "<<largeRtrigpt<<std::endl;  
+    return false;
+  }
+
+
 
   total_evt_weight*=prescale;
 
@@ -379,12 +450,31 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Passed trigger jet requirement"<<std::endl;
 
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+
   //FILL REWEIGHT HISTOGRAMS
-  if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
+  if(m_isNominal && m_RunMode.Contains("FillReweightHists")){
+    this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
+    this->FillFatReweightInfo(largeRtrigpt,largeRtrigeta,total_evt_weight,trigger_passed);
+  }
 
   //Fill Pileup reweighting histograms
   if(m_isNominal && m_RunMode.Contains("FillPRWHists")) m_HistogramService->FastFillTH1D("h"+m_SysVarName+"_evemu",this->eve_mu,12,0.,60.,total_evt_weight);
 
+  // TRIGGER JET REWEIGHTING
+  if(m_doJetPtReweighting && !m_RunMode.Contains("FillReweightHists")  && m_reweightHistos[trigger_passed].get() && this->eve_isMC){
+    //float trig_weight=this->getTrigJetWeight(i_trigjet,trigger_passed);
+    float trig_weight=this->getTrigFatJetWeight(largeRtrigpt,largeRtrigeta,trigger_passed);
+
+
+    if(TMath::Abs(trig_weight)<1e-10) trig_weight=1.;
+    total_evt_weight*=trig_weight;
+
+  }
+
+   icut++;
+   m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
   //=========================================                                                                                               
   //3.) Gbb candidate selection & definition                                                                                                              
@@ -408,8 +498,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   updateFlag(eventFlag, GbbCuts::GbbCandidate, true);
 
-  
-
   //define flavour truth labels & pt labels
   int muojet_truth=this->trkjet_truth->at(gbbcand.muojet_index);
   int nonmuojet_truth=this->trkjet_truth->at(gbbcand.nonmuojet_index);
@@ -424,6 +512,28 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Got labels."<<std::endl;
 
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+
+  // cut on ratio
+  
+  double gbbcandpt=this->fat_pt->at(gbbcand.fat_index);
+
+  //cut away region where jet bias is introduced
+  if(gbbcandpt<500e3) return false;
+
+  /*  if(gbbcandpt>250e3 && gbbcandpt<=280e3 && trigger_passed.EqualTo("HLT_j150")){
+  }else if(gbbcandpt>280e3 && gbbcandpt<=380e3 && trigger_passed.EqualTo("HLT_j175")){
+  }else if(gbbcandpt>380e3 && gbbcandpt<=500e3 && trigger_passed.EqualTo("HLT_j260")){
+  }else if(gbbcandpt>500e3 && trigger_passed.EqualTo("HLT_j380")){
+  }else{
+    std::cout<<"Event discarded: pt(R=0.4): "<<trjet_pt<<" pt(R=1.0): "<<gbbcandpt<<std::endl;  
+    return false;
+    }*/
+
+  //FILL REWEIGHT HISTOGRAMS
+  //if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
+
 
   //=========================================                                                                                               
   //4.) Tracks passing requirements for templates                                                                                                                
@@ -436,6 +546,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   updateFlag(eventFlag,GbbCuts::GoodSd0Tracks,true);
 
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
 
   //=========================================                                                                                               
@@ -452,6 +564,17 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   updateFlag(eventFlag,GbbCuts::DRTrigJetMuJet,true);
 
+  //DR 2-Track jets 
+  TLorentzVector ditrkjet,nonmujet, fatjet;
+  nonmujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.nonmuojet_index),this->trkjet_eta->at(gbbcand.nonmuojet_index),this->trkjet_phi->at(gbbcand.nonmuojet_index),this->trkjet_E->at(gbbcand.nonmuojet_index));
+
+  ditrkjet=mujet+nonmujet;
+  fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand.fat_index),this->fat_eta->at(gbbcand.fat_index),this->fat_phi->at(gbbcand.fat_index),this->fat_E->at(gbbcand.fat_index));
+
+  float DRditrkjetfatjet=fatjet.DeltaR(ditrkjet);
+
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
   //=========================================
   //6.) Trigjet reweighting
@@ -461,22 +584,15 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //  //If mode is: FillReweightHists Fill possible new reweighting histogram before event_weight is changed
   //if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
 
-  if(m_doJetPtReweighting && !m_RunMode.Contains("FillReweightHists")  && m_reweightHistos[trigger_passed].get() && this->eve_isMC){
-	  float trig_weight=this->getTrigJetWeight(i_trigjet,trigger_passed);
 
-	  if(TMath::Abs(trig_weight)<1e-10) trig_weight=1.;
-	  total_evt_weight*=trig_weight;
-
-  }
-
-   if(m_doPostfitPtReweighting && this->eve_isMC){
+  /*  if(m_doPostfitPtReweighting && this->eve_isMC){
      double weight=1;
      if((this->fat_pt->at(gbbcand.fat_index)/1e3 < 250.) || (this->fat_pt->at(gbbcand.fat_index)/1e3 > 1000.)) weight=1.;
      else weight=m_postfit_reweight_hist->GetBinContent(m_postfit_reweight_hist->FindBin(this->fat_pt->at(gbbcand.fat_index)/1e3));
      //std::cout<<"postfit weight: "<<weight<<std::endl;
 
      total_evt_weight*= weight;
-   }
+     }*/
     
 
   //}
@@ -533,6 +649,14 @@ bool GbbTupleAna::Processgbb(int i_evt){
     }
     
     m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjpt",trjet_pt/1e3,250,0.,1000.,total_evt_weight);
+    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_DRditrkjetfatjet",DRditrkjetfatjet,250,0.,0.5,total_evt_weight);
+    if(m_isNominal) m_HistogramService->FastFillTH2D("h_DRditrkjetfatjetVSfjpt",DRditrkjetfatjet,fatjet.Pt()/1e3,25,0.,0.5,50,0.,1000.,total_evt_weight);
+
+    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptgbbcandratio",trjet_pt/fatjet.Pt(),50,0.,10.,total_evt_weight);
+
+    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptfjptratio",ptratio,50,-1.,1.,total_evt_weight);
+
+    if(m_isNominal) m_HistogramService->FastFillTH2D("h_2DtrjptVsfjpt",trjet_pt/1e3,fatjet.Pt()/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
 
 
     TLorentzVector smallRJet;
@@ -575,6 +699,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     }
 
     m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjpt_PREFITPOSTTAG",trjet_pt/1e3,250,0.,1000.,total_evt_weight);
+    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_DRditrkjetfatjet_PREFITPOSTTAG",DRditrkjetfatjet,250,0.,0.5,total_evt_weight);
     
 
 
@@ -645,7 +770,8 @@ void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
   
   TH2D *hist;
 
-  TString hist_name="h_reweight_trigjet_pt_eta_"+trigger_passed;
+  //TString hist_name="h_reweight_trigjet_pt_eta_"+trigger_passed;
+  TString hist_name="h_reweight_trigfatjet_pt_eta_"+trigger_passed;
   
   std::cout<<"Looking for hist: "<<hist_name<<std::endl;
 
@@ -785,6 +911,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
 	    //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
 	    continue; 
     }
+
     int assocTJ_ind=-1;
     
     std::vector<unsigned int> nonmuon_cand_index;
@@ -1083,10 +1210,23 @@ float GbbTupleAna::getTrigJetWeight(int i_trig_jet,TString trigger_passed){
 
 }
 
+float GbbTupleAna::getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed){
+
+	return m_reweightHistos[trigger_passed].get()->GetBinContent(m_reweightHistos[trigger_passed].get()->FindBin(trigfjpt/1e3,trigfjeta));
+
+}
+
+
 
 void GbbTupleAna::FillReweightInfo(int i_trig_jet, float event_weight, TString nametag){
   
   m_HistogramService->FastFillTH2D("reweight_trigjet_pt_eta_"+nametag,this->jet_pt->at(i_trig_jet)/1e3,this->jet_eta->at(i_trig_jet),75,0,2500.,10,-2.5,2.5,event_weight);
+
+}
+
+void GbbTupleAna::FillFatReweightInfo(float trigfat_pt,float trigfat_eta, float event_weight, TString nametag){
+  
+  m_HistogramService->FastFillTH2D("reweight_trigfatjet_pt_eta_"+nametag,trigfat_pt/1e3,trigfat_eta,75,0,2500.,10,-2.5,2.5,event_weight);
 
 }
 
@@ -1175,10 +1315,10 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   }
 
   //in Fat jet pt bins
-  TString fatptlabel=this->getFatjetPtLabel(this->fat_pt->at(gbbcand->fat_index)/1e3);
+  /*TString fatptlabel=this->getFatjetPtLabel(this->fat_pt->at(gbbcand->fat_index)/1e3);
   m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
   m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
-
+  */
   
 
 
@@ -1187,10 +1327,10 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   if(m_isNominal){
     
     m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    //m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     
-    if(this->eve_isMC) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-    else m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
+    else if(!this->eve_isMC) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
        
 
     
@@ -1253,8 +1393,8 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   if(!m_isNominal){
     m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
 
-    if(this->eve_isMC) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-    else m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
+    else if(!this->eve_isMC) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
   
   }else if(nametag.Contains("ANTITAG")) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
   m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjD2"+nametag,this->fat_D2->at(gbbcand->fat_index),250,0.,4.5,event_weight);

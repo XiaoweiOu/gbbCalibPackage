@@ -12,7 +12,6 @@
 #include "HistogramService.h"
 #include <memory>
 #include "FlavourFracCorrector.h"
-#include "TrackSmearer.h"
 #include "TEnv.h"
 #include "TRandom3.h"
 
@@ -120,8 +119,11 @@ private:
 
 
 	float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
+	float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
 	
 	void FillReweightInfo(int i_trig_jet, float event_weight,TString nametag="");
+	void FillFatReweightInfo(float trigfat_pt,float trigfat_eta, float event_weight,TString nametag="");
+
 	void FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag="");
 	void FillTriggerTurnOnHistograms(int i_trigjet, float event_weight);
 	
