@@ -939,11 +939,13 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
       //}
 	
       int n_assoc_selmuon=0;
-      
+      bool hasTruthMuon=false;
+
       for(unsigned int j=0; j<this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
 	      
 	      if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
 		      n_assoc_selmuon++;
+		      if(this->muo_hasTruth->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))) hasTruthMuon=true;
 	      }
 	      
       }
@@ -1046,7 +1048,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
 
     //nonmuon-jet: leading associated track jet that is not the muon jet
     if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
-    
+  
     //check if leading two associated track jets are used
     bool leading_2trackjets=false;
     if(nonmuon_cand_index.size() && muonjet_index!=999){
@@ -1348,6 +1350,53 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
       m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
       m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
       
+      bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
+      this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);
+      if(hasConversion){
+	m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*1.1);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*0.9);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*0.9);	
+      }else{
+	m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+      }
+
+      if(hasHadMatInt){
+	m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*1.1);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*0.9);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*0.9);	
+      }else{
+	m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+      }
+
+      if(hasLightLongLived){
+	m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*1.1);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*0.9);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*0.9);	
+      }else{
+	m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+      }
+
+      if(hasNoTruthMu){
+	m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*3.);
+	m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*3.);
+      }else{
+	m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*3.);
+        m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*3.);
+      }
+
+
     }
 
   }
@@ -2011,6 +2060,17 @@ std::vector<TString> GbbTupleAna::SplitString(TString str, char delim){
 
 }
 
+void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMuon){
+
+  if(this->trkjet_hasHadMatInt->at(gbbcand->muojet_index) || this->trkjet_hasHadMatInt->at(gbbcand->nonmuojet_index)) hasHadMatInt=true;
+
+  if(this->trkjet_hasConversion->at(gbbcand->muojet_index) || this->trkjet_hasConversion->at(gbbcand->nonmuojet_index)) hasConversion=true;
+  
+  if(this->trkjet_hasKShort->at(gbbcand->muojet_index) || this->trkjet_hasKShort->at(gbbcand->nonmuojet_index) || this->trkjet_hasLambda->at(gbbcand->muojet_index) || this->trkjet_hasLambda->at(gbbcand->nonmuojet_index)) hasLightLongLived=true;
+
+  if(!gbbcand->hasTruthMuon) hasNoTruthMuon=true;
+
+}
 
 
 std::vector<float> GbbTupleAna::SplitStringD(TString str, char delim){

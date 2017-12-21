@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Feb 17 13:09:15 2016 by ROOT version 6.02/12
+// Wed Dec 20 14:21:20 2017 by ROOT version 6.02/12
 // from TTree FlavourTagging_Nominal/FlavourTagging_Nominal
-// found on file: data15_13TeV.00284154.physics_Main.merge.DAOD_FTAG1.f643_m1518_p2528.root
+// found on file: ../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root
 //////////////////////////////////////////////////////////
 
 #ifndef TupleAna_h
@@ -13,8 +13,6 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
-#include "vector"
-#include "vector"
 #include "vector"
 #include "vector"
 
@@ -30,17 +28,17 @@ public :
    // Declaration of leaf types
    Int_t           eve_num;
    Int_t           eve_run;
-   Float_t           eve_mu;
+   Float_t         eve_mu;
    Int_t           eve_mc_num;
    Int_t           eve_mc_chan;
    Float_t         eve_mc_w;
    Float_t         eve_pu_w;
-   Float_t         eve_BtagSFWeightNom;
-   vector<float>   *eve_BtagSFWeightSys;
+   vector<float>   *eve_pu_w_sys;
    Bool_t          eve_isMC;
    Int_t           eve_hasPV;
    Int_t           eve_isCleanEvent;
    Int_t           eve_passGRL;
+   Float_t         eve_PVz;
    Int_t           eve_HLT_j15;
    Int_t           eve_HLT_j25;
    Int_t           eve_HLT_j35;
@@ -62,12 +60,41 @@ public :
    Int_t           eve_HLT_j420;
    Int_t           eve_HLT_j440;
    Int_t           eve_HLT_j460;
+   Int_t           eve_HLT_j360_a10_lcw_L1J100;
+   Int_t           eve_HLT_j380_a10_lcw_L1J100;
+   Int_t           eve_HLT_j400_a10_lcw_L1J100;
+   Int_t           eve_HLT_j420_a10_lcw_L1J100;
+   Float_t         eve_HLT_j15_ps;
+   Float_t         eve_HLT_j25_ps;
+   Float_t         eve_HLT_j35_ps;
+   Float_t         eve_HLT_j45_ps;
+   Float_t         eve_HLT_j55_ps;
+   Float_t         eve_HLT_j60_ps;
+   Float_t         eve_HLT_j85_ps;
+   Float_t         eve_HLT_j100_ps;
+   Float_t         eve_HLT_j110_ps;
+   Float_t         eve_HLT_j150_ps;
+   Float_t         eve_HLT_j175_ps;
+   Float_t         eve_HLT_j200_ps;
+   Float_t         eve_HLT_j260_ps;
+   Float_t         eve_HLT_j300_ps;
+   Float_t         eve_HLT_j320_ps;
+   Float_t         eve_HLT_j380_ps;
+   Float_t         eve_HLT_j400_ps;
+   Float_t         eve_HLT_j420_ps;
+   Float_t         eve_HLT_j360_a10_lcw_L1J100_ps;
+   Float_t         eve_HLT_j380_a10_lcw_L1J100_ps;
+   Float_t         eve_HLT_j400_a10_lcw_L1J100_ps;
+   Float_t         eve_HLT_j420_a10_lcw_L1J100_ps;
+   Float_t         eve_BtagSFWeightNom;
+   vector<float>   *eve_BtagSFWeightSys;
    vector<float>   *jet_pt;
    vector<float>   *jet_phi;
    vector<float>   *jet_eta;
    vector<float>   *jet_E;
    vector<int>     *jet_ind;
    vector<float>   *jet_JVT;
+   vector<float>   *jet_JvtSF;
    vector<int>     *jet_clean;
    vector<float>   *truthjet_pt;
    vector<float>   *truthjet_phi;
@@ -78,14 +105,14 @@ public :
    vector<vector<float> > *trkjet_assocTrk_eta;
    vector<vector<float> > *trkjet_assocTrk_d0;
    vector<vector<float> > *trkjet_assocTrk_z0;
-   vector<std::vector<float>> *trkjet_assocTrk_d0_smear;
-   vector<std::vector<float>> *trkjet_assocTrk_z0_smear;
-   vector<std::vector<float>> *trkjet_assocTrk_d0_smear_up;
-   vector<std::vector<float>> *trkjet_assocTrk_z0_smear_up;
-   vector<std::vector<float>> *trkjet_assocTrk_d0_smear_down;
-   vector<std::vector<float>> *trkjet_assocTrk_z0_smear_down;
-   // vector<vector<float> > *trkjet_assocTrk_z0wrtPV;
+   vector<vector<float> > *trkjet_assocTrk_d0_smear;
+   vector<vector<float> > *trkjet_assocTrk_z0_smear;
+   vector<vector<float> > *trkjet_assocTrk_d0_smear_up;
+   vector<vector<float> > *trkjet_assocTrk_z0_smear_up;
+   vector<vector<float> > *trkjet_assocTrk_d0_smear_down;
+   vector<vector<float> > *trkjet_assocTrk_z0_smear_down;
    vector<vector<float> > *trkjet_assocTrk_theta;
+   vector<vector<float> > *trkjet_assocTrk_phi0;
    vector<vector<float> > *trkjet_assocTrk_qoverp;
    vector<vector<float> > *trkjet_assocTrk_d0err;
    vector<vector<float> > *trkjet_assocTrk_z0err;
@@ -94,11 +121,11 @@ public :
    vector<vector<int> > *trkjet_assocTrk_nPixelHits;
    vector<vector<int> > *trkjet_assocTrk_nSCTHits;
    vector<vector<int> > *trkjet_assocTrk_nIBLHits;
-   vector<std::vector<int>> *trkjet_assocTrk_expectIBLHit;
-   vector<std::vector<int>> *trkjet_assocTrk_nBLayerHits;
-   vector<std::vector<int>> *trkjet_assocTrk_expectBLayerHit;
-   vector<std::vector<int>> *trkjet_assocTrk_isLoose;
-   vector<std::vector<int>> *trkjet_assocTrk_isTightPrimary;
+   vector<vector<int> > *trkjet_assocTrk_expectIBLHit;
+   vector<vector<int> > *trkjet_assocTrk_nBLayerHits;
+   vector<vector<int> > *trkjet_assocTrk_expectBLayerHit;
+   vector<vector<int> > *trkjet_assocTrk_isLoose;
+   vector<vector<int> > *trkjet_assocTrk_isTightPrimary;
    vector<float>   *fat_E;
    vector<float>   *fat_pt;
    vector<float>   *fat_phi;
@@ -109,7 +136,7 @@ public :
    vector<float>   *fat_tau32;
    vector<float>   *fat_C2;
    vector<float>   *fat_D2;
-   vector<int>   *fat_isGbbJet;
+   vector<int>     *fat_isGbbJet;
    vector<vector<int> > *fat_assocTrkjet_ind;
    vector<vector<int> > *fat_assocTrkjetDR_ind;
    vector<vector<float> > *fat_assocTrk_pt;
@@ -120,11 +147,15 @@ public :
    vector<float>   *muo_eta;
    vector<float>   *muo_E;
    vector<int>     *muo_ind;
-   vector<int>     *muo_quality;
    vector<float>   *muo_z0;
-   vector<float>   *muo_z0sintheta;
    vector<float>   *muo_d0;
+   vector<float>   *muo_z0sintheta;
+   vector<int>     *muo_quality;
    vector<int>     *muo_acceptedTool;
+   vector<float>   *muo_LooseIDSF;
+   vector<float>   *muo_MediumIDSF;
+   vector<float>   *muo_TightIDSF;
+   vector<float>   *muo_hasTruth;
    vector<float>   *trkjet_pt;
    vector<float>   *trkjet_phi;
    vector<float>   *trkjet_eta;
@@ -135,14 +166,39 @@ public :
    vector<float>   *trkjet_MV2c20;
    vector<float>   *trkjet_MVb;
    vector<int>     *trkjet_truth;
-   vector<int>     *trkjet_isMuonJet;
-   vector<int>     *trkjet_isNonMuonJet;
    vector<vector<float> > *trkjet_assocMuon_dR;
    vector<vector<int> > *trkjet_assocMuon_index;
    vector<int>     *trkjet_assocMuon_n;
+   vector<int>     *trkjet_isMuonJet;
+   vector<int>     *trkjet_isNonMuonJet;
+   vector<int>     *trkjet_assocTruthMuon_parentpdgId;
+   vector<float>   *trkjet_assocTruthMuon_ClosestUnmatched_dR;
+   vector<float>   *trkjet_assocMuon_Fake_quality;
+   vector<int>     *trkjet_hasKShort;
+   vector<int>     *trkjet_hasLambda;
+   vector<int>     *trkjet_hasConversion;
+   vector<int>     *trkjet_hasHadMatInt;
+   vector<int>     *trkjet_BHad_n;
+   vector<int>     *trkjet_CHad_n;
+   vector<int>     *trkjet_BHad_pdgId;
+   vector<float>   *trkjet_BHad_pt;
+   vector<float>   *trkjet_BHad_eta;
+   vector<float>   *trkjet_BHad_phi;
+   vector<float>   *trkjet_BHad_e;
+   vector<vector<int> > *trkjet_BHadDecays_pdgId;
+   vector<vector<float> > *trkjet_BHadDecays_pt;
+   vector<vector<float> > *trkjet_BHadDecays_eta;
+   vector<vector<float> > *trkjet_BHadDecays_phi;
+   vector<vector<float> > *trkjet_BHadDecays_e;
    vector<float>   *trigjet_pt;
    vector<float>   *trigjet_phi;
    vector<float>   *trigjet_eta;
+   vector<float>   *trigfatjet_pt;
+   vector<float>   *trigfatjet_phi;
+   vector<float>   *trigfatjet_eta;
+   vector<float>   *L1jet_pt;
+   vector<float>   *L1jet_phi;
+   vector<float>   *L1jet_eta;
 
    // List of branches
    TBranch        *b_eve_num;   //!
@@ -152,12 +208,12 @@ public :
    TBranch        *b_eve_mc_chan;   //!
    TBranch        *b_eve_mc_w;   //!
    TBranch        *b_eve_pu_w;   //!
+   TBranch        *b_eve_pu_w_sys;   //!
    TBranch        *b_eve_isMC;   //!
-   TBranch        *b_eve_BtagSFWeightNom; //!
-   TBranch        *b_eve_BtagSFWeightSys; //!
    TBranch        *b_eve_hasPV;   //!
    TBranch        *b_eve_isCleanEvent;   //!
    TBranch        *b_eve_passGRL;   //!
+   TBranch        *b_eve_PVz;   //!
    TBranch        *b_eve_HLT_j15;   //!
    TBranch        *b_eve_HLT_j25;   //!
    TBranch        *b_eve_HLT_j35;   //!
@@ -179,12 +235,41 @@ public :
    TBranch        *b_eve_HLT_j420;   //!
    TBranch        *b_eve_HLT_j440;   //!
    TBranch        *b_eve_HLT_j460;   //!
+   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j380_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j400_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j420_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j15_ps;   //!
+   TBranch        *b_eve_HLT_j25_ps;   //!
+   TBranch        *b_eve_HLT_j35_ps;   //!
+   TBranch        *b_eve_HLT_j45_ps;   //!
+   TBranch        *b_eve_HLT_j55_ps;   //!
+   TBranch        *b_eve_HLT_j60_ps;   //!
+   TBranch        *b_eve_HLT_j85_ps;   //!
+   TBranch        *b_eve_HLT_j100_ps;   //!
+   TBranch        *b_eve_HLT_j110_ps;   //!
+   TBranch        *b_eve_HLT_j150_ps;   //!
+   TBranch        *b_eve_HLT_j175_ps;   //!
+   TBranch        *b_eve_HLT_j200_ps;   //!
+   TBranch        *b_eve_HLT_j260_ps;   //!
+   TBranch        *b_eve_HLT_j300_ps;   //!
+   TBranch        *b_eve_HLT_j320_ps;   //!
+   TBranch        *b_eve_HLT_j380_ps;   //!
+   TBranch        *b_eve_HLT_j400_ps;   //!
+   TBranch        *b_eve_HLT_j420_ps;   //!
+   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j380_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j400_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j420_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_BtagSFWeightNom;   //!
+   TBranch        *b_eve_BtagSFWeightSys;   //!
    TBranch        *b_jet_pt;   //!
    TBranch        *b_jet_phi;   //!
    TBranch        *b_jet_eta;   //!
    TBranch        *b_jet_E;   //!
    TBranch        *b_jet_ind;   //!
    TBranch        *b_jet_JVT;   //!
+   TBranch        *b_jet_JvtSF;   //!
    TBranch        *b_jet_clean;   //!
    TBranch        *b_truthjet_pt;   //!
    TBranch        *b_truthjet_phi;   //!
@@ -195,28 +280,28 @@ public :
    TBranch        *b_trkjet_assocTrk_eta;   //!
    TBranch        *b_trkjet_assocTrk_d0;   //!
    TBranch        *b_trkjet_assocTrk_z0;   //!
-   TBranch        *b_trkjet_assocTrk_d0_smear; //!
-   TBranch        *b_trkjet_assocTrk_z0_smear; //!
-   TBranch        *b_trkjet_assocTrk_d0_smear_up; //!
-   TBranch        *b_trkjet_assocTrk_z0_smear_up; //!
-   TBranch        *b_trkjet_assocTrk_d0_smear_down; //!
-   TBranch        *b_trkjet_assocTrk_z0_smear_down; //!
-   //   TBranch        *b_trkjet_assocTrk_z0wrtPV;   //!
+   TBranch        *b_trkjet_assocTrk_d0_smear;   //!
+   TBranch        *b_trkjet_assocTrk_z0_smear;   //!
+   TBranch        *b_trkjet_assocTrk_d0_smear_up;   //!
+   TBranch        *b_trkjet_assocTrk_z0_smear_up;   //!
+   TBranch        *b_trkjet_assocTrk_d0_smear_down;   //!
+   TBranch        *b_trkjet_assocTrk_z0_smear_down;   //!
    TBranch        *b_trkjet_assocTrk_theta;   //!
+   TBranch        *b_trkjet_assocTrk_phi0;   //!
    TBranch        *b_trkjet_assocTrk_qoverp;   //!
    TBranch        *b_trkjet_assocTrk_d0err;   //!
    TBranch        *b_trkjet_assocTrk_z0err;   //!
    TBranch        *b_trkjet_assocTrk_thetaerr;   //!
    TBranch        *b_trkjet_assocTrk_phi0err;   //!
-   TBranch        *b_trkjet_assocTrk_nPixelHits;   //!                                                                                                                                                                                     
+   TBranch        *b_trkjet_assocTrk_nPixelHits;   //!
    TBranch        *b_trkjet_assocTrk_nSCTHits;   //!
    TBranch        *b_trkjet_assocTrk_nIBLHits;   //!
-   TBranch        *b_trkjet_assocTrk_expectIBLHit; //!
-   TBranch        *b_trkjet_assocTrk_nBLayerHits;//!
-   TBranch        *b_trkjet_assocTrk_expectBLayerHit;//!
-   TBranch        *b_trkjet_assocTrk_isLoose;//!
-   TBranch        *b_trkjet_assocTrk_isTightPrimary;//!
-   TBranch        *b_fat_E; //!
+   TBranch        *b_trkjet_assocTrk_expectIBLHit;   //!
+   TBranch        *b_trkjet_assocTrk_nBLayerHits;   //!
+   TBranch        *b_trkjet_assocTrk_expectBLayerHit;   //!
+   TBranch        *b_trkjet_assocTrk_isLoose;   //!
+   TBranch        *b_trkjet_assocTrk_isTightPrimary;   //!
+   TBranch        *b_fat_E;   //!
    TBranch        *b_fat_pt;   //!
    TBranch        *b_fat_phi;   //!
    TBranch        *b_fat_eta;   //!
@@ -226,9 +311,9 @@ public :
    TBranch        *b_fat_tau32;   //!
    TBranch        *b_fat_C2;   //!
    TBranch        *b_fat_D2;   //!
-   TBranch        *b_fat_isGbbJet; //!
-   TBranch        *b_fat_assocTrkjetDR_ind; //!
+   TBranch        *b_fat_isGbbJet;   //!
    TBranch        *b_fat_assocTrkjet_ind;   //!
+   TBranch        *b_fat_assocTrkjetDR_ind;   //!
    TBranch        *b_fat_assocTrk_pt;   //!
    TBranch        *b_fat_assocTrk_eta;   //!
    TBranch        *b_fat_assocTrk_phi;   //!
@@ -237,11 +322,15 @@ public :
    TBranch        *b_muo_eta;   //!
    TBranch        *b_muo_E;   //!
    TBranch        *b_muo_ind;   //!
-   TBranch        *b_muo_quality;   //!
    TBranch        *b_muo_z0;   //!
-   TBranch        *b_muo_z0sintheta;   //!
    TBranch        *b_muo_d0;   //!
-   TBranch        *b_muo_acceptedTool;   //!                                                                                                                                                                                               
+   TBranch        *b_muo_z0sintheta;   //!
+   TBranch        *b_muo_quality;   //!
+   TBranch        *b_muo_acceptedTool;   //!
+   TBranch        *b_muo_LooseIDSF;   //!
+   TBranch        *b_muo_MediumIDSF;   //!
+   TBranch        *b_muo_TightIDSF;   //!
+   TBranch        *b_muo_hasTruth;   //!
    TBranch        *b_trkjet_pt;   //!
    TBranch        *b_trkjet_phi;   //!
    TBranch        *b_trkjet_eta;   //!
@@ -255,14 +344,38 @@ public :
    TBranch        *b_trkjet_assocMuon_dR;   //!
    TBranch        *b_trkjet_assocMuon_index;   //!
    TBranch        *b_trkjet_assocMuon_n;   //!
-   TBranch        *b_trkjet_isMuonJet; //!
-   TBranch        *b_trkjet_isNonMuonJet; //!
-   TBranch        *b_trigjet_pt; //!
-   TBranch        *b_trigjet_eta;//!
-   TBranch        *b_trigjet_phi; //!
+   TBranch        *b_trkjet_isMuonJet;   //!
+   TBranch        *b_trkjet_isNonMuonJet;   //!
+   TBranch        *b_trkjet_assocTruthMuon_parentpdgId;   //!
+   TBranch        *b_trkjet_assocTruthMuon_ClosestUnmatched_dR;   //!
+   TBranch        *b_trkjet_assocMuon_Fake_quality;   //!
+   TBranch        *b_trkjet_hasKShort;   //!
+   TBranch        *b_trkjet_hasLambda;   //!
+   TBranch        *b_trkjet_hasConversion;   //!
+   TBranch        *b_trkjet_hasHadMatInt;   //!
+   TBranch        *b_trkjet_BHad_n;   //!
+   TBranch        *b_trkjet_CHad_n;   //!
+   TBranch        *b_trkjet_BHad_pdgId;   //!
+   TBranch        *b_trkjet_BHad_pt;   //!
+   TBranch        *b_trkjet_BHad_eta;   //!
+   TBranch        *b_trkjet_BHad_phi;   //!
+   TBranch        *b_trkjet_BHad_e;   //!
+   TBranch        *b_trkjet_BHadDecays_pdgId;   //!
+   TBranch        *b_trkjet_BHadDecays_pt;   //!
+   TBranch        *b_trkjet_BHadDecays_eta;   //!
+   TBranch        *b_trkjet_BHadDecays_phi;   //!
+   TBranch        *b_trkjet_BHadDecays_e;   //!
+   TBranch        *b_trigjet_pt;   //!
+   TBranch        *b_trigjet_phi;   //!
+   TBranch        *b_trigjet_eta;   //!
+   TBranch        *b_trigfatjet_pt;   //!
+   TBranch        *b_trigfatjet_phi;   //!
+   TBranch        *b_trigfatjet_eta;   //!
+   TBranch        *b_L1jet_pt;   //!
+   TBranch        *b_L1jet_phi;   //!
+   TBranch        *b_L1jet_eta;   //!
 
-   TupleAna();
-   TupleAna(TTree *tree);
+   TupleAna(TTree *tree=0);
    virtual ~TupleAna();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
@@ -271,26 +384,19 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-
-
 };
 
 #endif
 
 #ifdef TupleAna_cxx
-
-TupleAna::TupleAna() : fChain(0) {
-
-}
-
 TupleAna::TupleAna(TTree *tree) : fChain(0) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("./testfile/data15_13TeV.00284154.physics_Main.merge.DAOD_FTAG1.f643_m1518_p2528.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("./testfile/data15_13TeV.00284154.physics_Main.merge.DAOD_FTAG1.f643_m1518_p2528.root");
+         f = new TFile("../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root");
       }
       f->GetObject("FlavourTagging_Nominal",tree);
 
@@ -334,6 +440,7 @@ void TupleAna::Init(TTree *tree)
    // (once per file to be processed).
 
    // Set object pointer
+   eve_pu_w_sys = 0;
    eve_BtagSFWeightSys = 0;
    jet_pt = 0;
    jet_phi = 0;
@@ -341,6 +448,7 @@ void TupleAna::Init(TTree *tree)
    jet_E = 0;
    jet_ind = 0;
    jet_JVT = 0;
+   jet_JvtSF = 0;
    jet_clean = 0;
    truthjet_pt = 0;
    truthjet_phi = 0;
@@ -357,8 +465,8 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocTrk_z0_smear_up = 0;
    trkjet_assocTrk_d0_smear_down = 0;
    trkjet_assocTrk_z0_smear_down = 0;
-   //trkjet _assocTrk_z0wrtPV = 0;
    trkjet_assocTrk_theta = 0;
+   trkjet_assocTrk_phi0 = 0;
    trkjet_assocTrk_qoverp = 0;
    trkjet_assocTrk_d0err = 0;
    trkjet_assocTrk_z0err = 0;
@@ -372,8 +480,6 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocTrk_expectBLayerHit = 0;
    trkjet_assocTrk_isLoose = 0;
    trkjet_assocTrk_isTightPrimary = 0;
-   trkjet_isNonMuonJet = 0;
-   trkjet_isMuonJet = 0;
    fat_E = 0;
    fat_pt = 0;
    fat_phi = 0;
@@ -385,8 +491,8 @@ void TupleAna::Init(TTree *tree)
    fat_C2 = 0;
    fat_D2 = 0;
    fat_isGbbJet = 0;
-   fat_assocTrkjetDR_ind=0;
    fat_assocTrkjet_ind = 0;
+   fat_assocTrkjetDR_ind = 0;
    fat_assocTrk_pt = 0;
    fat_assocTrk_eta = 0;
    fat_assocTrk_phi = 0;
@@ -395,11 +501,15 @@ void TupleAna::Init(TTree *tree)
    muo_eta = 0;
    muo_E = 0;
    muo_ind = 0;
-   muo_quality = 0;
    muo_z0 = 0;
    muo_d0 = 0;
    muo_z0sintheta = 0;
-   muo_acceptedTool =0;
+   muo_quality = 0;
+   muo_acceptedTool = 0;
+   muo_LooseIDSF = 0;
+   muo_MediumIDSF = 0;
+   muo_TightIDSF = 0;
+   muo_hasTruth = 0;
    trkjet_pt = 0;
    trkjet_phi = 0;
    trkjet_eta = 0;
@@ -413,9 +523,36 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocMuon_dR = 0;
    trkjet_assocMuon_index = 0;
    trkjet_assocMuon_n = 0;
-   trigjet_pt=0;
-   trigjet_eta=0;
-   trigjet_phi=0;
+   trkjet_isMuonJet = 0;
+   trkjet_isNonMuonJet = 0;
+   trkjet_assocTruthMuon_parentpdgId = 0;
+   trkjet_assocTruthMuon_ClosestUnmatched_dR = 0;
+   trkjet_assocMuon_Fake_quality = 0;
+   trkjet_hasKShort = 0;
+   trkjet_hasLambda = 0;
+   trkjet_hasConversion = 0;
+   trkjet_hasHadMatInt = 0;
+   trkjet_BHad_n = 0;
+   trkjet_CHad_n = 0;
+   trkjet_BHad_pdgId = 0;
+   trkjet_BHad_pt = 0;
+   trkjet_BHad_eta = 0;
+   trkjet_BHad_phi = 0;
+   trkjet_BHad_e = 0;
+   trkjet_BHadDecays_pdgId = 0;
+   trkjet_BHadDecays_pt = 0;
+   trkjet_BHadDecays_eta = 0;
+   trkjet_BHadDecays_phi = 0;
+   trkjet_BHadDecays_e = 0;
+   trigjet_pt = 0;
+   trigjet_phi = 0;
+   trigjet_eta = 0;
+   trigfatjet_pt = 0;
+   trigfatjet_phi = 0;
+   trigfatjet_eta = 0;
+   L1jet_pt = 0;
+   L1jet_phi = 0;
+   L1jet_eta = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -429,12 +566,12 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_mc_chan", &eve_mc_chan, &b_eve_mc_chan);
    fChain->SetBranchAddress("eve_mc_w", &eve_mc_w, &b_eve_mc_w);
    fChain->SetBranchAddress("eve_pu_w", &eve_pu_w, &b_eve_pu_w);
+   fChain->SetBranchAddress("eve_pu_w_sys", &eve_pu_w_sys, &b_eve_pu_w_sys);
    fChain->SetBranchAddress("eve_isMC", &eve_isMC, &b_eve_isMC);
-   fChain->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
-   fChain->SetBranchAddress("eve_BtagSFWeightSys", &eve_BtagSFWeightSys, &b_eve_BtagSFWeightSys);
    fChain->SetBranchAddress("eve_hasPV", &eve_hasPV, &b_eve_hasPV);
    fChain->SetBranchAddress("eve_isCleanEvent", &eve_isCleanEvent, &b_eve_isCleanEvent);
    fChain->SetBranchAddress("eve_passGRL", &eve_passGRL, &b_eve_passGRL);
+   fChain->SetBranchAddress("eve_PVz", &eve_PVz, &b_eve_PVz);
    fChain->SetBranchAddress("eve_HLT_j15", &eve_HLT_j15, &b_eve_HLT_j15);
    fChain->SetBranchAddress("eve_HLT_j25", &eve_HLT_j25, &b_eve_HLT_j25);
    fChain->SetBranchAddress("eve_HLT_j35", &eve_HLT_j35, &b_eve_HLT_j35);
@@ -456,12 +593,41 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_HLT_j420", &eve_HLT_j420, &b_eve_HLT_j420);
    fChain->SetBranchAddress("eve_HLT_j440", &eve_HLT_j440, &b_eve_HLT_j440);
    fChain->SetBranchAddress("eve_HLT_j460", &eve_HLT_j460, &b_eve_HLT_j460);
+   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100", &eve_HLT_j360_a10_lcw_L1J100, &b_eve_HLT_j360_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j380_a10_lcw_L1J100", &eve_HLT_j380_a10_lcw_L1J100, &b_eve_HLT_j380_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100", &eve_HLT_j400_a10_lcw_L1J100, &b_eve_HLT_j400_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100", &eve_HLT_j420_a10_lcw_L1J100, &b_eve_HLT_j420_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j15_ps", &eve_HLT_j15_ps, &b_eve_HLT_j15_ps);
+   fChain->SetBranchAddress("eve_HLT_j25_ps", &eve_HLT_j25_ps, &b_eve_HLT_j25_ps);
+   fChain->SetBranchAddress("eve_HLT_j35_ps", &eve_HLT_j35_ps, &b_eve_HLT_j35_ps);
+   fChain->SetBranchAddress("eve_HLT_j45_ps", &eve_HLT_j45_ps, &b_eve_HLT_j45_ps);
+   fChain->SetBranchAddress("eve_HLT_j55_ps", &eve_HLT_j55_ps, &b_eve_HLT_j55_ps);
+   fChain->SetBranchAddress("eve_HLT_j60_ps", &eve_HLT_j60_ps, &b_eve_HLT_j60_ps);
+   fChain->SetBranchAddress("eve_HLT_j85_ps", &eve_HLT_j85_ps, &b_eve_HLT_j85_ps);
+   fChain->SetBranchAddress("eve_HLT_j100_ps", &eve_HLT_j100_ps, &b_eve_HLT_j100_ps);
+   fChain->SetBranchAddress("eve_HLT_j110_ps", &eve_HLT_j110_ps, &b_eve_HLT_j110_ps);
+   fChain->SetBranchAddress("eve_HLT_j150_ps", &eve_HLT_j150_ps, &b_eve_HLT_j150_ps);
+   fChain->SetBranchAddress("eve_HLT_j175_ps", &eve_HLT_j175_ps, &b_eve_HLT_j175_ps);
+   fChain->SetBranchAddress("eve_HLT_j200_ps", &eve_HLT_j200_ps, &b_eve_HLT_j200_ps);
+   fChain->SetBranchAddress("eve_HLT_j260_ps", &eve_HLT_j260_ps, &b_eve_HLT_j260_ps);
+   fChain->SetBranchAddress("eve_HLT_j300_ps", &eve_HLT_j300_ps, &b_eve_HLT_j300_ps);
+   fChain->SetBranchAddress("eve_HLT_j320_ps", &eve_HLT_j320_ps, &b_eve_HLT_j320_ps);
+   fChain->SetBranchAddress("eve_HLT_j380_ps", &eve_HLT_j380_ps, &b_eve_HLT_j380_ps);
+   fChain->SetBranchAddress("eve_HLT_j400_ps", &eve_HLT_j400_ps, &b_eve_HLT_j400_ps);
+   fChain->SetBranchAddress("eve_HLT_j420_ps", &eve_HLT_j420_ps, &b_eve_HLT_j420_ps);
+   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100_ps", &eve_HLT_j360_a10_lcw_L1J100_ps, &b_eve_HLT_j360_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j380_a10_lcw_L1J100_ps", &eve_HLT_j380_a10_lcw_L1J100_ps, &b_eve_HLT_j380_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100_ps", &eve_HLT_j400_a10_lcw_L1J100_ps, &b_eve_HLT_j400_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100_ps", &eve_HLT_j420_a10_lcw_L1J100_ps, &b_eve_HLT_j420_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
+   fChain->SetBranchAddress("eve_BtagSFWeightSys", &eve_BtagSFWeightSys, &b_eve_BtagSFWeightSys);
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
    fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
    fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);
    fChain->SetBranchAddress("jet_E", &jet_E, &b_jet_E);
    fChain->SetBranchAddress("jet_ind", &jet_ind, &b_jet_ind);
    fChain->SetBranchAddress("jet_JVT", &jet_JVT, &b_jet_JVT);
+   fChain->SetBranchAddress("jet_JvtSF", &jet_JvtSF, &b_jet_JvtSF);
    fChain->SetBranchAddress("jet_clean", &jet_clean, &b_jet_clean);
    fChain->SetBranchAddress("truthjet_pt", &truthjet_pt, &b_truthjet_pt);
    fChain->SetBranchAddress("truthjet_phi", &truthjet_phi, &b_truthjet_phi);
@@ -478,8 +644,8 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_up", &trkjet_assocTrk_z0_smear_up, &b_trkjet_assocTrk_z0_smear_up);
    fChain->SetBranchAddress("trkjet_assocTrk_d0_smear_down", &trkjet_assocTrk_d0_smear_down, &b_trkjet_assocTrk_d0_smear_down);
    fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_down", &trkjet_assocTrk_z0_smear_down, &b_trkjet_assocTrk_z0_smear_down);
-   //fChain->SetBranchAddress("trkjet_assocTrk_z0wrtPV", &trkjet_assocTrk_z0wrtPV, &b_trkjet_assocTrk_z0wrtPV);
    fChain->SetBranchAddress("trkjet_assocTrk_theta", &trkjet_assocTrk_theta, &b_trkjet_assocTrk_theta);
+   fChain->SetBranchAddress("trkjet_assocTrk_phi0", &trkjet_assocTrk_phi0, &b_trkjet_assocTrk_phi0);
    fChain->SetBranchAddress("trkjet_assocTrk_qoverp", &trkjet_assocTrk_qoverp, &b_trkjet_assocTrk_qoverp);
    fChain->SetBranchAddress("trkjet_assocTrk_d0err", &trkjet_assocTrk_d0err, &b_trkjet_assocTrk_d0err);
    fChain->SetBranchAddress("trkjet_assocTrk_z0err", &trkjet_assocTrk_z0err, &b_trkjet_assocTrk_z0err);
@@ -491,7 +657,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocTrk_expectIBLHit", &trkjet_assocTrk_expectIBLHit, &b_trkjet_assocTrk_expectIBLHit);
    fChain->SetBranchAddress("trkjet_assocTrk_nBLayerHits", &trkjet_assocTrk_nBLayerHits, &b_trkjet_assocTrk_nBLayerHits);
    fChain->SetBranchAddress("trkjet_assocTrk_expectBLayerHit", &trkjet_assocTrk_expectBLayerHit, &b_trkjet_assocTrk_expectBLayerHit);
-  fChain->SetBranchAddress("trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
+   fChain->SetBranchAddress("trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
    fChain->SetBranchAddress("trkjet_assocTrk_isTightPrimary", &trkjet_assocTrk_isTightPrimary, &b_trkjet_assocTrk_isTightPrimary);
    fChain->SetBranchAddress("fat_E", &fat_E, &b_fat_E);
    fChain->SetBranchAddress("fat_pt", &fat_pt, &b_fat_pt);
@@ -504,8 +670,8 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("fat_C2", &fat_C2, &b_fat_C2);
    fChain->SetBranchAddress("fat_D2", &fat_D2, &b_fat_D2);
    fChain->SetBranchAddress("fat_isGbbJet", &fat_isGbbJet, &b_fat_isGbbJet);
-   fChain->SetBranchAddress("fat_assocTrkjetDR_ind", &fat_assocTrkjetDR_ind, &b_fat_assocTrkjetDR_ind);
    fChain->SetBranchAddress("fat_assocTrkjet_ind", &fat_assocTrkjet_ind, &b_fat_assocTrkjet_ind);
+   fChain->SetBranchAddress("fat_assocTrkjetDR_ind", &fat_assocTrkjetDR_ind, &b_fat_assocTrkjetDR_ind);
    fChain->SetBranchAddress("fat_assocTrk_pt", &fat_assocTrk_pt, &b_fat_assocTrk_pt);
    fChain->SetBranchAddress("fat_assocTrk_eta", &fat_assocTrk_eta, &b_fat_assocTrk_eta);
    fChain->SetBranchAddress("fat_assocTrk_phi", &fat_assocTrk_phi, &b_fat_assocTrk_phi);
@@ -514,11 +680,15 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("muo_eta", &muo_eta, &b_muo_eta);
    fChain->SetBranchAddress("muo_E", &muo_E, &b_muo_E);
    fChain->SetBranchAddress("muo_ind", &muo_ind, &b_muo_ind);
-   fChain->SetBranchAddress("muo_quality", &muo_quality, &b_muo_quality);
    fChain->SetBranchAddress("muo_z0", &muo_z0, &b_muo_z0);
-   fChain->SetBranchAddress("muo_z0sintheta", &muo_z0sintheta, &b_muo_z0sintheta);
    fChain->SetBranchAddress("muo_d0", &muo_d0, &b_muo_d0);
+   fChain->SetBranchAddress("muo_z0sintheta", &muo_z0sintheta, &b_muo_z0sintheta);
+   fChain->SetBranchAddress("muo_quality", &muo_quality, &b_muo_quality);
    fChain->SetBranchAddress("muo_acceptedTool", &muo_acceptedTool, &b_muo_acceptedTool);
+   fChain->SetBranchAddress("muo_LooseIDSF", &muo_LooseIDSF, &b_muo_LooseIDSF);
+   fChain->SetBranchAddress("muo_MediumIDSF", &muo_MediumIDSF, &b_muo_MediumIDSF);
+   fChain->SetBranchAddress("muo_TightIDSF", &muo_TightIDSF, &b_muo_TightIDSF);
+   fChain->SetBranchAddress("muo_hasTruth", &muo_hasTruth, &b_muo_hasTruth);
    fChain->SetBranchAddress("trkjet_pt", &trkjet_pt, &b_trkjet_pt);
    fChain->SetBranchAddress("trkjet_phi", &trkjet_phi, &b_trkjet_phi);
    fChain->SetBranchAddress("trkjet_eta", &trkjet_eta, &b_trkjet_eta);
@@ -534,9 +704,34 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocMuon_n", &trkjet_assocMuon_n, &b_trkjet_assocMuon_n);
    fChain->SetBranchAddress("trkjet_isMuonJet", &trkjet_isMuonJet, &b_trkjet_isMuonJet);
    fChain->SetBranchAddress("trkjet_isNonMuonJet", &trkjet_isNonMuonJet, &b_trkjet_isNonMuonJet);
+   fChain->SetBranchAddress("trkjet_assocTruthMuon_parentpdgId", &trkjet_assocTruthMuon_parentpdgId, &b_trkjet_assocTruthMuon_parentpdgId);
+   fChain->SetBranchAddress("trkjet_assocTruthMuon_ClosestUnmatched_dR", &trkjet_assocTruthMuon_ClosestUnmatched_dR, &b_trkjet_assocTruthMuon_ClosestUnmatched_dR);
+   fChain->SetBranchAddress("trkjet_assocMuon_Fake_quality", &trkjet_assocMuon_Fake_quality, &b_trkjet_assocMuon_Fake_quality);
+   fChain->SetBranchAddress("trkjet_hasKShort", &trkjet_hasKShort, &b_trkjet_hasKShort);
+   fChain->SetBranchAddress("trkjet_hasLambda", &trkjet_hasLambda, &b_trkjet_hasLambda);
+   fChain->SetBranchAddress("trkjet_hasConversion", &trkjet_hasConversion, &b_trkjet_hasConversion);
+   fChain->SetBranchAddress("trkjet_hasHadMatInt", &trkjet_hasHadMatInt, &b_trkjet_hasHadMatInt);
+   fChain->SetBranchAddress("trkjet_BHad_n", &trkjet_BHad_n, &b_trkjet_BHad_n);
+   fChain->SetBranchAddress("trkjet_CHad_n", &trkjet_CHad_n, &b_trkjet_CHad_n);
+   fChain->SetBranchAddress("trkjet_BHad_pdgId", &trkjet_BHad_pdgId, &b_trkjet_BHad_pdgId);
+   fChain->SetBranchAddress("trkjet_BHad_pt", &trkjet_BHad_pt, &b_trkjet_BHad_pt);
+   fChain->SetBranchAddress("trkjet_BHad_eta", &trkjet_BHad_eta, &b_trkjet_BHad_eta);
+   fChain->SetBranchAddress("trkjet_BHad_phi", &trkjet_BHad_phi, &b_trkjet_BHad_phi);
+   fChain->SetBranchAddress("trkjet_BHad_e", &trkjet_BHad_e, &b_trkjet_BHad_e);
+   fChain->SetBranchAddress("trkjet_BHadDecays_pdgId", &trkjet_BHadDecays_pdgId, &b_trkjet_BHadDecays_pdgId);
+   fChain->SetBranchAddress("trkjet_BHadDecays_pt", &trkjet_BHadDecays_pt, &b_trkjet_BHadDecays_pt);
+   fChain->SetBranchAddress("trkjet_BHadDecays_eta", &trkjet_BHadDecays_eta, &b_trkjet_BHadDecays_eta);
+   fChain->SetBranchAddress("trkjet_BHadDecays_phi", &trkjet_BHadDecays_phi, &b_trkjet_BHadDecays_phi);
+   fChain->SetBranchAddress("trkjet_BHadDecays_e", &trkjet_BHadDecays_e, &b_trkjet_BHadDecays_e);
    fChain->SetBranchAddress("trigjet_pt", &trigjet_pt, &b_trigjet_pt);
-   fChain->SetBranchAddress("trigjet_eta", &trigjet_eta, &b_trigjet_eta);
    fChain->SetBranchAddress("trigjet_phi", &trigjet_phi, &b_trigjet_phi);
+   fChain->SetBranchAddress("trigjet_eta", &trigjet_eta, &b_trigjet_eta);
+   fChain->SetBranchAddress("trigfatjet_pt", &trigfatjet_pt, &b_trigfatjet_pt);
+   fChain->SetBranchAddress("trigfatjet_phi", &trigfatjet_phi, &b_trigfatjet_phi);
+   fChain->SetBranchAddress("trigfatjet_eta", &trigfatjet_eta, &b_trigfatjet_eta);
+   fChain->SetBranchAddress("L1jet_pt", &L1jet_pt, &b_L1jet_pt);
+   fChain->SetBranchAddress("L1jet_phi", &L1jet_phi, &b_L1jet_phi);
+   fChain->SetBranchAddress("L1jet_eta", &L1jet_eta, &b_L1jet_eta);
    Notify();
 }
 

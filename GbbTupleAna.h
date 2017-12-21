@@ -16,12 +16,13 @@
 #include "TRandom3.h"
 
 struct GbbCandidate{
-
+  
   unsigned int fat_index;
   unsigned int muojet_index;
   unsigned int nonmuojet_index;
   float fat_pt;
   bool hasleading2trackjets;
+  bool hasTruthMuon;
 };
 
 
@@ -150,6 +151,8 @@ private:
 	void getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down);
 	void getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_down);                         
 	
+	void getSystematicsFlags(GbbCandidate *, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMu);
+
 	std::vector<TString> SplitString(TString str, char delim);
 	std::vector<float> SplitStringD(TString str, char delim);
 	
