@@ -11,6 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <iostream>
 
 // Header file for the classes stored in the TTree if any.
 #include "vector"
@@ -394,14 +395,14 @@ TupleAna::TupleAna(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root");
+     /*TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root");
       if (!f || !f->IsOpen()) {
          f = new TFile("../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root");
       }
-      f->GetObject("FlavourTagging_Nominal",tree);
+      f->GetObject("FlavourTagging_Nominal",tree);*/
+     cout<<"TupleAna constructor, no tree specified"<<endl;
 
-   }
-   Init(tree);
+   }else Init(tree);
 }
 
 TupleAna::~TupleAna()
