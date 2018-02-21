@@ -61,10 +61,6 @@ public :
    Int_t           eve_HLT_j420;
    Int_t           eve_HLT_j440;
    Int_t           eve_HLT_j460;
-   Int_t           eve_HLT_j360_a10_lcw_L1J100;
-   Int_t           eve_HLT_j380_a10_lcw_L1J100;
-   Int_t           eve_HLT_j400_a10_lcw_L1J100;
-   Int_t           eve_HLT_j420_a10_lcw_L1J100;
    Float_t         eve_HLT_j15_ps;
    Float_t         eve_HLT_j25_ps;
    Float_t         eve_HLT_j35_ps;
@@ -83,10 +79,6 @@ public :
    Float_t         eve_HLT_j380_ps;
    Float_t         eve_HLT_j400_ps;
    Float_t         eve_HLT_j420_ps;
-   Float_t         eve_HLT_j360_a10_lcw_L1J100_ps;
-   Float_t         eve_HLT_j380_a10_lcw_L1J100_ps;
-   Float_t         eve_HLT_j400_a10_lcw_L1J100_ps;
-   Float_t         eve_HLT_j420_a10_lcw_L1J100_ps;
    Float_t         eve_BtagSFWeightNom;
    vector<float>   *eve_BtagSFWeightSys;
    vector<float>   *jet_pt;
@@ -194,12 +186,6 @@ public :
    vector<float>   *trigjet_pt;
    vector<float>   *trigjet_phi;
    vector<float>   *trigjet_eta;
-   vector<float>   *trigfatjet_pt;
-   vector<float>   *trigfatjet_phi;
-   vector<float>   *trigfatjet_eta;
-   vector<float>   *L1jet_pt;
-   vector<float>   *L1jet_phi;
-   vector<float>   *L1jet_eta;
 
    // List of branches
    TBranch        *b_eve_num;   //!
@@ -236,10 +222,6 @@ public :
    TBranch        *b_eve_HLT_j420;   //!
    TBranch        *b_eve_HLT_j440;   //!
    TBranch        *b_eve_HLT_j460;   //!
-   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100;   //!
-   TBranch        *b_eve_HLT_j380_a10_lcw_L1J100;   //!
-   TBranch        *b_eve_HLT_j400_a10_lcw_L1J100;   //!
-   TBranch        *b_eve_HLT_j420_a10_lcw_L1J100;   //!
    TBranch        *b_eve_HLT_j15_ps;   //!
    TBranch        *b_eve_HLT_j25_ps;   //!
    TBranch        *b_eve_HLT_j35_ps;   //!
@@ -258,10 +240,6 @@ public :
    TBranch        *b_eve_HLT_j380_ps;   //!
    TBranch        *b_eve_HLT_j400_ps;   //!
    TBranch        *b_eve_HLT_j420_ps;   //!
-   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j380_a10_lcw_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j400_a10_lcw_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j420_a10_lcw_L1J100_ps;   //!
    TBranch        *b_eve_BtagSFWeightNom;   //!
    TBranch        *b_eve_BtagSFWeightSys;   //!
    TBranch        *b_jet_pt;   //!
@@ -369,12 +347,6 @@ public :
    TBranch        *b_trigjet_pt;   //!
    TBranch        *b_trigjet_phi;   //!
    TBranch        *b_trigjet_eta;   //!
-   TBranch        *b_trigfatjet_pt;   //!
-   TBranch        *b_trigfatjet_phi;   //!
-   TBranch        *b_trigfatjet_eta;   //!
-   TBranch        *b_L1jet_pt;   //!
-   TBranch        *b_L1jet_phi;   //!
-   TBranch        *b_L1jet_eta;   //!
 
    TupleAna(TTree *tree=0);
    virtual ~TupleAna();
@@ -548,12 +520,7 @@ void TupleAna::Init(TTree *tree)
    trigjet_pt = 0;
    trigjet_phi = 0;
    trigjet_eta = 0;
-   trigfatjet_pt = 0;
-   trigfatjet_phi = 0;
-   trigfatjet_eta = 0;
-   L1jet_pt = 0;
-   L1jet_phi = 0;
-   L1jet_eta = 0;
+
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -594,10 +561,6 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_HLT_j420", &eve_HLT_j420, &b_eve_HLT_j420);
    fChain->SetBranchAddress("eve_HLT_j440", &eve_HLT_j440, &b_eve_HLT_j440);
    fChain->SetBranchAddress("eve_HLT_j460", &eve_HLT_j460, &b_eve_HLT_j460);
-   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100", &eve_HLT_j360_a10_lcw_L1J100, &b_eve_HLT_j360_a10_lcw_L1J100);
-   fChain->SetBranchAddress("eve_HLT_j380_a10_lcw_L1J100", &eve_HLT_j380_a10_lcw_L1J100, &b_eve_HLT_j380_a10_lcw_L1J100);
-   fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100", &eve_HLT_j400_a10_lcw_L1J100, &b_eve_HLT_j400_a10_lcw_L1J100);
-   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100", &eve_HLT_j420_a10_lcw_L1J100, &b_eve_HLT_j420_a10_lcw_L1J100);
    fChain->SetBranchAddress("eve_HLT_j15_ps", &eve_HLT_j15_ps, &b_eve_HLT_j15_ps);
    fChain->SetBranchAddress("eve_HLT_j25_ps", &eve_HLT_j25_ps, &b_eve_HLT_j25_ps);
    fChain->SetBranchAddress("eve_HLT_j35_ps", &eve_HLT_j35_ps, &b_eve_HLT_j35_ps);
@@ -616,10 +579,6 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_HLT_j380_ps", &eve_HLT_j380_ps, &b_eve_HLT_j380_ps);
    fChain->SetBranchAddress("eve_HLT_j400_ps", &eve_HLT_j400_ps, &b_eve_HLT_j400_ps);
    fChain->SetBranchAddress("eve_HLT_j420_ps", &eve_HLT_j420_ps, &b_eve_HLT_j420_ps);
-   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100_ps", &eve_HLT_j360_a10_lcw_L1J100_ps, &b_eve_HLT_j360_a10_lcw_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j380_a10_lcw_L1J100_ps", &eve_HLT_j380_a10_lcw_L1J100_ps, &b_eve_HLT_j380_a10_lcw_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100_ps", &eve_HLT_j400_a10_lcw_L1J100_ps, &b_eve_HLT_j400_a10_lcw_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100_ps", &eve_HLT_j420_a10_lcw_L1J100_ps, &b_eve_HLT_j420_a10_lcw_L1J100_ps);
    fChain->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
    fChain->SetBranchAddress("eve_BtagSFWeightSys", &eve_BtagSFWeightSys, &b_eve_BtagSFWeightSys);
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
@@ -727,12 +686,6 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trigjet_pt", &trigjet_pt, &b_trigjet_pt);
    fChain->SetBranchAddress("trigjet_phi", &trigjet_phi, &b_trigjet_phi);
    fChain->SetBranchAddress("trigjet_eta", &trigjet_eta, &b_trigjet_eta);
-   fChain->SetBranchAddress("trigfatjet_pt", &trigfatjet_pt, &b_trigfatjet_pt);
-   fChain->SetBranchAddress("trigfatjet_phi", &trigfatjet_phi, &b_trigfatjet_phi);
-   fChain->SetBranchAddress("trigfatjet_eta", &trigfatjet_eta, &b_trigfatjet_eta);
-   fChain->SetBranchAddress("L1jet_pt", &L1jet_pt, &b_L1jet_pt);
-   fChain->SetBranchAddress("L1jet_phi", &L1jet_phi, &b_L1jet_phi);
-   fChain->SetBranchAddress("L1jet_eta", &L1jet_eta, &b_L1jet_eta);
    Notify();
 }
 
