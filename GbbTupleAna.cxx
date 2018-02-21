@@ -261,7 +261,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   updateFlag(eventFlag,GbbCuts::AllNtup,true);
 
   //=========================================
-  //1.) Event quantities & weight calculation
+  //1.) Event cleaning & weight calculation
   //=========================================
  
   float total_evt_weight=(this->eve_mc_w*this->eve_pu_w);
@@ -271,8 +271,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   //m_SumWeightTuple+=total_evt_weight;
   m_SumWeightTuple+=this->eve_pu_w;
-
-  //if(!(this->eve_HLT_j360)) return false;
 
   double mc_jet_ratio=1.;
 
@@ -318,26 +316,39 @@ bool GbbTupleAna::Processgbb(int i_evt){
   }
   
   if(selected_jets_pt.size()==0){
-    
     if(m_Debug) std::cout<<"processgbb(): No reco R=0.4 jets passing selection!"<<std::endl;
     return false;
   }
 
   if(m_Debug) std::cout<<"processgbb(): Get Trigger Jet!"<<std::endl;
 
-  int i_trigjet=selected_jets_ind.at(this->getLeadingObjIndex(&selected_jets_pt));
+  //int i_trigjet=selected_jets_ind.at(this->getLeadingObjIndex(&selected_jets_pt));
   int i_sublsmallRjet=-1;
   if(selected_jets_pt.size()>=2) i_sublsmallRjet=selected_jets_ind.at(this->getNthLeadingObjIndex(2,&selected_jets_pt));
 
-  //TRIGGER MATCHING (leading reco jet must be the leading triffer jet);
-  TLorentzVector trigjet_trlvl,trigjet_reco;
+  //TRIGGER MATCHING (leading reco jet must be the leading triger jet);
+  /*TLorentzVector trigjet_trlvl,trigjet_reco;
   trigjet_reco.SetPtEtaPhiM(this->jet_pt->at(i_trigjet),this->jet_eta->at(i_trigjet),this->jet_phi->at(i_trigjet),0.);
   trigjet_trlvl.SetPtEtaPhiM(this->trigjet_pt->at(0),this->trigjet_eta->at(0),this->trigjet_phi->at(0),0.);
-  if(trigjet_reco.DeltaR(trigjet_trlvl)>0.4) return false;
+  if(trigjet_reco.DeltaR(trigjet_trlvl)>0.4) return false;*/
+
+  //Trigger matching (trigger jet == offline jet matched to leading trigger-level jet
+  TLorentzVector trigjet_trlvl,jet_reco;
+  double DRmin_trigmatch=999.;
+  int i_trigjet=-1;
+  trigjet_trlvl.SetPtEtaPhiM(this->trigjet_pt->at(0),this->trigjet_eta->at(0),this->trigjet_phi->at(0),0.);
+  for(unsigned int i=0; i<this->jet_pt->size(); i++){
+    jet_reco.SetPtEtaPhiM(this->jet_pt->at(i),this->jet_eta->at(i),this->jet_phi->at(i),0.);
+    if(jet_reco.DeltaR(trigjet_trlvl)<0.4 && jet_reco.DeltaR(trigjet_trlvl)<DRmin_trigmatch && this->passR4CaloJetCuts(i)){
+      DRmin_trigmatch=jet_reco.DeltaR(trigjet_trlvl);
+      i_trigjet=i;
+    }
+  }
+  if(i_trigjet<0) return false; //no successful trigger match
 
 
   //Try to match leading R=0.4 and R=1.0 jets to find what causes the trigger bias
-  TLorentzVector largeRjet;
+  /*  TLorentzVector largeRjet;
   double ptratio=-1;
   double DR_min=999.;
   double largeRtrigpt=-1, largeRtrigeta=-1;
@@ -350,7 +361,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
       largeRtrigeta=largeRjet.Eta();
       DR_min=trigjet_reco.DeltaR(largeRjet);
     }
-  }
+    }*/
 
   
 
@@ -436,18 +447,15 @@ bool GbbTupleAna::Processgbb(int i_evt){
     return false;
     }*/
 
-  if(largeRtrigpt>500e3 && this->eve_HLT_j380){
+  if(this->jet_pt->at(i_trigjet)>500e3 && this->eve_HLT_j380){ //demand that full efficiency of turnon curve has been reached
     trigger_passed="HLT_j380";
   }else{
-    //std::cout<<"Event discarded: pt(R=0.4): "<<trjet_pt<<" pt(R=1.0): "<<largeRtrigpt<<std::endl;  
     return false;
   }
 
 
 
   total_evt_weight*=prescale;
-
-  //m_HistogramService->FastFillTH1D("CutFlow",2,15,0.5,15.5,total_evt_weight);
 
   if(m_Debug) std::cout<<"processgbb(): Passed trigger jet requirement"<<std::endl;
 
@@ -457,7 +465,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //FILL REWEIGHT HISTOGRAMS
   if(m_isNominal && m_RunMode.Contains("FillReweightHists")){
     this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
-    this->FillFatReweightInfo(largeRtrigpt,largeRtrigeta,total_evt_weight,trigger_passed);
+    //this->FillFatReweightInfo(largeRtrigpt,largeRtrigeta,total_evt_weight,trigger_passed);
   }
 
   //Fill Pileup reweighting histograms
@@ -465,11 +473,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   // TRIGGER JET REWEIGHTING
   if(m_doJetPtReweighting && !m_RunMode.Contains("FillReweightHists")  && m_reweightHistos[trigger_passed].get() && this->eve_isMC){
-    //float trig_weight=this->getTrigJetWeight(i_trigjet,trigger_passed);
-    float trig_weight=this->getTrigFatJetWeight(largeRtrigpt,largeRtrigeta,trigger_passed);
+    float trig_weight=this->getTrigJetWeight(i_trigjet,trigger_passed);
+    //float trig_weight=this->getTrigFatJetWeight(largeRtrigpt,largeRtrigeta,trigger_passed);
 
-
-    if(TMath::Abs(trig_weight)<1e-10) trig_weight=1.;
+    if(TMath::Abs(trig_weight)<1e-10) trig_weight=1.; //avoid weights of zero
     total_evt_weight*=trig_weight;
 
   }
@@ -516,8 +523,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
   icut++;
   m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
-  // cut on ratio
-  
   double gbbcandpt=this->fat_pt->at(gbbcand.fat_index);
 
   //cut away region where jet bias is introduced
@@ -655,7 +660,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
     m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptgbbcandratio",trjet_pt/fatjet.Pt(),50,0.,10.,total_evt_weight);
 
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptfjptratio",ptratio,50,-1.,1.,total_evt_weight);
+    //m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptfjptratio",ptratio,50,-1.,1.,total_evt_weight);
 
     if(m_isNominal){
       m_HistogramService->FastFillTH2D("h_2DtrjptVsfjpt",trjet_pt/1e3,fatjet.Pt()/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
