@@ -178,7 +178,8 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   //=========================================
   
   //std::vector<TString> trig_slices={"HLT_j110","HLT_j150","HLT_j175","HLT_j200","HLT_j260","HLT_j300","HLT_j320","HLT_j360"};
-  std::vector<TString> trig_slices={"HLT_j150","HLT_j175","HLT_j260","HLT_j380"};
+  //std::vector<TString> trig_slices={"HLT_j150","HLT_j175","HLT_j260","HLT_j380"};
+  std::vector<TString> trig_slices={"HLT_j380"};  
 
   if(m_doJetPtReweighting){
     if(infilename.Contains("361023") || infilename.Contains("361024") || infilename.Contains("361025") || infilename.Contains("361026") || infilename.Contains("361027")){
@@ -656,7 +657,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
     m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptfjptratio",ptratio,50,-1.,1.,total_evt_weight);
 
-    if(m_isNominal) m_HistogramService->FastFillTH2D("h_2DtrjptVsfjpt",trjet_pt/1e3,fatjet.Pt()/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
+    if(m_isNominal){
+      m_HistogramService->FastFillTH2D("h_2DtrjptVsfjpt",trjet_pt/1e3,fatjet.Pt()/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
+      m_HistogramService->FastFillTH2D("h"+dijet_name+"_2DmjptVsnmjpt",muojet_pt/1e3,nonmuojet_pt/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
+    }    
 
 
     TLorentzVector smallRJet;
