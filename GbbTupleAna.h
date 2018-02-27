@@ -32,7 +32,7 @@ class GbbTupleAna : public TupleAna {
 
 public:
   GbbTupleAna();
-	GbbTupleAna(TString& infilename, TString& treename, TString &outfilename, TString &configname);
+  GbbTupleAna(TString& infilename, TString& treename, TString &outfilename, TString &configname, std::vector<TString>& );
 	virtual ~GbbTupleAna();
 
 	void ReadConfig(TString& config_path);

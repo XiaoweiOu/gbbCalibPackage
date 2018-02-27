@@ -15,7 +15,8 @@
 #include <TMath.h>
 #include <TLorentzVector.h>
 #include "TObjString.h"
-
+#include "TTree.h"
+#include "TChain.h"
 
 GbbTupleAna::GbbTupleAna() : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0) {
 	// TODO Auto-generated constructor stub
@@ -100,7 +101,7 @@ void GbbTupleAna::ReadConfig(TString &config_path){
 
 
 
-GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfilename, TString &configname) : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0)
+GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfilename, TString &configname, std::vector<TString>& infilelist) : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0)
 {
 
   TH1::AddDirectory(0);
@@ -115,11 +116,23 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   //=========================================
   
   TTree *tree=0;
-  TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(infilename.Data());
-  if (!f || !f->IsOpen()) {
-    f = new TFile(infilename.Data(),"READ");
+  TFile *f = 0;
+  TChain *tc=0;
+  if(infilename.EqualTo("list")){
+    tc=new TChain("tc");
+    for(auto &el : infilelist){
+      TString url=el+"/"+treename;
+      tc->Add(url.Data());
+    }
+    tree=tc->GetTree();
+
+  }else{
+    f=(TFile*)gROOT->GetListOfFiles()->FindObject(infilename.Data());
+    if (!f || !f->IsOpen()) {
+      f = new TFile(infilename.Data(),"READ");
+    }
+    f->GetObject(treename.Data(),tree);
   }
-  f->GetObject(treename.Data(),tree);
   
   m_Outputname=outfilename;
   
@@ -154,8 +167,26 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   //Initialize BookKeeping Histograms
   //=========================================
   
-  TH1D* metahist=0;
-  f->GetObject("MetaData_EventCount",metahist);
+  TH1D* metahist=0, *metahist_tmp=0;
+  std::cout<<"infilename: "<<infilename<<std::endl;
+  if(infilename.EqualTo("list")){
+    std::cout<<"list! "<<std::endl;
+    for(auto &el : infilelist){
+      std::cout<<"looking for file"<<el<<std::endl;
+      f=(TFile*)gROOT->GetListOfFiles()->FindObject(el.Data());
+      if (!f || !f->IsOpen()) {
+	f = new TFile(el.Data(),"READ");	
+      }
+
+      if(!metahist){
+	f->GetObject("MetaData_EventCount",metahist);
+      }	else {
+	f->GetObject("MetaData_EventCount",metahist_tmp);
+	metahist->Add(metahist_tmp);
+      }  
+    }
+
+  }else f->GetObject("MetaData_EventCount",metahist);
   
   m_HistogramService->FastFillTH1D("Hist_BookKeeping",1,6,0.5,6.5,metahist->GetBinContent(1));
   ((TH1D*) m_HistogramService->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(1, "nEvents AOD");

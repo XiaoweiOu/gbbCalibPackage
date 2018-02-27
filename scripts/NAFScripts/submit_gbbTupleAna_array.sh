@@ -16,14 +16,16 @@ if [ -z "${DO_SYS}" ]
     echo "To run only systematics run: source scripts/submit_gbbTupleAna_array.sh 2"
 fi
 
-INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNTuples_Calib/v00-01-04/"
+INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNTuples_Calib/v00-01-06/"
 #INPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Inputs/FTagNtuples"
-OUTPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck"
+#OUTPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck"
+OUTPATH="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_${OUT_TAG}"
 LOG_FOLDER="/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/"
 
 #for now don't run over Herwig samples
-listOfSamples=$(ls -d ${INPATH}/*v00-01-04* | xargs -n1 basename | grep -v "42711")
-listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-04* | xargs -n1 basename | grep -v "42711")
+listOfSamples=$(ls -d ${INPATH}/*v00-01-06* | xargs -n1 basename | grep -v "42711")
+listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-06* | xargs -n1 basename | grep -v "42711")
+listOfDataSamples=$(ls -d ${INPATH}/*data*v00-01-06* | xargs -n1 basename)
 #listOfSamples=$(ls -d ${INPATH}/*v00-01-03* | xargs -n1 basename)
 #listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-03* | xargs -n1 basename)
 
@@ -33,6 +35,8 @@ listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-04* | xargs -n1 basename | grep -
 echo "Logs in: ${LOG_FOLDER}"
 echo "Output in: ${OUTPATH}"
 
+NFILESPERJOB=5
+
 
 #=========================
 #Nominal
@@ -41,9 +45,9 @@ echo "Output in: ${OUTPATH}"
 if [ "$DO_SYS" -ne 2 ]
 then
     echo "Running Nominal!!!"
-    mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck
+    mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_${OUT_TAG}
 
-    for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck/${OUT_TAG}_*.root
+    for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_${OUT_TAG}/${OUT_TAG}_*.root
     do
 	if [ -d "${dir}" ];
 	then
@@ -54,20 +58,25 @@ then
 
 
 
-    for samp in ${listOfSamples}
-    #for samp in ${listOfMCSamples}
+    for samp in ${listOfMCSamples}
+    #for samp in ${listOfDataSamples}
     do
 	echo "Sample is: $samp"
-   
+	
 	NTUP=$(ls ${INPATH}/${samp})
 	export NTUP
 	NJOBS=$(echo ${NTUP} | wc -w)
-        #NJOBS=$(expr ${NJOBS} - 1)
+	#ceil-style rounding
+	NJOBS_SPLIT=$(echo $((NJOBS/NFILESPERJOB)) | awk '{print ($0-int($0)>0)?int($0)+1:int($0)}')
 
 	echo "Number of jobs ${NJOBS}"
+	echo "Number of split jobs ${NJOBS_SPLIT}"
         #   echo "Ntup: ${NTUP}"
 
-	qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_Nominal",CONFIGNAME="${CFG_NAME}" scripts/NAFScripts/run_gbbTupleAna_array.sh  
+###	qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_Nominal",CONFIGNAME="${CFG_NAME}" scripts/NAFScripts/run_gbbTupleAna_array.sh  
+	qsub -t 1-${NJOBS_SPLIT} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_Nominal",CONFIGNAME="${CFG_NAME}",N_FILESPERJOB="${NFILESPERJOB}" scripts/NAFScripts/run_gbbTupleAna_arrayList.sh
+	
+	exit 1
 
     done
 fi
@@ -103,7 +112,7 @@ then
 		NJOBS=$(echo ${NTUP} | wc -w)
 		#NJOBS=$(expr ${NJOBS} - 1)
 		
-		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_${sys}${var}",CONFIGNAME="${CFG_NAME}" scripts/NAFScripts/run_gbbTupleAna_array.sh
+###		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_${sys}${var}",CONFIGNAME="${CFG_NAME}" scripts/NAFScripts/run_gbbTupleAna_array.sh
 
 	    done
 
@@ -134,7 +143,7 @@ then
 		if [ -d "${dir}" ];
 		    then
                     rm -rv $dir
-		    fi
+		fi
             done
 
 
@@ -146,7 +155,7 @@ then
 		NJOBS=$(echo ${NTUP} | wc -w)
 		#NJOBS=$(expr ${NJOBS} - 1)
 
-		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_${sys}${var}",CONFIGNAME="${CFG_NAME}" scripts/NAFScripts/run_gbbTupleAna_array.sh
+###		qsub -t 1-${NJOBS} -o ${LOG_FOLDER} -j y -l h_rt=01:00:00,distro=sld6,h_vmem=4G -v IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}_${sys}${var}/${OUT_TAG}_${samp}",TREENAME="FlavourTagging_${sys}${var}",CONFIGNAME="${CFG_NAME}" scripts/NAFScripts/run_gbbTupleAna_array.sh
 
             done
 
