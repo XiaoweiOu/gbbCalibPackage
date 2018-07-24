@@ -132,9 +132,6 @@ public :
    vector<int>     *fat_isGbbJet;
    vector<vector<int> > *fat_assocTrkjet_ind;
    vector<vector<int> > *fat_assocTrkjetDR_ind;
-   vector<vector<float> > *fat_assocTrk_pt;
-   vector<vector<float> > *fat_assocTrk_eta;
-   vector<vector<float> > *fat_assocTrk_phi;
    vector<float>   *muo_pt;
    vector<float>   *muo_phi;
    vector<float>   *muo_eta;
@@ -293,9 +290,6 @@ public :
    TBranch        *b_fat_isGbbJet;   //!
    TBranch        *b_fat_assocTrkjet_ind;   //!
    TBranch        *b_fat_assocTrkjetDR_ind;   //!
-   TBranch        *b_fat_assocTrk_pt;   //!
-   TBranch        *b_fat_assocTrk_eta;   //!
-   TBranch        *b_fat_assocTrk_phi;   //!
    TBranch        *b_muo_pt;   //!
    TBranch        *b_muo_phi;   //!
    TBranch        *b_muo_eta;   //!
@@ -466,9 +460,6 @@ void TupleAna::Init(TTree *tree)
    fat_isGbbJet = 0;
    fat_assocTrkjet_ind = 0;
    fat_assocTrkjetDR_ind = 0;
-   fat_assocTrk_pt = 0;
-   fat_assocTrk_eta = 0;
-   fat_assocTrk_phi = 0;
    muo_pt = 0;
    muo_phi = 0;
    muo_eta = 0;
@@ -579,7 +570,9 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_HLT_j380_ps", &eve_HLT_j380_ps, &b_eve_HLT_j380_ps);
    fChain->SetBranchAddress("eve_HLT_j400_ps", &eve_HLT_j400_ps, &b_eve_HLT_j400_ps);
    fChain->SetBranchAddress("eve_HLT_j420_ps", &eve_HLT_j420_ps, &b_eve_HLT_j420_ps);
-   fChain->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
+   if(fChain->GetFriend("FlavourTagging_Nominal")){ //temp fix for systematics: Get b-tagging SF from nominal friend tree
+     fChain->GetFriend("FlavourTagging_Nominal")->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
+   }else fChain->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
    fChain->SetBranchAddress("eve_BtagSFWeightSys", &eve_BtagSFWeightSys, &b_eve_BtagSFWeightSys);
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
    fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
@@ -632,9 +625,6 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("fat_isGbbJet", &fat_isGbbJet, &b_fat_isGbbJet);
    fChain->SetBranchAddress("fat_assocTrkjet_ind", &fat_assocTrkjet_ind, &b_fat_assocTrkjet_ind);
    fChain->SetBranchAddress("fat_assocTrkjetDR_ind", &fat_assocTrkjetDR_ind, &b_fat_assocTrkjetDR_ind);
-   fChain->SetBranchAddress("fat_assocTrk_pt", &fat_assocTrk_pt, &b_fat_assocTrk_pt);
-   fChain->SetBranchAddress("fat_assocTrk_eta", &fat_assocTrk_eta, &b_fat_assocTrk_eta);
-   fChain->SetBranchAddress("fat_assocTrk_phi", &fat_assocTrk_phi, &b_fat_assocTrk_phi);
    fChain->SetBranchAddress("muo_pt", &muo_pt, &b_muo_pt);
    fChain->SetBranchAddress("muo_phi", &muo_phi, &b_muo_phi);
    fChain->SetBranchAddress("muo_eta", &muo_eta, &b_muo_eta);
@@ -658,7 +648,9 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_MV2c10", &trkjet_MV2c10, &b_trkjet_MV2c10);
    fChain->SetBranchAddress("trkjet_MV2c20", &trkjet_MV2c20, &b_trkjet_MV2c20);
    fChain->SetBranchAddress("trkjet_MVb", &trkjet_MVb, &b_trkjet_MVb);
-   fChain->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
+   if(fChain->GetFriend("FlavourTagging_Nominal")){ //temp fix for systematics: Get trackjet truth label from nominal friend tree
+     fChain->GetFriend("FlavourTagging_Nominal")->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
+   }else fChain->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
    fChain->SetBranchAddress("trkjet_assocMuon_dR", &trkjet_assocMuon_dR, &b_trkjet_assocMuon_dR);
    fChain->SetBranchAddress("trkjet_assocMuon_index", &trkjet_assocMuon_index, &b_trkjet_assocMuon_index);
    fChain->SetBranchAddress("trkjet_assocMuon_n", &trkjet_assocMuon_n, &b_trkjet_assocMuon_n);
