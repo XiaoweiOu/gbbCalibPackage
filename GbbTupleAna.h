@@ -1,3 +1,4 @@
+
 /*
  * GbbTupleAna.h
  *
@@ -64,6 +65,7 @@ private:
 	
 	bool m_isNominal;
 	TString m_SysVarName;
+	TString m_GeneratorName;
 		
 	float m_SumWeightTuple;
 	int m_nevtTuple;
@@ -138,6 +140,7 @@ private:
 	
 	float getTrkjetAssocTrkMaxSd0(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
 	float getTrkjetAssocTrkMaxSd0DR(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
+	float getTrkjetAssocTrkMeand0(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
 	bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
   
 	float getSd0(unsigned int i_trk, unsigned int i_jet);
@@ -181,7 +184,8 @@ namespace GbbCuts {
     DRTrigJetMuJet,
     MuNonMu1Btag,
     MuNonMu2Btags,
-    MuNonMuAnti2Btags
+    MuNonMuAnti2Btags,
+    MuNonMuUntagged
   };
   
 }
