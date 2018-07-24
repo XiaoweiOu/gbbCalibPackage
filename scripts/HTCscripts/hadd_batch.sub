@@ -1,0 +1,10 @@
+
+executable	=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna_improved/scripts/HTCscripts/run_hadd_hist_batch.sh
+transfer_executable=True
+arguments	= $(FILEDIR) $(DO_MCONLY)
+output		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_hadd_hist_batch.$(Cluster).$(Process).out
+error		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_hadd_hist_batch.$(Cluster).$(Process).err
+log		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_hadd_hist_batch.$(Cluster).$(Process).log
+RequestMemory	= 4000
++RequestRuntime = 3600
+queue

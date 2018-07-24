@@ -1,0 +1,10 @@
+
+executable	=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna_improved/scripts/HTCscripts/run_gbbTupleAna_arrayList.sh
+transfer_executable=True
+arguments	= $(IN_PATH) $(SAMP) $(OUTDIR) $(TREENAME) $(CONFIGNAME) $(N_FILESPERJOB) $(Cluster) $(Process)
+output		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_gbbTupleAna_array.$(Cluster).$(Process).out
+error		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_gbbTupleAna_array.$(Cluster).$(Process).err
+log		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_gbbTupleAna_array.$(Cluster).$(Process).log
+RequestMemory	= 6000
++RequestRuntime = 3600
+queue $(NJOBS) 

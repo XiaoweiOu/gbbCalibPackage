@@ -30,21 +30,21 @@ ListOfInclusiveFilterEfficiencies = [0.00032,0.00053,0.000922,0.000939,0.000392]
 
 basepath = '/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/'
 
-pathJZ3W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ4W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ5W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ6W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ7W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e5839_s2726_r7773_r7676_p2949_tuple.root' 
+pathJZ3W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07.e5660_s2726_r7773_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07.e5660_s2726_r7773_r7676_p3323_tuple.root' 
+pathJZ4W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5660_s2726_r7773_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5660_s2726_r7773_r7676_p3323_tuple.root' 
+pathJZ5W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5660_s2726_r7773_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5660_s2726_r7773_r7676_p3323_tuple.root' 
+pathJZ6W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5839_s2726_r7773_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5839_s2726_r7773_r7676_p3323_tuple.root' 
+pathJZ7W = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5839_s2726_r7773_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5839_s2726_r7773_r7676_p3323_tuple.root' 
 
 ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
 pathData = basepath + 'Output_CrossCheck/user.ruth.data1516_13TeV.all.root/merged_hist_user.ruth.data1516_13TeV.all.root '
 
 
-pathJZ3W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ4W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ5W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ6W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3569_s2608_s2183_r7725_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3569_s2608_s2183_r7725_r7676_p2949_tuple.root'
-pathJZ7W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2608_s2183_r7725_r7676_p2949_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-04.e3668_s2608_s2183_r7725_r7676_p2949_tuple.root'
+pathJZ3W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3668_s2576_s2132_r7725_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3668_s2576_s2132_r7725_r7676_p3323_tuple.root'
+pathJZ4W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07.e3668_s2576_s2132_r7725_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07.e3668_s2576_s2132_r7725_r7676_p3323_tuple.root'
+pathJZ5W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3668_s2576_s2132_r7725_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3668_s2576_s2132_r7725_r7676_p3323_tuple.root'
+pathJZ6W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3569_s2608_s2183_r7725_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3569_s2608_s2183_r7725_r7676_p3323_tuple.root'
+pathJZ7W_incl = basepath + 'Output_CrossCheck/CrossCheck_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3668_s2608_s2183_r7725_r7676_p3323_tuple.root/merged_hist_CrossCheck_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e3668_s2608_s2183_r7725_r7676_p3323_tuple.root'
 
 ListOfInclusiveMCPaths = [ pathJZ3W_incl, pathJZ4W_incl, pathJZ5W_incl, pathJZ6W_incl, pathJZ7W_incl ]
 
@@ -76,6 +76,7 @@ hists.append([])
 
 for histname in ListOfHists :
     hist_index = ListOfHists.index(histname)
+    hist_0=None
 
     for path in ListOfMCPaths :        
         index = ListOfMCPaths.index(path)
@@ -88,7 +89,7 @@ for histname in ListOfHists :
 
         if not file_curr.GetListOfKeys().Contains(histname) :
             print("Cannot find first hist "+histname)
-        elif index is 0 :
+        elif index is 0 or hist_0 is None:
             hist_0=file_curr.Get(histname)
             hist_0.SetDirectory(0)
             hist_0.Scale(weight)
@@ -118,7 +119,7 @@ for histname in ListOfHists :
 
 for histname in ListOfInclusiveHists :
     hist_index = ListOfInclusiveHists.index(histname)
-
+    hist_0=None
     for path in ListOfInclusiveMCPaths :        
         index = ListOfInclusiveMCPaths.index(path)
         file_curr=ROOT.TFile(path,"READ")
@@ -130,7 +131,7 @@ for histname in ListOfInclusiveHists :
 
         if not file_curr.GetListOfKeys().Contains(histname) :
             print("Cannot find first hist "+histname)
-        elif index is 0 :
+        elif index is 0 or hist_0 is None:
             hist_0=file_curr.Get(histname)
             hist_0.SetDirectory(0)
             hist_0.Scale(weight)
@@ -156,9 +157,9 @@ for i in range(0,len(ListOfCanvasses)) :
     for j  in range(0,len(hists[i])) :
         AddHistogram(ListOfCanvasses[i],hists[i][j],'hist')
         if i is 0 :
-            SetAxisLabels(ListOfCanvasses[i],'Muon-associated Track Jet S_{d0}','Normalised to Unity')
+            SetAxisLabels(ListOfCanvasses[i],'Muon-associated Track Jet #LT s_{d0} #GT','Normalised to Unity')
         else :
-            SetAxisLabels(ListOfCanvasses[i],'Non-muon-associated Track Jet S_{d0}','Normalised to Unity')
+            SetAxisLabels(ListOfCanvasses[i],'Non-muon-associated Track Jet #LT s_{d0} #GT','Normalised to Unity')
 
     FullFormatCanvasDefault(ListOfCanvasses[i],36,simulation=True, doLogy=True)
     SetColors(ListOfCanvasses[i],colors)

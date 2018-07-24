@@ -12,7 +12,7 @@
 
 echo "Execute hadd for Nominal"
 #bash scripts/NAFScripts/hadd_hist.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Reweight
-bash scripts/NAFScripts/hadd_hist.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck
+bash scripts/NAFScripts/hadd_hist.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_ReweightNew
 ##bash scripts/NAFScripts/hadd_hist.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_Topo
 
 
@@ -22,7 +22,7 @@ do
     for token in __1up __1down
     do
 	echo "Piep"
-	bash scripts/NAFScripts/hadd_hist_mc.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck_${sys}${token}
+	#bash scripts/NAFScripts/hadd_hist_mc.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck_${sys}${token}
     done
 
 done
@@ -34,7 +34,7 @@ do
     for token1s in __1up 
     do
 	echo "piep"
-	bash scripts/NAFScripts/hadd_hist_mc.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck_${sys1s}${token1s}
+	#bash scripts/NAFScripts/hadd_hist_mc.sh /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_CrossCheck_${sys1s}${token1s}
     done
 
 done
