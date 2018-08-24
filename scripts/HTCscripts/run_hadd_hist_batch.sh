@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOMEDIR=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna_improved
+HOMEDIR=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016
 
 cd ${HOMEDIR}
 
@@ -13,15 +13,15 @@ DO_MCONLY=${2}
 
 if [ ${DO_MCONLY} -eq 0 ]
 then 
-    if [ -d "${FILEDIR}/user.ruth.data1516_13TeV.all.root/" ]
+    if [ -d "${FILEDIR}/user.aemerman.data1516_13TeV.all.root/" ]
     then
-	rm -r "${FILEDIR}/user.ruth.data1516_13TeV.all.root/"
+	rm -r "${FILEDIR}/user.aemerman.data1516_13TeV.all.root/"
 
     fi
 
-    if [ ! -d "${TMP}/user.ruth.data1516_13TeV.all.root/" ]
+    if [ ! -d "${TMP}/user.aemerman.data1516_13TeV.all.root/" ]
     then
-	mkdir "${TMP}/user.ruth.data1516_13TeV.all.root/"
+	mkdir "${TMP}/user.aemerman.data1516_13TeV.all.root/"
 	
     fi
 
@@ -36,13 +36,13 @@ then
             rm "merged_hist_${dir}"
 	fi
 	
-	echo `hadd -k ${TMP}/user.ruth.data1516_13TeV.all.root/merged_hist_${dir} *.root*`  
+	echo `hadd -k ${TMP}/user.aemerman.data1516_13TeV.all.root/merged_hist_${dir} *.root*`  
 	cd ${FILEDIR}
     done
 
-    cd ${TMP}/user.ruth.data1516_13TeV.all.root/
+    cd ${TMP}/user.aemerman.data1516_13TeV.all.root/
 
-    echo `hadd -k merged_hist_user.ruth.data1516_13TeV.all.root *.root*`
+    echo `hadd -k merged_hist_user.aemerman.data1516_13TeV.all.root *.root*`
 fi
 
 cd ${FILEDIR}
@@ -67,7 +67,7 @@ done
 ########
 echo "Copying files!!!"
 
-cp -r ${TMP}/user.ruth.data1516_13TeV.all.root ${FILEDIR}
+cp -r ${TMP}/user.aemerman.data1516_13TeV.all.root ${FILEDIR}
 
 cd ${FILEDIR}
 for dir in $(ls -d *mc*)

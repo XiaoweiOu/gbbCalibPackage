@@ -1,10 +1,10 @@
 
-executable	=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna_improved/scripts/HTCscripts/run_hadd_hist_batch.sh
+executable	=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/scripts/HTCscripts/run_hadd_hist_batch.sh
 transfer_executable=True
 arguments	= $(FILEDIR) $(DO_MCONLY)
-output		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_hadd_hist_batch.$(Cluster).$(Process).out
-error		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_hadd_hist_batch.$(Cluster).$(Process).err
-log		=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/JobLogs/run_hadd_hist_batch.$(Cluster).$(Process).log
+output		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_hadd_hist_batch.$(Cluster).$(Process).out
+error		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_hadd_hist_batch.$(Cluster).$(Process).err
+log		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_hadd_hist_batch.$(Cluster).$(Process).log
 RequestMemory	= 4000
 +RequestRuntime = 3600
 queue
