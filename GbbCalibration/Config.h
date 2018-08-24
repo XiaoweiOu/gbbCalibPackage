@@ -87,7 +87,8 @@ class Config{
   TString GetPlotLabel(){return m_plot_label;}
   TString GetSubLabel(){return m_sub_label;}
   TString GetSubSubLabel(){return m_subsub_label;}
-
+  
+  double GetRebinStatThr(){return m_statThr_Rebin;}
 
   std::vector<TString> GetSystematics(){ return m_systematics; }
   std::vector<TString> GetAllRegions();
