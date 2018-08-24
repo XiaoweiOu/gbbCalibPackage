@@ -76,10 +76,9 @@ class Fitter {
   }
   void CalculateResultSampling(int N);
   void GetPseudoTemplateFitResult(std::vector<std::vector<double>>& pseudo_params, int N_fits);
-  void GetPseudoDataFitResult(std::vector<std::vector<double>>& pseudo_params, int N_fits);
 
 
-  void GetParErrorSampling(int i_par,double &par_val, double& par_err, int N=1000);
+  double GetParErrorSampling(int i_par,double &par_val, double& par_err, int N=1000);
 
   void MakeOutputHistFile(TFile* outfile,TString histname_stub, TString err_mode="Sampling");
 
@@ -92,7 +91,6 @@ class Fitter {
     
     return TString(m_Minuit->fCstatu.Data());
   }
-
 
 };
 

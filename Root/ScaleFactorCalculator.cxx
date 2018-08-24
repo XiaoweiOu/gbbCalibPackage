@@ -5,7 +5,7 @@
  *      Author: rjacobs
  */
 
-#include "ScaleFactorCalculator.h"
+#include "GbbCalibration/ScaleFactorCalculator.h"
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
 #include "TLegend.h"
@@ -75,13 +75,13 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
   std::vector<std::vector<double>> binning;
 
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
     
     tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
     tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
 
 
-    for(int i_sys=0; i_sys<systematics.size(); i_sys++){
+    for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
       
       tmpl_muo_mc=m_config->GetMCHistNames(regions[i_reg],systematics[i_sys],mj_maxSd0);
       tmpl_nonmuo_mc=m_config->GetMCHistNames(regions[i_reg],systematics[i_sys],nmj_maxSd0);
@@ -99,7 +99,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
       std::cout<<fitpar_high.size()<<std::endl;
 
       
-      for(int i_par=0; i_par<fitpar_names.size(); i_par++){	
+      for(unsigned int i_par=0; i_par<fitpar_names.size(); i_par++){	
 
 	std::cout<<"Adding: "<<fitpar_names[i_par]<<" "<<fitpar_start[i_par]<<" "<<fitpar_low[i_par]<<" "<<fitpar_high[i_par]<<std::endl;
 
@@ -111,7 +111,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
       if(m_config->GetSmoothNtimes())m_fitdata->KernelSmoothTemplates(m_config->GetSmoothNtimes());
 
-      for(int i_chan=0; i_chan<chans.size(); i_chan++){ //Auto rebin on nominal, use same bins for systematics
+      for(unsigned int i_chan=0; i_chan<chans.size(); i_chan++){ //Auto rebin on nominal, use same bins for systematics
 	if(systematics[i_sys].EqualTo("Nom")) binning.push_back(m_fitdata->AutoRebinHistograms(chans[i_chan],m_config->GetRebinStatThr(),1));
 	else{
 	  m_fitdata->FixHistogramBins(chans[i_chan],binning[2*i_reg+i_chan]);
@@ -153,13 +153,13 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   TString mj_maxSd0_posttag="mjmaxSd0_PREFITPOSTTAG";
   TString nmj_maxSd0_posttag="nmjmaxSd0_PREFITPOSTTAG";
   
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
     
     tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0_posttag);
     tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0_posttag);
 
 
-    for(int i_sys=0; i_sys<systematics.size(); i_sys++){
+    for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
       
       tmpl_muo_mc=m_config->GetMCHistNames(regions[i_reg],systematics[i_sys],mj_maxSd0_posttag);
       tmpl_nonmuo_mc=m_config->GetMCHistNames(regions[i_reg],systematics[i_sys],nmj_maxSd0_posttag);
@@ -224,7 +224,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   
     std::vector<std::vector<double>> help;
     
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
       tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
     
@@ -249,7 +249,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
     //Run Pseudo-Experiments for data stat uncertainty
     
     
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
       tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
       
@@ -308,14 +308,14 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   TString ts_pt="fjpt";
   
   if(m_config->DoControlPlots() && !m_config->DoCalibSequence()){
-    for(int i_var=0; i_var<variables.size(); i_var++){
+    for(unsigned int i_var=0; i_var<variables.size(); i_var++){
       //fat jet control plots
       //this->MakeFatJetControlPlots(variables[i_var],false,false,sys_only,model_sys);
       this->MakeFatJetControlPlots(variables[i_var],false,true,sys_only,model_sys);
     }
     
     //posttag plots
-    for(int i_var=0; i_var<variables_posttag.size(); i_var++){
+    for(unsigned int i_var=0; i_var<variables_posttag.size(); i_var++){
       //this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only,model_sys);
       this->MakeFatJetControlPlots(variables_posttag[i_var],true,true,sys_only,model_sys);
     }
@@ -371,10 +371,10 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
     */
   }
 
-  /*  for(int i_reg=0; i_reg<regions.size(); i_reg++){
-    for(int i_sys=0; i_sys<systematics.size(); i_sys++){
+  /*  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
       std::cout<<"Fit parameters in region "<<regions[i_reg]<<"for sys "<<systematics[i_sys]<<" :"<<std::endl;
-      for(int i_p=0; i_p<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ].size(); i_p++) std::cout<<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ][i_p]<<std::endl;
+      for(unsigned int i_p=0; i_p<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ].size(); i_p++) std::cout<<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ][i_p]<<std::endl;
     }
     }*/
 
@@ -382,7 +382,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 }
 
 
-SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doPseudo, int i_pseudo, bool doPseudoData){
+SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doPseudo, unsigned int i_pseudo, bool doPseudoData){
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
   std::vector<float> fj_bins=m_config->GetFatJetBins();
@@ -391,7 +391,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc, hist_pretag_mc_unscaled, hist_posttag_mc_unscaled;
   TString name_pretag, name_posttag;
 
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
     name_pretag="hist_pretag_mc_"+(m_config->GetPairs())[i_p];
     name_posttag="hist_posttag_mc_"+(m_config->GetPairs())[i_p];
@@ -414,16 +414,16 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
   
   TH1D* help, *help_rebinned;
 
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
 
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
 
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
     
     TString mc_name=regions[i_reg]+"_fjpt_Nom";
     TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
 
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
       help=(TH1D*)m_fatjet_histograms_pretag[mc_name][i_p]->Clone();
       help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
@@ -476,7 +476,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
 
   float err_factor_tagged, err_factor_untagged;
 
-  for(int i_bin=1; i_bin<fj_bins.size(); i_bin++){
+  for(unsigned int i_bin=1; i_bin<fj_bins.size(); i_bin++){
 
     N_BB_pretag_mc=hist_pretag_mc_unscaled[0]->GetBinContent(i_bin);
     N_BB_posttag_mc=hist_posttag_mc_unscaled[0]->GetBinContent(i_bin);
@@ -498,7 +498,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
     //std::cout<<"N_BB_posttag_data - before subtraction"<<N_BB_posttag_data<<std::endl;    
 
 
-    for(int i_p=1; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=1; i_p<m_config->GetPairs().size(); i_p++){
 
       //std::cout<<"Pretag -- subtracting component"<<i_p<<" "<<hist_pretag_mc[i_p]->GetBinContent(i_bin)<<std::endl;
       //std::cout<<"Posttag -- subtracting component"<<i_p<<" "<<hist_posttag_mc[i_p]->GetBinContent(i_bin)<<std::endl;
@@ -541,7 +541,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
 
 
   //delete heap objects
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
    
     delete hist_pretag_mc[i_p];
     delete hist_posttag_mc[i_p];
@@ -566,7 +566,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
 } 
 
 
-SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, bool doPseudo, int i_pseudo, bool doPseudoData){
+SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, bool doPseudo, unsigned int i_pseudo, bool doPseudoData){
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
   std::vector<TString> regions=m_config->GetAllRegions();
@@ -585,7 +585,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
 
   float err_factor_tagged, err_factor_untagged;
 
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
     
     /* TString mc_name=regions[i_reg]+"_fjpt_Nom";
     TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
@@ -600,7 +600,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
     TString mc_name_untag=regions[i_reg]+"_mjpt_PREFITUNTAG_"+sys;
     
 
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       if(i_p==0){
 	N_total_pretag_mc=0.;
 	N_total_posttag_mc=0.;
@@ -786,7 +786,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
   std::map<TString,std::vector<double>> error_map_down;
 
 
-   for(int i_sys=0; i_sys<systematics.size(); i_sys++){
+   for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
     //FOR NOW: Don't consider Herwig systematics
     if(systematics[i_sys].Contains("Herwig")) continue;
 
@@ -811,7 +811,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
       current_data_eff=sf_result.feff_data; 
       current_mc_eff=sf_result.feff_mc;
     }
-    for(int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
+    for(unsigned int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
 
       //if(!systematics[i_sys].EqualTo("Nom")) current_SF[i_bin]=current_SF[i_bin]*current_mc_eff[i_bin]/mc_eff_nom[i_bin];
       
@@ -861,14 +861,14 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
    std::cout<<"Down is now "<<error_map_down[m_config->GetAllRegions()[11]].back()<<std::endl;
    
 
-   /*for(int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
+   /*for(unsigned int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
 
     std::cout<<"Region: "<<m_config->GetAllRegions()[i_bin]<<std::endl;
     std::cout<<"Nominal is: "<<sf_nom[i_bin]<<std::endl;
       std::cout<<"Up is: "<<TMath::Sqrt(err_sq_up[i_bin])<<std::endl;
       std::cout<<"Down is: "<<TMath::Sqrt(err_sq_down[i_bin])<<std::endl;
     */ 
-    /*for(int i_sys=0; i_sys<systematics.size(); i_sys++){
+    /*for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
       
        std::cout<<"After: "<<systematics[i_sys]<<std::endl;
        std::cout<<"Up is now "<<error_map_up[m_config->GetAllRegions()[i_bin]].at(i_sys)<<std::endl;
@@ -915,7 +915,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
 
   //loop over all fits with pseudo-templates
  
-  for(int i=0; i<m_pseudo_fit_params[m_config->GetAllRegions()[0]].size(); i++){
+  for(unsigned int i=0; i<m_pseudo_fit_params[m_config->GetAllRegions()[0]].size(); i++){
 
     //std::cout<<"Templates Pseudo Experiment"<<i<<std::endl;
 
@@ -929,7 +929,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
     //PseudoTemplateEfficiencies_Data.push_back((double)feff_data);
     //PseudoEfficiencies_MC.push_back((double)feff_mc);
 
-    for(int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
+    for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
       PseudoTemplateScaleFactors[i_bin].push_back((double)pseudo_templates_result.fsf[i_bin]);
       PseudoTemplateEfficiencies_Data[i_bin].push_back((double)pseudo_templates_result.feff_data[i_bin]);
       //PseudoEfficiencies_MC[i_bin].push_back((double)pseudo_templates_result.feff_mc[i_bin]);
@@ -942,14 +942,14 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
   }
 
   //loop over all fits with pseudo-data
-  for(int i=0; i<m_pseudo_fit_params_Data[m_config->GetAllRegions()[0]].size(); i++){
+  for(unsigned int i=0; i<m_pseudo_fit_params_Data[m_config->GetAllRegions()[0]].size(); i++){
 
     if(!(i%100)) std::cout<<"Calculate ScaleFactors Data Fit Uncertainty: Fit "<<i<<std::endl;
     
     if(doByRegion) pseudo_data_result=this->CalculateScaleFactorsByRegion(nominal,false,i,true);
     else pseudo_data_result=this->CalculateScaleFactors(nominal,false,i,true);
 
-    for(int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
+    for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
       PseudoDataScaleFactors[i_bin].push_back((double)pseudo_data_result.fsf[i_bin]);
       PseudoDataEfficiencies_Data[i_bin].push_back((double)pseudo_data_result.feff_data[i_bin]);
 
@@ -964,7 +964,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
 
     /*current_SF=pseudo_templates_result.fsf;
   
-    for(int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
+    for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
       n[i_bin]+=1.;
       delta[i_bin]=current_SF[i_bin]-mean[i_bin];
       mean[i_bin]+=delta[i_bin]/n[i_bin];
@@ -976,17 +976,17 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
  
   
 
-  for(int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
+  for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
 
     TH1D help_pseudo("help_pseudo","",10,0.,-1.);
     TH1D help_pseudodata("help_pseudodata","",10,0.,-1.);
     TH1D help_pseudo_eff("help_pseudo_eff","",10,0.,-1.);
     TH1D help_pseudodata_eff("help_pseudodata_eff","",10,0.,-1.);
 
-    for(int i_p=0; i_p<PseudoTemplateScaleFactors[i_bin].size(); i_p++) help_pseudo.Fill(PseudoTemplateScaleFactors[i_bin][i_p]);
-    for(int i_p=0; i_p<PseudoTemplateEfficiencies_Data[i_bin].size(); i_p++) help_pseudo_eff.Fill(PseudoTemplateEfficiencies_Data[i_bin][i_p]);
-    for(int i_p=0; i_p<PseudoDataScaleFactors[i_bin].size(); i_p++) help_pseudodata.Fill(PseudoDataScaleFactors[i_bin][i_p]);
-    for(int i_p=0; i_p<PseudoDataEfficiencies_Data[i_bin].size(); i_p++) help_pseudodata_eff.Fill(PseudoDataEfficiencies_Data[i_bin][i_p]);
+    for(unsigned int i_p=0; i_p<PseudoTemplateScaleFactors[i_bin].size(); i_p++) help_pseudo.Fill(PseudoTemplateScaleFactors[i_bin][i_p]);
+    for(unsigned int i_p=0; i_p<PseudoTemplateEfficiencies_Data[i_bin].size(); i_p++) help_pseudo_eff.Fill(PseudoTemplateEfficiencies_Data[i_bin][i_p]);
+    for(unsigned int i_p=0; i_p<PseudoDataScaleFactors[i_bin].size(); i_p++) help_pseudodata.Fill(PseudoDataScaleFactors[i_bin][i_p]);
+    for(unsigned int i_p=0; i_p<PseudoDataEfficiencies_Data[i_bin].size(); i_p++) help_pseudodata_eff.Fill(PseudoDataEfficiencies_Data[i_bin][i_p]);
     
     help_pseudo.Fit("gaus");
     help_pseudo_eff.Fit("gaus");
@@ -1016,7 +1016,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
 
   }
   
-  for(int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
+  for(unsigned int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
 
     //Only Data Stat error
     sf_nom_datastaterr.push_back(TMath::Sqrt(pseudodata_err_sq[i_bin]));
@@ -1095,7 +1095,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   std::vector<float> fj_bins=m_config->GetFatJetBins();
   std::vector<float> bin_xerr, bin_x;
 
-  for(int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
+  for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
     bin_xerr.push_back(0.5*(fj_bins[i_bin+1]-fj_bins[i_bin]));
     bin_x.push_back(fj_bins[i_bin]+bin_xerr[i_bin]);
   }
@@ -1218,8 +1218,8 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
       }
     }
 
-    for(int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mu_labels[i-1]);
-    for(int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nonmu_labels[i-1]);
+    for(unsigned int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mu_labels[i-1]);
+    for(unsigned int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nonmu_labels[i-1]);
     hist->LabelsOption("u","Y");
 
     canv->SetLeftMargin(0.25);
@@ -1343,11 +1343,11 @@ void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::ve
   TH1D* tmp=0, *clone_tmp=0;
 
   
-  for(int i_var=0; i_var<var.size(); i_var++){
+  for(unsigned int i_var=0; i_var<var.size(); i_var++){
   
     TString jettype="fatjet";
     
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       
       //Get Data Hist for region i_reg
       if( ! (var[i_var].Contains("BTAGUP") || var[i_var].Contains("BTAGDOWN") ) ){
@@ -1371,14 +1371,14 @@ void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::ve
 
       }
 
-      for(int i_sys=0; i_sys<sys.size(); i_sys++){
+      for(unsigned int i_sys=0; i_sys<sys.size(); i_sys++){
         
         
         
         //Get MC Hists for region
         hist_mc=m_config->GetMCHistNames(regions[i_reg],sys[i_sys],var[i_var]);
         
-        for(int i_h=0; i_h<hist_mc.size(); i_h++){
+        for(unsigned int i_h=0; i_h<hist_mc.size(); i_h++){
           
           infile->GetObject(hist_mc[i_h],tmp);
           
@@ -1439,7 +1439,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   
   TH1D *full_mc;
 
-  for(int i_p=0; i_p<templateHists.size(); i_p++){
+  for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
 
     if(!(templateHists[i_p].get())) continue;
     
@@ -1605,7 +1605,7 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
 
   std::vector<float> flavour_fractions;
 
-  for(int i_p=0; i_p<templateHists.size(); i_p++){
+  for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
 
     if(!(templateHists[i_p].get())) continue;
     
@@ -1622,7 +1622,7 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
 
   std::vector<float> matrix;
 
-  for(int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
+  for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
     matrix.push_back((float)(m_nom_cov_mats[region][i_entry])); //get region covariance matrix
   }
 
@@ -1635,14 +1635,14 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
   float N_total=full_mc->Integral();
 
   //calculate error for each flavour fraction according to propagation formula
-  for(int i=0; i<flavour_fractions.size(); i++){
+  for(unsigned int i=0; i<flavour_fractions.size(); i++){
     std::vector<int> keepRowCol;
     float err_flavour=TMath::Sqrt(mat[i][i])*flavour_fractions[i];
     std::cout<<"err_flavour"<<err_flavour<<std::endl;
     float N_flavour=flavour_fractions[i];
     std::vector<float> reduced_flavour_fractions;
 
-    for(int j=0; j<flavour_fractions.size(); j++){
+    for(unsigned int j=0; j<flavour_fractions.size(); j++){
       if(i==j) continue;
       else{
 	keepRowCol.push_back(j);
@@ -1656,14 +1656,14 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
     
     //delete row
     TMatrixF reduced_mat(mat);
-    for(int k=0; k<keepRowCol.size(); k++){
+    for(unsigned int k=0; k<keepRowCol.size(); k++){
       TMatrixFColumn(reduced_mat,k) = TMatrixFColumn(reduced_mat,keepRowCol[k]);
     }
     reduced_mat.ResizeTo(reduced_mat.GetNrows(),keepRowCol.size());
     std::cout<<"Nrows: "<<reduced_mat.GetNrows()<<" Ncolumns: "<<reduced_mat.GetNcols()<<std::endl;
 
     //delete column
-    for(int l=0; l<keepRowCol.size(); l++){
+    for(unsigned int l=0; l<keepRowCol.size(); l++){
       TMatrixFRow(reduced_mat,l) = TMatrixFRow(reduced_mat,keepRowCol[l]);
     }
     reduced_mat.ResizeTo(keepRowCol.size(),reduced_mat.GetNcols());
@@ -1685,7 +1685,7 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
   TString name=region+" ";
   TString help;
 
-  for(int i=0; i<flavour_fractions.size(); i++){
+  for(unsigned int i=0; i<flavour_fractions.size(); i++){
     //std::cout<<" "<<flavour_fractions[i]/full_mc->Integral()<<"+-"<<TMath::Sqrt(mat[i][i])/full_mc->Integral();
     //std::cout<<std::endl;
     //help.Form("  %.3f+-%.3f  ",flavour_fractions[i]/full_mc->Integral(),flavour_fraction_err[i]);
@@ -1706,7 +1706,7 @@ TString ScaleFactorCalculator::PrintMuAndError(TString region,std::vector<std::s
 
   std::vector<float> flavour_fractions;
 
-  for(int i_p=0; i_p<templateHists.size(); i_p++){
+  for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
 
     if(!(templateHists[i_p].get())) continue;
     
@@ -1727,7 +1727,7 @@ TString ScaleFactorCalculator::PrintMuAndError(TString region,std::vector<std::s
 
   std::vector<double> matrix;
 
-  for(int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
+  for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
     matrix.push_back(m_nom_cov_mats[region][i_entry]); //get region covariance matrix
   }
 
@@ -1740,7 +1740,7 @@ TString ScaleFactorCalculator::PrintMuAndError(TString region,std::vector<std::s
   TString name=region+" ";
   TString help;
 
-  for(int i=0; i<mus.size(); i++){
+  for(unsigned int i=0; i<mus.size(); i++){
     //std::cout<<" "<<flavour_fractions[i]/full_mc->Integral()<<"+-"<<TMath::Sqrt(mat[i][i])/full_mc->Integral();
     //std::cout<<std::endl;
     //help.Form("  %.3f+-%.3f  ",flavour_fractions[i]/full_mc->Integral(),flavour_fraction_err[i]);
@@ -1783,7 +1783,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
   TString name_pretag, name_posttag;
 
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
     name_pretag="hist_pretag_mc_"+(m_config->GetPairs())[i_p];
     name_posttag="hist_posttag_mc_"+(m_config->GetPairs())[i_p];
@@ -1798,18 +1798,18 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   
   TH1D* help, *help_rebinned;
 
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
 
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
 
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
 
     if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
     
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
 
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
       if(!isPosttag){
 	help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
@@ -1856,7 +1856,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   
   TH1D *full_mc;
 
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
     tmp_stacked_mc=isPosttag ?  (TH1D*)hist_posttag_mc[i_p]->Clone() : (TH1D*)hist_pretag_mc[i_p]->Clone();
 
@@ -2108,7 +2108,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
   TString name_pretag, name_posttag;
 
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
     name_pretag="hist_pretag_mc_"+(m_config->GetPairs())[i_p];
     name_posttag="hist_posttag_mc_"+(m_config->GetPairs())[i_p];
@@ -2123,17 +2123,17 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   
   TH1D* help, *help_rebinned;
 
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
 
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
 
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
 
     TString name_mc_pretag=regions[i_reg]+"_"+var+"_"+"Nom";
     TString name_mc_posttag=regions[i_reg]+"_"+var+"_PREFITPOSTTAG"+"_"+"Nom";
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
 
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
     	help=(TH1D*)m_fatjet_histograms_pretag[name_mc_pretag][i_p]->Clone();
 	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
@@ -2171,7 +2171,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   TH1D *full_mc_pretag, *full_mc_posttag;
 
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
     if(i_p==0){
       full_mc_pretag=(TH1D*)hist_pretag_mc[i_p]->Clone();
@@ -2344,7 +2344,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorr
   TH1D* tmp_stacked_mc, *hist_total;
   std::vector<float> flavour_norms;
  
-  for(int i_p=0; i_p<templateHists.size(); i_p++){
+  for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
 
     if(!(templateHists[i_p].get())) continue;
     
@@ -2365,7 +2365,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorr
   TVector v2=v;
   
   std::vector<float> matrix;
-  for(int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
+  for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
     
     //std::cout<<"size of matrix"<<m_nom_cov_mats[regions[i_reg]].size()<<std::endl;
     matrix.push_back((float)(m_nom_cov_mats[region][i_entry])); //get region covariance matrix
@@ -2383,7 +2383,13 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorr
   
   int n_bins=hist_total->GetNbinsX();
   
-  double fiterrors_up[n_bins],fiterrors_down[n_bins],tot_err_sq[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  double* fiterrors_up = new double[n_bins];
+  double* fiterrors_down = new double[n_bins];
+  double* tot_err_sq = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
   
   for(int ib=0; ib<n_bins; ib++){
     
@@ -2436,7 +2442,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
   std::vector<double> nominal;
 
 
-  for(int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
+  for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
     
     matrix.push_back((double)(m_nom_cov_mats[region][i_entry])); //get region covariance matrix
     
@@ -2451,13 +2457,13 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
 
   int n_toys=2000;
   
-  for(int i_toy=0; i_toy<n_toys; i_toy++){
+  for( int i_toy=0; i_toy<n_toys; i_toy++){
 
     if(i_toy==0){ //nominal rate
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[region+"_"+sys][i_p];
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[region+"_"+sys][i_p];
       randomv=nomv;
     }else{
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 	randomv(i_p)=r.Gaus(0.,TMath::Sqrt(eigenval(i_p)));
 	nomv(i_p)=m_fit_params[region+"_"+sys][i_p];
       }
@@ -2467,7 +2473,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
     }
     
     
-    for(int i_p=0; i_p<templateHists.size(); i_p++){
+    for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
       
       if(!(templateHists[i_p].get())) continue;
       
@@ -2495,7 +2501,12 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
   
   int n_bins=hist_total->GetNbinsX();
   
-  double x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins],y_error_up[n_bins],y_error_down[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
+  double* y_error_up = new double[n_bins];
+  double* y_error_down = new double[n_bins];
   
   double param;
   
@@ -2553,9 +2564,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
   
   TH1D *hist_total=new TH1D("hist_total","",fj_bins.size()-1,&(fj_bins[0]));
   
@@ -2564,7 +2575,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   std::vector<double> help_norms(fj_bins.size()-1,0.);
   std::vector<std::vector<double>> region_norms(regions.size(), help_norms);
   
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
 
     help_norms.assign(fj_bins.size()-1,0.);
     
@@ -2573,7 +2584,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
     
     std::vector<float> flavour_norms(m_config->GetPairs().size(),0.);
     
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
       if(!isPosttag){
         help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
@@ -2607,7 +2618,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
       TVector v2=v;
       
       std::vector<float> matrix;
-      for(int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
+      for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
       
         //std::cout<<"size of matrix"<<m_nom_cov_mats[regions[i_reg]].size()<<std::endl;
         matrix.push_back((float)(m_nom_cov_mats[regions[i_reg]][i_entry])); //get region covariance matrix
@@ -2635,7 +2646,13 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   
   int n_bins=fj_bins.size()-1;
   
-  double fiterrors_up[n_bins],fiterrors_down[n_bins],tot_err_sq[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  double* fiterrors_up = new double[n_bins];
+  double* fiterrors_down = new double[n_bins];
+  double* tot_err_sq = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
   
   for(int ib=0; ib<n_bins; ib++){
     
@@ -2647,7 +2664,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
   //loop over bins, check fraction contributed by fit region in each bin, calculate error
   for(int i_bin=1; i_bin<=n_bins; i_bin++){
 
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
 
       if(hist_total->GetBinContent(i_bin)) tot_err_sq[i_bin-1]+=fit_total_error_slice[i_reg]*region_norms[i_reg][i_bin-1]/hist_total->GetBinContent(i_bin);
       
@@ -2701,9 +2718,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++){
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++){
     d_fj_bins[i_b]=(double)fj_bins[i_b];
     toy_bins.push_back(new TH1D("toy_bins","",50,0,-1));
     toy_bins[i_b]->SetDirectory(0);
@@ -2727,7 +2744,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
     hist_total->Reset();
     if(!(i_toy%50)) std::cout<<"Throw toys"<<i_toy<<" of "<<n_toys<<std::endl;
     
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       
       
       TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
@@ -2735,7 +2752,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
       
       matrix.clear();
 
-      for(int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
+      for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
 	matrix.push_back((double)(m_nom_cov_mats[regions[i_reg]][i_entry])); //get region covariance matrix
 	
       }
@@ -2748,10 +2765,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
       eigenvec=mat_eigen.GetEigenVectors();
       
       if(i_toy==0){ //nominal rate
-	for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
+	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	randomv=nomv;
       }else{
-	for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 	  randomv(i_p)=r.Gaus(0.,TMath::Sqrt(eigenval(i_p)));
 	  nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	}
@@ -2761,7 +2778,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
       }
       
       
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 	
 	if(!isPosttag){
 	  help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
@@ -2800,7 +2817,12 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
 
   int n_bins=hist_total->GetNbinsX();
   
-  double x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins],y_error_up[n_bins],y_error_down[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
+  double* y_error_up = new double[n_bins];
+  double* y_error_down = new double[n_bins];
 
   double param;
 
@@ -2860,9 +2882,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
   
   TH1D *hist_total=new TH1D("hist_total","",fj_bins.size()-1,&(fj_bins[0]));
   TH1D *hist_total_posttag=new TH1D("hist_total_posttag","",fj_bins.size()-1,&(fj_bins[0]));
@@ -2883,7 +2905,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
   std::vector<std::vector<double>> region_norms_posttag(regions.size(), help_norms_posttag);
 
   
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
 
     help_norms.assign(fj_bins.size()-1,0.);
     help_norms_posttag.assign(fj_bins.size()-1,0.);
@@ -2896,7 +2918,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
     std::vector<float> flavour_norms(m_config->GetPairs().size(),0.);
     std::vector<float> flavour_norms_posttag(m_config->GetPairs().size(),0.);
     
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       
       help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
       help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
@@ -2933,7 +2955,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
     TVector v2_untagged=v_untagged;
     
     std::vector<float> matrix;
-    for(int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
+    for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
       
       //std::cout<<"size of matrix"<<m_nom_cov_mats[regions[i_reg]].size()<<std::endl;
       matrix.push_back((float)(m_nom_cov_mats[regions[i_reg]][i_entry])); //get region covariance matrix
@@ -2961,7 +2983,15 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
   
   int n_bins=fj_bins.size()-1;
   
-  double fiterrors_up[n_bins],fiterrors_down[n_bins],tot_err_sq[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins],tot_err_sq_untagged[n_bins],tot_err_sq_combined[n_bins];
+  double* fiterrors_up = new double[n_bins];
+  double* fiterrors_down = new double[n_bins];
+  double* tot_err_sq = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
+  double* tot_err_sq_untagged = new double[n_bins];
+  double* tot_err_sq_combined = new double[n_bins];
   
   for(int ib=0; ib<n_bins; ib++){
     
@@ -2975,7 +3005,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
   //loop over bins, check fraction contributed by fit region in each bin, calculate error
   for(int i_bin=1; i_bin<=n_bins; i_bin++){
 
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
 
       if(hist_total->GetBinContent(i_bin)) tot_err_sq[i_bin-1]+=fit_total_error_slice[i_reg]*region_norms[i_reg][i_bin-1]/hist_total->GetBinContent(i_bin);
       if((hist_total->GetBinContent(i_bin)-hist_total_posttag->GetBinContent(i_bin))>0.) tot_err_sq_untagged[i_bin-1]+=fit_total_error_slice_untagged[i_reg]*(region_norms[i_reg][i_bin-1]-region_norms[i_reg][i_bin-1])/(hist_total->GetBinContent(i_bin)-hist_total_posttag->GetBinContent(i_bin));
@@ -3038,9 +3068,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++){
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++){
     d_fj_bins[i_b]=(double)fj_bins[i_b];
     toy_bins.push_back(new TH1D("toy_bins","",50,0,-1));
     toy_bins[i_b]->SetDirectory(0);
@@ -3067,12 +3097,12 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
 
   int n_toys=2000;
   
-  for(int i_toy=0; i_toy<n_toys; i_toy++){
+  for( int i_toy=0; i_toy<n_toys; i_toy++){
     hist_total->Reset();
     hist_total_posttag->Reset();
     
     if(!(i_toy%50)) std::cout<<"Throw toys"<<i_toy<<" of "<<n_toys<<std::endl;
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       
       name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
       name_mc_posttag=regions[i_reg]+"_"+var+"_PREFITPOSTTAG_"+"Nom";
@@ -3081,7 +3111,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
 
       matrix.clear();
 
-      for(int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
+      for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[regions[i_reg]].size(); i_entry++){
 	
 	//std::cout<<"size of matrix"<<m_nom_cov_mats[regions[i_reg]].size()<<std::endl;
 	matrix.push_back((double)(m_nom_cov_mats[regions[i_reg]][i_entry])); //get region covariance matrix
@@ -3118,10 +3148,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
       */
 
       if(i_toy==0){ //nominal rate
-	for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
+	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	randomv=nomv;
       }else{
-	for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 	  randomv(i_p)=r.Gaus(0.,TMath::Sqrt(eigenval(i_p)));
 	  nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	}
@@ -3132,7 +3162,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
       
       //randomv.Print();
       
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 	
 	help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
 	help->SetDirectory(0);
@@ -3168,7 +3198,14 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
 
   int n_bins=hist_total->GetNbinsX();
   
-  double btagerrors_up[n_bins],btagerrors_down[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins],y_error_up[n_bins],y_error_down[n_bins];
+  double* btagerrors_up = new double[n_bins];
+  double* btagerrors_down = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
+  double* y_error_up = new double[n_bins];
+  double* y_error_down = new double[n_bins];
 
   double param;
 
@@ -3231,11 +3268,11 @@ TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool apply
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
   
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
     
     //if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
     
@@ -3247,7 +3284,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool apply
     //std::cout<<"name_mc btag down: "<<name_mc_down<<std::endl;
 
     
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
         help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
         help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
         if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
@@ -3289,7 +3326,12 @@ TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool apply
   
   int n_bins=h_nom->GetNbinsX();
   
-  double btagerrors_up[n_bins],btagerrors_down[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  double* btagerrors_up = new double[n_bins];
+  double* btagerrors_down = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
   
   TH1* h_diff_up=(TH1*)h_nom->Clone();
   TH1* h_diff_down=(TH1*)h_nom->Clone();
@@ -3332,14 +3374,21 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
   
   
   int n_bins=fj_bins.size()-1;
   
-  double total_errors_up[n_bins],total_errors_down[n_bins], total_errsquare_up[n_bins],total_errsquare_down[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  double* total_errors_up = new double[n_bins];
+  double* total_errors_down = new double[n_bins];
+  double* total_errsquare_up = new double[n_bins];
+  double* total_errsquare_down = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
   
   for(int i=1; i<=n_bins; i++){
     total_errsquare_down[i-1]=0;
@@ -3347,7 +3396,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
     
   }
   
-  for(int i_sys=0; i_sys<sys.size(); i_sys++){
+  for(unsigned int i_sys=0; i_sys<sys.size(); i_sys++){
     bool isOneSided=false;
 
     TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
@@ -3357,7 +3406,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
     TH1D *h_up_eff_pretag=new TH1D("h_up_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
     TH1D *h_down_eff_pretag=new TH1D("h_down_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
 
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       
       //if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
       
@@ -3374,7 +3423,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
       //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
       
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
 	if(isPosttag || isEff){
 	  if(!isEff){
@@ -3548,14 +3597,22 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
   
   
   int n_bins=fj_bins.size()-1;
   
-  double total_errors_up[n_bins],total_errors_down[n_bins], total_errsquare_up[n_bins],total_errsquare_down[n_bins],x_values[n_bins],y_values_up[n_bins],y_values_down[n_bins],x_error_up[n_bins],x_error_down[n_bins];
+  double* total_errors_up = new double[n_bins];
+  double* total_errors_down = new double[n_bins];
+  double* total_errsquare_up = new double[n_bins];
+  double* total_errsquare_down = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values_up = new double[n_bins];
+  double* y_values_down = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
   
   for(int i=1; i<=n_bins; i++){
     total_errsquare_down[i-1]=0;
@@ -3565,7 +3622,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
     
   }
   
-  for(int i_sys=0; i_sys<sys.size(); i_sys++){
+  for(unsigned int i_sys=0; i_sys<sys.size(); i_sys++){
     bool isOneSided=false;
 
     TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
@@ -3575,7 +3632,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
     TH1D *h_up_eff_pretag=new TH1D("h_up_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
     TH1D *h_down_eff_pretag=new TH1D("h_down_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
 
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       
       //if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
       
@@ -3587,7 +3644,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
       //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
       
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
 	if(isPosttag || isEff){
 	  if(i_sys==0){
@@ -3634,7 +3691,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
 	    if(!isEff) h_nom->Add(help_rebinned);
 	    else h_nom_eff_pretag->Add(help_rebinned);
 	    
-	      for(int i=1; i<=n_bins; i++){
+	      for( int i=1; i<=n_bins; i++){
 		x_values[i-1]=h_nom->GetBinCenter(i);
 		x_error_up[i-1]=h_nom->GetBinWidth(i)/2;
 		x_error_down[i-1]=h_nom->GetBinWidth(i)/2;
@@ -3679,7 +3736,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
 
     if(isOneSided){
       
-      for(int i=1; i<=n_bins; i++){
+      for( int i=1; i<=n_bins; i++){
         
         float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
 	if(h_nom->GetBinContent(i)) y_values_up[i-1]=1.+delta_up/h_nom->GetBinContent(i);
@@ -3692,7 +3749,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
       
     }else{
       
-      for(int i=1; i<=n_bins; i++){
+      for( int i=1; i<=n_bins; i++){
         
         float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
         float delta_down=h_down->GetBinContent(i)-h_nom->GetBinContent(i);
@@ -3737,24 +3794,32 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
   
   TH1D* help, *help_rebinned;
   
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
   
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
   
   
   int n_bins=fj_bins.size()-1;
   
-  double total_errors_up[n_bins],total_errors_down[n_bins], total_errsquare_up[n_bins],total_errsquare_down[n_bins],x_values[n_bins],y_values[n_bins],x_error_up[n_bins],x_error_down[n_bins],total_errors_up_smooth[n_bins],total_errors_down_smooth[n_bins];
-  
+  double* total_errors_up = new double[n_bins];
+  double* total_errors_down = new double[n_bins];
+  double* total_errsquare_up = new double[n_bins];
+  double* total_errsquare_down = new double[n_bins];
+  double* x_values = new double[n_bins];
+  double* y_values = new double[n_bins];
+  double* x_error_up = new double[n_bins];
+  double* x_error_down = new double[n_bins];
+  double* total_errors_up_smooth = new double[n_bins];
+  double* total_errors_down_smooth = new double[n_bins];
 
 
-  for(int i=1; i<=n_bins; i++){
+  for( int i=1; i<=n_bins; i++){
     total_errsquare_down[i-1]=0;
     total_errsquare_up[i-1]=0;
     
   }
   
-  for(int i_sys=0; i_sys<sys.size(); i_sys++){
+  for(unsigned int i_sys=0; i_sys<sys.size(); i_sys++){
     bool isOneSided=false;
 
     TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
@@ -3762,7 +3827,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
     //for efficiency plot
     TH1D *h_up_eff_pretag=new TH1D("h_up_eff_pretag","",fj_bins.size()-1,&(fj_bins[0]));
 
-    for(int i_reg=0; i_reg<regions.size(); i_reg++){
+    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
       
       //if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
       
@@ -3777,7 +3842,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
       //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
       double pythia_nominal_fraction=0.;
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
 	if(isPosttag || isEff){
 	  if(!isEff){
@@ -3842,7 +3907,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
     
     
       
-    for(int i=1; i<=n_bins; i++){
+    for( int i=1; i<=n_bins; i++){
         
       float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
       std::cout<<"delta up one-sided: "<< sys[i_sys]<<" : "<<delta_up<<std::endl;
@@ -3864,7 +3929,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
   }
   
 
-  for(int i=1; i<=n_bins; i++){
+  for( int i=1; i<=n_bins; i++){
     
     x_values[i-1]=h_nom->GetBinCenter(i);
     x_error_up[i-1]=h_nom->GetBinWidth(i)/2;
@@ -3886,7 +3951,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
   }
 
   //nearest neighbor smoothing
-  for(int i=1; i<=n_bins; i++){
+  for( int i=1; i<=n_bins; i++){
     if(i==1){
       total_errors_up_smooth[i-1]=(2*total_errors_up[i-1]+total_errors_up[i])/3.;
       total_errors_down_smooth[i-1]=(2*total_errors_down[i-1]+total_errors_down[i])/3.;
@@ -3914,10 +3979,13 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTotalSys(TGraphAsymmErrors* fitsysg
   
   int n_points=stat->GetN();
   
-  double err_squared_tot_up[n_points],err_squared_tot_down[n_points],err_tot_up[n_points],err_tot_down[n_points];
+  double* err_squared_tot_up = new double[n_points];
+  double* err_squared_tot_down = new double[n_points];
+  double* err_tot_up = new double[n_points];
+  double* err_tot_down = new double[n_points];
   
   
-  for(int i=0; i<n_points; i++){
+  for( int i=0; i<n_points; i++){
     
     err_squared_tot_up[i]=0.;
     err_squared_tot_down[i]=0.;
@@ -3949,7 +4017,12 @@ TGraphAsymmErrors* ScaleFactorCalculator::getMCStat(TH1* full_mc){
   
   int nbins=full_mc->GetNbinsX();
   
-  double x_values[nbins], y_values[nbins], x_error_up[nbins],x_error_down[nbins],y_error_up[nbins],y_error_down[nbins];
+  double* x_values = new double[nbins];
+  double* y_values = new double[nbins];
+  double* x_error_up = new double[nbins];
+  double* x_error_down = new double[nbins];
+  double* y_error_up = new double[nbins];
+  double* y_error_down = new double[nbins];
   
   for(int i=1; i<=full_mc->GetNbinsX(); i++){
     
@@ -3982,7 +4055,7 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
   std::vector<TH1D*> hist_prefit_mc, hist_postfit_mc;
   TString name_pretag;
 
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
     name_pretag="hist_prefit_mc_"+(m_config->GetPairs())[i_p];
 
@@ -3997,16 +4070,16 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
 
   TH1D* help, *help_rebinned;
 
-  double d_fj_bins[fj_bins.size()];
+  double* d_fj_bins = new double[fj_bins.size()];
 
-  for(int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
+  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
 
-  for(int i_reg=0; i_reg<regions.size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
 
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
 
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
       help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
       hist_prefit_mc[i_p]->Add(help_rebinned);
@@ -4022,7 +4095,7 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
 
   scale_factors=new TH1D("scale_factors","",fj_bins.size()-1,&(fj_bins[0]));
 
-  for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
 
     tmp_stacked_mc=(TH1D*)hist_prefit_mc[i_p]->Clone();
 
@@ -4062,20 +4135,20 @@ void ScaleFactorCalculator::SaveFitCorrectionFactorsSys(){
   TString name;
   TCanvas *canv=new TCanvas("canv","",400,300);
 
-  for(int i_reg=0; i_reg<m_config->GetAllRegions().size(); i_reg++){
+  for(unsigned int i_reg=0; i_reg<m_config->GetAllRegions().size(); i_reg++){
   std::vector<TH1D*> hists;
     for(auto &el : names){
       name=el+"_"+m_config->GetAllRegions().at(i_reg);
       hists.push_back(new TH1D(name.Data(),"",25,0.,-1.));
     }
 
-    for(int i_sys=0; i_sys<systematics.size(); i_sys++){
+    for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
       if(i_sys==0) std::cout<<"Sys is "<<systematics[i_sys]<<std::endl;
-      for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++) hists[i_p]->Fill(m_fit_params[regions[i_reg]+"_"+systematics[i_sys]][i_p]/m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) hists[i_p]->Fill(m_fit_params[regions[i_reg]+"_"+systematics[i_sys]][i_p]/m_fit_params[regions[i_reg]+"_Nom"][i_p]);
     
     }
     
-    for(int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
       name=TString(hists[i_p]->GetName())+".pdf";
       canv->cd();
       hists[i_p]->Draw();

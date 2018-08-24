@@ -4,7 +4,7 @@
  *
  */
 
-#include "ScaleFactorCalculator.h"
+#include "GbbCalibration/ScaleFactorCalculator.h"
 
 int main(int argc, const char* argv[] ){
 

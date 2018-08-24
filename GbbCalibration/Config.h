@@ -21,9 +21,13 @@ class Config{
   int m_N_pseudo_exp;
   int m_Ntimes_smooth;
 
+  double m_statThr_Rebin;
+
   bool m_Debug;
   bool m_doMCStatsNP;
   bool m_doFitInFatJetPtBins;
+  bool m_doControlPlots;
+  bool m_doCalibSequence;
   
   std::vector<TString> m_pairs;
   std::vector<TString> m_systematics;
@@ -61,6 +65,8 @@ class Config{
   bool DoDebug(){ return m_Debug; }
   bool DoMCStatsNP(){ return m_doMCStatsNP; }
   bool DoFitInFatJetPtBins(){return m_doFitInFatJetPtBins;}
+  bool DoControlPlots(){return m_doControlPlots;}
+  bool DoCalibSequence(){return m_doCalibSequence;}
 
   std::vector<float> GetBins(TString& var){ return m_binning[var]; }
 

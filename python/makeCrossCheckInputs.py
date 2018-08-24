@@ -7,7 +7,7 @@ import string
 import os
 
 ROOT.gROOT.SetBatch(True)
-from ROOT import TCanvas,TPad
+from ROOT import TCanvas,TPad,TH1,TFile
 
 #SetupStyle()
 
@@ -92,7 +92,8 @@ for histname in ListOfHists :
 
         if index==len(ListOfMCPaths)-1 :
             outfile.cd()
-            new_hist_0=(ROOT.TH1F)hist_0
+            #new_hist_0=(ROOT.TH1F)hist_0
+            new_hist_0=hist_0.Clone()
             new_hist_0.Write()
         
 #loop over Data Histograms
@@ -101,7 +102,8 @@ file_curr=ROOT.TFile(pathData,"READ")
 for histname in ListOfDataHists :
     hist_0=file_curr.Get(histname)
     hist_0.SetDirectory(0)
-    new_hist_0=(ROOT.TH1F)hist_0
+    #new_hist_0=(ROOT.TH1F)hist_0
+    new_hist_0=hist_0.Clone()
     outfile.cd()
     new_hist_0.Write()
     

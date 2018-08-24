@@ -1,4 +1,4 @@
-#include "Config.h"
+#include "GbbCalibration/Config.h"
 #include "TEnv.h"
 #include "TObjString.h"
 #include "TObjArray.h"
@@ -95,6 +95,9 @@ Config::Config(TString& cfg_path){
    
   m_subsub_label   = config->GetValue("SubSubLabel",         "#bf{g #rightarrow bb calibration}");
   std::cout<<"SubSubLabel: "<<m_subsub_label<<std::endl;
+
+  m_statThr_Rebin = config->GetValue("RebinStatThreshold",0.5);
+  std::cout<<"RebinStatThreshold: "<<m_statThr_Rebin<<std::endl;
 
   delete config;
 

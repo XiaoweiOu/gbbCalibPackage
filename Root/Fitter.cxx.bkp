@@ -51,7 +51,7 @@ void Fitter::AddMCStatsNuisanceParameters(TString channel,double step_factor,dou
 
   fitdata->GetMCStatsNPInitVal(channel,par,par_err);
 
-  for(unsigned int i=0; i<par.size(); i++){
+  for(int i=0; i<par.size(); i++){
 
     TString NP_name="NP_"+channel+"_"+Form("%i",i);
     this->AddParameter(NP_name,par[i],step_factor*par_err[i],0., par[i]+high_factor*par_err[i],false);
@@ -88,7 +88,7 @@ void Fitter::Initialize(bool doRandom, bool doRandomTemplate){
   
   
   //set parameters minuit
-  for(unsigned int i=0; i<m_params_names.size(); i++){
+  for(int i=0; i<m_params_names.size(); i++){
     //if(i==0) std::cout<<m_params_names[0]<<" is "<<m_params_in[0]<<std::endl;
     m_Minuit->DefineParameter(i,m_params_names[i].Data(),m_params_in[i],m_params_stepsize[i],m_params_low[i],m_params_high[i]);
     if(m_params_fixed[i])  m_Minuit->FixParameter(i);
@@ -145,7 +145,7 @@ void Fitter::PrintParameters(TString err_mode){
   std::cout<<"| Parameters:"<<std::endl;
   std::cout<<"|"<<std::endl;
   
-  for(unsigned int i=0; i<m_params_names.size(); i++){
+  for(int i=0; i<m_params_names.size(); i++){
     
     if(m_params_names[i].Contains("NP")) continue; //Don't print for NP                                                                                                                                                               
     
@@ -180,7 +180,7 @@ void Fitter::PrintFlavourFractions(TString& chan, TString err_mode){
   
   std::cout<<"| before fit :"<<std::endl;
   
-  for(unsigned int i=0; i<m_params_names.size(); i++){
+  for(int i=0; i<m_params_names.size(); i++){
 
     if(m_params_names[i].Contains("NP")) continue; //Don't print for NP
 
@@ -204,7 +204,7 @@ void Fitter::PrintFlavourFractions(TString& chan, TString err_mode){
 
   total_mc_norm=0;
 
-  for(unsigned int i=0; i<m_params_names.size(); i++){
+  for(int i=0; i<m_params_names.size(); i++){
 
     if(m_params_names[i].Contains("NP")) continue; //Don't print for NP                                                                                                                                                               
 
@@ -248,7 +248,7 @@ void Fitter::CalculateResultSampling(int N){
 
   std::vector<std::shared_ptr<TH1D>> histos;
 	
-  for(unsigned int i_par=0; i_par<m_params_names.size(); i_par++) histos.push_back(std::shared_ptr<TH1D>(new TH1D(m_params_names[i_par].Data(),"",1000,0.,10.)));
+  for(int i_par=0; i_par<m_params_names.size(); i_par++) histos.push_back(std::shared_ptr<TH1D>(new TH1D(m_params_names[i_par].Data(),"",1000,0.,10.)));
 	
   double par_val=0, par_err=0;
 	
@@ -261,14 +261,14 @@ void Fitter::CalculateResultSampling(int N){
     this->Initialize(true);
     this->fit();
 
-    for(unsigned int i_par=0; i_par<m_params_names.size(); i_par++){
+    for(int i_par=0; i_par<m_params_names.size(); i_par++){
       this->GetParameterSimple(i_par, par_val, par_err);
       //if(i_par==0) std::cout<<"===========================================================after fit value par[0] is "<<par_val<<"================================================================="<<std::endl;
       histos[i_par].get()->Fill(par_val);
     }
   }
 
-  for(unsigned int i_par=0; i_par<m_params_names.size(); i_par++){ 
+  for(int i_par=0; i_par<m_params_names.size(); i_par++){ 
 		
     TString name="BootStrapHisto_"+m_params_names[i_par]+".root";
     histos[i_par].get()->SaveAs(name.Data());
@@ -283,7 +283,7 @@ void Fitter::GetPseudoTemplateFitResult(std::vector<std::vector<double>>& pseudo
   m_Minuit->SetPrintLevel(-1); //quiet mode 
 
   for(int i=0; i<N_fits; i++){
-    if(!(i%250)) std::cout<<"Pseudo Templates Fit "<<i<<std::endl;
+    if(!(i%250)) std::cout<<"Fit "<<i<<std::endl;
 
     FitData *fitdata=(FitData*)m_Minuit->GetObjectFit();
     fitdata->MakeBootStrapTemplates();   
@@ -296,26 +296,7 @@ void Fitter::GetPseudoTemplateFitResult(std::vector<std::vector<double>>& pseudo
 
 }
 
-void Fitter::GetPseudoDataFitResult(std::vector<std::vector<double>>& pseudo_params, int N_fits){
-  m_Minuit->SetPrintLevel(-1); //quiet mode 
-
-  for(int i=0; i<N_fits; i++){
-    if(!(i%250)) std::cout<<"PseudoData Fit "<<i<<std::endl;
-
-    FitData *fitdata=(FitData*)m_Minuit->GetObjectFit();
-    fitdata->MakeBootStrapData();   
-    this->Initialize(true,false);
-    this->fit();
-
-    pseudo_params.push_back(this->FitParameters());
-  }
-
-
-}
-
-
-
-void Fitter::GetParErrorSampling(int i_par,double &par_val,double &par_err , int N){
+double Fitter::GetParErrorSampling(int i_par,double &par_val,double &par_err , int N){
 
   if(m_params_sampling_errors.size()==0) this->CalculateResultSampling(N);
   par_err=m_params_sampling_errors[i_par];
@@ -339,7 +320,7 @@ void Fitter::MakeOutputHistFile(TFile *outfile, TString histname_stub, TString e
     return;
   }
 
-  for(unsigned int i=0; i<m_params_names.size(); i++){
+  for(int i=0; i<m_params_names.size(); i++){
 
     if(m_params_names[i].Contains("NP")) continue; //Don't print for NP                                                                                                                                                               
 

@@ -76,8 +76,8 @@ private:
 	ScaleFactorCalculator(TString &cfg_file);
 	virtual ~ScaleFactorCalculator();
 	
-	SFCalcResult CalculateScaleFactors(TString &sys, bool doPseudo=false, int i_pseudo=0,bool doPseudoData=false);
-	SFCalcResult CalculateScaleFactorsByRegion(TString &sys, bool doPseudo=false, int i_pseudo=0,bool doPseudoData=false);
+	SFCalcResult CalculateScaleFactors(TString &sys, bool doPseudo=false, unsigned int i_pseudo=0,bool doPseudoData=false);
+	SFCalcResult CalculateScaleFactorsByRegion(TString &sys, bool doPseudo=false, unsigned int i_pseudo=0,bool doPseudoData=false);
 	CalibResult CalculateScaleFactorsAndErrors(bool doByRegion=false);
 	void MakeCalibrationPlots(CalibResult cl_result, TString plot_type);
 	void ReadInFatJetHists(std::vector<TString>& var, std::vector<TString>& sys);
