@@ -8,6 +8,7 @@ atlas_subdir( GbbCalibration )
 # Declare the package's dependencies:
 atlas_depends_on_subdirs(
    PUBLIC 
+   Tools/PathResolver
    )
 
 find_package( ROOT COMPONENTS Core MathCore RIO Hist Tree Matrix Gpad Graf Physics Minuit)
@@ -23,7 +24,7 @@ atlas_add_library( GbbTupleLib
    Root/*.h ${_dictionarySource}
    PUBLIC_HEADERS GbbTupleAna
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES}
+   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
    )
 atlas_add_library( ScaleFactorCalcLib
    Root/ScaleFactorCalculator.cxx Root/FitData.cxx Root/Fitter.cxx Root/Config.cxx

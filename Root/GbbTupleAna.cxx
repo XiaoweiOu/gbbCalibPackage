@@ -16,6 +16,8 @@
 #include "TObjString.h"
 #include "TTree.h"
 #include "TChain.h"
+#include "PathResolver/PathResolver.h"
+#include "TSystem.h"
 
 struct track {
 
@@ -58,9 +60,21 @@ void GbbTupleAna::ReadConfig(TString &config_path){
  
   std::cout<<"=============================================="<<std::endl;
 
-  std::cout << "Config file is set to: " << config_path << std::endl;
-    
-  TEnv* config = new TEnv(config_path.Data());
+  TString m_config_path = config_path;
+  //if ( !(gSystem->AccessPathName(m_config_path.Data())) )
+  m_config_path = PathResolverFindCalibFile(m_config_path.Data());
+
+  if (config_path == "") {
+    std::cout << "Cannot find settings file " + config_path + "\n  also searched in " + m_config_path << std::endl;
+    abort();
+  } else std::cout << "Config file is set to: " << m_config_path << std::endl;
+
+  TEnv* config = new TEnv("env");
+  if (config->ReadFile(m_config_path.Data(),EEnvLevel(0)) == -1) {
+    std::cout << "Could not read config file " << m_config_path.Data() << std::endl;
+    abort();
+  }
+  //config->Print();
 
   m_RunMode   = config->GetValue("RunMode",         "FillTemplates");
   std::cout<<"RunMode: "<<m_RunMode<<std::endl;
@@ -235,6 +249,7 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
     }
 
   }else f->GetObject("MetaData_EventCount",metahist);
+  if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl; 
   
   m_HistogramService->FastFillTH1D("Hist_BookKeeping",1,6,0.5,6.5,metahist->GetBinContent(1));
   ((TH1D*) m_HistogramService->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(1, "nEvents AOD");
@@ -906,8 +921,8 @@ void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
   
   TH2D *hist;
 
-  TString hist_name="h_reweight_trigjet_pt_eta_"+trigger_passed;
-  //TString hist_name="h_reweight_trigfatjet_pt_eta_"+trigger_passed;
+  TString hist_name="reweight_trigjet_pt_eta_"+trigger_passed;
+  //TString hist_name="reweight_trigfatjet_pt_eta_"+trigger_passed;
   
   std::cout<<"Looking for hist: "<<hist_name<<std::endl;
 
