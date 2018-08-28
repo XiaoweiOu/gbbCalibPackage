@@ -13,12 +13,23 @@ Config::~Config() {
 
 }
 
-Config::Config(TString& cfg_path){
+Config::Config(TString& config_path){
 
   std::cout<<"=============================================="<<std::endl;   
-  std::cout << "Config file is set to: " << cfg_path << std::endl;
-  
-  TEnv* config = new TEnv(cfg_path.Data());
+  TString m_config_path = config_path;
+  //if ( !(gSystem->AccessPathName(m_config_path.Data())) )
+  m_config_path = PathResolverFindCalibFile(m_config_path.Data());
+
+  if (config_path == "") {
+    std::cout << "Cannot find settings file " + config_path + "\n  also searched in " + m_config_path << std::endl;
+    abort();
+  } else std::cout << "Config file is set to: " << m_config_path << std::endl;
+
+  TEnv* config = new TEnv("env");
+  if (config->ReadFile(m_config_path.Data(),EEnvLevel(0)) == -1) {
+    std::cout << "Could not read config file " << m_config_path.Data() << std::endl;
+    abort();
+  }
   
   m_inputfile   = config->GetValue("InputFile",         "./data/inputs.root");
   std::cout<<"InputFile: "<<m_inputfile<<std::endl;     

@@ -54,7 +54,7 @@ class Config{
 
  public:
 
-  Config(TString& cfg_path);
+  Config(TString& config_path);
   Config();
   virtual ~Config();
   
