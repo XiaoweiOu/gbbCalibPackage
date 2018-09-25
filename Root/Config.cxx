@@ -2,6 +2,7 @@
 #include "TEnv.h"
 #include "TObjString.h"
 #include "TObjArray.h"
+#include "PathResolver/PathResolver.h"
 
 Config::Config() {
   // TODO Auto-generated constructor stub

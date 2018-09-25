@@ -385,7 +385,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   }else{ //MC: throw out event with large weights out of Pt range
 
 	  m_HistogramService->FastFillTH1D("truthjet_pt",this->truthjet_pt->at(0)/1e3,100,0.,5000.,total_evt_weight);
-
+#if 0 //FIXME: ask Ruth why this cut exists. Tuples only contain one (R=0.4) jet, is that new?
 	  if(this->jet_pt->size()>=2 && this->truthjet_pt->size()){
 		  
 		  mc_jet_ratio=0.5*(this->jet_pt->at(0)+this->jet_pt->at(1))/this->truthjet_pt->at(0);
@@ -399,7 +399,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 	    std::cout<<"Have less than 2 jets"<<std::endl;
 	    return false;
 	  }
-
+#endif
   }
 
   if(this->hasBadJet()) return false;
@@ -575,6 +575,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   //FILL REWEIGHT HISTOGRAMS
   if(m_isNominal && m_RunMode.Contains("FillReweightHists")){
+    //FIXME: do we want to trigger on large-R jet?
     this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
     //this->FillFatReweightInfo(largeRtrigpt,largeRtrigeta,total_evt_weight,trigger_passed);
   }
@@ -589,7 +590,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     //std::cout<<"Trigger weight is:"<<trig_weight<<std::endl;
     //float trig_weight=this->getTrigFatJetWeight(largeRtrigpt,largeRtrigeta,trigger_passed);
 
-    if(TMath::Abs(trig_weight)<1e-10) trig_weight=1.; //avoid weights of zero
+    if(TMath::Abs(trig_weight)<1e-10) trig_weight=1.; //avoid weights of zero //FIXME:shouldn't this set trig_weight to 1e-10?
     total_evt_weight*=trig_weight; //Temporary!!! put back in
 
   }
@@ -1058,7 +1059,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
     
     if(!passR10CaloJetCuts(i_jet)) continue;
     
-    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
+    if(this->fat_trkjet_assocTrkjet_ind->at(i_jet).size()<2){
 	    //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
 	    continue; 
     }
@@ -1070,9 +1071,9 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
     muonjet_index=999;
     nonmuonjet_index=999;
   
-    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
+    for(unsigned int i=0; i<this->fat_trkjet_assocTrkjet_ind->at(i_jet).size(); i++){
       
-      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
+      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_trkjet_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
 
       if(assocTJ_ind<0){
 	if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
@@ -1167,7 +1168,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
     
     if(!passR10CaloJetCuts(i_jet)) continue;
     
-    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
+    if(this->fat_trkjet_assocTrkjet_ind->at(i_jet).size()<2){
 	    //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
 	    continue; 
     }
@@ -1178,9 +1179,9 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
     muonjet_index=999;
     nonmuonjet_index=999;
   
-    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
+    for(unsigned int i=0; i<this->fat_trkjet_assocTrkjet_ind->at(i_jet).size(); i++){
       
-      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
+      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_trkjet_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
 
       if(assocTJ_ind<0){
 	if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;

@@ -14,7 +14,7 @@ atlas_depends_on_subdirs(
 find_package( ROOT COMPONENTS Core MathCore RIO Hist Tree Matrix Gpad Graf Physics Minuit)
 
 # Build a dictionary for the library:
-atlas_add_root_dictionary( CxAODMaker _dictionarySource
+atlas_add_root_dictionary( GbbTupleLib _dictionarySource
    ROOT_HEADERS GbbCalibration/TupleAna.h GbbCalibration/GbbTupleAna.h Root/LinkDef.h
    EXTERNAL_PACKAGES ROOT )
 
@@ -31,7 +31,7 @@ atlas_add_library( ScaleFactorCalcLib
    GbbCalibration/ScaleFactorCalculator.h GbbCalibration/FitData.h GbbCalibration/Fitter.h GbbCalibration/Config.h
    PUBLIC_HEADERS ScaleFactorCalc
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES}
+   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
    )
 
 # Install files from the package:
