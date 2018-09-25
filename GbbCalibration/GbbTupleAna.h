@@ -26,8 +26,17 @@ struct GbbCandidate{
   bool hasTruthMuon;
 };
 
-
-
+struct trkjetSd0Info {
+  float maxSd0;
+  float maxSd0_dR;
+  float subSd0;
+  float subSd0_dR;
+  float thirdSd0;
+  float thirdSd0_dR;
+  float meanSd0_ptSort;
+  float meanSd0_sd0Sort;
+  int nMean;
+};
 
 class GbbTupleAna : public TupleAna {
 
@@ -142,6 +151,7 @@ private:
 	float getTrkjetAssocTrkMaxSd0DR(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
 	float getTrkjetAssocTrkMeand0(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
 	bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
+        trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
   
 	float getSd0(unsigned int i_trk, unsigned int i_jet);
   float getSd0_smeared(unsigned int i_trk, unsigned int i_jet);
