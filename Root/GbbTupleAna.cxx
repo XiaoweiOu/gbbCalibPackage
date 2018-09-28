@@ -663,13 +663,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //4.) Tracks passing requirements for templates                                                                                                                
   //=========================================    
 
-  //float muojet_maxsd0=this->getTrkjetAssocTrkMaxSd0(gbbcand.muojet_index,m_doTrackSmearing,"nominal");
-  //float nonmuojet_maxsd0=this->getTrkjetAssocTrkMaxSd0(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal"); 
-
-  //calculate Mean sd0 for leading three tracks
-//  float muojet_maxsd0=this->getTrkjetAssocTrkMeand0(gbbcand.muojet_index,m_doTrackSmearing,"nominal",3);
-//  float nonmuojet_maxsd0=this->getTrkjetAssocTrkMeand0(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal",3); 
-
   trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.muojet_index,m_doTrackSmearing,"nominal",3);
   trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal",3);
   float muojet_maxsd0 = muojet_sd0Info.meanSd0_ptSort;
@@ -1443,28 +1436,18 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   //inclusive in Pt
   TString hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
 
-  //float muojet_maxsd0=this->getTrkjetAssocTrkMaxSd0(gbbcand->muojet_index, m_doTrackSmearing,"nominal");
-  //float nonmuojet_maxsd0=this->getTrkjetAssocTrkMaxSd0(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal"); 
-
   //calculate mean sd0 for leading three tracks
-  float muojet_maxsd0=this->getTrkjetAssocTrkMeand0(gbbcand->muojet_index, m_doTrackSmearing,"nominal",3);
-  float nonmuojet_maxsd0=this->getTrkjetAssocTrkMeand0(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal",3);
-
   trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal",3);
   trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal",3);
-  //float muojet_maxsd0 = muojet_sd0Info.meanSd0_ptSort;
-  //float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_ptSort;
+  float muojet_maxsd0 = muojet_sd0Info.meanSd0_ptSort;
+  float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_ptSort;
 
-  //float muojet_maxsd0DR=this->getTrkjetAssocTrkMaxSd0DR(gbbcand->muojet_index, m_doTrackSmearing,"nominal");
-  //float nonmuojet_maxsd0DR=this->getTrkjetAssocTrkMaxSd0DR(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal");
   float muojet_maxsd0DR = muojet_sd0Info.maxSd0_dR;
   float nonmuojet_maxsd0DR = nonmuojet_sd0Info.maxSd0_dR;
 
   if(TMath::Abs(muojet_maxsd0+99)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99)<1e-5) return; //associated tracks do not fulfil selection cuts
 
 
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjoldSd0"+nametag,muojet_maxsd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_nmjoldSd0"+nametag,nonmuojet_maxsd0,50,-40,80,event_weight);
   m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjmaxSd0"+nametag,muojet_sd0Info.maxSd0,50,-40,80,event_weight);
   m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_nmjmaxSd0"+nametag,nonmuojet_sd0Info.maxSd0,50,-40,80,event_weight);
   m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjmeanSd0"+nametag,muojet_sd0Info.meanSd0_ptSort,50,-40,80,event_weight);
@@ -1516,29 +1499,23 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     
     if(this->eve_isMC && m_isNominal){
       
-      //float muojet_maxsd0_up=this->getTrkjetAssocTrkMaxSd0(gbbcand->muojet_index, m_doTrackSmearing,"up");
-      //float nonmuojet_maxsd0_up=this->getTrkjetAssocTrkMaxSd0(gbbcand->nonmuojet_index,m_doTrackSmearing,"up"); //test Ruth 23.3.
-      
       //calculate mean sd0 for leading three tracks
-      float muojet_maxsd0_up=this->getTrkjetAssocTrkMeand0(gbbcand->muojet_index, m_doTrackSmearing,"up",3);
-      float nonmuojet_maxsd0_up=this->getTrkjetAssocTrkMeand0(gbbcand->nonmuojet_index,m_doTrackSmearing,"up",3);
-  
-  trkjetSd0Info  muojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"up",3);
-  trkjetSd0Info  nonmuojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"up",3);
+      trkjetSd0Info  muojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"up",3);
+      trkjetSd0Info  nonmuojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"up",3);
+
+      float muojet_maxsd0_up = muojet_sd0Info_up.meanSd0_ptSort;
+      float nonmuojet_maxsd0_up = nonmuojet_sd0Info_up.meanSd0_ptSort;
  
       m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
       m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
       
-      //float muojet_maxsd0_down=this->getTrkjetAssocTrkMaxSd0(gbbcand->muojet_index, m_doTrackSmearing,"down");
-      //float nonmuojet_maxsd0_down=this->getTrkjetAssocTrkMaxSd0(gbbcand->nonmuojet_index,m_doTrackSmearing,"down"); //test Ruth 23.3.
-
       //calculate mean sd0 for leading three tracks
-      float muojet_maxsd0_down=this->getTrkjetAssocTrkMeand0(gbbcand->muojet_index, m_doTrackSmearing,"down",3);
-      float nonmuojet_maxsd0_down=this->getTrkjetAssocTrkMeand0(gbbcand->nonmuojet_index,m_doTrackSmearing,"down",3);
-  
-  trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
-  trkjetSd0Info  nonmuojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"down",3);
+      trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
+      trkjetSd0Info  nonmuojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"down",3);
 
+      float muojet_maxsd0_down = muojet_sd0Info_down.meanSd0_ptSort;
+      float nonmuojet_maxsd0_down = nonmuojet_sd0Info_down.meanSd0_ptSort;
+  
       m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
       m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
       
@@ -1711,243 +1688,6 @@ int GbbTupleAna::getCategoryNumber(int muo_truth, int nonmuo_truth, bool doMerge
   
   return 9;
   
-}
-
-float GbbTupleAna::getTrkjetAssocTrkMaxSd0(unsigned int i_jet, bool doSmeared, TString sys){
-
-  //give Sd0 of maximum significant among 3 leading track jets
-
-  float max_sd0=0.,max2_sd0=0.,max3_sd0=0., tmp_sd0=0., ret=0.;
-  float tmp_pt=0.,max_pt=0., max2_pt=0., max3_pt=0.;
-
-    int tracks_passed=0;
-
-    TLorentzVector jet,trk;
-
-    float px, py,pz;
-
-  for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
-
-    if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
-
-    tracks_passed++;
-
-    if(sys.EqualTo("nominal") && doSmeared)tmp_sd0=getSd0_smeared(i_trk,i_jet);
-    else if(sys.EqualTo("up") && doSmeared)tmp_sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(sys.EqualTo("down") && doSmeared)tmp_sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(!doSmeared) tmp_sd0=getSd0(i_trk,i_jet);
-    else std::cout<<"ERROR: You have to specify if you want smeared, nominal or sys Sd0!"<<std::endl;
-
-    jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0);
-    
-    
-    trk.SetPtEtaPhiM(this->trkjet_assocTrk_pt->at(i_jet).at(i_trk),this->trkjet_assocTrk_eta->at(i_jet).at(i_trk),this->trkjet_assocTrk_phi->at(i_jet).at(i_trk),0);
-
-    //std::cout<<"DR(trk,jet) is "<<jet.DeltaR(trk)<<std::endl; 
-    //tmp_DR=jet.DeltaR(trk);
-
-
-    tmp_pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-
-    if(tmp_pt>max_pt){
-	    max3_pt=max2_pt;
-	    max3_sd0=max2_sd0;
-
-	    max2_pt=max_pt;
-            max2_sd0=max_sd0;
-
-            max_pt=tmp_pt;
-            max_sd0=tmp_sd0;
-
-    }else if(tmp_pt>max2_pt){
-
-	    max3_pt=max2_pt;
-            max3_sd0=max2_sd0;
-
-	    max2_pt=tmp_pt;
-	    max2_sd0=tmp_sd0;
-
-    }else if(tmp_pt>max3_pt){
-
-	    max3_pt=tmp_pt;
-	    max3_sd0=tmp_sd0;
-	    
-    }
-
-    
-  }
-
-  if(tracks_passed<3) return -99;
-  
-  float val_DR;
-
-  if(TMath::Abs(max_sd0)>TMath::Abs(max2_sd0) && TMath::Abs(max_sd0)>TMath::Abs(max3_sd0)){
-    ret=max_sd0;
-  }
-  else if(TMath::Abs(max2_sd0)>TMath::Abs(max3_sd0)){
-    ret=max2_sd0;
-  }
-  else{
-    ret=max3_sd0;
-  } 
-
-  return ret;
-
-}
-
-float GbbTupleAna::getTrkjetAssocTrkMeand0(unsigned int i_jet, bool doSmeared, TString sys, int n){
-
-  //give average d0 of maximum significant of n leading track jets
-
-    int tracks_passed=0;
-
-    TLorentzVector jet,trk;
-
-    float px, py,pz;
-
-    std::vector<track> tracks;
-
-  for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
-
-    if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
-
-    tracks_passed++;
-
-    track tr;
-
-    if(sys.EqualTo("nominal") && doSmeared)tr.sd0=getSd0_smeared(i_trk,i_jet);
-    else if(sys.EqualTo("up") && doSmeared)tr.sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(sys.EqualTo("down") && doSmeared)tr.sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(!doSmeared) tr.sd0=getSd0(i_trk,i_jet);
-    else std::cout<<"ERROR: You have to specify if you want smeared, nominal or sys Sd0!"<<std::endl;
-
-
-    tr.pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-
-    
-
-    if(sys.EqualTo("nominal") && doSmeared)tr.d0=this->trkjet_assocTrk_d0_smear->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("up") && doSmeared)tr.d0=this->trkjet_assocTrk_d0_smear_up->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("down") && doSmeared)tr.d0=this->trkjet_assocTrk_d0_smear_down->at(i_jet).at(i_trk);
-    else if(!doSmeared) tr.d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
-    else std::cout<<"ERROR: You have to specify if you want smeared, nominal or sys Sd0!"<<std::endl;
-
-    tracks.push_back(tr);
-    
-  }
-
-  float sum=0.;
-
-  //std::sort(tracks.begin(),tracks.end(),by_abs_sd0());
-  std::sort(tracks.begin(),tracks.end(),by_pt());
-
-  
-  if(tracks.size()<n) return -99.;
-
-  for(int i=0; i<n; i++){
-    //std::cout<<"track "<<i<<": pT"<<tracks.at(i).pt<<std::endl;
-    float d0=tracks.at(i).d0;
-    float sd0=tracks.at(i).sd0;
-    //sum+=sd0<0 ? -1.*TMath::Abs(d0) : TMath::Abs(d0);
-    sum+=sd0;
-  }
-
-  return sum/n;
-
-}
-
-
-float GbbTupleAna::getTrkjetAssocTrkMaxSd0DR(unsigned int i_jet, bool doSmeared, TString sys){
-
-  //give Sd0 of maximum significant among 3 leading track jets
-
-  float max_sd0=0.,max2_sd0=0.,max3_sd0=0., tmp_sd0=0., ret=0.;
-  float tmp_pt=0.,max_pt=0., max2_pt=0., max3_pt=0.;
-  float tmp_DR=0.,DR=0.,DR_2=0., DR_3=0.;
-
-    int tracks_passed=0;
-
-    TLorentzVector jet,trk;
-
-    float px, py,pz;
-
-  for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
-
-    if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
-
-    tracks_passed++;
-
-    if(sys.EqualTo("nominal") && doSmeared)tmp_sd0=getSd0_smeared(i_trk,i_jet);
-    else if(sys.EqualTo("up") && doSmeared)tmp_sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(sys.EqualTo("down") && doSmeared)tmp_sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(!doSmeared) tmp_sd0=getSd0(i_trk,i_jet);
-    else std::cout<<"ERROR: You have to specify if you want smeared, nominal or sys Sd0!"<<std::endl;
-
-    jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0);
-    
-    
-    trk.SetPtEtaPhiM(this->trkjet_assocTrk_pt->at(i_jet).at(i_trk),this->trkjet_assocTrk_eta->at(i_jet).at(i_trk),this->trkjet_assocTrk_phi->at(i_jet).at(i_trk),0);
-
-    //std::cout<<"DR(trk,jet) is "<<jet.DeltaR(trk)<<std::endl; 
-    tmp_DR=jet.DeltaR(trk);
-
-
-    tmp_pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-
-    if(tmp_pt>max_pt){
-	    max3_pt=max2_pt;
-	    max3_sd0=max2_sd0;
-	    DR_3=DR_2;
-
-	    max2_pt=max_pt;
-            max2_sd0=max_sd0;
-	    DR_2=DR;
-
-            max_pt=tmp_pt;
-            max_sd0=tmp_sd0;
-	    DR=tmp_DR;
-
-    }else if(tmp_pt>max2_pt){
-
-	    max3_pt=max2_pt;
-            max3_sd0=max2_sd0;
-	    DR_3=DR_2;
-
-	    max2_pt=tmp_pt;
-	    max2_sd0=tmp_sd0;
-	    DR_2=tmp_DR;
-
-    }else if(tmp_pt>max3_pt){
-
-	    max3_pt=tmp_pt;
-	    max3_sd0=tmp_sd0;
-	    DR_3=tmp_DR;
-	    
-    }
-
-    
-  }
-
-  if(tracks_passed<3) return -99;
-  
-  float val_DR;
-
-  if(TMath::Abs(max_sd0)>TMath::Abs(max2_sd0) && TMath::Abs(max_sd0)>TMath::Abs(max3_sd0)){
-    ret=max_sd0;
-    val_DR=DR_3;
-  }
-  else if(TMath::Abs(max2_sd0)>TMath::Abs(max3_sd0)){
-    ret=max2_sd0;
-    val_DR=DR_2;
-  }
-  else{
-    ret=max3_sd0;
-    val_DR=DR;
-  } 
-  //if(val_DR>0.2) std::cout<<"TemplateTrack DR larger than 0.2, value: "<<val_DR<<std::endl;
-
-  return val_DR;
-
 }
 
 trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared, TString sys, int n){

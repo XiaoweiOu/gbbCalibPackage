@@ -147,9 +147,6 @@ private:
 	
 	bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
 	
-	float getTrkjetAssocTrkMaxSd0(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
-	float getTrkjetAssocTrkMaxSd0DR(unsigned int i_jet,bool doSmeared=false, TString sys="nominal");
-	float getTrkjetAssocTrkMeand0(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
 	bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
         trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
   
