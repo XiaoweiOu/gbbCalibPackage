@@ -150,10 +150,11 @@ private:
 	bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
         trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
   
-	float getSd0(unsigned int i_trk, unsigned int i_jet);
+	float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
   float getSd0_smeared(unsigned int i_trk, unsigned int i_jet);
   float getSd0_smeared_sys_up(unsigned int i_trk, unsigned int i_jet);
   float getSd0_smeared_sys_down(unsigned int i_trk, unsigned int i_jet);
+	float getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
 	
 	float getAssocTrackOldSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0);
 	float getAssocTrackNewSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0);
