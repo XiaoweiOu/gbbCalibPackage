@@ -1236,10 +1236,6 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
 }
 
 
-
-
-
-
 int GbbTupleAna::getTruthType(int label){
 
   label=TMath::Abs(label);
@@ -1801,171 +1797,6 @@ float GbbTupleAna::getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared
   return val*TMath::Abs(sd0);
 }
 
-float GbbTupleAna::getCMd0Difference(unsigned int i_trk, unsigned int j_trk, GbbCandidate* gbbcand){
-  //THIS PART NEEDS EDITING
-
-  float diff=0;
-  /*TLorentzVector fatjet;
-  fatjet.SetPtEtaPhiM(this->fat_pt->at(gbbcand->fat_index),this->fat_pt->eta(gbbcand->fat_index),this->fat_phi->at(gbbcand->fat_index), this->fat_m->at(gbbcand->fat_index));
-  
-  int mj_index=gbbcand->muojet_index;
-  int nmj_index=gbbcand->nonmuojet_index;
-
-  int mj_d0=0;
-
-  if(this->eve_isMC) d0=this->trkjet_assocTrk_d0_smear->at(i_jet).at(i_trk);
-  else d0=this->trkjet_assocTrk_d0_smear->at(i_jet).at(i_trk);
-  */
-
-
-  return diff;
-}
-
-
-float GbbTupleAna::getAssocTrackOldSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0){
-
-	float max_sd0=0., tmp_sd0=0.;
-	
-	float max_d0=0., max_errd0=0.;
-	int tracks_passed=0;
-	
-	for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
-		
-		if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
-		
-		tracks_passed++;
-		
-		tmp_sd0=getSd0(i_trk,i_jet);
-	
-
-		if(TMath::Abs(tmp_sd0)>TMath::Abs(max_sd0)){
-			
-			max_sd0=tmp_sd0;
-			max_errd0=this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
-			max_d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
-
-		}
-	
-	}
-	
-
-	if(tracks_passed==0){
-
-		max_d0=-999;
-		max_errd0=-999;
-		return -99;
-	}else{
-
-		d0=max_d0;
-		err_d0=max_errd0;
-	}
-
-
-	return max_sd0;
-}
-
-
-
-float GbbTupleAna::getAssocTrackNewSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0){
-
-	float max_sd0=0.,max2_sd0=0.,max3_sd0=0., tmp_sd0=0., ret=0.;
-	float tmp_pt=0.,max_pt=0., max2_pt=0., max3_pt=0.;
-	float max_d0=0., max_errd0=0., max2_d0=0., max2_errd0=0., max3_d0=0., max3_errd0=0., tmp_d0=0., tmp_errd0=0.;
-
-	int tracks_passed=0;
-
-	for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
-
-	  TLorentzVector v_jet, v_trk;
-	  v_jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0.);
-	  v_trk.SetPtEtaPhiM(this->trkjet_assocTrk_pt->at(i_jet).at(i_trk),this->trkjet_assocTrk_eta->at(i_jet).at(i_trk),this->trkjet_assocTrk_phi->at(i_jet).at(i_trk),0.);
-	  std::cout<<"DR(trk,jet) is "<<v_jet.DeltaR(v_trk)<<std::endl; 
-
-		if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
-		
-
-		tracks_passed++;
-
-		tmp_sd0=getSd0(i_trk,i_jet);
-
-		tmp_pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-		tmp_d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
-		tmp_errd0=this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
-
-
-		if(tmp_pt>max_pt){
-			max3_pt=max2_pt;
-			max3_sd0=max2_sd0;
-			max3_d0=max2_d0;
-			max3_errd0=max2_errd0;
-
-
-			max2_pt=max_pt;
-			max2_sd0=max_sd0;
-			max2_d0=max_d0;
-			max2_errd0=max_errd0;
-			
-
-			max_pt=tmp_pt;
-			max_sd0=tmp_sd0;
-			max_d0=tmp_d0;
-			max_errd0=tmp_errd0;
-
-
-		}else if(tmp_pt>max2_pt){
-
-			max3_pt=max2_pt;
-			max3_sd0=max2_sd0;
-			max3_d0=max2_d0;
-			max3_errd0=max2_errd0;
-
-			max2_pt=tmp_pt;
-			max2_sd0=tmp_sd0;
-			max2_d0=tmp_d0;
-			max2_errd0=tmp_errd0;
-
-		}else if(tmp_pt>max3_pt){
-
-			max3_pt=tmp_pt;
-			max3_sd0=tmp_sd0;
-			max3_d0=tmp_d0;
-			max3_errd0=tmp_errd0;
-
-		}
-
-
-
-	}
-
-	if(tracks_passed<3) return -99;
-	
-	if(TMath::Abs(max_sd0)>TMath::Abs(max2_sd0) && TMath::Abs(max_sd0)>TMath::Abs(max3_sd0)){
-
-		d0=max_d0;
-		err_d0=max_errd0;
-		ret=max_sd0;
-	
-	}else if(TMath::Abs(max2_sd0)>TMath::Abs(max3_sd0)){
-		
-		d0=max2_d0;
-		err_d0=max2_errd0;
-		ret=max2_sd0;
-
-	}else{
-		d0=max3_d0;
-		err_d0=max3_errd0;
-		ret=max3_sd0;
-	}
-
-	
-	
-       	return ret;
-
-
-}
-
-
-
 void GbbTupleAna::getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down){
   
          btag_SF_nom=this->eve_BtagSFWeightNom;
@@ -1989,6 +1820,7 @@ void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_do
   //add variations in the positive vs negative direction separately in quadrature
   //if the effect of both members of an eigenvector pair is in the same direction, take the bigger one
 
+  //FIXME: Why doesn't this loop over the full vector?
   const unsigned int nbtagsys=this->eve_BtagSFWeightSys->size()/2;
   for(unsigned int s=0; s<nbtagsys; s+=2){
     float delta_up=(this->eve_BtagSFWeightSys->at(s)*weight_nominal-weight_nominal);
@@ -2032,21 +1864,29 @@ void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_do
   
 }
 
-
-
 std::vector<TString> GbbTupleAna::SplitString(TString str, char delim){
 
   std::vector<TString> tokens;
   TObjArray *Strings=str.Tokenize(delim);
   
   for(int i=0; i<Strings->GetEntriesFast(); i++){
-
     tokens.push_back(((TObjString*) (*Strings)[i])->GetString());
-        
   }
 
   return tokens;
+}
 
+std::vector<float> GbbTupleAna::SplitStringD(TString str, char delim){
+
+  std::vector<float> tokens;
+  TObjArray *Strings=str.Tokenize(delim);
+  
+  for(int i=0; i<Strings->GetEntriesFast(); i++){
+    tokens.push_back((((TObjString*) (*Strings)[i])->GetString()).Atof());
+    std::cout<<"Token: "<<((TObjString*) (*Strings)[i])->GetString()<<" vs "<<tokens[i]<<std::endl;
+  }
+
+  return tokens;
 }
 
 void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMuon){
@@ -2061,66 +1901,19 @@ void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion
 
 }
 
-
-std::vector<float> GbbTupleAna::SplitStringD(TString str, char delim){
-
-  std::vector<float> tokens;
-  TObjArray *Strings=str.Tokenize(delim);
-  
-  for(int i=0; i<Strings->GetEntriesFast(); i++){
-
-    tokens.push_back((((TObjString*) (*Strings)[i])->GetString()).Atof());
-    //tokens.push_back((*((TString*)(*Strings)[i])).Atof());
-    std::cout<<"Token: "<<((TObjString*) (*Strings)[i])->GetString()<<" vs "<<tokens[i]<<std::endl;
-
-  }
-
-  return tokens;
-
-}
-
-// function to create the bit mask
-unsigned int GbbTupleAna::bitmask(const unsigned int cut, const std::vector<unsigned int> &excludeCuts) {
-
-  unsigned int mask = 0;
-  unsigned int bit  = 0;
-
-  for (unsigned int i=0; i < cut+1; ++i) {
-    if   ( std::find(excludeCuts.begin(), excludeCuts.end(), i) != excludeCuts.end() ) {
-      // if a cut should be excluded set the corresponding bit to 0                                                                                                                                                                          
-      mask = mask | 0 << bit++;
-    } else  {
-      // otherwise set the bit to 1                                                                                                                                                                                                          
-      mask = mask | 1 << bit++;
-    }
-  }
-
-  return mask;
-}
-
-
-bool GbbTupleAna::passAllCutsUpTo(const unsigned long int flag, const unsigned int cut, const std::vector<unsigned int> &excludeCuts) {
-
-  // Get the bitmask: we want to check all cuts up to "cut" excluding the cuts listed in excludeCuts                                                                                                                                         
-  unsigned int mask = bitmask(cut, excludeCuts);
-  // Check if the flag matches the bit mask                                                                                                                                                                                                  
-  return (flag & mask) == mask;
-
-}
-
-// a function to check specifig cuts                                                                                                                                                                                                         
+// a function to check specific cuts 
 bool GbbTupleAna::passSpecificCuts(const unsigned long int flag, const std::vector<unsigned int> &cuts) {
   unsigned int mask = 0;
-  // Make the bit mask                                                                                                                                                                                                                       
+  // Make the bit mask 
   for (auto cut : cuts) mask = mask | 1 << cut;
-  // Check if the flag matches the bit mask                                                                                                                                                                                                  
+  // Check if the flag matches the bit mask 
   return (flag & mask) == mask;
 }
 
 
-// a function to update the bit flag                                                                                                                                                                                                         
+// a function to update the bit flag 
 void GbbTupleAna::updateFlag(unsigned long int &flag, const unsigned int cutPosition, const bool passCut) {
-  // Put bit passCut (true or false) at position cutPosition                                                                                                                                                                                
+  // Put bit passCut (true or false) at position cutPosition 
   flag = flag | passCut << cutPosition;
 }
 

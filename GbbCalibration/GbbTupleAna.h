@@ -153,9 +153,6 @@ private:
 	float getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
 	float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
 	
-	float getAssocTrackOldSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0);
-	float getAssocTrackNewSelectiond0AndErr(unsigned int i_jet,float & d0, float& err_d0);
-	
 	void getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down);
 	void getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_down);                         
 	
@@ -166,11 +163,8 @@ private:
 	
 	//bitstring cutflow (based on CxAODReader_VHbb)
 	void updateFlag(unsigned long int &flag, const unsigned int cutPosition, const bool passCut);
-	unsigned int bitmask(const unsigned int cut, const std::vector<unsigned int> &excludeCuts);
 	bool passSpecificCuts(const unsigned long int flag, const std::vector<unsigned int> &cuts);
-	bool passAllCutsUpTo(const unsigned long int flag, const unsigned int cut, const std::vector<unsigned int> &excludeCuts);
 
-	float getCMd0Difference(unsigned int i_trk, unsigned int j_trk, GbbCandidate* gbbcand);
 	float getScaledFatPt(float fjpt){
 	  return fjpt*(0.9725+(1e-5)*fjpt);
 	  //	  return fjpt*(0.95+((2.86e-5)*fjpt));
