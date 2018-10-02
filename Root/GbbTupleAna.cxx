@@ -1705,23 +1705,9 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     tracks_passed++;
     track tr;
 
-    if(sys.EqualTo("nominal") && doSmeared)tr.sd0=getSd0_smeared(i_trk,i_jet);
-    else if(sys.EqualTo("up") && doSmeared)tr.sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(sys.EqualTo("down") && doSmeared)tr.sd0=getSd0_smeared_sys_up(i_trk,i_jet);
-    else if(!doSmeared) tr.sd0=getSd0(i_trk,i_jet);
-    else std::cout<<"ERROR: You have to specify if you want smeared, nominal or sys Sd0!"<<std::endl;
-    if (fabs(tr.sd0 - getSd0(i_trk,i_jet,doSmeared,sys)) > 10e-8)
-      std::cout<<"ERROR: bug in new Sd0 calculation!"<<std::endl;
-
+    tr.d0 = getd0(i_trk,i_jet,doSmeared,sys);
+    tr.sd0 = getSd0(i_trk,i_jet,doSmeared,sys);
     tr.pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-
-    if(sys.EqualTo("nominal") && doSmeared)tr.d0=this->trkjet_assocTrk_d0_smear->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("up") && doSmeared)tr.d0=this->trkjet_assocTrk_d0_smear_up->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("down") && doSmeared)tr.d0=this->trkjet_assocTrk_d0_smear_down->at(i_jet).at(i_trk);
-    else if(!doSmeared) tr.d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
-    else std::cout<<"ERROR: You have to specify if you want smeared, nominal or sys Sd0!"<<std::endl;
-    if (fabs(tr.d0 - getd0(i_trk,i_jet,doSmeared,sys)) > 10e-8)
-      std::cout<<"ERROR: bug in new d0 calculation!"<<std::endl;
 
     trk.SetPtEtaPhiM(this->trkjet_assocTrk_pt->at(i_jet).at(i_trk),this->trkjet_assocTrk_eta->at(i_jet).at(i_trk),this->trkjet_assocTrk_phi->at(i_jet).at(i_trk),0);
     tr.dr=jet.DeltaR(trk);
@@ -1813,87 +1799,6 @@ float GbbTupleAna::getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared
   float val = det_sign>=0 ? 1. : -1.;
   
   return val*TMath::Abs(sd0);
-}
-
-
-float GbbTupleAna::getSd0_smeared(unsigned int i_trk, unsigned int i_jet){
-  
-  TLorentzVector jet;
-  jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0.);
-  
-  float d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
-  
-  //std::cout<<"d0 is: "<<d0<<std::endl;
-  
-  float trk_pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-  float trk_eta=this->trkjet_assocTrk_eta->at(i_jet).at(i_trk);
-  
-  if(this->eve_isMC) d0=this->trkjet_assocTrk_d0_smear->at(i_jet).at(i_trk);
-  
-  //std::cout<<"smeared d0 is: "<<d0<<std::endl;
-  
-  float sd0=d0/this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
-  
-  float det_sign=TMath::Sin(jet.Phi()-this->trkjet_assocTrk_phi->at(i_jet).at(i_trk))*d0;
-  
-  //std::cout<<"phi difference"<<jet.Phi()-this->trkjet_assocTrk_phi->at(i_jet).at(i_trk)<<std::endl;
-  
-  //std::cout<<"sign variables"<<det_sign<<"  "<< det_sign_other<<std::endl;
-  
-  float val = det_sign>=0 ? 1. : -1.;
-  
-  
-  return val*TMath::Abs(sd0);
-  
-  
-}
-
-float GbbTupleAna::getSd0_smeared_sys_up(unsigned int i_trk, unsigned int i_jet){
-  
-  TLorentzVector jet;
-  jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0.);
-  
-  float d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
-  
-  float trk_pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-  float trk_eta=this->trkjet_assocTrk_eta->at(i_jet).at(i_trk);
-  
-  if(this->eve_isMC) d0=this->trkjet_assocTrk_d0_smear_up->at(i_jet).at(i_trk);
-  
-  float sd0=d0/this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
-  
-  float det_sign=TMath::Sin(jet.Phi()-this->trkjet_assocTrk_phi->at(i_jet).at(i_trk))*d0;
-  
-  float val = det_sign>=0 ? 1. : -1.;
-  
-  
-  return val*TMath::Abs(sd0);
-  
-  
-}
-
-float GbbTupleAna::getSd0_smeared_sys_down(unsigned int i_trk, unsigned int i_jet){
-  
-  TLorentzVector jet;
-  jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0.);
-  
-  float d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
-  
-  float trk_pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
-  float trk_eta=this->trkjet_assocTrk_eta->at(i_jet).at(i_trk);
-  
-  if(this->eve_isMC) d0=this->trkjet_assocTrk_d0_smear_down->at(i_jet).at(i_trk);
-  
-  float sd0=d0/this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
-  
-  float det_sign=TMath::Sin(jet.Phi()-this->trkjet_assocTrk_phi->at(i_jet).at(i_trk))*d0;
-  
-  float val = det_sign>=0 ? 1. : -1.;
-  
-  
-  return val*TMath::Abs(sd0);
-  
-  
 }
 
 float GbbTupleAna::getCMd0Difference(unsigned int i_trk, unsigned int j_trk, GbbCandidate* gbbcand){
