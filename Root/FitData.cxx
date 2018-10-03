@@ -486,6 +486,7 @@ void FitData::KernelSmoothTemplates(float scale){
   
       TH1D* hist_temp=(TH1D*)m_templateHistsMap[m_chans[i]][j].get()->Clone();
 
+      // Integral of the hist (ignoring underflow)
       float area=m_templateHistsMap[m_chans[i]][j].get()->Integral(1,m_templateHistsMap[m_chans[i]][j]->GetNbinsX());
   
       int Nbinsx = m_templateHistsMap[m_chans[i]][j].get()->GetNbinsX();
@@ -497,10 +498,11 @@ void FitData::KernelSmoothTemplates(float scale){
       float lowbin,highbin;
       float gauss_scale=1;
 
-
       for(int i_bin=1; i_bin<=Nbinsx; i_bin++){
+        // Shifts the bins 1 to the left
 	new_entries[i_bin-1]=m_templateHistsMap[m_chans[i]][j].get()->GetBinContent(i_bin);
 	if(TMath::Abs(m_templateHistsMap[m_chans[i]][j].get()->GetBinLowEdge(i_bin))<10) continue;
+        // why is -10 the highbin and 10 the lowbin?
 	if(m_templateHistsMap[m_chans[i]][j].get()->GetBinLowEdge(i_bin)<=-10){
 	  lowbin=1;
 	  highbin=m_templateHistsMap[m_chans[i]][j].get()->FindBin(-10);
@@ -534,6 +536,9 @@ void FitData::KernelSmoothTemplates(float scale){
 	std::cout<<"entry: "<<entry<<std::endl;
 	std::cout<<"entry_numerator: "<<entry_numerator<<std::endl;
 
+        // replaces new_entries from earlier (bin content) with sum of distances btwn i and j weighted 
+        // by j_bin content divided by sum of distances
+        // distances are measured in # of sigma of a gaussians, with sigma = scale
 	new_entries[i_bin-1]=entry/entry_numerator;//*m_templateHistsMap[m_chans[i]][j].get()->GetBinWidth(i_bin);
 	std::cout<<"New entries for bin"<<i_bin<<": "<<new_entries[i_bin-1]<<std::endl;
 
