@@ -109,6 +109,7 @@ private:
 
 	bool Processgbb(int i_evt);
 	
+        void GetGeneratorName(TString url);
 	bool passR4CaloJetCuts(unsigned int i_jet);
 	bool passR10CaloJetCuts(unsigned int i_jet);
 	bool passR2TrackJetCuts(unsigned int i_jet);

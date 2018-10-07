@@ -163,9 +163,7 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
     for(auto &el : infilelist){
       TString url=el+"/"+treename;
 
-      if(url.Contains("3610") || url.Contains("42700") || url.Contains("42710")) m_GeneratorName="Pythia";
-      else if (url.Contains("4260") || url.Contains("42711") ) m_GeneratorName="Herwig";
-      else m_GeneratorName="Unknown";
+      GetGeneratorName(url);
 
       tc->Add(url.Data());
       if(!treename.EqualTo("FlavourTagging_Nominal")){ //if systematics tree: add nominal as friend to retrieve the truth label (temp patch)
@@ -179,9 +177,7 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
 
   }else{
     
-    if(infilename.Contains("3610") || infilename.Contains("42700") || infilename.Contains("42710")) m_GeneratorName="Pythia";
-    else if (infilename.Contains("4260") || infilename.Contains("42711") ) m_GeneratorName="Herwig";
-    else m_GeneratorName="Unknown";
+    GetGeneratorName(url);
 
     f=(TFile*)gROOT->GetListOfFiles()->FindObject(infilename.Data());
     if (!f || !f->IsOpen()) {
@@ -913,6 +909,13 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
 
   return true;
+}
+
+//FIXME: find better way to do this
+void GbbTupleAna::GetGeneratorName(TString url){
+  if(url.Contains("3610") || url.Contains("42700") || url.Contains("42710")) m_GeneratorName="Pythia";
+  else if (url.Contains("4260") || url.Contains("42711") ) m_GeneratorName="Herwig";
+  else m_GeneratorName="Unknown";
 }
 
 void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
@@ -1747,7 +1750,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
 
 }
 
-
+//FIXME: these is the hard-coded Summer 2017 Loose Electron track cuts. Should put definition in tuple-making
 bool GbbTupleAna::passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet){
 
   if( (this->trkjet_assocTrk_nPixelHits->at(i_jet).at(i_trk)<1) || (this->trkjet_assocTrk_nPixelHits->at(i_jet).at(i_trk)+this->trkjet_assocTrk_nSCTHits->at(i_jet).at(i_trk))<7){
