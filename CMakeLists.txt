@@ -19,7 +19,8 @@ atlas_add_root_dictionary( GbbTupleLib _dictionarySource
    EXTERNAL_PACKAGES ROOT )
 
 atlas_add_library( GbbTupleLib
-   Root/GbbTupleAna.cxx Root/TupleAna.cxx Root/HistogramService.cxx Root/FlavourFracCorrector.cxx
+   Root/GbbTupleAna.cxx Root/GbbSelectionHelp.cxx Root/TupleAna.cxx
+   Root/HistogramService.cxx Root/FlavourFracCorrector.cxx
    GbbCalibration/GbbTupleAna.h GbbCalibration/TupleAna.h GbbCalibration/HistogramService.h GbbCalibration/FlavourFracCorrector.h
    Root/*.h ${_dictionarySource}
    PUBLIC_HEADERS GbbTupleAna
