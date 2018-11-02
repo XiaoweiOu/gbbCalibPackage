@@ -144,6 +144,16 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
   m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_mjeta"+nametag,this->trkjet_eta->at(gbbcand->muojet_index)/1e3,100,-2.5,2.5,event_weight);
   m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_nmjeta"+nametag,this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
 
+  TLorentzVector muojet_vec, nonmuojet_vec;
+  muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->muojet_index)/1e3,
+                           this->trkjet_eta->at(gbbcand->muojet_index),
+                           this->trkjet_phi->at(gbbcand->muojet_index),
+                           0.);
+  nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
+                              this->trkjet_eta->at(gbbcand->nonmuojet_index),
+                              this->trkjet_phi->at(gbbcand->nonmuojet_index),
+                              0.);
+  m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_dRtrkjets"+nametag,muojet_vec.DeltaR(nonmuojet_vec),100,0,1.0,event_weight);
 }
 
 void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag){

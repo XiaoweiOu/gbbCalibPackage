@@ -488,6 +488,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
     return false;
   }
+  //if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
+  //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
+  //  return false;
+  //}
 
   if(m_Debug){
     std::cout<<"processgbb(): Finished constructing Gbb candidate!"<<std::endl;
@@ -939,6 +943,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
       }else{
         //if(m_Debug && !(this->trkjet_assocMuon_n->at(assocTJ_ind))) std::cout<<"constructGbbCandidate(): No Muon associated to track jet!"<<std::endl;
         if(m_Debug && this->trkjet_assocMuon_n->at(assocTJ_ind)) std::cout<<"constructGbbCandidate(): Muon associated to track jet did not pass cuts!"<<std::endl;
+
         nonmuon_cand_index.push_back(assocTJ_ind);
       }
       
