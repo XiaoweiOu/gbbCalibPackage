@@ -488,10 +488,20 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
     return false;
   }
-  //if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
-  //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
-  //  return false;
-  //}
+  TLorentzVector muojet_vec, nonmuojet_vec;
+  muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->muojet_index)/1e3,
+                           this->trkjet_eta->at(gbbcand->muojet_index),
+                           this->trkjet_phi->at(gbbcand->muojet_index),
+                           0.);
+  nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
+                              this->trkjet_eta->at(gbbcand->nonmuojet_index),
+                              this->trkjet_phi->at(gbbcand->nonmuojet_index),
+                              0.);
+  m_HistogramService->FastFillTH1D("h_dRtrkjets",muojet_vec.DeltaR(nonmuojet_vec),100,0,1.0,event_weight);
+  if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
+    if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
+    return false;
+  }
 
   if(m_Debug){
     std::cout<<"processgbb(): Finished constructing Gbb candidate!"<<std::endl;
@@ -657,32 +667,44 @@ bool GbbTupleAna::Processgbb(int i_evt){
       if(!(i_evt%2)) this->FillTemplates(&gbbcand,total_evt_weight,"ODD");      
     }
     
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjpt",trjet_pt/1e3,250,0.,1000.,total_evt_weight);
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_DRditrkjetfatjet",DRditrkjetfatjet,250,0.,0.5,total_evt_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"trjpt",""),
+     trjet_pt/1e3,250,0.,1000.,total_evt_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"DRditrkjetfatjet",""),
+     DRditrkjetfatjet,250,0.,0.5,total_evt_weight);
     if(m_isNominal) m_HistogramService->FastFillTH2D("h_DRditrkjetfatjetVSfjpt",DRditrkjetfatjet,fatjet.Pt()/1e3,25,0.,0.5,50,0.,1000.,total_evt_weight);
 
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptgbbcandratio",trjet_pt/fatjet.Pt(),50,0.,10.,total_evt_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"trjptgbbcandratio",""),
+     trjet_pt/fatjet.Pt(),50,0.,10.,total_evt_weight);
 
-    //m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjptfjptratio",ptratio,50,-1.,1.,total_evt_weight);
+    //m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"trjptfjptratio",""),
+    // ptratio,50,-1.,1.,total_evt_weight);
 
     if(m_isNominal){
+
       m_HistogramService->FastFillTH2D("h_2DtrjptVsfjpt",trjet_pt/1e3,fatjet.Pt()/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
-      m_HistogramService->FastFillTH2D("h"+dijet_name+"_2DmjptVsnmjpt",muojet_pt/1e3,nonmuojet_pt/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
+      m_HistogramService->FastFillTH2D( makePlotName("",dijet_name,"Incl","2DmjptVsnmjpt",""),
+        muojet_pt/1e3,nonmuojet_pt/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
     }    
 
 
     TLorentzVector smallRJet;
     if(i_sublsmallRjet>=0){
       smallRJet.SetPtEtaPhiE(this->jet_pt->at(i_sublsmallRjet),this->jet_eta->at(i_sublsmallRjet),this->jet_phi->at(i_sublsmallRjet),this->jet_E->at(i_sublsmallRjet));
-      if(smallRJet.DeltaR(trigjet)>1.5) m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_slR4jpt",trjet_pt/1e3,250,0.,1000.,total_evt_weight);
+      if(smallRJet.DeltaR(trigjet)>1.5) {
+        m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"slR4jpt",""),
+         trjet_pt/1e3,250,0.,1000.,total_evt_weight);
+      }
     }
 
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_evemu",this->eve_mu,60,0.,60.,total_evt_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"evemu",""),
+     this->eve_mu,60,0.,60.,total_evt_weight);
     
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_srjN",this->jet_pt->size(),10,0.,10.,total_evt_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"srjN",""),
+     this->jet_pt->size(),10,0.,10.,total_evt_weight);
 
     for(int i=0; i<this->jet_pt->size(); i++){
-      m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_allsrjpt",this->jet_pt->at(i)/1e3,250,0.,1000.,total_evt_weight);
+      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_name,ptlabel,"allsrjpt",""),
+       this->jet_pt->at(i)/1e3,250,0.,1000.,total_evt_weight);
     }
 
   }
@@ -712,8 +734,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
       
     }
 
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_trjpt_PREFITPOSTTAG",trjet_pt/1e3,250,0.,1000.,total_evt_weight);
-    m_HistogramService->FastFillTH1D("h"+dijet_name+m_SysVarName+"_"+ptlabel+"_DRditrkjetfatjet_PREFITPOSTTAG",DRditrkjetfatjet,250,0.,0.5,total_evt_weight);
+    m_HistogramService->FastFillTH1D( makePlotName("PREFITPOSTTAG",dijet_name,ptlabel,"trjpt",""),
+     trjet_pt/1e3,250,0.,1000.,total_evt_weight);
+    m_HistogramService->FastFillTH1D( makePlotName("PREFITPOSTTAG",dijet_name,ptlabel,"DRditrkjetfatjet",""),
+     DRditrkjetfatjet,250,0.,0.5,total_evt_weight);
     
 
 

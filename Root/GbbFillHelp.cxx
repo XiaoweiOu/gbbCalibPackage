@@ -19,6 +19,16 @@
 #include "PathResolver/PathResolver.h"
 #include "TSystem.h"
 
+// Method to standardize (and easily change) plot names
+TString GbbTupleAna::makePlotName(const TString syst, const TString cat, const TString pt,
+                                  const TString name, const TString tag) {
+  TString mySyst = syst; if (!mySyst.empty()) mySyst += "/";
+  TString myPt = pt; if (!myPt.empty()) myPt += "/";
+  TString myCat = cat; if (!myCat.emptry()) myCat += "/";
+  TString myTag = tag; if (!myTag.empty()) myTag = "_"+myTag;
+  return myPt+myCat+mySyst+name+tag;
+}
+
 TString GbbTupleAna::getPtLabel(float muojet_pt,float nonmuojet_pt){
   
   TString label="";
@@ -138,22 +148,15 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
 
   TString ptlabel=this->getPtLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
 
-  m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_mjpt"+nametag,this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
-  m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_nmjpt"+nametag,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,250,0.,500.,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"mjpt",nametag),
+   this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"nmjpt",nametag),
+   this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,250,0.,500.,event_weight);
   
-  m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_mjeta"+nametag,this->trkjet_eta->at(gbbcand->muojet_index)/1e3,100,-2.5,2.5,event_weight);
-  m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_nmjeta"+nametag,this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
-
-  TLorentzVector muojet_vec, nonmuojet_vec;
-  muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->muojet_index)/1e3,
-                           this->trkjet_eta->at(gbbcand->muojet_index),
-                           this->trkjet_phi->at(gbbcand->muojet_index),
-                           0.);
-  nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
-                              this->trkjet_eta->at(gbbcand->nonmuojet_index),
-                              this->trkjet_phi->at(gbbcand->nonmuojet_index),
-                              0.);
-  m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_"+ptlabel+"_dRtrkjets"+nametag,muojet_vec.DeltaR(nonmuojet_vec),100,0,1.0,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"mjeta",nametag),
+   this->trkjet_eta->at(gbbcand->muojet_index)/1e3,100,-2.5,2.5,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"nmjeta",nametag),
+   this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
 }
 
 void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag){
@@ -178,14 +181,22 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   if(TMath::Abs(muojet_maxsd0+99)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99)<1e-5) return; //associated tracks do not fulfil selection cuts
 
 
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjmaxSd0"+nametag,muojet_sd0Info.maxSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_nmjmaxSd0"+nametag,nonmuojet_sd0Info.maxSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjmeanSd0"+nametag,muojet_sd0Info.meanSd0_ptSort,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_nmjmeanSd0"+nametag,nonmuojet_sd0Info.meanSd0_ptSort,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjsubSd0"+nametag,muojet_sd0Info.subSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_nmjsubSd0"+nametag,nonmuojet_sd0Info.subSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjthirdSd0"+nametag,muojet_sd0Info.thirdSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_nmjthirdSd0"+nametag,nonmuojet_sd0Info.thirdSd0,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjmaxSd0",nametag),
+   muojet_sd0Info.maxSd0,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjmaxSd0",nametag),
+   nonmuojet_sd0Info.maxSd0,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjmeanSd0",nametag),
+   muojet_sd0Info.meanSd0_ptSort,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjmeanSd0",nametag),
+   nonmuojet_sd0Info.meanSd0_ptSort,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjsubSd0",nametag),
+   muojet_sd0Info.subSd0,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjsubSd0",nametag),
+   nonmuojet_sd0Info.subSd0,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjthirdSd0",nametag),
+   muojet_sd0Info.thirdSd0,50,-40,80,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjthirdSd0",nametag),
+   nonmuojet_sd0Info.thirdSd0,50,-40,80,event_weight);
 
 
   //In Pt Bins
@@ -193,17 +204,20 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   
   if(m_doRandomSplitting){
     
-    if(m_doFillMujet) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-    else m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+    if(m_doFillMujet) m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_mjmaxSd0",nametag), muojet_maxsd0,80,-40,80,event_weight);
+    else m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_nmjmaxSd0",nametag), nonmuojet_maxsd0,80,-40,80,event_weight);
     
   }else{
 
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_mjmaxSd0",nametag),
+     muojet_maxsd0,80,-40,80,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_nmjmaxSd0",nametag),
+     nonmuojet_maxsd0,80,-40,80,event_weight);
 
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_mjmaxSd0DR"+nametag,muojet_maxsd0DR,25,0.,0.5,event_weight);
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_nmjmaxSd0DR"+nametag,nonmuojet_maxsd0DR,25,0.,0.5,event_weight);
-
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"","mjmaxSd0DR",nametag),
+     muojet_maxsd0DR,25,0.,0.5,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"","nmjmaxSd0DR",nametag),
+     nonmuojet_maxsd0DR,25,0.,0.5,event_weight);
 
   }
 
@@ -217,11 +231,17 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   
   if(m_isNominal){
     
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_fjpt",nametag),
+     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     //m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     
-    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-    else if(!this->eve_isMC) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) {
+      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_fjptsc",nametag),
+       this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
+    } else if(!this->eve_isMC) {
+      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_fjptsc",nametag),
+       this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    }
        
 
     
@@ -234,8 +254,10 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
       float muojet_maxsd0_up = muojet_sd0Info_up.meanSd0_ptSort;
       float nonmuojet_maxsd0_up = nonmuojet_sd0Info_up.meanSd0_ptSort;
  
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0Smear__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D( makePlotName("SD0Smear__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+       muojet_maxsd0,80,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D( makePlotName("SD0Smear__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+       nonmuojet_maxsd0,80,-40,80,event_weight);
       
       //calculate mean sd0 for leading three tracks
       trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
@@ -244,58 +266,85 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
       float muojet_maxsd0_down = muojet_sd0Info_down.meanSd0_ptSort;
       float nonmuojet_maxsd0_down = nonmuojet_sd0Info_down.meanSd0_ptSort;
   
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-      m_HistogramService->FastFillTH1D("h"+hist_name+"SD0SMEAR__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D( makePlotName("SD0SMEAR__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
+       muojet_maxsd0,80,-40,80,event_weight);
+      m_HistogramService->FastFillTH1D( makePlotName("SD0SMEAR__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
+       nonmuojet_maxsd0,80,-40,80,event_weight);
       
       bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
       this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);
       if(hasConversion){
-  m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*1.1);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*0.9);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*1.1);
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*0.9);
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
       }else{
-  m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"Conversion__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight);
       }
 
       if(hasHadMatInt){
-  m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*1.1);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*0.9);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*1.1);
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*0.9);
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
       }else{
-  m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"HadMatInt__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight);
       }
 
       if(hasLightLongLived){
-  m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*1.1);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*0.9);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*1.1);
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*0.9);
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
       }else{
-  m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"LightLongLived__1down_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight);
+        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight);
       }
 
       if(hasNoTruthMu){
-  m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*3.);
-  m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*3.);
+        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*3.);
+        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*3.);
       }else{
-  m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-40,80,event_weight*3.);
-        m_HistogramService->FastFillTH1D("h"+hist_name+"FakeMuons__1up_"+ptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-40,80,event_weight*3.);
+        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
+         muojet_maxsd0,80,-40,80,event_weight*3.);
+        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
+         nonmuojet_maxsd0,80,-40,80,event_weight*3.);
       }
-
-
     }
-
   }
 }
 
@@ -308,7 +357,8 @@ void GbbTupleAna::FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag){
   
   TString dijet_hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
   
-  m_HistogramService->FastFillTH2D("h_dijetcat_"+dijet_hist_name+"_mjpt_vs_nmjpt_unweighted"+nametag,this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,50,0.,200.,50,0.,200.,1.);
+  m_HistogramService->FastFillTH2D( makePlotName("",dijet_hist_name,"","mjpt_vs_nmjpt_unweighted",nametag),
+   this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,50,0.,200.,50,0.,200.,1.);
 
 }
 
@@ -325,28 +375,47 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   TString ptlabel=this->getPtLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
   
   //inclusive only for pt and eta
-  if(m_isNominal) m_HistogramService->FastFillTH1D("hIncl_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-  if(m_isNominal) m_HistogramService->FastFillTH1D("hIncl_fjeta"+nametag,this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
+  if(m_isNominal) {
+    m_HistogramService->FastFillTH1D( makePlotName("Nom","Incl","Incl","fjpt",nametag),
+     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName("Nom","Incl","Incl","fjeta",nametag),
+     this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
 
-  if(m_isNominal) m_HistogramService->FastFillTH1D("hNom"+hist_name+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-  //if(m_isNominal) m_HistogramService->FastFillTH1D("hNom"+hist_name+"_fjptsc"+nametag,this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-  if(m_isNominal) m_HistogramService->FastFillTH1D("hNom"+hist_name+"_fjeta"+nametag,this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName("Nom",hist_name,"Incl","fjpt",nametag),
+     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    //m_HistogramService->FastFillTH1D( makePlotName("Nom",hist_name,"Incl","fjptsc",nametag),
+    // this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName("Nom",hist_name,"Incl","fjeta",nametag),
+     this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
+  }
 
 
   if(!m_isNominal){
-    m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjpt",nametag),
+     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
 
-    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-    else if(!this->eve_isMC) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjptsc"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) {
+      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
+       this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
+    } else if(!this->eve_isMC) {
+      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
+       this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+    }
   
-  }else if(nametag.Contains("ANTITAG")) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjD2"+nametag,this->fat_D2->at(gbbcand->fat_index),250,0.,4.5,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjtau21"+nametag,this->fat_tau21->at(gbbcand->fat_index),250,0.,0.9,event_weight);
+  } else if(nametag.Contains("ANTITAG")) {
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjpt",nametag),
+     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
+  }
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjD2",nametag),
+   this->fat_D2->at(gbbcand->fat_index),250,0.,4.5,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjtau21",nametag),
+   this->fat_tau21->at(gbbcand->fat_index),250,0.,0.9,event_weight);
   
   TLorentzVector fatjet;
   fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand->fat_index),this->fat_eta->at(gbbcand->fat_index),this->fat_phi->at(gbbcand->fat_index),this->fat_E->at(gbbcand->fat_index));
   
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_fjm"+nametag,fatjet.M()/1e3,25,0.,500.,event_weight);
+  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjm",nametag),
+   fatjet.M()/1e3,25,0.,500.,event_weight);
 
   if(nametag.IsNull()){
     
