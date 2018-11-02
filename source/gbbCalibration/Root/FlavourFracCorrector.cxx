@@ -5,7 +5,7 @@
  *      Author: rjacobs
  */
 
-#include "GbbCalibration/FlavourFracCorrector.h"
+#include "gbbCalibration/FlavourFracCorrector.h"
 #include "TCollection.h"
 #include "TKey.h"
 #include "TClass.h"
