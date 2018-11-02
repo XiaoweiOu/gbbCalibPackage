@@ -22,10 +22,10 @@
 // Method to standardize (and easily change) plot names
 TString GbbTupleAna::makePlotName(const TString syst, const TString cat, const TString pt,
                                   const TString name, const TString tag) {
-  TString mySyst = syst; if (!mySyst.empty()) mySyst += "/";
-  TString myPt = pt; if (!myPt.empty()) myPt += "/";
-  TString myCat = cat; if (!myCat.emptry()) myCat += "/";
-  TString myTag = tag; if (!myTag.empty()) myTag = "_"+myTag;
+  TString mySyst = syst; if (mySyst != "") mySyst += "/";
+  TString myPt = pt; if (myPt != "") myPt += "/";
+  TString myCat = cat; if (myCat != "") myCat += "/";
+  TString myTag = tag; if (myTag != "") myTag = "_"+myTag;
   return myPt+myCat+mySyst+name+tag;
 }
 
@@ -255,9 +255,9 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
       float nonmuojet_maxsd0_up = nonmuojet_sd0Info_up.meanSd0_ptSort;
  
       m_HistogramService->FastFillTH1D( makePlotName("SD0Smear__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-       muojet_maxsd0,80,-40,80,event_weight);
+       muojet_maxsd0_up,80,-40,80,event_weight);
       m_HistogramService->FastFillTH1D( makePlotName("SD0Smear__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-       nonmuojet_maxsd0,80,-40,80,event_weight);
+       nonmuojet_maxsd0_up,80,-40,80,event_weight);
       
       //calculate mean sd0 for leading three tracks
       trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
@@ -267,9 +267,9 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
       float nonmuojet_maxsd0_down = nonmuojet_sd0Info_down.meanSd0_ptSort;
   
       m_HistogramService->FastFillTH1D( makePlotName("SD0SMEAR__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-       muojet_maxsd0,80,-40,80,event_weight);
+       muojet_maxsd0_down,80,-40,80,event_weight);
       m_HistogramService->FastFillTH1D( makePlotName("SD0SMEAR__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-       nonmuojet_maxsd0,80,-40,80,event_weight);
+       nonmuojet_maxsd0_down,80,-40,80,event_weight);
       
       bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
       this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);

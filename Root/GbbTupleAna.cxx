@@ -489,15 +489,15 @@ bool GbbTupleAna::Processgbb(int i_evt){
     return false;
   }
   TLorentzVector muojet_vec, nonmuojet_vec;
-  muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->muojet_index)/1e3,
-                           this->trkjet_eta->at(gbbcand->muojet_index),
-                           this->trkjet_phi->at(gbbcand->muojet_index),
+  muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
+                           this->trkjet_eta->at(gbbcand.muojet_index),
+                           this->trkjet_phi->at(gbbcand.muojet_index),
                            0.);
-  nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
-                              this->trkjet_eta->at(gbbcand->nonmuojet_index),
-                              this->trkjet_phi->at(gbbcand->nonmuojet_index),
+  nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3,
+                              this->trkjet_eta->at(gbbcand.nonmuojet_index),
+                              this->trkjet_phi->at(gbbcand.nonmuojet_index),
                               0.);
-  m_HistogramService->FastFillTH1D("h_dRtrkjets",muojet_vec.DeltaR(nonmuojet_vec),100,0,1.0,event_weight);
+  m_HistogramService->FastFillTH1D("h_dRtrkjets",muojet_vec.DeltaR(nonmuojet_vec),100,0,1.0,total_evt_weight);
   if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
     if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
     return false;

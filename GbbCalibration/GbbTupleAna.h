@@ -133,7 +133,7 @@ private:
   TString getFatjetPtLabel(float fatjet_pt);
   TString getFatjetPhiLabel(float fatjet_phi);
   TString getFatjetEtaLabel(float fatjet_eta);
-
+  TString makePlotName(const TString syst, const TString cat, const TString pt, const TString name, const TString tag);
 
   float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
   float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
