@@ -1,4 +1,4 @@
-#include "gbbCalibration/Config.h"
+#include "Config.h"
 #include "TEnv.h"
 #include "TObjString.h"
 #include "TObjArray.h"

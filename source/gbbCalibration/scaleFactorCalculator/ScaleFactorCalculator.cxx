@@ -5,7 +5,7 @@
  *      Author: rjacobs
  */
 
-#include "gbbCalibration/ScaleFactorCalculator.h"
+#include "ScaleFactorCalculator.h"
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
 #include "TLegend.h"

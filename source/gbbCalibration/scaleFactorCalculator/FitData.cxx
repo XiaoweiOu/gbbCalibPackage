@@ -5,7 +5,7 @@
  *      Author: rjacobs
  */
 
-#include "gbbCalibration/FitData.h"
+#include "FitData.h"
 
 FitData::FitData() {
   // TODO Auto-generated constructor stub

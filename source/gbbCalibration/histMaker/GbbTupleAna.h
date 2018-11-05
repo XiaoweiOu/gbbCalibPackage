@@ -12,7 +12,7 @@
 #include "TupleAna.h"
 #include "HistogramService.h"
 #include <memory>
-#include "FlavourFracCorrector.h"
+#include <common/FlavourFracCorrector.h>
 #include "TEnv.h"
 #include "TRandom3.h"
 

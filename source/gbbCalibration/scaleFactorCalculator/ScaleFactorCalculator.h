@@ -19,7 +19,7 @@
 #include <memory>
 #include "FitData.h"
 #include "Fitter.h"
-#include "Config.h"
+#include "common/Config.h"
 #include "TGraphAsymmErrors.h"
 
 struct CalibResult{

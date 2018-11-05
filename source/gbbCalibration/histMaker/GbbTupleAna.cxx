@@ -3,13 +3,12 @@
  *
  *  Created on: Feb 18, 2016
  *      Author: rjacobs
+ *  Modified by: aemerman
  */
 
 
-#include "gbbCalibration/GbbTupleAna.h"
+#include "GbbTupleAna.h"
 #include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
 #include <iostream>
 #include <TMath.h>
 #include <TLorentzVector.h>

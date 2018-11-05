@@ -5,7 +5,7 @@
  *      Author: rjacobs
  */
 
-#include "gbbCalibration/Fitter.h"
+#include "Fitter.h"
 #include "TMath.h"
 #include "TMatrixD.h"
 #include "TMatrixDEigen.h"
