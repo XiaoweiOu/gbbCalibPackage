@@ -20,7 +20,7 @@ atlas_add_root_dictionary( gbbTupleLib _dictionarySource
 
 atlas_add_library( gbbTupleLib
    histMaker/*.cxx histMaker/*.h
-   common/*.cxx common/*.h
+   helpers/*.cxx helpers/*.h
    ${_dictionarySource}
    PUBLIC_HEADERS GbbTupleAna
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
@@ -28,7 +28,7 @@ atlas_add_library( gbbTupleLib
    )
 atlas_add_library( ScaleFactorCalcLib
    scaleFactorCalculator/*.cxx scaleFactorCalculator/*.h
-   common/*.cxx common/*.h
+   helpers/*.cxx helpers/*.h
    PUBLIC_HEADERS ScaleFactorCalc
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver

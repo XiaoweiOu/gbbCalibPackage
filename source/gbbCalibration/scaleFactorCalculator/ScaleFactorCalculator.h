@@ -19,7 +19,7 @@
 #include <memory>
 #include "FitData.h"
 #include "Fitter.h"
-#include "common/Config.h"
+#include "helpers/SFConfig.h"
 #include "TGraphAsymmErrors.h"
 
 struct CalibResult{
@@ -57,7 +57,7 @@ private:
   TString m_inputfile;
   Fitter m_fitter;
   FitData* m_fitdata;
-  Config* m_config;
+  SFConfig* m_config;
 
 
   std::map<TString,std::shared_ptr<TH1D>> m_fatjet_histograms_pretag_data;

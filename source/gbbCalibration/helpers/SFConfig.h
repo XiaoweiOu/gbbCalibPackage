@@ -1,19 +1,19 @@
 /*
- * Config.h
+ * SFConfig.h
  *
  *  Created on: Dec 12, 2016
  *      Author: rjacobs
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef SFCONFIG_H_
+#define SFCONFIG_H_
 
 #include "TString.h"
 #include <vector>
 #include <iostream>
 #include <map>
 
-class Config{
+class SFConfig{
 
  private:
   TString m_inputfile;
@@ -54,9 +54,9 @@ class Config{
 
  public:
 
-  Config(TString& config_path);
-  Config();
-  virtual ~Config();
+  SFConfig(TString& config_path);
+  SFConfig();
+  virtual ~SFConfig();
   
   std::vector<TString> SplitString(TString str, char delim);
   std::vector<float> SplitStringD(TString str, char delim);
@@ -74,7 +74,6 @@ class Config{
   std::vector<float> GetNonmuTrackJetBins(){ return m_nonmutrackjetbins; }
 
   int GetSmoothNtimes(){return m_Ntimes_smooth; }
-
   std::vector<float> GetFatJetBins(){ return m_fatjetbins; }
 
   std::vector<TString> GetPairs(){return m_pairs;}

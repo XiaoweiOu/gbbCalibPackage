@@ -12,7 +12,8 @@
 #include "TupleAna.h"
 #include "HistogramService.h"
 #include <memory>
-#include <common/FlavourFracCorrector.h>
+#include <helpers/FlavourFracCorrector.h>
+#include <helpers/BinConfig.h>
 #include "TEnv.h"
 #include "TRandom3.h"
 
@@ -60,6 +61,7 @@ public:
  
 
 private:
+  BinConfig *m_config;
   HistogramService *m_HistogramService; //!
   TString m_Outputname; //! name of output file
   

@@ -13,60 +13,9 @@
 #include <TMath.h>
 #include <TLorentzVector.h>
 
-// Method to standardize (and easily change) plot names
-TString GbbTupleAna::makePlotName(const TString syst, const TString cat, const TString pt,
-                                  const TString name, const TString tag) {
-  TString mySyst = syst; if (mySyst != "") mySyst += "/";
-  TString myPt = pt; if (myPt != "") myPt += "/";
-  TString myCat = cat; if (myCat != "") myCat += "/";
-  TString myTag = tag; if (myTag != "") myTag = "_"+myTag;
-  return myPt+myCat+mySyst+name+tag;
+TString GbbTupleAna::makePlotName(const TString sys, const TString flav, const TString pt, const TString var, const TString tag) {
+  return m_config->GetMCHistName(sys,pt,flav,var+"_"+tag);
 }
-
-TString GbbTupleAna::getPtLabel(float muojet_pt,float nonmuojet_pt){
-  
-  TString label="";
-
-  if(muojet_pt<m_muojet_pt_bins[0]) label+=Form("mjpt_l%.0f_",m_muojet_pt_bins[0]);
-  else if(muojet_pt>=m_muojet_pt_bins[m_muojet_pt_bins.size()-1]) label+=Form("mjpt_g%.0f_",m_muojet_pt_bins[m_muojet_pt_bins.size()-1]); 
-  else{
-    for(int i_m=0; i_m<m_muojet_pt_bins.size()-1; i_m++){
-      if(muojet_pt>=m_muojet_pt_bins[i_m] && muojet_pt<m_muojet_pt_bins[i_m+1]){
-        label+=Form("mjpt_g%.0fl%.0f_",m_muojet_pt_bins[i_m],m_muojet_pt_bins[i_m+1]);
-      }
-    }
-  }
-  
-  if(nonmuojet_pt<m_nonmuojet_pt_bins[0]) label+=Form("nmjpt_l%.0f",m_nonmuojet_pt_bins[0]); 
-  else if(nonmuojet_pt>=m_nonmuojet_pt_bins[m_nonmuojet_pt_bins.size()-1]) label+=Form("nmjpt_g%.0f",m_nonmuojet_pt_bins[m_nonmuojet_pt_bins.size()-1]);
-  else{
-    
-    for(int i_nm=0; i_nm<m_nonmuojet_pt_bins.size()-1; i_nm++){
-      if(nonmuojet_pt>=m_nonmuojet_pt_bins[i_nm] && nonmuojet_pt<m_nonmuojet_pt_bins[i_nm+1]){
-        label+=Form("nmjpt_g%.0fl%.0f",m_nonmuojet_pt_bins[i_nm],m_nonmuojet_pt_bins[i_nm+1]);
-      }
-    }   
-  }
-  return label;
-}
-
-
-TString GbbTupleAna::getFatjetPtLabel(float fatjet_pt){
-  TString label="";
-
-  if(fatjet_pt<m_fatjet_pt_bins[0]) label+=Form("fjpt_l%.0f",m_fatjet_pt_bins[0]);
-  else if(fatjet_pt>=m_fatjet_pt_bins[m_fatjet_pt_bins.size()-1]) label+=Form("fjpt_g%.0f",m_fatjet_pt_bins[m_fatjet_pt_bins.size()-1]); 
-  else{
-    
-    for(int i_m=0; i_m<m_fatjet_pt_bins.size()-1; i_m++){
-      if(fatjet_pt>=m_fatjet_pt_bins[i_m] && fatjet_pt<m_fatjet_pt_bins[i_m+1]){
-        label+=Form("fjpt_g%.0fl%.0f",m_fatjet_pt_bins[i_m],m_fatjet_pt_bins[i_m+1]);
-      }
-    }
-  }
-  return label;
-}
-
 
 TString GbbTupleAna::getFatjetPhiLabel(float fatjet_phi){
   TString label="";
@@ -77,7 +26,7 @@ TString GbbTupleAna::getFatjetPhiLabel(float fatjet_phi){
   else if(fatjet_phi>=fj_phi_bins[fj_phi_bins.size()-1]) label+=Form("fjphi_g%.0f",fj_phi_bins[fj_phi_bins.size()-1]); 
   else{
     
-    for(int i_m=0; i_m<fj_phi_bins.size()-1; i_m++){
+    for(unsigned int i_m=0; i_m<fj_phi_bins.size()-1; i_m++){
       if(fatjet_phi>=fj_phi_bins[i_m] && fatjet_phi<fj_phi_bins[i_m+1]){
         label+=Form("fjphi_g%.0fl%.0f",fj_phi_bins[i_m],fj_phi_bins[i_m+1]);
       }
@@ -96,7 +45,7 @@ TString GbbTupleAna::getFatjetEtaLabel(float fatjet_eta){
   else if(fatjet_eta>=fj_eta_bins[fj_eta_bins.size()-1]) label+=Form("fjeta_g%.0f",fj_eta_bins[fj_eta_bins.size()-1]); 
   else{
     
-    for(int i_m=0; i_m<fj_eta_bins.size()-1; i_m++){
+    for(unsigned int i_m=0; i_m<fj_eta_bins.size()-1; i_m++){
       if(fatjet_eta>=fj_eta_bins[i_m] && fatjet_eta<fj_eta_bins[i_m+1]){
         label+=Form("fjeta_g%.0fl%.0f",fj_eta_bins[i_m],fj_eta_bins[i_m+1]);
       }
@@ -140,7 +89,7 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
   //m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_mjpt"+nametag,this->trkjet_pt->at(gbbcand->muojet_index)/1e3,20,0.,500.,event_weight);
   //m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_nmjpt"+nametag,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,20,0.,500.,event_weight);
 
-  TString ptlabel=this->getPtLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
+  TString ptlabel=m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
 
   m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"mjpt",nametag),
    this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
@@ -194,7 +143,7 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
 
 
   //In Pt Bins
-  TString ptlabel=this->getPtLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
+  TString ptlabel=m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
   
   if(m_doRandomSplitting){
     
@@ -366,7 +315,7 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   TString hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
 
   //In Pt Bins
-  TString ptlabel=this->getPtLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
+  TString ptlabel=m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
   
   //inclusive only for pt and eta
   if(m_isNominal) {
