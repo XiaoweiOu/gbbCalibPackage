@@ -39,10 +39,17 @@ HistogramService::~HistogramService()
 void HistogramService::FastFillTH1D(TString tkey, double x, int nbin, double xmin, double xmax, double weight)
 {
    string key = tkey.Data();
+   string hist = key.substr(key.find_last_of("/")+1);
+   string dir = key.substr(0,key.find_last_of("/")+1);
    key = fCurrentDir + "/" + key;
    if (fMegaList.find(key)==fMegaList.end()){  // book histogram
-      fMegaList[key] = new TH1D(tkey, tkey, nbin, xmin, xmax);
-      fDirMap[key]   = fCurrentDir;
+      //fMegaList[key] = new TH1D(tkey, tkey, nbin, xmin, xmax);
+      fMegaList[key] = new TH1D(hist.c_str(), tkey, nbin, xmin, xmax);
+      fDirMap[key] = fCurrentDir + "/" + dir;
+//      int len = key.find_last_of("/")-key.find_first_not_of("/");
+//      if (len < 1) fDirMap[key] = fCurrentDir;
+//      else fDirMap[key] = key.substr(key.find_first_not_of("/"),len);
+
       ((TH1D*)fMegaList[key])->Sumw2();
    }
    ((TH1D*) fMegaList[key])->Fill(x,weight);
@@ -51,12 +58,17 @@ void HistogramService::FastFillTH1D(TString tkey, double x, int nbin, double xmi
 void HistogramService::FastFillTH2D(TString tkey, double x, double y, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, double weight )
 {
    string key = tkey.Data();
+   string hist = key.substr(key.find_last_of("/")+1);
+   string dir = key.substr(0,key.find_last_of("/")+1);
    key = fCurrentDir + "/" + key;
    if (fMegaList[key]==0){  // book histogram
-      fMegaList[key] = new TH2D(tkey, tkey, 
+      fMegaList[key] = new TH2D(hist.c_str(), tkey, 
                                 nbinx, xmin, xmax, 
                                 nbiny, ymin, ymax);
-      fDirMap[key]   = fCurrentDir;
+      fDirMap[key] = fCurrentDir + "/" + dir;
+      //int len = key.find_last_of("/")-key.find_first_not_of("/");
+      //if (len < 1) fDirMap[key] = fCurrentDir;
+      //else fDirMap[key] = key.substr(key.find_first_not_of("/"),len);
       ((TH2D*)fMegaList[key])->Sumw2();
    }
    ((TH2D*) fMegaList[key])->Fill(x,y,weight);
@@ -69,22 +81,46 @@ void HistogramService::WriteRootFile(TString fileName)
    f->cd();
    // using a map::iterator
    map<string, TObject* >::iterator it;
-   map<string, TDirectory* >::iterator dirit;
+   map<string, TDirectory* >::iterator dirIt;
+   map<string, TDirectory* >::iterator subdirIt;
    for (it = fMegaList.begin();it != fMegaList.end(); it++){ 
       string key = it->first;
       string dirName = fDirMap[key];
-      dirit = mapOfCreatedDirs.find(dirName);
+      while (dirName[0] == '/') dirName.erase(0,1); //Strip leading "/"
+      dirIt = mapOfCreatedDirs.find(dirName);
 
       if (dirName=="") f->cd();
-      else if ( dirit == mapOfCreatedDirs.end()){
-         //  create dir
-         TDirectory *lstDir = f->mkdir(dirName.data(), dirName.data());
-         lstDir->cd();
-         mapOfCreatedDirs[dirName] = lstDir;
-      }
-      else dirit->second->cd(); // cd to dir 
-      cout << "writing histo "<<it->first<< " to dir "<<dirName<<endl;
+      else if ( dirIt == mapOfCreatedDirs.end()) {
+         //  create directories recursively
+         size_t pos(0), prev_pos(0);
+         TDirectory* lstDir = f;
+         while ( (pos=dirName.find("/",prev_pos)) != std::string::npos) {
+           string subdirName = dirName.substr(prev_pos, pos-prev_pos);
+           string subdirPath = dirName.substr(0, pos);
+           subdirIt = mapOfCreatedDirs.find(subdirPath);
+           if (subdirName=="") { prev_pos++; continue; } // Skip past "//" sequences
+           else if ( subdirIt == mapOfCreatedDirs.end()) {
+             cout << "creating dir "<<subdirPath<<" for key "<<key<<endl;
+             lstDir = f->mkdir(subdirPath.data(), subdirName.data());
+             f->cd(subdirPath.data());
+             mapOfCreatedDirs[subdirPath] = gDirectory->CurrentDirectory();
+           } else subdirIt->second->cd();
+           prev_pos = pos+1; // Move to the next subdir
+         }
+         string subdirName = dirName.substr(prev_pos);
+         if (subdirName!="") {
+           //cout << "creating dir "<<subdirName<<" for key "<<key<<endl;
+           lstDir = f->mkdir(dirName.data(), subdirName.data());
+           f->cd(dirName.data());
+           mapOfCreatedDirs[dirName] = gDirectory->CurrentDirectory();
+           //mapOfCreatedDirs[dirName] = lstDir;
+gDirectory->pwd();
+         }
+      } else dirIt->second->cd(); // cd to dir 
+gDirectory->pwd();
+      cout << "writing histo "<<it->first<< " to dir "<<dirName<<std::endl;
       it->second->Write();
+      f->cd();
    }
    cout << "wrote histo file=" << fileName << endl;
 
