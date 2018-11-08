@@ -58,7 +58,7 @@ GbbTupleAna::~GbbTupleAna() {
 }
 
 
-void GbbTupleAna::ReadConfig(TString &config_path){
+void GbbTupleAna::ReadConfig(const TString &config_path){
  
   std::cout<<"=============================================="<<std::endl;
 
@@ -130,118 +130,53 @@ void GbbTupleAna::ReadConfig(TString &config_path){
   std::cout<<"=============================================="<<std::endl;
 }
 
-
-
-GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfilename, TString &configname, std::vector<TString>& infilelist) : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0)
+GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& outfilename, const TString& configname) :
+  TupleAna(),
+  m_Debug(false),
+  m_isMC(false),
+  m_SumWeightTuple(0),
+  m_nevtTuple(0)
 {
-
   TH1::AddDirectory(0);
-  //=========================================
-  // Read Config
-  //=========================================
-  
-  this->ReadConfig(configname);
 
   //=========================================
   // Initialize 
   //=========================================
-  
-  TTree *tree=0;
-  TTree *ftree=0;
-  TFile *f = 0;
-  TChain *tc=0;
-  TChain *ftc=0;
-  if(infilename.EqualTo("list")){
-    tc=new TChain("tc");
-    if(!treename.EqualTo("FlavourTagging_Nominal")) ftc=new TChain("FlavourTagging_Nominal");
-    for(auto &el : infilelist){
-      TString url=el+"/"+treename;
-
-      GetGeneratorName(url);
-
-      tc->Add(url.Data());
-      if(!treename.EqualTo("FlavourTagging_Nominal")){ //if systematics tree: add nominal as friend to retrieve the truth label (temp patch)
-  TString furl=el+"/FlavourTagging_Nominal";
-  ftc->Add(furl.Data());
-      }
-    }
-    if(ftc) tc->AddFriend(ftc);
-    tree=tc;
-    
-
-  }else{
-    
-    GetGeneratorName(infilename);
-
-    f=(TFile*)gROOT->GetListOfFiles()->FindObject(infilename.Data());
-    if (!f || !f->IsOpen()) {
-      f = new TFile(infilename.Data(),"READ");
-    }
-    f->GetObject(treename.Data(),tree);
-    if(!treename.EqualTo("FlavourTagging_Nominal")){//if systematics tree: add nominal as friend to retrieve the truth label (temp patch)
-      f->GetObject("FlavourTagging_Nominal",ftree);
-      tree->AddFriend(ftree);
-      std::cout<<"Adding friend tree: "<<ftree->GetName()<<std::endl;
-    }
-  }
-  
-  std::cout<<"Generator is:"<<m_GeneratorName<<std::endl;
-
-  m_Outputname=outfilename;
-  
-  //running on the nominal sample?
-  if(treename.Contains("Nominal")){
-    m_isNominal=true;
-  }else m_isNominal=false;
-  
-
-  //if not, extract systematic variation from treename
-  m_SysVarName = !m_isNominal ? treename(15,treename.Length()) : TString("Nom");
-  std::cout<<"SysVarName:"<<m_SysVarName<<"!"<<std::endl;
-  
-  
-  if(m_isNominal) std::cout<<"Running on Nominal sample!"<<std::endl;
-  else std::cout<<"Running on Systematics sample!"<<std::endl;
-  
-
+  ReadConfig(configname);
   m_HistogramService=new HistogramService();
-  
 
-  //=========================================
-  //Initialize Correction and Smearing
-  //=========================================
-   
-  //Flavour Fraction correction
-  if(m_doFlavFracCorrection) m_FlavFracCorrector=new FlavourFracCorrector(m_FlavFracCorrectorFile); 
-  else m_FlavFracCorrector=0;
-  
-
-  //=========================================
-  //Initialize BookKeeping Histograms
-  //=========================================
-  
-  TH1D* metahist=0, *metahist_tmp=0;
-  std::cout<<"infilename: "<<infilename<<std::endl;
-  if(infilename.EqualTo("list")){
-    std::cout<<"list! "<<std::endl;
-    for(auto &el : infilelist){
-      std::cout<<"looking for file"<<el<<std::endl;
-      f=(TFile*)gROOT->GetListOfFiles()->FindObject(el.Data());
-      if (!f || !f->IsOpen()) {
-  f = new TFile(el.Data(),"READ");  
-      }
-
-      if(!metahist){
-  f->GetObject("MetaData_EventCount",metahist);
-      }  else {
-  f->GetObject("MetaData_EventCount",metahist_tmp);
-  metahist->Add(metahist_tmp);
-      }  
+  TH1D* metahist(nullptr), *metahist_tmp(nullptr);
+  m_chains.emplace("Nom", new TChain("FlavourTagging_Nominal"));
+  for (TString sys : m_config->GetSystematics()) {
+    m_chains.emplace(sys, new TChain("FlavourTagging_"+sys));
+  }
+  //TChain* friendCh = nullptr;
+  for (TString filename : infiles) {
+    TFile* f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename.Data());
+    if (!f || !f->IsOpen()) f = new TFile(filename.Data(),"READ");
+    if (!f || !f->IsOpen()) {
+      std::cout<<"FATAL: could not open file "<<filename.Data()<<std::endl;
+      abort();
     }
+    // Read metadata
+    if (metahist == nullptr) {
+      f->GetObject("MetaData_EventCount",metahist);
+    } else {
+      f->GetObject("MetaData_EventCount",metahist_tmp);
+      metahist->Add(metahist_tmp);
+    }  
 
-  }else f->GetObject("MetaData_EventCount",metahist);
+    //if (!treename.EqualTo("FlavourTagging_Nominal")) friendCh = new TChain("FlavourTagging_Nominal");
+    //GetGeneratorName(filename.Data());
+    for (auto iter : m_chains) {
+      iter.second->Add(filename.Data());
+    }
+    //if (friendCh != nullptr) friendCh->Add(filename.Data());
+  }
+  //if (friendCh != nullptr) fChain->AddFriend(friendCh);
   if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl; 
-  
+
+  // Copy metadata
   m_HistogramService->FastFillTH1D("Hist_BookKeeping",1,6,0.5,6.5,metahist->GetBinContent(1));
   ((TH1D*) m_HistogramService->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(1, "nEvents AOD");
   
@@ -257,6 +192,31 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   ((TH1D*) m_HistogramService->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(5, "sumWeights DAOD");
   
   ((TH1D*) m_HistogramService->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(6, "sumWeights TUPLE");
+
+  m_Outputname = outfilename;
+  
+  std::cout<<"Generator is:"<<m_GeneratorName<<std::endl;
+
+  //running on the nominal sample?
+  //if (treename.Contains("Nominal")) {
+  //  m_isNominal = true;
+  //  m_SysVarName = "Nom";
+  //} else {
+  //  m_isNominal = false;
+  //  m_SysVarName = treename(15,treename.Length());
+  //}
+
+  //if (m_isNominal) std::cout<<"Running on Nominal sample!"<<std::endl;
+  //else std::cout<<"Running on Systematics sample!"<<std::endl;
+
+
+  //=========================================
+  //Initialize Correction and Smearing
+  //=========================================
+   
+  //Flavour Fraction correction
+  if(m_doFlavFracCorrection) m_FlavFracCorrector=new FlavourFracCorrector(m_FlavFracCorrectorFile); 
+  else m_FlavFracCorrector=0;
   
   //=========================================
   //Initialize Reweighting histograms
@@ -283,15 +243,13 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   //Get PostfitPtReweightingHistogram
   //=======================================
 
-    if(m_doPostfitPtReweighting){
-      TFile* file=TFile::Open(m_PostfitPtReweightingFile.Data(),"READ");
-      m_postfit_reweight_hist=(TH1D*)file->Get("scale_factors");
-      m_postfit_reweight_hist->SetDirectory(0);
-      file->Close();
-     }
+  if(m_doPostfitPtReweighting){
+    TFile* file=TFile::Open(m_PostfitPtReweightingFile.Data(),"READ");
+    m_postfit_reweight_hist=(TH1D*)file->Get("scale_factors");
+    m_postfit_reweight_hist->SetDirectory(0);
+    file->Close();
+   }
 
-
- 
   //=========================================
   //Initialize Random Splitting
   //=========================================
@@ -299,11 +257,11 @@ GbbTupleAna::GbbTupleAna(TString& infilename, TString& treename, TString& outfil
   m_random = std::shared_ptr<TRandom3>(new TRandom3());
   m_random.get()->SetSeed(0);
    
-  Init(tree);
+  //Init(tree);
 }
 
 
-void GbbTupleAna::Finalize(){
+void GbbTupleAna::Finalize() {
   
   m_HistogramService->FastFillTH1D("Hist_BookKeeping",6,6,0.5,6.5,m_SumWeightTuple);
   m_HistogramService->FastFillTH1D("Hist_BookKeeping",3,6,0.5,6.5,m_nevtTuple);  
@@ -312,11 +270,24 @@ void GbbTupleAna::Finalize(){
 }
 
 
-void GbbTupleAna::Loop()
-{
+void GbbTupleAna::Loop() {
+  Loop("Nom");
+  if (m_isMC) {
+    for (TString sys : m_config->GetSystematics()) {
+      Loop(sys);
+    }
+  }
+}
+
+void GbbTupleAna::Loop(const TString& sys) {
+
+  Init(m_chains[sys.Data()]);
+  m_isNominal = sys.EqualTo("Nom");
+  m_SysVarName = sys;
+
   if (fChain == 0) return;
 
-  Long64_t nentries = fChain->GetEntriesFast();
+  Long64_t nentries = fChain->GetEntries();
   int real_entries = 0;
 
   Long64_t nbytes = 0, nb = 0;
@@ -328,6 +299,8 @@ void GbbTupleAna::Loop()
     if(!(jentry%1000)) std::cout<<"Processing event: "<<jentry<<" of "<<nentries<<std::endl;
     // if (Cut(ientry) < 0) continue;
     m_nevtTuple++;
+
+    if (jentry == 0 && m_isNominal) m_isMC = this->eve_isMC;
 
     m_doFillMujet=false;
     if(m_random->Uniform()>=0.5) m_doFillMujet=true;

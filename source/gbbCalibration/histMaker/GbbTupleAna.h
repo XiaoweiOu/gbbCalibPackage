@@ -16,6 +16,7 @@
 #include <helpers/BinConfig.h>
 #include "TEnv.h"
 #include "TRandom3.h"
+#include <map>
 
 struct GbbCandidate{
   
@@ -43,10 +44,10 @@ class GbbTupleAna : public TupleAna {
 
 public:
   GbbTupleAna();
-  GbbTupleAna(TString& infilename, TString& treename, TString &outfilename, TString &configname, std::vector<TString>& );
+  GbbTupleAna(const std::vector<TString>& infiles, const TString& outfilename, const TString& configname);
   virtual ~GbbTupleAna();
 
-  void ReadConfig(TString& config_path);
+  void ReadConfig(const TString& config_path);
 
   void Loop();
   void Finalize();
@@ -64,7 +65,8 @@ private:
   BinConfig *m_config;
   HistogramService *m_HistogramService; //!
   TString m_Outputname; //! name of output file
-  
+  std::map<TString, TChain*> m_chains;
+
   TString m_RunMode; // RunMode="Reweighting","FitInputs","PostFitPlots" "MCStatsTest"
   
   bool m_Debug;
@@ -73,7 +75,7 @@ private:
   TString m_JetPtReweightFile;
   TString m_JetPtReweightFileInclusive;
   
-  
+  bool m_isMC;
   bool m_isNominal;
   TString m_SysVarName;
   TString m_GeneratorName;
@@ -109,9 +111,10 @@ private:
   TString m_PostfitPtReweightingFile;
   TH1D* m_postfit_reweight_hist;
 
+  void Loop(const TString& sys);
   bool Processgbb(int i_evt);
   
-        void GetGeneratorName(TString url);
+  void GetGeneratorName(TString url);
   bool passR4CaloJetCuts(unsigned int i_jet);
   bool passR10CaloJetCuts(unsigned int i_jet);
   bool passR2TrackJetCuts(unsigned int i_jet);
