@@ -111,10 +111,10 @@ std::vector<TString> BinConfig::GetTrkJetRegions() {
 }
 
 TString BinConfig::GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var) {
-  TString _sys(sys); if (_sys!="") _sys += "/";
+  TString _sys(sys); if (_sys!="") _sys+="/";
   TString _ptLabel(ptLabel); if (_ptLabel=="") _ptLabel=="Incl"; _ptLabel+="/";
-  TString _flav(flav); if (_flav!="") _flav += "_";
-  return ptLabel+sys+"h_"+flav+var;
+  TString _flav(flav); if (_flav!="") _flav+="_";
+  return _sys+_ptLabel+"h_"+_flav+var;
 }
 
 std::vector<TString> BinConfig::GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var) {

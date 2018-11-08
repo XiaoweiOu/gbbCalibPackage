@@ -14,7 +14,8 @@
 #include <TLorentzVector.h>
 
 TString GbbTupleAna::makePlotName(const TString sys, const TString flav, const TString pt, const TString var, const TString tag) {
-  return m_config->GetMCHistName(sys,pt,flav,var+"_"+tag);
+  if (tag=="") return m_config->GetMCHistName(sys,pt,flav,var).Data(); 
+  else return m_config->GetMCHistName(sys,pt,flav,var+"_"+tag).Data(); 
 }
 
 TString GbbTupleAna::getFatjetPhiLabel(float fatjet_phi){
@@ -300,7 +301,7 @@ void GbbTupleAna::FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag){
   
   TString dijet_hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
   
-  m_HistogramService->FastFillTH2D( makePlotName("",dijet_hist_name,"","mjpt_vs_nmjpt_unweighted",nametag),
+  m_HistogramService->FastFillTH2D( makePlotName("Nom",dijet_hist_name,"Incl","mjpt_vs_nmjpt_unweighted",nametag),
    this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,50,0.,200.,50,0.,200.,1.);
 
 }

@@ -130,7 +130,7 @@ public :
    vector<float>   *fat_C2;
    vector<float>   *fat_D2;
    vector<int>     *fat_trkjet_isGbbJet;
-   vector<vector<int> > *fat_trkjet_assocTrkjet_ind;
+   vector<vector<int> > *fat_assocTrkjet_ind;
    vector<vector<int> > *fat_trkjet_assocTrkjetDR_ind;
    vector<float>   *muo_pt;
    vector<float>   *muo_phi;
@@ -288,7 +288,7 @@ public :
    TBranch        *b_fat_C2;   //!
    TBranch        *b_fat_D2;   //!
    TBranch        *b_fat_trkjet_isGbbJet;   //!
-   TBranch        *b_fat_trkjet_assocTrkjet_ind;   //!
+   TBranch        *b_fat_assocTrkjet_ind;   //!
    TBranch        *b_fat_trkjet_assocTrkjetDR_ind;   //!
    TBranch        *b_muo_pt;   //!
    TBranch        *b_muo_phi;   //!
@@ -458,7 +458,7 @@ void TupleAna::Init(TTree *tree)
    fat_C2 = 0;
    fat_D2 = 0;
    fat_trkjet_isGbbJet = 0;
-   fat_trkjet_assocTrkjet_ind = 0;
+   fat_assocTrkjet_ind = 0;
    fat_trkjet_assocTrkjetDR_ind = 0;
    muo_pt = 0;
    muo_phi = 0;
@@ -623,7 +623,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("fat_C2", &fat_C2, &b_fat_C2);
    fChain->SetBranchAddress("fat_D2", &fat_D2, &b_fat_D2);
    fChain->SetBranchAddress("fat_trkjet_isGbbJet", &fat_trkjet_isGbbJet, &b_fat_trkjet_isGbbJet);
-   fChain->SetBranchAddress("fat_trkjet_assocTrkjet_ind", &fat_trkjet_assocTrkjet_ind, &b_fat_trkjet_assocTrkjet_ind);
+   fChain->SetBranchAddress("fat_assocTrkjet_ind", &fat_assocTrkjet_ind, &b_fat_assocTrkjet_ind);
    fChain->SetBranchAddress("fat_trkjet_assocTrkjetDR_ind", &fat_trkjet_assocTrkjetDR_ind, &b_fat_trkjet_assocTrkjetDR_ind);
    fChain->SetBranchAddress("muo_pt", &muo_pt, &b_muo_pt);
    fChain->SetBranchAddress("muo_phi", &muo_phi, &b_muo_phi);

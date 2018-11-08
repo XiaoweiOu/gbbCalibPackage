@@ -115,8 +115,8 @@ void GbbTupleAna::ReadConfig(TString &config_path){
   m_doEvenOddTemplates=config->GetValue("doEvenOddTemplates",false);
   std::cout<<"m_doEvemOddTemplates: "<< m_doEvenOddTemplates<<std::endl;
 
-  m_trkjet_cat=this->SplitString(config->GetValue("TrkjetCategories","B,C,L,other"),',');
-  std::cout<<"m_trkjet_cat: "<<config->GetValue("TrkjetCategories","B,C,L,other")<<std::endl;
+  m_trkjet_cat={"B","C","L","other"};
+  m_ditrkjet_cat={"BB","BC","BL","CB","CC","CL","LB","LC","LL","other"};
   
   m_doRandomSplitting=config->GetValue("doRandomSplitting",false);
  std::cout<<"m_doRandomSplitting: "<< m_doRandomSplitting<<std::endl;
@@ -482,6 +482,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
     return false;
   }
+  if(m_Debug) std::cout<<"constructGbbCandidate(): Finish Gbb construction!"<<std::endl;
   TLorentzVector muojet_vec, nonmuojet_vec;
   muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
                            this->trkjet_eta->at(gbbcand.muojet_index),
@@ -516,6 +517,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   double muojet_pt=this->trkjet_pt->at(gbbcand.muojet_index);
   double nonmuojet_pt=this->trkjet_pt->at(gbbcand.nonmuojet_index);
   
+  if(m_Debug) std::cout<<"processgbb(): getting ditrk pt label"<<std::endl;
   TString ptlabel=m_config->GetDiTrkJetLabel(muojet_pt/1e3,nonmuojet_pt/1e3);
 
   if(m_Debug) std::cout<<"processgbb(): Got labels."<<std::endl;
@@ -676,7 +678,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_isNominal){
 
       m_HistogramService->FastFillTH2D("h_2DtrjptVsfjpt",trjet_pt/1e3,fatjet.Pt()/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
-      m_HistogramService->FastFillTH2D( makePlotName("",dijet_name,"Incl","2DmjptVsnmjpt",""),
+      m_HistogramService->FastFillTH2D( makePlotName("Nom",dijet_name,"Incl","2DmjptVsnmjpt",""),
         muojet_pt/1e3,nonmuojet_pt/1e3,100,0.,1000.,100,0.,1000.,total_evt_weight);
     }    
 
@@ -908,7 +910,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
     
     if(!passR10CaloJetCuts(i_jet)) continue;
     
-    if(this->fat_trkjet_assocTrkjet_ind->at(i_jet).size()<2){
+    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
       //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
       continue; 
     }
@@ -920,13 +922,13 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
     muonjet_index=999;
     nonmuonjet_index=999;
   
-    for(unsigned int i=0; i<this->fat_trkjet_assocTrkjet_ind->at(i_jet).size(); i++){
+    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
       
-      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_trkjet_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
+      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
 
       if(assocTJ_ind<0){
-  if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
-  continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
+        if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
+        continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
       }
      
     
@@ -976,10 +978,8 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
     if(nonmuon_cand_index.size() && muonjet_index!=999){
 
       if(nonmuon_cand_index.size()>1){
-  leading_2trackjets=(muonjet_index<nonmuonjet_index || muonjet_index<nonmuon_cand_index[1] );
-
-      }else leading_2trackjets=true;
-
+        leading_2trackjets=(muonjet_index<nonmuonjet_index || muonjet_index<nonmuon_cand_index[1] );
+      } else leading_2trackjets=true;
 
     }
 
@@ -990,9 +990,6 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
       gbbcand.fat_index=i_jet;
       gbbcand.hasleading2trackjets=leading_2trackjets;
     }
-
-   
-
   }
 
   if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
@@ -1018,7 +1015,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
     
     if(!passR10CaloJetCuts(i_jet)) continue;
     
-    if(this->fat_trkjet_assocTrkjet_ind->at(i_jet).size()<2){
+    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
       //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
       continue; 
     }
@@ -1029,13 +1026,13 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
     muonjet_index=999;
     nonmuonjet_index=999;
   
-    for(unsigned int i=0; i<this->fat_trkjet_assocTrkjet_ind->at(i_jet).size(); i++){
+    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
       
-      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_trkjet_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
+      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
 
       if(assocTJ_ind<0){
-  if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
-  continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
+        if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
+        continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
       }
      
     
@@ -1155,7 +1152,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   trkjetSd0Info ret = {-99.,-99.,-99.,-99.,-99.,-99.,-99.,-99.,n};
 
   for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
-    if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
+    //if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
 
     tracks_passed++;
     track tr;
