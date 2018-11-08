@@ -1,8 +1,5 @@
 #define TupleAna_cxx
-#include "gbbCalibration/TupleAna.h"
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
+#include "TupleAna.h"
 
 void TupleAna::Loop()
 {

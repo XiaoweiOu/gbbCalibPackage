@@ -15,21 +15,20 @@ find_package( ROOT COMPONENTS Core MathCore RIO Hist Tree Matrix Gpad Graf Physi
 
 # Build a dictionary for the library:
 atlas_add_root_dictionary( gbbTupleLib _dictionarySource
-   ROOT_HEADERS gbbCalibration/TupleAna.h gbbCalibration/GbbTupleAna.h Root/LinkDef.h
+   ROOT_HEADERS histMaker/TupleAna.h histMaker/GbbTupleAna.h histMaker/LinkDef.h
    EXTERNAL_PACKAGES ROOT )
 
 atlas_add_library( gbbTupleLib
-   Root/GbbTupleAna.cxx Root/GbbSelectionHelp.cxx Root/GbbFillHelp.cxx Root/TupleAna.cxx
-   Root/HistogramService.cxx Root/FlavourFracCorrector.cxx
-   gbbCalibration/GbbTupleAna.h gbbCalibration/TupleAna.h gbbCalibration/HistogramService.h gbbCalibration/FlavourFracCorrector.h
-   Root/*.h ${_dictionarySource}
+   histMaker/*.cxx histMaker/*.h
+   helpers/*.cxx helpers/*.h
+   ${_dictionarySource}
    PUBLIC_HEADERS GbbTupleAna
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
    )
 atlas_add_library( ScaleFactorCalcLib
-   Root/ScaleFactorCalculator.cxx Root/FitData.cxx Root/Fitter.cxx Root/Config.cxx
-   gbbCalibration/ScaleFactorCalculator.h gbbCalibration/FitData.h gbbCalibration/Fitter.h gbbCalibration/Config.h
+   scaleFactorCalculator/*.cxx scaleFactorCalculator/*.h
+   helpers/*.cxx helpers/*.h
    PUBLIC_HEADERS ScaleFactorCalc
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver

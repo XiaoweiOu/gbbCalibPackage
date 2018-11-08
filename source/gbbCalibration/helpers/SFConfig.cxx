@@ -1,20 +1,21 @@
-#include "gbbCalibration/Config.h"
+#include "SFConfig.h"
 #include "TEnv.h"
 #include "TObjString.h"
 #include "TObjArray.h"
 #include "PathResolver/PathResolver.h"
+#include "BinConfig.h"
 
-Config::Config() {
+SFConfig::SFConfig() {
   // TODO Auto-generated constructor stub
 
 }
 
-Config::~Config() {
+SFConfig::~SFConfig() {
   // TODO Auto-generated destructor stub
 
 }
 
-Config::Config(TString& config_path){
+SFConfig::SFConfig(TString& config_path){
 
   std::cout<<"=============================================="<<std::endl;   
   TString m_config_path = config_path;
@@ -24,7 +25,7 @@ Config::Config(TString& config_path){
   if (config_path == "") {
     std::cout << "Cannot find settings file " + config_path + "\n  also searched in " + m_config_path << std::endl;
     abort();
-  } else std::cout << "Config file is set to: " << m_config_path << std::endl;
+  } else std::cout << "SFConfig file is set to: " << m_config_path << std::endl;
 
   TEnv* config = new TEnv("env");
   if (config->ReadFile(m_config_path.Data(),EEnvLevel(0)) == -1) {
@@ -38,26 +39,34 @@ Config::Config(TString& config_path){
   m_Debug = config->GetValue("doDebug",false); 
   std::cout<<"doDebug: "<<m_Debug<<std::endl; 
 
+  TString bin_config_file = config->GetValue("BinConfig","");
+  BinConfig* bin_config = new BinConfig(bin_config_file);
+  std::cout<<"Loaded BinConfig"<<std::endl;
+
   m_doMCStatsNP = config->GetValue("doMCStatsNP",false); 
   std::cout<<"doNPStatsMC: "<<m_doMCStatsNP<<std::endl; 
 
   m_doFitInFatJetPtBins = config->GetValue("doFitInFatJetPtBins",false); 
   std::cout<<"doFitInFatJetPtBins: "<<m_doFitInFatJetPtBins<<std::endl; 
 
-  m_systematics=SplitString(config->GetValue("Systematics",""),',');
-  std::cout<<"Systematics: "<<config->GetValue("Systematics","")<<std::endl;
-  
-  m_pairs=SplitString(config->GetValue("FlavourPairs",""),',');
-  std::cout<<"FlavourPairs: "<<config->GetValue("FlavourPairs","")<<std::endl; 
+  m_systematics=bin_config->GetSystematics();
+  //m_systematics=SplitString(config->GetValue("Systematics",""),',');
+  //std::cout<<"Systematics: "<<config->GetValue("Systematics","")<<std::endl;
+
+  m_pairs=bin_config->GetFlavourPairs();
+  //m_pairs=SplitString(config->GetValue("FlavourPairs",""),',');
+  //std::cout<<"FlavourPairs: "<<config->GetValue("FlavourPairs","")<<std::endl; 
 
   m_chans=SplitString(config->GetValue("Channels","muo,nonmuo"),',');
   std::cout<<"Channels: "<<config->GetValue("Channels","")<<std::endl;   
 
-  m_mutrackjetbins=SplitStringD(config->GetValue("MuTrackJetBins",""),',');
-  std::cout<<"MuTrackJetBins: "<<config->GetValue("MuTrackJetBins","")<<std::endl; 
+  m_mutrackjetbins=bin_config->GetMuonJetPtBins();
+  //m_mutrackjetbins=SplitStringD(config->GetValue("MuTrackJetBins",""),',');
+  //std::cout<<"MuTrackJetBins: "<<config->GetValue("MuTrackJetBins","")<<std::endl; 
 
-  m_nonmutrackjetbins=SplitStringD(config->GetValue("NonmuTrackJetBins",""),',');
-  std::cout<<"NonmuTrackJetBins: "<<config->GetValue("NonmuTrackJetBins","")<<std::endl;
+  m_nonmutrackjetbins=bin_config->GetNonMuJetPtBins();
+  //m_nonmutrackjetbins=SplitStringD(config->GetValue("NonmuTrackJetBins",""),',');
+  //std::cout<<"NonmuTrackJetBins: "<<config->GetValue("NonmuTrackJetBins","")<<std::endl;
 
   m_Ntimes_smooth=config->GetValue("smoothTemplatesNtimes",0);
   std::cout<<"smoothTemplatesNtimes: "<<m_Ntimes_smooth<<std::endl;
@@ -75,8 +84,9 @@ Config::Config(TString& config_path){
   }
 
 
-  m_fatjetbins=SplitStringD(config->GetValue("FatJetBins",""),',');
-  std::cout<<"FatJetBins: "<<config->GetValue("FatJetBins","")<<std::endl;
+  m_fatjetbins=bin_config->GetFatJetPtBins();
+  //m_fatjetbins=SplitStringD(config->GetValue("FatJetBins",""),',');
+  //std::cout<<"FatJetBins: "<<config->GetValue("FatJetBins","")<<std::endl;
   
   m_params_names=SplitString(config->GetValue("ParameterNames",""),',');
   std::cout<<"ParameterNames: "<<config->GetValue("ParameterNames","")<<std::endl;
@@ -116,7 +126,7 @@ Config::Config(TString& config_path){
 }
 
 
-std::vector<TString> Config::SplitString(TString str, char delim){
+std::vector<TString> SFConfig::SplitString(TString str, char delim){
   std::vector<TString> tokens;   TObjArray *Strings=str.Tokenize(delim);
   for(int i=0; i<Strings->GetEntriesFast(); i++){
     tokens.push_back(((TObjString*) (*Strings)[i])->GetString());
@@ -124,7 +134,7 @@ std::vector<TString> Config::SplitString(TString str, char delim){
   return tokens; 
 } 
 
-std::vector<float> Config::SplitStringD(TString str, char delim){
+std::vector<float> SFConfig::SplitStringD(TString str, char delim){
   std::vector<float> tokens;
   TObjArray *Strings=str.Tokenize(delim);
   for(int i=0; i<Strings->GetEntriesFast(); i++){
@@ -136,7 +146,7 @@ std::vector<float> Config::SplitStringD(TString str, char delim){
 }
 
 
-std::vector<TString> Config::GetAllRegions(){
+std::vector<TString> SFConfig::GetAllRegions(){
 
   std::vector<TString> pt_all_regions;
   TString name;
@@ -148,19 +158,19 @@ std::vector<TString> Config::GetAllRegions(){
 
     for(int i=0; i<m_mutrackjetbins.size(); i++){
 
-      if(i==0) mu_pt_regions.push_back(Form("mjpt_l%.0f",m_mutrackjetbins[i]));
+      if(i==0) mu_pt_regions.push_back(Form("mjpt_l%u",m_mutrackjetbins[i]));
 
-      if(i<m_mutrackjetbins.size()-1) mu_pt_regions.push_back(Form("mjpt_g%.0fl%.0f",m_mutrackjetbins[i],m_mutrackjetbins[i+1]));
-      else mu_pt_regions.push_back(Form("mjpt_g%.0f",m_mutrackjetbins[i])); 
+      if(i<m_mutrackjetbins.size()-1) mu_pt_regions.push_back(Form("mjpt_g%ul%u",m_mutrackjetbins[i],m_mutrackjetbins[i+1]));
+      else mu_pt_regions.push_back(Form("mjpt_g%u",m_mutrackjetbins[i])); 
 
     }
 
     for(int i=0; i<m_nonmutrackjetbins.size(); i++){
 
-      if(i==0) nonmu_pt_regions.push_back(Form("nmjpt_l%.0f",m_nonmutrackjetbins[i]));
+      if(i==0) nonmu_pt_regions.push_back(Form("nmjpt_l%u",m_nonmutrackjetbins[i]));
 
-      if(i<m_nonmutrackjetbins.size()-1) nonmu_pt_regions.push_back(Form("nmjpt_g%.0fl%.0f",m_nonmutrackjetbins[i],m_nonmutrackjetbins[i+1]));
-      else nonmu_pt_regions.push_back(Form("nmjpt_g%.0f",m_nonmutrackjetbins[i]));
+      if(i<m_nonmutrackjetbins.size()-1) nonmu_pt_regions.push_back(Form("nmjpt_g%ul%u",m_nonmutrackjetbins[i],m_nonmutrackjetbins[i+1]));
+      else nonmu_pt_regions.push_back(Form("nmjpt_g%u",m_nonmutrackjetbins[i]));
 
     }
 
@@ -180,7 +190,7 @@ std::vector<TString> Config::GetAllRegions(){
   }else{
 
     for(int i=0; i<m_fatjetbins.size()-1; i++){
-      pt_all_regions.push_back(Form("fjpt_g%.0fl%.0f",m_fatjetbins[i],m_fatjetbins[i+1]));
+      pt_all_regions.push_back(Form("fjpt_g%ul%u",m_fatjetbins[i],m_fatjetbins[i+1]));
       
     }
 
@@ -193,7 +203,7 @@ std::vector<TString> Config::GetAllRegions(){
 
 
 
-std::vector<TString> Config::GetMCHistNames(TString& pt_region, TString &sys, TString &variable){
+std::vector<TString> SFConfig::GetMCHistNames(TString& pt_region, TString &sys, TString &variable){
 
   std::vector<TString> hist_names;
   for(auto fp : m_pairs){
@@ -207,7 +217,7 @@ std::vector<TString> Config::GetMCHistNames(TString& pt_region, TString &sys, TS
 }
 
 
-TString Config::GetDataHistName(TString& pt_region, TString &variable){
+TString SFConfig::GetDataHistName(TString& pt_region, TString &variable){
 
   TString name="hDataNom_"+pt_region+"_"+variable;
   return name;

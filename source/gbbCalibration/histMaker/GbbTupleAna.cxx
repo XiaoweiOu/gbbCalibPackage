@@ -3,13 +3,12 @@
  *
  *  Created on: Feb 18, 2016
  *      Author: rjacobs
+ *  Modified by: aemerman
  */
 
 
-#include "gbbCalibration/GbbTupleAna.h"
+#include "GbbTupleAna.h"
 #include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
 #include <iostream>
 #include <TMath.h>
 #include <TLorentzVector.h>
@@ -46,6 +45,7 @@ struct by_abs_sd0 {
 GbbTupleAna::GbbTupleAna() : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0) {
   // TODO Auto-generated constructor stub
 
+  m_config=nullptr;
   m_HistogramService=new HistogramService();
 }
 
@@ -53,7 +53,8 @@ GbbTupleAna::~GbbTupleAna() {
   // TODO Auto-generated destructor stub
 
   if(m_FlavFracCorrector) delete m_FlavFracCorrector;
-  delete m_HistogramService;
+  if(m_HistogramService) delete m_HistogramService;
+  if(m_config) delete m_config;
 }
 
 
@@ -76,12 +77,16 @@ void GbbTupleAna::ReadConfig(TString &config_path){
     abort();
   }
   //config->Print();
-
-  m_RunMode   = config->GetValue("RunMode",         "FillTemplates");
-  std::cout<<"RunMode: "<<m_RunMode<<std::endl;
   
   m_Debug = config->GetValue("doDebug",false);
   std::cout<<"doDebug: "<<m_Debug<<std::endl;
+
+  TString bin_config = config->GetValue("BinConfig","");
+  m_config = new BinConfig(bin_config);
+  std::cout<<"Loaded BinConfig"<<std::endl;
+
+  m_RunMode   = config->GetValue("RunMode","FillTemplates");
+  std::cout<<"RunMode: "<<m_RunMode<<std::endl;
   
   m_doJetPtReweighting = config->GetValue("doJetPtEtaReweighting",true);
   std::cout<<"doJetPtEtaReweighting: "<<m_doJetPtReweighting<<std::endl;
@@ -103,9 +108,6 @@ void GbbTupleAna::ReadConfig(TString &config_path){
 
   m_FlavFracCorrectorFile = config->GetValue("FlavFracCorrectorFile","./data/160714_FitResults_allsys.root");
   std::cout<<"FlavFracCorrectorFile: "<<m_FlavFracCorrectorFile<<std::endl;  
-  
-  m_ditrkjet_cat=this->SplitString(config->GetValue("DiTrkjetCategories","BB,BC,BL,CC,CL,LL,other"),',');
-  std::cout<<"m_ditrkjet_cat: "<<config->GetValue("DiTrkjetCategories","BB,BC,BL,CC,CL,LL,other")<<std::endl;
 
   m_doMergeDiTrkjetCat=config->GetValue("doMergeDiTrkjetCat",true);
   std::cout<<"m_doMergeDiTrkjetCat: "<< m_doMergeDiTrkjetCat<<std::endl;
@@ -116,17 +118,8 @@ void GbbTupleAna::ReadConfig(TString &config_path){
   m_trkjet_cat=this->SplitString(config->GetValue("TrkjetCategories","B,C,L,other"),',');
   std::cout<<"m_trkjet_cat: "<<config->GetValue("TrkjetCategories","B,C,L,other")<<std::endl;
   
-  m_muojet_pt_bins=this->SplitStringD(config->GetValue("MuoJetPtBins","100.,200."),',');
-  std::cout<<"m_muojet_pt_bins: "<<config->GetValue("MuoJetPtBins","100.,200.")<<std::endl;
-  
-  m_nonmuojet_pt_bins=this->SplitStringD(config->GetValue("NonMuoJetPtBins","20.,50.,80."),',');
-  std::cout<<"m_nonmuojet_pt_bins: "<<config->GetValue("NonMuoJetPtBins","20.,50.,80.")<<std::endl;
-
   m_doRandomSplitting=config->GetValue("doRandomSplitting",false);
  std::cout<<"m_doRandomSplitting: "<< m_doRandomSplitting<<std::endl;
-
- m_fatjet_pt_bins=this->SplitStringD(config->GetValue("FatJetPtBins",""),',');
- std::cout<<"m_fatjet_pt_bins: "<<config->GetValue("FatJetPtBins","")<<std::endl;
 
  m_doPostfitPtReweighting=config->GetValue("doPostfitPtReweighting",false);
  std::cout<<"m_doPostfitPtReweighting: "<<m_doPostfitPtReweighting<<std::endl;
@@ -134,6 +127,7 @@ void GbbTupleAna::ReadConfig(TString &config_path){
  m_PostfitPtReweightingFile=config->GetValue("PostfitPtReweightingFile","DEFAULT.root");
  std::cout<<"m_PostfitPtReweightingFile: "<<m_PostfitPtReweightingFile<<std::endl;
 
+  std::cout<<"=============================================="<<std::endl;
 }
 
 
@@ -522,7 +516,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   double muojet_pt=this->trkjet_pt->at(gbbcand.muojet_index);
   double nonmuojet_pt=this->trkjet_pt->at(gbbcand.nonmuojet_index);
   
-  TString ptlabel=getPtLabel(muojet_pt/1e3,nonmuojet_pt/1e3);
+  TString ptlabel=m_config->GetDiTrkJetLabel(muojet_pt/1e3,nonmuojet_pt/1e3);
 
   if(m_Debug) std::cout<<"processgbb(): Got labels."<<std::endl;
 

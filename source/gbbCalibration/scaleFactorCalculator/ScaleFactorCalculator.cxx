@@ -5,7 +5,7 @@
  *      Author: rjacobs
  */
 
-#include "gbbCalibration/ScaleFactorCalculator.h"
+#include "ScaleFactorCalculator.h"
 #include "TGraphAsymmErrors.h"
 #include "TGraphErrors.h"
 #include "TLegend.h"
@@ -24,7 +24,7 @@
 #include <TMatrixDSymEigen.h>
 #include <TMatrixDSym.h>
 #include <TVectorD.h>
-#include "TH2D.h"
+#include "TH2.h"
 
 ScaleFactorCalculator::ScaleFactorCalculator() {
   // TODO Auto-generated constructor stub
@@ -49,7 +49,10 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   std::cout<<"==================================================="<<std::endl;
 
   
-  m_config=new Config(cfg_file);
+  m_config=new SFConfig(cfg_file);
+  //TString base_config = config->GetValue("BaseConfig","");
+  //m_config = new Config(base_config);
+  //std::cout<<"Loaded BaseConfig"<<std::endl;
   m_fitdata=new FitData(m_config->GetInfileName(),m_config->GetChans());
 
   std::vector<TString> systematics=m_config->GetSystematics();

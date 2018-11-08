@@ -1,21 +1,17 @@
 /*
  * GbbTupleAna.cxx
  *
- *  Created on: Feb 18, 2016
- *      Author: rjacobs
+ *  Created on: Nov 2, 2018
+ *      Author: aemerman
+ *  Modified from GbbTupleAna.cxx,
+ *  created by: rjacobs
  */
 
 
-#include "gbbCalibration/GbbTupleAna.h"
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
+#include "GbbTupleAna.h"
 #include <iostream>
 #include <TMath.h>
 #include <TLorentzVector.h>
-#include "TObjString.h"
-#include "TTree.h"
-#include "TChain.h"
 
 bool GbbTupleAna::isCleanEvt(const float total_evt_weight) {
 

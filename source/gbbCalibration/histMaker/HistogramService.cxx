@@ -18,7 +18,7 @@
 #include "TStyle.h"
 #include "TBenchmark.h"
 #include "TDirectory.h"
-#include "gbbCalibration/HistogramService.h"
+#include "HistogramService.h"
 
 using namespace std;
 
