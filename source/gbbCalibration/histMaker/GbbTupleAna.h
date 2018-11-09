@@ -67,7 +67,18 @@ private:
   TString m_Outputname; //! name of output file
   std::map<TString, TChain*> m_chains;
 
-  TString m_RunMode; // RunMode="Reweighting","FitInputs","PostFitPlots" "MCStatsTest"
+  int m_RunMode;
+  typedef enum {
+    FILL_TEMPLATES = 0x001,
+    FILL_TRKJET_PROPERTIES = 0x002,
+    FILL_FATJET_PROPERTIES = 0x004,
+    FILL_ADV_PROPERTIES = 0x008,
+    FILL_MC_STATS = 0x010,
+    FILL_REWEIGHT = 0x020,
+    FILL_PRW = 0x040,
+    FILL_TRIGGER = 0x080,
+    FOR_FIT_ONLY = 0x100,
+  } RunMode;
   
   bool m_Debug;
 

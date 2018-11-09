@@ -85,7 +85,7 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_config = new BinConfig(bin_config);
   std::cout<<"Loaded BinConfig"<<std::endl;
 
-  m_RunMode   = config->GetValue("RunMode","FillTemplates");
+  m_RunMode = config->GetValue("RunMode",0);
   std::cout<<"RunMode: "<<m_RunMode<<std::endl;
   
   m_doJetPtReweighting = config->GetValue("doJetPtEtaReweighting",true);
@@ -386,7 +386,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
   //FILL TRIGGER TURNONHISTS
-  if(m_RunMode.Contains("TriggerTurnOn")) FillTriggerTurnOnHistograms(i_trigjet,total_evt_weight);
+  if(m_RunMode & RunMode::FILL_TRIGGER) FillTriggerTurnOnHistograms(i_trigjet,total_evt_weight);
 
 
   //Trigger requirements, normalize lower trigger jet pt slice Lumi to HLT_j360 Lumi (see entry 12/04/16 in log book)
@@ -417,18 +417,18 @@ bool GbbTupleAna::Processgbb(int i_evt){
   m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
 
   //FILL REWEIGHT HISTOGRAMS
-  if(m_isNominal && m_RunMode.Contains("FillReweightHists")){
+  if(m_isNominal && m_RunMode & RunMode::FILL_REWEIGHT){
     //FIXME: do we want to trigger on large-R jet?
     this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
     //this->FillFatReweightInfo(largeRtrigpt,largeRtrigeta,total_evt_weight,trigger_passed);
   }
 
   //Fill Pileup reweighting histograms
-  if(m_isNominal && m_RunMode.Contains("FillPRWHists")) m_HistogramService->FastFillTH1D("h"+m_SysVarName+"_evemu",this->eve_mu,12,0.,60.,total_evt_weight);
+  if(m_isNominal && m_RunMode & RunMode::FILL_PRW) m_HistogramService->FastFillTH1D("h"+m_SysVarName+"_evemu",this->eve_mu,12,0.,60.,total_evt_weight);
 
   // TRIGGER JET REWEIGHTING
   float trig_weight;
-  if(m_doJetPtReweighting && !m_RunMode.Contains("FillReweightHists")  && m_reweightHistos[trigger_passed].get() && this->eve_isMC){
+  if(m_doJetPtReweighting && !(m_RunMode & RunMode::FILL_REWEIGHT)  && m_reweightHistos[trigger_passed].get() && this->eve_isMC){
     trig_weight=this->getTrigJetWeight(i_trigjet,trigger_passed);
     //std::cout<<"Trigger weight is:"<<trig_weight<<std::endl;
     //float trig_weight=this->getTrigFatJetWeight(largeRtrigpt,largeRtrigeta,trigger_passed);
@@ -526,7 +526,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     }*/
 
   //FILL REWEIGHT HISTOGRAMS
-  //if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
+  //if(m_isNominal && m_RunMode & RunMode::FILL_REWEIGHT) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
 
 
   //=========================================                                                                                               
@@ -577,7 +577,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
 
   //  //If mode is: FillReweightHists Fill possible new reweighting histogram before event_weight is changed
-  //if(m_isNominal && m_RunMode.Contains("FillReweightHists")) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
+  //if(m_isNominal && m_RunMode & RunMode::FILL_REWEIGHT) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
 
 
   /*  if(m_doPostfitPtReweighting && this->eve_isMC){
@@ -634,15 +634,15 @@ bool GbbTupleAna::Processgbb(int i_evt){
     
     m_HistogramService->FastFillTH1D("Hist_MCStatsUnc",1,1,0.5,1.5,total_evt_weight);
     
-    if(m_RunMode.Contains("FillTemplates")) FillTemplates(&gbbcand,total_evt_weight);
-    if(m_RunMode.Contains("FillTrackJetProperties")) FillTrackJetProperties(&gbbcand,total_evt_weight);
-    if(m_RunMode.Contains("FillFatJetProperties")) FillFatJetProperties(&gbbcand,total_evt_weight);
-    if(m_RunMode.Contains("FillAdvancedProperties")) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight);
-    if(m_RunMode.Contains("FillMCStatsInfo")) FillMCStatsInfo(&gbbcand);
+    if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight);
+    if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight);
+    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight);
+    if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight);
+    if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand);
 
 
     //for crosscheck: Fill Even and Odd Templates
-    if(this->eve_isMC && m_doEvenOddTemplates && m_RunMode.Contains("FillTemplates")){
+    if(this->eve_isMC && m_doEvenOddTemplates && m_RunMode & RunMode::FILL_TEMPLATES){
       if(!(i_evt%2)) this->FillTemplates(&gbbcand,total_evt_weight,"EVEN");
       if(!(i_evt%2)) this->FillTemplates(&gbbcand,total_evt_weight,"ODD");      
     }
@@ -696,27 +696,27 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(passSpecificCuts(eventFlag, CutsWith2Btags)){  
     //std::cout<<"Filling post-tag plots for"<<m_SysVarName<<"with btag_SF :"<<btag_SF_nom<<std::endl;
     
-    if(m_RunMode.Contains("FillTemplates") && !m_RunMode.Contains("ForFitOnly")) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
-    if(m_RunMode.Contains("FillTrackJetProperties")) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
-    if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
-    if(m_RunMode.Contains("FillMCStatsInfo")) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG");
+    if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
+    if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
+    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
+    if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG");
 
     if(m_isNominal){
       
-      if(m_RunMode.Contains("FillTemplates") && !m_RunMode.Contains("ForFitOnly")) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
-      if(m_RunMode.Contains("FillTrackJetProperties")) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
-      if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
+      if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
+      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
+      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
 
-      if(m_RunMode.Contains("FillTemplates") && !m_RunMode.Contains("ForFitOnly")) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-      if(m_RunMode.Contains("FillTrackJetProperties")) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-      if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
+      if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
+      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
+      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
 
       
     }
 
-    m_HistogramService->FastFillTH1D( makePlotName("PREFITPOSTTAG",dijet_name,ptlabel,"trjpt",""),
+    m_HistogramService->FastFillTH1D( makePlotName("Nom",dijet_name,ptlabel,"trjpt","PREFITPOSTTAG"),
      trjet_pt/1e3,250,0.,1000.,total_evt_weight);
-    m_HistogramService->FastFillTH1D( makePlotName("PREFITPOSTTAG",dijet_name,ptlabel,"DRditrkjetfatjet",""),
+    m_HistogramService->FastFillTH1D( makePlotName("Nom",dijet_name,ptlabel,"DRditrkjetfatjet","PREFITPOSTTAG"),
      DRditrkjetfatjet,250,0.,0.5,total_evt_weight);
     
 
@@ -727,14 +727,14 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //3a)Fill fat jet info for AntiBtag
   /*if(passSpecificCuts(eventFlag, CutsWithAnti2Btags)){  
   
-    if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITANTITAG");
+    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITANTITAG");
 
     }*/
 
   //3b) Fill untagged info, for MC uncertainty calculation
   if(m_isNominal && passSpecificCuts(eventFlag, CutsWithUntag)){
-    if(m_RunMode.Contains("FillTrackJetProperties")) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
-     if(m_RunMode.Contains("FillFatJetProperties")) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
+    if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
+    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
 
   }
 

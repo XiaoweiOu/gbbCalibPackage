@@ -71,13 +71,13 @@ bool GbbTupleAna::passTrigger(const float trigjet_pt, float& prescale, TString& 
   trigger_passed="none";
   prescale=1.;
   
-  /*if(m_RunMode.Contains("TriggerTurnOn")){
+  /*if(m_RunMode & RunMode::FILL_TRIGGER){
     prescale=1.;
   }else if(trjet_pt>500e3 && this->eve_HLT_j380) trigger_passed="HLT_j380";
   else return false;*/
 
 
-  /*  if(m_RunMode.Contains("TriggerTurnOn")){
+  /*  if(m_RunMode & RunMode::FILL_TRIGGER){
     prescale=1.;
   }else if(trjet_pt>198e3 && trjet_pt<=229e3 && this->eve_HLT_j150){
     trigger_passed="HLT_j150";
@@ -91,7 +91,7 @@ bool GbbTupleAna::passTrigger(const float trigjet_pt, float& prescale, TString& 
   }else if(trjet_pt>430e3 && this->eve_HLT_j380) trigger_passed="HLT_j380";
   else return false;*/
 
-  /*  if(m_RunMode.Contains("TriggerTurnOn")){
+  /*  if(m_RunMode & RunMode::FILL_TRIGGER){
     prescale=1.;
   }else if(trjet_pt>238e3 && trjet_pt<=275e3 && this->eve_HLT_j150){
     trigger_passed="HLT_j150";
