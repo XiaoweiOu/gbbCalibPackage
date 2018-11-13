@@ -334,7 +334,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //if(original_evt_weight>100) return false;
 
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   //m_SumWeightTuple+=total_evt_weight;
   m_SumWeightTuple+=this->eve_pu_w;
@@ -348,7 +348,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   updateFlag(eventFlag,GbbCuts::EventCleaning,true);
 
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   //=========================================                                                                          
   //2.) Trigger jet selection (leading AntiKt4EMTopo Jet)
@@ -383,7 +383,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(m_Debug) std::cout<<"processgbb(): Got Trigger Jet!"<<std::endl;
  
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   //FILL TRIGGER TURNONHISTS
   if(m_RunMode & RunMode::FILL_TRIGGER) FillTriggerTurnOnHistograms(i_trigjet,total_evt_weight);
@@ -414,7 +414,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(m_Debug) std::cout<<"processgbb(): Passed trigger jet requirement"<<std::endl;
 
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   //FILL REWEIGHT HISTOGRAMS
   if(m_isNominal && m_RunMode & RunMode::FILL_REWEIGHT){
@@ -441,7 +441,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   // std::cout<<"prescale: "<<prescale<<" trig weight: "<<trig_weight<<std::endl;
 
    icut++;
-   m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+   m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   //=========================================                                                                                               
   //3.) Gbb candidate selection & definition                                                                                                              
@@ -456,7 +456,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     return false;
   }
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   if(m_Debug) std::cout<<"constructGbbCandidate(): Finish Gbb construction!"<<std::endl;
   TLorentzVector muojet_vec, nonmuojet_vec;
@@ -477,7 +477,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     return false;
   }
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   //if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
   //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
   //  return false;
@@ -512,8 +512,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   //cut away region where jet bias is introduced
   if (!cutTriggerBias(gbbcandpt, trigger_passed)) return false;
+  if(m_Debug) std::cout<<"processgbb(): Pass pt cuts."<<std::endl;
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
 
   /*  if(gbbcandpt>250e3 && gbbcandpt<=280e3 && trigger_passed.EqualTo("HLT_j150")){
@@ -541,9 +542,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(TMath::Abs(muojet_maxsd0+99.)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99.)<1e-5) return false; //associated tracks do not fulfil selection cuts  
 
   updateFlag(eventFlag,GbbCuts::GoodSd0Tracks,true);
+  if(m_Debug) std::cout<<"processgbb(): Good sd0."<<std::endl;
 
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   //=========================================                                                                                               
   //5.) Topo cut                                                                                                                
@@ -568,8 +570,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   float DRditrkjetfatjet=fatjet.DeltaR(ditrkjet);
 
+  if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
   icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  m_HistogramService->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
   //=========================================
   //6.) Trigjet reweighting
