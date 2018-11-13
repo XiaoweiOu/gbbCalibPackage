@@ -148,14 +148,14 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   
   if(m_doRandomSplitting){
     
-    if(m_doFillMujet) m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_mjmaxSd0",nametag), muojet_maxsd0,80,-40,80,event_weight);
-    else m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_nmjmaxSd0",nametag), nonmuojet_maxsd0,80,-40,80,event_weight);
+    if(m_doFillMujet) m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"mjmaxSd0",nametag), muojet_maxsd0,80,-40,80,event_weight);
+    else m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"nmjmaxSd0",nametag), nonmuojet_maxsd0,80,-40,80,event_weight);
     
   }else{
 
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_mjmaxSd0",nametag),
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"mjmaxSd0",nametag),
      muojet_maxsd0,80,-40,80,event_weight);
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_nmjmaxSd0",nametag),
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"nmjmaxSd0",nametag),
      nonmuojet_maxsd0,80,-40,80,event_weight);
 
     m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"","mjmaxSd0DR",nametag),
@@ -175,15 +175,15 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   
   if(m_isNominal){
     
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_fjpt",nametag),
+    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjpt",nametag),
      this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     //m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     
     if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) {
-      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_fjptsc",nametag),
+      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
        this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
     } else if(!this->eve_isMC) {
-      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"_fjptsc",nametag),
+      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
        this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     }
        
