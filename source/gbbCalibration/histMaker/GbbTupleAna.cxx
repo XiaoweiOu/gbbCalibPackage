@@ -482,6 +482,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
     return false;
   }
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+
   if(m_Debug) std::cout<<"constructGbbCandidate(): Finish Gbb construction!"<<std::endl;
   TLorentzVector muojet_vec, nonmuojet_vec;
   muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
@@ -493,10 +496,19 @@ bool GbbTupleAna::Processgbb(int i_evt){
                               this->trkjet_phi->at(gbbcand.nonmuojet_index),
                               0.);
   m_HistogramService->FastFillTH1D("h_dRtrkjets",muojet_vec.DeltaR(nonmuojet_vec),100,0,1.0,total_evt_weight);
-  if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
-    if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
+  float muojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.muojet_index)) );
+  float nonmuojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.nonmuojet_index)) );
+
+  if ( TMath::Log(muojet_vec.DeltaR(nonmuojet_vec)/std::min(muojet_minVR, nonmuojet_minVR)) < 0 ) {
+    if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
     return false;
   }
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+  //if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
+  //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
+  //  return false;
+  //}
 
   if(m_Debug){
     std::cout<<"processgbb(): Finished constructing Gbb candidate!"<<std::endl;
@@ -522,14 +534,14 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Got labels."<<std::endl;
 
-  icut++;
-  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
-
   float gbbcandpt=this->fat_pt->at(gbbcand.fat_index);
   //  std::cout<<"trigjet pt is: "<<this->jet_pt->at(i_trigjet)<<" "<<gbbcandpt<<std::endl;
 
   //cut away region where jet bias is introduced
   if (!cutTriggerBias(gbbcandpt, trigger_passed)) return false;
+  icut++;
+  m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
+
 
   /*  if(gbbcandpt>250e3 && gbbcandpt<=280e3 && trigger_passed.EqualTo("HLT_j150")){
   }else if(gbbcandpt>280e3 && gbbcandpt<=380e3 && trigger_passed.EqualTo("HLT_j175")){
@@ -559,7 +571,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   icut++;
   m_HistogramService->FastFillTH1D("CutFlow",icut,15,0.5,15.5,total_evt_weight);
-
 
   //=========================================                                                                                               
   //5.) Topo cut                                                                                                                
