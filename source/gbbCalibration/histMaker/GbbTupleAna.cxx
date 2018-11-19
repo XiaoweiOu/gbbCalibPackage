@@ -636,17 +636,19 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //if(this->trkjet_MV2c20->at(gbbcand.muojet_index)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.nonmuojet_index)<-0.3098) return false;
   //Moved to MV2c10 at 70% efficiency
 
-  //1 b-tag
-  if(this->trkjet_MV2c10->at(gbbcand.muojet_index)>0.6455 || this->trkjet_MV2c10->at(gbbcand.nonmuojet_index)>0.6455) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);  
-  
+  int isTagged = passBTagCut(gbbcand, GbbTupleAna::BTagType::XBB_WP60);
+  if (isTagged == -99) {
+    std::cout<<"processgbb(): Unrecognized b-tag type"<<std::endl;
+    return false;
+  }
+  //at least 1 b-tag
+  if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);   
   //2 b-tags
-  if(this->trkjet_MV2c10->at(gbbcand.muojet_index)>0.6455 && this->trkjet_MV2c10->at(gbbcand.nonmuojet_index)>0.6455) updateFlag(eventFlag,GbbCuts::MuNonMu2Btags,true);
-
-  //2Anti-b-tags
-  if(this->trkjet_MV2c10->at(gbbcand.muojet_index)<0.6455 && this->trkjet_MV2c10->at(gbbcand.nonmuojet_index)<0.6455) updateFlag(eventFlag,GbbCuts::MuNonMuAnti2Btags,true);
-
-  //Fail 2-b-tags
-  if(this->trkjet_MV2c10->at(gbbcand.muojet_index)<0.6455 || this->trkjet_MV2c10->at(gbbcand.nonmuojet_index)<0.6455) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
+  if(isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu2Btags,true);
+  //0 b-tags
+  if(isTagged == -1) updateFlag(eventFlag,GbbCuts::MuNonMuAnti2Btags,true);
+  //at most 1 b-tag
+  if(isTagged == 0 || isTagged == -1) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
   
   //========================================= 
   //7b.) Bhadron reweighting (temporary)

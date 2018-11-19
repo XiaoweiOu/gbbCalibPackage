@@ -13,6 +13,73 @@
 #include <TMath.h>
 #include <TLorentzVector.h>
 
+double XbbTag_antiQCD_flat60eff(double x) {
+
+  const int fNp = 12, fKstep = 0;
+  const double fDelta = -1, fXmin = 0, fXmax = 2750;
+  const double fX[12] = { 0, 250, 500, 750, 1000,
+                       1250, 1500, 1750, 2000, 2250,
+                       2500, 2750 };
+  const double fY[12] = { 0, 4.75, 4.875, 4.875, 4.5,
+                       4, 3, 1.25, -1.375, -5,
+                       -10.375, -14.125 };
+  const double fB[12] = { 0.0360118, 0.00586912, -0.000988246, -0.000416141, -0.00184719,
+                       -0.00269509, -0.00537245, -0.00881512, -0.0118671, -0.0187165,
+                       -0.0212667, -0.00571655 };
+  const double fC[12] = { -8.35705e-05, -3.7e-05, 9.57053e-06, -7.28211e-06, 1.5579e-06,
+                       -4.94949e-06, -5.75995e-06, -8.01073e-06, -4.19714e-06, -2.32007e-05,
+                       1.3e-05, 250 };
+  const double fD[12] = { 6.2094e-08, 6.2094e-08, -2.24702e-08, 1.17867e-08, -8.67652e-09,
+                       -1.08061e-09, -3.00104e-09, 5.08479e-09, -2.53381e-08, 4.82676e-08,
+                       4.82676e-08, 116.025 };
+  int klow=0;
+  if(x<=fXmin) klow=0;
+  else if(x>=fXmax) klow=fNp-1;
+  else {
+    if(fKstep) {
+      // Equidistant knots, use histogramming
+      klow = int((x-fXmin)/fDelta);
+      if (klow < fNp-1) klow = fNp-1;
+    } else {
+      int khig=fNp-1, khalf;
+      // Non equidistant knots, binary search
+      while(khig-klow>1) {
+        if(x>fX[khalf=(klow+khig)/2]) klow=khalf;
+        else khig=khalf;
+      }
+    }
+  }
+  // Evaluate now
+  double dx=x-fX[klow];
+  return (fY[klow]+dx*(fB[klow]+dx*(fC[klow]+dx*fD[klow])));
+}
+
+// Return codes:
+//  1 = double-tagged, -1 = double-anti-tagged, 0 = single-tagged (for MV2c10 case)
+int GbbTupleAna::passBTagCut(const GbbCandidate& gbbcand, const GbbTupleAna::BTagType tagType) {
+  float taggerCut = -999.;
+  switch (tagType) {
+    case GbbTupleAna::BTagType::MV2C10_WP70:
+      taggerCut = 0.6455;
+      if(this->trkjet_MV2c10->at(gbbcand.muojet_index) > taggerCut &&
+         this->trkjet_MV2c10->at(gbbcand.nonmuojet_index) > taggerCut) {
+        return 1;
+      } else if(this->trkjet_MV2c10->at(gbbcand.muojet_index) > taggerCut ||
+                this->trkjet_MV2c10->at(gbbcand.nonmuojet_index) > taggerCut) {
+        return 0;
+      } else return -1;
+      break;
+    case GbbTupleAna::BTagType::XBB_WP60:
+      taggerCut = XbbTag_antiQCD_flat60eff(gbbcand.fat_pt);
+      if ( this->fat_XbbScoreHiggs->at(gbbcand.fat_index) > taggerCut ) return 1;
+      else return -1;
+      break;
+    default:
+      break;
+  }
+  return -99;
+}
+
 bool GbbTupleAna::isCleanEvt(const float total_evt_weight) {
 
   if (!(this->eve_isMC)) {
