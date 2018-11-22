@@ -4,6 +4,7 @@ import math
 import string
 from PlotFunctions import *
 from TAxisFunctions import *
+import ConfigFunctions as config
 import os
 
 ROOT.gROOT.SetBatch(True)
@@ -16,52 +17,36 @@ outfilename = sys.argv[1]
 
 Lumi = 36000.0 #in pb^-1
 
-#Pythia
-ListOfCrossSections = [2.6454e7,254620.,4553.5,257.54,16.215] #in pb
-ListOfFilterEfficiencies=[1.6117e-5,3.5545e-5,7.1955e-5,7.6347e-5,3.1782e-5]
+MyConfig = config.LoadGlobalConfig()
+histHelper = config.HistHelper()
 
-ListOfCrossSections_incl = [2.6454e7,254630.,4553.5,257.53,16.215] #in pb 
-ListOfFilterEfficiencies_incl = [0.00032,0.00053,0.000922,0.000939,0.000392]
+ListOfSystematics = [ ROOT.TString("Nom") ] #MyConfig.GetSystematics() 
+ListOfFlavourPairs = MyConfig.GetFlavourPairs()
+ListOfInclusiveFlavourPairs = [ 'LL' ]
 
-#Herwig
-#ListOfCrossSections = [1.8831e7,173300.,2965.4,162.76,10.113] #in pb
-#ListOfFilterEfficiencies = [1.9120e-05,4.2602e-5,9.0537e-5,0.00010259,4.7654e-5] #UPDATE for JZ3W 
+basepath = '/data/users/aemerman/gbbCalibPackage/arcond/'
 
-basepath = '/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/'
+pathData = basepath + 'data16_13TeV.FTAG1.FTNtupCalib.v00-05-02VRa.181126.gbbHist.root'
 
-pathJZ3W = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ4W = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ5W = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5660_s2726_r7773_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.427005.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5660_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ6W = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.427106.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5839_s2726_r7773_r7676_p2949_tuple.root' 
-pathJZ7W = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5839_s2726_r7773_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.427107.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e5839_s2726_r7773_r7676_p2949_tuple.root' 
+#pathJZ3W = basepath + 'mc16_13TeV.427003.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ4W = basepath + 'mc16_13TeV.427004.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ5W = basepath + 'mc16_13TeV.427005.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ6W = basepath + 'mc16_13TeV.427106.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ7W = basepath + 'mc16_13TeV.427107.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+#ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
+ListOfMCPaths = [ pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
 
+#pathJZ3W_incl = basepath + 'mc16_13TeV.361023.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ4W_incl = basepath + 'mc16_13TeV.361024.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ5W_incl = basepath + 'mc16_13TeV.361025.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ6W_incl = basepath + 'mc16_13TeV.361026.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+pathJZ7W_incl = basepath + 'mc16_13TeV.361027.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
+#ListOfInclusiveMCPaths = [ pathJZ3W_incl, pathJZ4W_incl, pathJZ5W_incl, pathJZ6W_incl, pathJZ7W_incl ]
+ListOfInclusiveMCPaths = [ pathJZ4W_incl, pathJZ5W_incl, pathJZ6W_incl, pathJZ7W_incl ]
 
-pathJZ3W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361023.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ4W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361024.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ5W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361025.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2576_s2132_r7725_r7676_p2949_tuple.root'
-pathJZ6W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3569_s2608_s2183_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361026.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3569_s2608_s2183_r7725_r7676_p2949_tuple.root'
-pathJZ7W_incl = basepath + 'Output_Calib/Calib_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2608_s2183_r7725_r7676_p2949_tuple.root/merged_hist_Calib_user.ruth.mc15_13TeV.361027.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-02.e3668_s2608_s2183_r7725_r7676_p2949_tuple.root'
+ListOfVariables = [ 'maxSd0' ]
 
-
-ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
-ListOfMCPaths_incl = [ pathJZ3W_incl, pathJZ4W_incl, pathJZ5W_incl, pathJZ6W_incl, pathJZ7W_incl ]
-pathData = basepath + 'Output_Calib/user.ruth.data1516_13TeV.all.root/merged_hist_user.ruth.data1516_13TeV.all.root '
-
-#make list of histograms
-ListOfHists = ['hBBNom_mjmaxSd0','hBLNom_mjmaxSd0','hCCNom_mjmaxSd0','hCLNom_mjmaxSd0','hLLNom_mjmaxSd0','hBBNom_nmjmaxSd0','hBLNom_nmjmaxSd0','hCCNom_nmjmaxSd0','hCLNom_nmjmaxSd0','hLLNom_nmjmaxSd0' ]
-
-ListOfNames = ['BB','BL','CC','CL','LL','BB','BL','CC','CL','LL']
-
-
-#make Canvas
-ListOfCanvasses = []
-
-prefix="c_mujetSd0"
-for name in ListOfNames :
-    ListOfCanvasses.append(ROOT.TCanvas(prefix+name,"",800,800));
-    if name is 'LL':
-        prefix="c_nonmujetSd0"
-
+MapOfAxisLabels = { 'maxSd0':'#LT s_{d0} #GT' }
 
 colors=[]
 colors.append([ROOT.kBlue+1,ROOT.kBlue+1])
@@ -79,96 +64,46 @@ colors.append([ROOT.kOrange,ROOT.kOrange])
 #SetColors(canvas,colors)
 
 #loop over MC histograms
-#index=0
-hists = []
-for name in ListOfNames:
-    hists.append([])
+for var in ListOfVariables :
+  for flavour in ListOfFlavourPairs:
+    for jet in [ 'mj', 'nmj' ]:
+      histname = MyConfig.GetMCHistName("Nom","Incl",flavour,jet+var).Data()
 
+      hist = histHelper.AddMCHists(histname,ListOfMCPaths)
+      histIncl = histHelper.AddMCHists(histname,ListOfInclusiveMCPaths)
+      if hist:
+        hist.Scale(Lumi)
+        hist.SetName(flavour.Data()+" #mu-filtered dijet");
+        hist.SetLineWidth(3);
+      else:
+        print("Could not find "+histname+" in mu-filtered input files!")
+        continue
 
-for histname in ListOfHists :
-    hist_index = ListOfHists.index(histname)
+      if histIncl:
+        histIncl.Scale(Lumi)
+        histIncl.SetName(flavour.Data()+" inclusive dijet");
+        histIncl.SetLineWidth(3);
+      else:
+        print("Could not find "+histname+" in inclusive input files!")
 
-    for path in ListOfMCPaths :        
-        index = ListOfMCPaths.index(path)
-        file_curr=ROOT.TFile(path,"READ")
-        file_curr_incl=ROOT.TFile(ListOfMCPaths_incl[index],"READ")
-        
-        print("Open file "+path)
-        print("Open file "+ListOfMCPaths_incl[index])
-    
-        bookkeep_hist=file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
-        weight=ListOfCrossSections[index]*ListOfFilterEfficiencies[index]/bookkeep_hist.GetBinContent(3)*Lumi
-        print("weight is: "+str(weight))
+      #Print Integral
+      print('##########################')
+      print('# Integral report for '+histname)
+      print('# mu-filtered: '+str(hist.Integral()))
+      print('# inclusive: '+str(histIncl.Integral()))
+      print('##########################')
+      #Normalize to Unity
+      hist.Scale(1./hist.Integral())
+      histIncl.Scale(1./histIncl.Integral())
 
-        bookkeep_hist_incl=file_curr_incl.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
-        weight_incl=ListOfCrossSections_incl[index]*ListOfFilterEfficiencies_incl[index]/bookkeep_hist_incl.GetBinContent(3)*Lumi
-        print("inclusive weight is: "+str(weight))
-
-
-        if not file_curr.GetListOfKeys().Contains(histname) or not file_curr_incl.GetListOfKeys().Contains(histname):
-            print("Cannot find first hist "+histname)
-        elif index is 0 :
-            hist_0=file_curr.Get(histname)
-            hist_0.SetDirectory(0)
-            hist_0.Scale(weight)
-            hist_0.SetLineWidth(3);
-            hist_0.SetName(histname+str(index))
-
-            hist_0_incl=file_curr_incl.Get(histname)
-            hist_0_incl.SetDirectory(0)
-            hist_0_incl.Scale(weight_incl)
-            hist_0_incl.SetLineWidth(3);
-            hist_0_incl.SetName(histname+str(index))
-            
-            
-
-        elif index is not 0 :
-            hist_tmp=file_curr.Get(histname)
-            hist_0.Add(hist_tmp,weight)
-
-            hist_tmp_incl=file_curr_incl.Get(histname)
-            hist_0_incl.Add(hist_tmp_incl,weight_incl)
-
-            print(hist_0)
-            print(hist_0_incl)
-
-    hist_0.SetName(ListOfNames[hist_index]+ " #mu-filtered dijet")
-    hist_0_incl.SetName(ListOfNames[hist_index]+" inclusive dijet")
-
-    #Print Integral
-    print('##########################')
-    print('# Integral report for '+ListOfNames[hist_index])
-    print('# mu-filtered: '+str(hist_0.Integral()))
-    print('# inclusive: '+str(hist_0_incl.Integral()))
-    print('##########################')
-    
-    #Normalize to Unity
-    hist_0.Scale(1./hist_0.Integral())
-    hist_0_incl.Scale(1./hist_0_incl.Integral())
-
-    hists[hist_index].append(hist_0)
-    hists[hist_index].append(hist_0_incl)
-
-    #get data histogram
-    #file_data=ROOT.TFile(pathData,"READ")
-    #hist_data=file_data.Get(histname)
-    #hist_data.SetDirectory(0)
-    #hist_data.SetName("Data")
-    #hists[hist_index].insert(0,hist_data)
-
-
-for i in range(0,len(ListOfCanvasses)) :
-    for j  in range(0,len(hists[i])) :
-        AddHistogram(ListOfCanvasses[i],hists[i][j],'hist')
-        if i<5 :
-            SetAxisLabels(ListOfCanvasses[i],'Muon-associated Track Jet S_{d0}','Normalised to Unity')
-        else :
-            SetAxisLabels(ListOfCanvasses[i],'Non-muon-associated Track Jet S_{d0}','Normalised to Unity')
-
-    FullFormatCanvasDefault(ListOfCanvasses[i],36)
-    #SetColors(ListOfCanvasses[i],colors[i])
-    #SetLineStyles(ListOfCanvasses[i])
-    ListOfCanvasses[i].Print(outfilename+'_'+ListOfHists[i]+'.pdf')
-
-        
-    
+      #Make Canvas
+      canv = ROOT.TCanvas('c_'+histname,"",800,800);
+      if jet is 'mj':
+        SetAxisLabels(canv,'Muon-associated Track Jet '+MapOfAxisLabels[var],'Normalised to Unity')
+      elif jet is 'nmj':
+        SetAxisLabels(canv,'Non-Muon-associated Track Jet '+MapOfAxisLabels[var],'Normalised to Unity')
+      AddHistogram(canv,hist,'hist')
+      AddHistogram(canv,histIncl,'hist')
+      #SetColors(canv,colors)
+      FullFormatCanvasDefault(canv,36,simulation=True, doLogy=True)
+      canv.Print(outfilename+'_'+histname+'.pdf')

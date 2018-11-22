@@ -22,7 +22,7 @@ outfilename = sys.argv[1]
 
 Lumi = 36000.0 #in pb^-1
 
-MapOfChannelWeights = config.GetChannelWeights() #values are cross-section (in pb) * filter efficiency * k-factor
+histHelper = config.HistHelper()
 
 basepath = '/data/users/aemerman/gbbCalibPackage/arcond/'
 
@@ -49,55 +49,24 @@ outfile=ROOT.TFile(outfilename,"RECREATE")
 
 #loop over MC histograms
 for histname in ListOfHists :
-    first=True
-    for path in ListOfMCPaths :
-        
-        file_curr=ROOT.TFile(path,"READ")
-        print("Open file "+path)
+  file_curr = ROOT.TFile(pathData,"READ")
+  if not file_curr:
+    print("Cannot open file "+path)
+    exit()
+  histData = file_curr.Get(histname)
+  if histData:
+    histData.SetDirectory(0)
+    histData.SetName('h_'+histname)
+  else:
+    print("Cannot find hist "+histname+" in file "+pathData)
+    continue
 
-        channel = config.GetChannelNumber(path)
-        bookkeep_hist=file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
-        weight = MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(3)*Lumi
-        print("weight is: "+str(weight))
-
-        if first :
-            hist_0=None
-            if not file_curr.GetListOfKeys().Contains(histname) :
-                 print("Cannot find first hist "+histname)
-            else :
-                hist_0=file_curr.Get(histname)
-                hist_0.SetDirectory(0)
-                hist_0.Scale(weight)
-                print("found hist "+str(hist_0))
-            first=False
-
-        else :
-            if file_curr.GetListOfKeys().Contains(histname) :
-                hist_tmp=file_curr.Get(histname)               
-
-                if hist_0 is None:
-                    hist_tmp.SetDirectory(0)
-                    hist_0=hist_tmp
-                else:
-                    print("found hist "+str(hist_tmp))
-                    hist_0.Add(hist_tmp,weight)
-            else :
-                print("Cannot find hist "+str(histname))
-           
-        print("\n")
-
-    outfile.cd()    
-    hist_0.SetName(histname+'_INPUT')
-
-    file_curr=ROOT.TFile(pathData,"READ")
-    print("Open file "+pathData)
-
-    print("Get data hist: "+histname)
-    hist_Data_0=file_curr.Get(histname)
-    hist_Data_0.SetDirectory(0)
-    hist_Data_0.SetName(histname+'_INPUTDATA')
-    hist_Data_0.Divide(hist_0)
-    hist_Data_0.SetName('h_'+histname)
-    
+  histMC = histHelper.AddMCHists(histname,ListOfMCPaths)
+  if histMC:
+    histMC.Scale(Lumi)
+    histData.Divide(histMC)
+    histData.SetName('h_'+histname)
     outfile.cd()
-    hist_Data_0.Write() 
+    histData.Write() 
+  else:
+    print("Could not find "+histname+" in all input files!")

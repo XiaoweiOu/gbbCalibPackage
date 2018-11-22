@@ -2,7 +2,7 @@ import sys
 import string
 import os
 import re
-from ROOT import TTree
+from ROOT import TFile,TTree
 
 def GetDataFile(name):
   if os.path.exists(name):
@@ -50,3 +50,34 @@ def LoadGlobalConfig():
     exit()
   from ROOT import GlobalConfig
   return GlobalConfig(filepath)
+
+class HistHelper:
+  MapOfChannelWeights = GetChannelWeights()
+
+  def AddMCHists(self,histname, ListOfMCPaths):
+    hist=None
+    for path in ListOfMCPaths:
+      file_curr = TFile(path,"READ")
+      if file_curr.IsZombie():
+        print("Cannot open file "+path)
+        return None
+
+      channel = GetChannelNumber(path)
+      bookkeep_hist = file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
+      weight = HistHelper.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(3)
+
+      if not hist:
+        hist = file_curr.Get(histname)
+        if hist:
+          hist.SetDirectory(0)
+          hist.Scale(weight)
+        else:
+          print("Cannot find hist "+histname+" in file "+path)
+      else :
+        histTemp = file_curr.Get(histname)
+        if histTemp:
+          hist.Add(histTemp,weight)
+        else:
+          print("Cannot find hist "+histname+" in file "+path)
+      file_curr.Close()
+    return hist
