@@ -85,8 +85,33 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_config = new BinConfig(bin_config);
   std::cout<<"Loaded BinConfig"<<std::endl;
 
-  m_RunMode = config->GetValue("RunMode",0);
-  std::cout<<"RunMode: "<<m_RunMode<<std::endl;
+  std::vector<TString> tempRunMode = SplitString(config->GetValue("RunMode",""),',');
+  std::cout<<"RunModes: "<<config->GetValue("RunMode","")<<std::endl;
+  m_RunMode = 0;
+  for (TString mode : tempRunMode) {
+    if (mode.Contains("FillTemplates") && !(m_RunMode & RunMode::FILL_TEMPLATES))
+      m_RunMode += RunMode::FILL_TEMPLATES;
+    else if (mode.Contains("FillTrkJetProperties") && !(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES))
+      m_RunMode += RunMode::FILL_TRKJET_PROPERTIES;
+    else if (mode.Contains("FillFatJetProperties") && !(m_RunMode & RunMode::FILL_FATJET_PROPERTIES))
+      m_RunMode += RunMode::FILL_FATJET_PROPERTIES;
+    else if (mode.Contains("FillAdvancedProperties") && !(m_RunMode & RunMode::FILL_ADV_PROPERTIES))
+      m_RunMode += RunMode::FILL_ADV_PROPERTIES;
+    else if (mode.Contains("FillMCStats") && !(m_RunMode & RunMode::FILL_MC_STATS))
+      m_RunMode += RunMode::FILL_MC_STATS;
+    else if (mode.Contains("FillReweight") && !(m_RunMode & RunMode::FILL_REWEIGHT))
+      m_RunMode += RunMode::FILL_REWEIGHT;
+    else if (mode.Contains("FillPRW") && !(m_RunMode & RunMode::FILL_PRW))
+      m_RunMode += RunMode::FILL_PRW;
+    else if (mode.Contains("FillTriggerTurnOn") && !(m_RunMode & RunMode::FILL_TRIGGER))
+      m_RunMode += RunMode::FILL_TRIGGER;
+    else if (mode.Contains("ForFitOnly") && !(m_RunMode & RunMode::FOR_FIT_ONLY))
+      m_RunMode += RunMode::FOR_FIT_ONLY;
+    else {
+      std::cout<<"Unrecognized RunMode: "<<mode.Data()<<". Ignoring"<<std::endl;
+    }
+  }
+  if (m_Debug) std::cout<<"RunMode flag: "<<m_RunMode<<std::endl;
   
   m_doJetPtReweighting = config->GetValue("doJetPtEtaReweighting",true);
   std::cout<<"doJetPtEtaReweighting: "<<m_doJetPtReweighting<<std::endl;
