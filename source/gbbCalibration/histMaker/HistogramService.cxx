@@ -36,7 +36,7 @@ HistogramService::~HistogramService()
    fMegaList.clear(); 
 }
 
-void HistogramService::FastFillTH1D(TString tkey, double x, int nbin, double xmin, double xmax, double weight)
+void HistogramService::FastFillTH1D(TString tkey, TString title, double x, int nbin, double xmin, double xmax, double weight)
 {
    string key = tkey.Data();
    string hist = key.substr(key.find_last_of("/")+1);
@@ -44,7 +44,7 @@ void HistogramService::FastFillTH1D(TString tkey, double x, int nbin, double xmi
    key = fCurrentDir + "/" + key;
    if (fMegaList.find(key)==fMegaList.end()){  // book histogram
       //fMegaList[key] = new TH1D(tkey, tkey, nbin, xmin, xmax);
-      fMegaList[key] = new TH1D(hist.c_str(), tkey, nbin, xmin, xmax);
+      fMegaList[key] = new TH1D(hist.c_str(), title, nbin, xmin, xmax);
       fDirMap[key] = fCurrentDir + "/" + dir;
 //      int len = key.find_last_of("/")-key.find_first_not_of("/");
 //      if (len < 1) fDirMap[key] = fCurrentDir;
@@ -55,14 +55,14 @@ void HistogramService::FastFillTH1D(TString tkey, double x, int nbin, double xmi
    ((TH1D*) fMegaList[key])->Fill(x,weight);
 }
 
-void HistogramService::FastFillTH2D(TString tkey, double x, double y, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, double weight )
+void HistogramService::FastFillTH2D(TString tkey, TString title, double x, double y, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, double weight )
 {
    string key = tkey.Data();
    string hist = key.substr(key.find_last_of("/")+1);
    string dir = key.substr(0,key.find_last_of("/")+1);
    key = fCurrentDir + "/" + key;
    if (fMegaList[key]==0){  // book histogram
-      fMegaList[key] = new TH2D(hist.c_str(), tkey, 
+      fMegaList[key] = new TH2D(hist.c_str(), title, 
                                 nbinx, xmin, xmax, 
                                 nbiny, ymin, ymax);
       fDirMap[key] = fCurrentDir + "/" + dir;

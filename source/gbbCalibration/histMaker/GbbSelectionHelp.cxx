@@ -22,7 +22,8 @@ bool GbbTupleAna::isCleanEvt(const float total_evt_weight) {
     
   } else { //MC: throw out event with large weights out of Pt range
 
-    m_HistogramService->FastFillTH1D("truthjet_pt",this->truthjet_pt->at(0)/1e3,100,0.,5000.,total_evt_weight);
+    m_HistSvc->FastFillTH1D("truthjet_pt",";truth jet p_{T} [GeV];Events/50 GeV;",
+     this->truthjet_pt->at(0)/1e3,100,0.,5000.,total_evt_weight);
 #if 0 //FIXME: ask Ruth why this cut exists. Tuples only contain one (R=0.4) jet, is that new?
     if(this->jet_pt->size()>=2 && this->truthjet_pt->size()){
       

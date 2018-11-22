@@ -63,7 +63,7 @@ public:
 
 private:
   GlobalConfig *m_config;
-  HistogramService *m_HistogramService; //!
+  HistogramService *m_HistSvc; //!
   TString m_Outputname; //! name of output file
   std::map<TString, TChain*> m_chains;
 
@@ -149,7 +149,15 @@ private:
   TString getFatjetPtLabel(float fatjet_pt);
   TString getFatjetPhiLabel(float fatjet_phi);
   TString getFatjetEtaLabel(float fatjet_eta);
-  TString makePlotName(const TString syst, const TString cat, const TString pt, const TString name, const TString tag);
+  TString makePlotName(const TString sys, const TString flav, const TString pt, const TString var, const TString nametag) {
+    return m_config->GetMCHistName(sys,pt,flav,var+nametag);
+  }
+
+  TString makeMuJetPlotName(GbbCandidate* gbbcand, const TString var);
+  TString makeNonMuJetPlotName(GbbCandidate* gbbcand, const TString var);
+  TString makeDiJetPlotName(GbbCandidate* gbbcand, const TString var);
+  TString makeFatJetPlotName(GbbCandidate* gbbcand, const TString var);
+  TString makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString var);
 
   float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
   float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
@@ -165,6 +173,8 @@ private:
   void FillFatJetProperties(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, float event_weight,TString nametag="");
+  // Helper function for FillTemplates
+  void FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc);
   
   bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
   

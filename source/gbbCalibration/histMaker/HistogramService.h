@@ -33,9 +33,15 @@ private:
 
 public:
 
-   void FastFillTH1D(TString key, double x, int nbin=100, double xmin=0., double xmax=0., double weight=1.);
+   void FastFillTH1D(TString key, double x, int nbin=100, double xmin=0., double xmax=0., double weight=1.) {
+     FastFillTH1D(key, key, x, nbin, xmin, xmax, weight);
+   }
+   void FastFillTH1D(TString key, TString title, double x, int nbin=100, double xmin=0., double xmax=0., double weight=1.);
    
-   void FastFillTH2D(TString key, double x, double y, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, double weight=1.);
+   void FastFillTH2D(TString key, double x, double y, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, double weight=1.) {
+     FastFillTH2D(key, key, x, y, nbinx, xmin, xmax, nbiny, ymin, ymax, weight);
+   }
+   void FastFillTH2D(TString key, TString title, double x, double y, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, double weight=1.);
    
    void WriteRootFile(TString fileName);
 
