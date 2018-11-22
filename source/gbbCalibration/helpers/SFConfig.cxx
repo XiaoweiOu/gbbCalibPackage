@@ -3,7 +3,7 @@
 #include "TObjString.h"
 #include "TObjArray.h"
 #include "PathResolver/PathResolver.h"
-#include "BinConfig.h"
+#include "GlobalConfig.h"
 
 SFConfig::SFConfig() {
   // TODO Auto-generated constructor stub
@@ -39,9 +39,8 @@ SFConfig::SFConfig(TString& config_path){
   m_Debug = config->GetValue("doDebug",false); 
   std::cout<<"doDebug: "<<m_Debug<<std::endl; 
 
-  TString bin_config_file = config->GetValue("BinConfig","");
-  BinConfig* bin_config = new BinConfig(bin_config_file);
-  std::cout<<"Loaded BinConfig"<<std::endl;
+  GlobalConfig* bin_config = new GlobalConfig(PathResolverFindCalibFile("gbbCalibration/configs/GlobalConfig.cfg"));
+  std::cout<<"Loaded GlobalConfig"<<std::endl;
 
   m_doMCStatsNP = config->GetValue("doMCStatsNP",false); 
   std::cout<<"doNPStatsMC: "<<m_doMCStatsNP<<std::endl; 

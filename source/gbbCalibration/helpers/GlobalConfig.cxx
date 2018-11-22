@@ -1,14 +1,14 @@
-#include "BinConfig.h"
+#include "GlobalConfig.h"
 #include "TEnv.h"
 #include "TObjString.h"
 #include "TObjArray.h"
 #include "PathResolver/PathResolver.h"
 
-BinConfig::~BinConfig() {
+GlobalConfig::~GlobalConfig() {
   // TODO Auto-generated destructor stub
 }
 
-BinConfig::BinConfig(const TString& config_path) {
+GlobalConfig::GlobalConfig(const TString& config_path) {
 
   std::cout<<"=============================================="<<std::endl;   
   TString m_config_path = config_path;
@@ -18,7 +18,7 @@ BinConfig::BinConfig(const TString& config_path) {
   if (m_config_path == "") {
     std::cout << "Cannot find settings file " + config_path + "\n  also searched in " + m_config_path << std::endl;
     abort();
-  } else std::cout << "BinConfig file is set to: " << m_config_path << std::endl;
+  } else std::cout << "GlobalConfig file is set to: " << m_config_path << std::endl;
 
   TEnv* config = new TEnv("env");
   if (config->ReadFile(m_config_path.Data(),EEnvLevel(0)) == -1) {
@@ -48,7 +48,7 @@ BinConfig::BinConfig(const TString& config_path) {
   delete config;
 }
 
-std::vector<TString> BinConfig::SplitString(TString str, char delim){
+std::vector<TString> GlobalConfig::SplitString(TString str, char delim){
   std::vector<TString> tokens;
   TObjArray *strings = str.Tokenize(delim);
   for(int i=0; i < strings->GetEntriesFast(); i++){
@@ -58,7 +58,7 @@ std::vector<TString> BinConfig::SplitString(TString str, char delim){
   return tokens; 
 } 
 
-std::vector<float> BinConfig::SplitStringD(TString str, char delim){
+std::vector<float> GlobalConfig::SplitStringD(TString str, char delim){
   std::vector<float> tokens;
   TObjArray *strings=str.Tokenize(delim);
   for(int i=0; i < strings->GetEntriesFast(); i++){
@@ -72,7 +72,7 @@ std::vector<float> BinConfig::SplitStringD(TString str, char delim){
 //  1.23 -> 1p23
 //  1.20 -> 1p2
 //  1.00 -> 1
-TString BinConfig::FloatToStr(const float val) {
+TString GlobalConfig::FloatToStr(const float val) {
   TString str = Form("%.2f",val);
   str.Remove(TString::EStripType::kTrailing,'0');
   if (str.EndsWith(".")) str.Remove(str.First("."));
@@ -80,7 +80,7 @@ TString BinConfig::FloatToStr(const float val) {
   return str;
 }
 
-std::vector<TString> BinConfig::MakeLabels(const std::vector<float> bins, const TString prefix) {
+std::vector<TString> GlobalConfig::MakeLabels(const std::vector<float> bins, const TString prefix) {
   if (bins.size() == 0) return std::vector<TString>();
   std::vector<TString> labels;
   labels.push_back( (prefix+"_l"+FloatToStr(bins[0])).Data() );
@@ -91,7 +91,7 @@ std::vector<TString> BinConfig::MakeLabels(const std::vector<float> bins, const 
   return labels;
 }
 
-TString BinConfig::GetPtLabel(float pt, std::vector<float> ptBins, std::vector<TString> ptRegions) {
+TString GlobalConfig::GetPtLabel(float pt, std::vector<float> ptBins, std::vector<TString> ptRegions) {
   unsigned int i=0;
   while (pt > ptBins[i]) {
     i++;
@@ -100,7 +100,7 @@ TString BinConfig::GetPtLabel(float pt, std::vector<float> ptBins, std::vector<T
   return ptRegions[i];
 }
 
-std::vector<TString> BinConfig::GetTrkJetRegions() {
+std::vector<TString> GlobalConfig::GetTrkJetRegions() {
   std::vector<TString> regions;
   for (TString muRegion : m_MuonJetRegions) {
     for (TString nonmuRegion : m_NonMuJetRegions) {
@@ -110,20 +110,20 @@ std::vector<TString> BinConfig::GetTrkJetRegions() {
   return regions;
 }
 
-TString BinConfig::GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var) {
-  TString _sys(sys); if (_sys!="") _sys+="/";
-  TString _ptLabel(ptLabel); if (_ptLabel=="") _ptLabel=="Incl"; _ptLabel+="/";
+TString GlobalConfig::GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var) {
+  TString _sys(sys); if (_sys!="") _sys=="Nom"; _sys+="_";
+  TString _ptLabel(ptLabel); if (_ptLabel=="") _ptLabel=="Incl"; _ptLabel+="_";
   TString _flav(flav); if (_flav!="") _flav+="_";
-  return _sys+_ptLabel+"h_"+_flav+var;
+  return "h_"+_sys+_ptLabel+_flav+var;
 }
 
-std::vector<TString> BinConfig::GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var) {
+std::vector<TString> GlobalConfig::GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var) {
   std::vector<TString> names;
   for (TString flav : m_FlavourPairs) names.push_back(GetMCHistName(sys,ptLabel,flav,var));
   return names;
 }
 
-std::map<TString,std::vector<TString> > BinConfig::GetMCHistNames(const TString ptLabel, const TString var) {
+std::map<TString,std::vector<TString> > GlobalConfig::GetMCHistNames(const TString ptLabel, const TString var) {
   std::map<TString,std::vector<TString> > names;
   for (TString sys : m_Systematics) names.emplace(sys,GetMCHistNamesBySys(sys,ptLabel,var));
   return names;

@@ -1,13 +1,13 @@
 /*
- * BinConfig.h
+ * GlobalConfig.h
  *
  *  Created on: Dec 12, 2016
  *      Author: rjacobs
  *  Modified by: aemerman
  */
 
-#ifndef BINCONFIG_H_
-#define BINCONFIG_H_
+#ifndef GLOBALCONFIG_H_
+#define GLOBALCONFIG_H_
 
 #include "TString.h"
 #include <vector>
@@ -18,12 +18,12 @@
 // the histogramming and fitting codes
 // Initialized with config file containing list of systematics, flavour
 // pairs, and bins in 'Key Value1,Value2,...' pairs.
-class BinConfig {
+class GlobalConfig {
 
  public:
 
-  BinConfig(const TString& config_path);
-  virtual ~BinConfig();
+  GlobalConfig(const TString& config_path);
+  virtual ~GlobalConfig();
 
   std::vector<TString> GetSystematics() { return m_Systematics; }
   std::vector<TString> GetFlavourPairs() { return m_FlavourPairs; }

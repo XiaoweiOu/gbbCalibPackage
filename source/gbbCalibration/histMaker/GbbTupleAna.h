@@ -13,7 +13,7 @@
 #include "HistogramService.h"
 #include <memory>
 #include <helpers/FlavourFracCorrector.h>
-#include <helpers/BinConfig.h>
+#include <helpers/GlobalConfig.h>
 #include "TEnv.h"
 #include "TRandom3.h"
 #include <map>
@@ -62,7 +62,7 @@ public:
  
 
 private:
-  BinConfig *m_config;
+  GlobalConfig *m_config;
   HistogramService *m_HistogramService; //!
   TString m_Outputname; //! name of output file
   std::map<TString, TChain*> m_chains;

@@ -81,9 +81,8 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_Debug = config->GetValue("doDebug",false);
   std::cout<<"doDebug: "<<m_Debug<<std::endl;
 
-  TString bin_config = config->GetValue("BinConfig","");
-  m_config = new BinConfig(bin_config);
-  std::cout<<"Loaded BinConfig"<<std::endl;
+  m_config = new GlobalConfig(PathResolverFindCalibFile("gbbCalibration/configs/GlobalConfig.cfg"));
+  std::cout<<"Loaded GlobalConfig"<<std::endl;
 
   std::vector<TString> tempRunMode = SplitString(config->GetValue("RunMode",""),',');
   std::cout<<"RunModes: "<<config->GetValue("RunMode","")<<std::endl;
