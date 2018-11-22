@@ -18,11 +18,11 @@ atlas_add_root_dictionary( gbbTupleLib _gbbDictSource
    ROOT_HEADERS histMaker/TupleAna.h histMaker/GbbTupleAna.h histMaker/LinkDef.h
    EXTERNAL_PACKAGES ROOT )
 atlas_add_root_dictionary( configLib _configDictSource
-   ROOT_HEADERS helpers/BinConfig.h helpers/LinkDef.h
+   ROOT_HEADERS helpers/GlobalConfig.h helpers/LinkDef.h
    EXTERNAL_PACKAGES ROOT )
 
 atlas_add_library( configLib
-   helpers/BinConfig.cxx helpers/BinConfig.h
+   helpers/GlobalConfig.cxx helpers/GlobalConfig.h
    ${_configDictSource}
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver

@@ -22,18 +22,7 @@ outfilename = sys.argv[1]
 
 Lumi = 36000.0 #in pb^-1
 
-#Pythia
-ListOfCrossSections = [2.6454e7,254620.,4553.5,257.54,16.215] #in pb
-ListOfFilterEfficiencies=[1.6117e-5,3.5545e-5,7.1955e-5,7.6347e-5,3.1782e-5]
-
-MapOfCrossSections = config.MakeCrossSectionTable()
-MyConfig = config.LoadGlobalConfig()
-for sys in MyConfig.GetSystematics():
-  print sys.Data()
-
-#Herwig
-#ListOfCrossSections = [1.8831e7,173300.,2965.4,162.76,10.113] #in pb
-#ListOfFilterEfficiencies = [1.9120e-05,4.2602e-5,9.0537e-5,0.00010259,4.7654e-5] #UPDATE for JZ3W 
+MapOfChannelWeights = config.GetChannelWeights() #values are cross-section (in pb) * filter efficiency * k-factor
 
 basepath = '/data/users/aemerman/gbbCalibPackage/arcond/'
 
@@ -60,17 +49,18 @@ outfile=ROOT.TFile(outfilename,"RECREATE")
 
 #loop over MC histograms
 for histname in ListOfHists :
-    index=0
+    first=True
     for path in ListOfMCPaths :
         
         file_curr=ROOT.TFile(path,"READ")
         print("Open file "+path)
 
+        channel = config.GetChannelNumber(path)
         bookkeep_hist=file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
-        weight=ListOfCrossSections[index]*ListOfFilterEfficiencies[index]/bookkeep_hist.GetBinContent(3)*Lumi
+        weight = MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(3)*Lumi
         print("weight is: "+str(weight))
 
-        if index is 0 :
+        if first :
             hist_0=None
             if not file_curr.GetListOfKeys().Contains(histname) :
                  print("Cannot find first hist "+histname)
@@ -79,6 +69,7 @@ for histname in ListOfHists :
                 hist_0.SetDirectory(0)
                 hist_0.Scale(weight)
                 print("found hist "+str(hist_0))
+            first=False
 
         else :
             if file_curr.GetListOfKeys().Contains(histname) :
@@ -93,9 +84,7 @@ for histname in ListOfHists :
             else :
                 print("Cannot find hist "+str(histname))
            
-        print("\n\n\n")
-
-        index += 1
+        print("\n")
 
     outfile.cd()    
     hist_0.SetName(histname+'_INPUT')
@@ -111,7 +100,4 @@ for histname in ListOfHists :
     hist_Data_0.SetName('h_'+histname)
     
     outfile.cd()
-    hist_Data_0.Write()
-    
-    
-    
+    hist_Data_0.Write() 
