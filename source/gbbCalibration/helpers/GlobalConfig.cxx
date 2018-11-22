@@ -40,9 +40,18 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   std::cout<<"NonMuoJetPtBins: "<<config->GetValue("NonMuJetPtBins","")<<std::endl;
   m_NonMuJetRegions = MakeLabels(m_NonMuJetPtBins, "nmjpt");
 
-  m_FatJetPtBins=SplitStringD(config->GetValue("FatJetPtBins",""),',');
+  m_FatJetPtBins = SplitStringD(config->GetValue("FatJetPtBins",""),',');
   std::cout<<"FatJetPtBins: "<<config->GetValue("FatJetPtBins","")<<std::endl;
   m_FatJetRegions = MakeLabels(m_FatJetPtBins, "fjpt");
+
+  m_PlotVariables = SplitString(config->GetValue("PlotVariables",""),',');
+  std::cout<<"PlotVariables: "<<config->GetValue("PlotVariables","")<<std::endl;
+
+  for (TString var : m_PlotVariables) {
+    std::vector<float> binning = SplitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
+    m_PlotBinning.emplace(var, binning);
+    std::cout <<("PlotBins."+var).Data()<<": "<<config->GetValue(("PlotBins."+var).Data(),"")<<std::endl;
+  }
 
   std::cout<<"=============================================="<<std::endl;   
   delete config;
