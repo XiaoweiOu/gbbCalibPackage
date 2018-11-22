@@ -34,8 +34,9 @@ def MakeCrossSectionTable():
   return output
 
 def LoadGlobalConfig():
-  filepath = GetDataFile("gbbCalibration/configs/BinConfig.cfg")
+  filepath = GetDataFile("gbbCalibration/configs/binning.cfg")
   if not filepath:
     print "Global config file not found!"
     exit()
-  from filepath import BinConfig
+  from ROOT import BinConfig
+  return BinConfig(filepath)

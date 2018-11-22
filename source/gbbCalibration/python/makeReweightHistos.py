@@ -27,7 +27,9 @@ ListOfCrossSections = [2.6454e7,254620.,4553.5,257.54,16.215] #in pb
 ListOfFilterEfficiencies=[1.6117e-5,3.5545e-5,7.1955e-5,7.6347e-5,3.1782e-5]
 
 MapOfCrossSections = config.MakeCrossSectionTable()
-quit()
+MyConfig = config.LoadGlobalConfig()
+for sys in MyConfig.GetSystematics():
+  print sys.Data()
 
 #Herwig
 #ListOfCrossSections = [1.8831e7,173300.,2965.4,162.76,10.113] #in pb
