@@ -571,7 +571,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
 
   std::vector<TString> regions=m_config->GetAllRegions();
   
-  TH1D* help, *help_rebinned;
+  TH1D* help(nullptr), *help_rebinned(nullptr);
 
   //subtract backgrounds and calculate scale factor (or data stat error)
   
@@ -1435,9 +1435,9 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   THStack *mystack=new THStack("myStack","stack");
 
-  TH1D* tmp_stacked_mc;
+  TH1D* tmp_stacked_mc(nullptr);
   
-  TH1D *full_mc;
+  TH1D *full_mc(nullptr);
 
   for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
 
@@ -1599,9 +1599,9 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
 
   std::cout<<"Flavour fraction region: "<<region<<std::endl;
   
-  TH1D* tmp_stacked_mc;
+  TH1D* tmp_stacked_mc(nullptr);
   
-  TH1D *full_mc;
+  TH1D *full_mc(nullptr);
 
   std::vector<float> flavour_fractions;
 
@@ -1700,9 +1700,9 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
 TString ScaleFactorCalculator::PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists){
 
 
-  TH1D* tmp_stacked_mc;
+  TH1D* tmp_stacked_mc(nullptr);
   
-  TH1D *full_mc, *full_mc_prefit;
+  TH1D *full_mc(nullptr), *full_mc_prefit(nullptr);
 
   std::vector<float> flavour_fractions;
 
@@ -1796,7 +1796,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   TH1D *hist_pretag_data=new TH1D("hist_pretag_data","",fj_bins.size()-1,&(fj_bins[0]));
   TH1D *hist_posttag_data=new TH1D("hist_posttag_data","",fj_bins.size()-1,&(fj_bins[0])); 
   
-  TH1D* help, *help_rebinned;
+  TH1D* help(nullptr), *help_rebinned(nullptr);
 
   double* d_fj_bins = new double[fj_bins.size()];
 
@@ -1852,9 +1852,9 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 
   THStack *mystack=new THStack("myStack","stack");
 
-  TH1D* tmp_stacked_mc;
+  TH1D* tmp_stacked_mc(nullptr);
   
-  TH1D *full_mc;
+  TH1D *full_mc(nullptr);
 
   for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
@@ -2169,7 +2169,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   //calculate data rate
   hist_posttag_data->Divide(hist_pretag_data);
 
-  TH1D *full_mc_pretag, *full_mc_posttag;
+  TH1D *full_mc_pretag(nullptr), *full_mc_posttag(nullptr);
 
   for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
@@ -2341,7 +2341,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
 TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin){
 
-  TH1D* tmp_stacked_mc, *hist_total;
+  TH1D* tmp_stacked_mc(nullptr), *hist_total(nullptr);
   std::vector<float> flavour_norms;
  
   for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
@@ -3066,7 +3066,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
   std::vector<float> fj_bins=m_config->GetBins(var);
   std::vector<TString> regions=m_config->GetAllRegions();
   
-  TH1D* help, *help_rebinned;
+  TH1D* help(nullptr), *help_rebinned(nullptr);
   
   double* d_fj_bins = new double[fj_bins.size()];
   
@@ -4089,9 +4089,9 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
     }
   }
 
-  TH1D* tmp_stacked_mc;
+  TH1D* tmp_stacked_mc(nullptr);
   
-  TH1D *full_mc, *full_mc_postfit, *scale_factors;
+  TH1D *full_mc(nullptr), *full_mc_postfit(nullptr), *scale_factors(nullptr);
 
   scale_factors=new TH1D("scale_factors","",fj_bins.size()-1,&(fj_bins[0]));
 
