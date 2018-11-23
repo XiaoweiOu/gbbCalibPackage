@@ -27,6 +27,8 @@ class GlobalConfig {
 
   std::vector<TString> GetSystematics() { return m_Systematics; }
   std::vector<TString> GetFlavourPairs() { return m_FlavourPairs; }
+  char GetFlavour(int truthType);
+  TString GetFlavourPair(int muJetTruth, int nonMuJetTruth);
 
   std::vector<float> GetFatJetPtBins() { return m_FatJetPtBins; }
   std::vector<float> GetMuonJetPtBins() { return m_MuonJetPtBins; }
@@ -59,6 +61,7 @@ class GlobalConfig {
  private:
   std::vector<TString> m_Systematics;
   std::vector<TString> m_FlavourPairs;
+  bool m_doMergeFlavours;
 
   std::vector<float> m_FatJetPtBins;
   std::vector<TString> m_FatJetRegions;
