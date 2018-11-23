@@ -12,10 +12,12 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include "GlobalConfig.h"
 
 class SFConfig{
 
  private:
+  GlobalConfig* m_global_config;
   TString m_inputfile;
   int m_NParams;
   int m_N_pseudo_exp;
@@ -29,19 +31,12 @@ class SFConfig{
   bool m_doControlPlots;
   bool m_doCalibSequence;
   
-  std::vector<TString> m_pairs;
-  std::vector<TString> m_systematics;
   std::vector<TString> m_chans;
   std::vector<TString> m_params_names;
 
   std::map<TString,std::vector<float>> m_binning;
   std::vector<TString> m_plotvariables;
 
-
-  std::vector<float> m_mutrackjetbins;
-  std::vector<float> m_nonmutrackjetbins; 
-
-  std::vector<float> m_fatjetbins;
   std::vector<float> m_params_in;
   std::vector<float> m_params_low;
   std::vector<float> m_params_high;
@@ -68,15 +63,15 @@ class SFConfig{
   bool DoControlPlots(){return m_doControlPlots;}
   bool DoCalibSequence(){return m_doCalibSequence;}
 
-  std::vector<float> GetBins(TString& var){ return m_binning[var]; }
+  std::vector<float> GetBins(TString& var) { return m_global_config->GetBinning(var); }
 
-  std::vector<float> GetMuTrackJetBins(){ return m_mutrackjetbins; }
-  std::vector<float> GetNonmuTrackJetBins(){ return m_nonmutrackjetbins; }
+  std::vector<float> GetFatJetPtBins() { return m_global_config->GetFatJetPtBins(); }
+  std::vector<float> GetMuonJetPtBins() { return m_global_config->GetMuonJetPtBins(); }
+  std::vector<float> GetNonMuJetPtBins() { return m_global_config->GetNonMuJetPtBins(); }
 
   int GetSmoothNtimes(){return m_Ntimes_smooth; }
-  std::vector<float> GetFatJetBins(){ return m_fatjetbins; }
 
-  std::vector<TString> GetPairs(){return m_pairs;}
+  std::vector<TString> GetFlavourPairs() { return m_global_config->GetFlavourPairs(); }
   std::vector<TString> GetChans(){ return m_chans; };
   std::vector<TString> GetParamNames(){ return m_params_names; }
   std::vector<TString> GetPlotVariables(){ return m_plotvariables; }
@@ -95,11 +90,18 @@ class SFConfig{
   
   double GetRebinStatThr(){return m_statThr_Rebin;}
 
-  std::vector<TString> GetSystematics(){ return m_systematics; }
-  std::vector<TString> GetAllRegions();
+  std::vector<TString> GetSystematics() { return m_global_config->GetSystematics(); }
+  std::vector<TString> GetAllRegions() {
+    if (m_doFitInFatJetPtBins) return m_global_config->GetFatJetRegions();
+    else return m_global_config->GetTrkJetRegions();
+  }
 
-  std::vector<TString> GetMCHistNames(TString& pt_region,TString &sys, TString &variable);
-  TString GetDataHistName(TString& pt_region, TString &variable);
+  std::vector<TString> GetMCHistNames(TString& pt_region,TString &sys, TString &variable) {
+    return m_global_config->GetMCHistNamesBySys(sys,pt_region,variable);
+  }
+  TString GetDataHistName(TString& pt_region, TString &variable) {
+    return m_global_config->GetDataHistName(pt_region,variable);
+  }
 
 };
 

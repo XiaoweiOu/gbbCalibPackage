@@ -2,6 +2,7 @@
 #include "TEnv.h"
 #include "TObjString.h"
 #include "TObjArray.h"
+#include "TRegexp.h"
 #include "PathResolver/PathResolver.h"
 
 GlobalConfig::~GlobalConfig() {
@@ -120,6 +121,16 @@ std::vector<TString> GlobalConfig::GetTrkJetRegions() {
     }
   }
   return regions;
+}
+
+std::vector<float> GlobalConfig::GetBinning(const TString var) {
+  TString temp = var;
+  // If var has a tag, like _PREFITPOSTTAG, then remove it
+  if (temp.Contains(TRegexp("_[A-Z]+"))) temp = temp(0,temp.Index(TRegexp("_[A-Z]+")));
+  // Check the binning map for var
+  if (m_PlotBinning.find(temp) != m_PlotBinning.end())
+    return m_PlotBinning[temp];
+  else return std::vector<float>();
 }
 
 char GlobalConfig::GetFlavour(int truthType) {

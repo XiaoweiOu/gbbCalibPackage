@@ -45,11 +45,7 @@ class GlobalConfig {
     return GetPtLabel(nonMuJetPt, m_NonMuJetPtBins, m_NonMuJetRegions);
   }
 
-  std::vector<float> GetBinning(TString var) {
-    if (m_PlotBinning.find(var) != m_PlotBinning.end())
-      return m_PlotBinning[var];
-    else return std::vector<float>();
-  }
+  std::vector<float> GetBinning(const TString var);
 
   TString GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var);
   TString GetDataHistName(const TString ptLabel, const TString var) {

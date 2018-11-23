@@ -50,9 +50,6 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
   
   m_config=new SFConfig(cfg_file);
-  //TString base_config = config->GetValue("BaseConfig","");
-  //m_config = new Config(base_config);
-  //std::cout<<"Loaded BaseConfig"<<std::endl;
   m_fitdata=new FitData(m_config->GetInfileName(),m_config->GetChans());
 
   std::vector<TString> systematics=m_config->GetSystematics();
@@ -388,22 +385,22 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doPseudo, unsigned int i_pseudo, bool doPseudoData){
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
-  std::vector<float> fj_bins=m_config->GetFatJetBins();
+  std::vector<float> fj_bins=m_config->GetFatJetPtBins();
   std::vector<TString> regions=m_config->GetAllRegions();
   
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc, hist_pretag_mc_unscaled, hist_posttag_mc_unscaled;
   TString name_pretag, name_posttag;
 
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
-    name_pretag="hist_pretag_mc_"+(m_config->GetPairs())[i_p];
-    name_posttag="hist_posttag_mc_"+(m_config->GetPairs())[i_p];
+    name_pretag="hist_pretag_mc_"+(m_config->GetFlavourPairs())[i_p];
+    name_posttag="hist_posttag_mc_"+(m_config->GetFlavourPairs())[i_p];
 
     hist_pretag_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
     hist_posttag_mc.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
 
-    name_pretag="hist_pretag_mc_unscaled_"+(m_config->GetPairs())[i_p];
-    name_posttag="hist_posttag_mc_unscaled_"+(m_config->GetPairs())[i_p];
+    name_pretag="hist_pretag_mc_unscaled_"+(m_config->GetFlavourPairs())[i_p];
+    name_posttag="hist_posttag_mc_unscaled_"+(m_config->GetFlavourPairs())[i_p];
 
     hist_pretag_mc_unscaled.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
     hist_posttag_mc_unscaled.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
@@ -426,7 +423,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
     TString mc_name=regions[i_reg]+"_fjpt_Nom";
     TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
 
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       
       help=(TH1D*)m_fatjet_histograms_pretag[mc_name][i_p]->Clone();
       help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
@@ -501,7 +498,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
     //std::cout<<"N_BB_posttag_data - before subtraction"<<N_BB_posttag_data<<std::endl;    
 
 
-    for(unsigned int i_p=1; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=1; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
       //std::cout<<"Pretag -- subtracting component"<<i_p<<" "<<hist_pretag_mc[i_p]->GetBinContent(i_bin)<<std::endl;
       //std::cout<<"Posttag -- subtracting component"<<i_p<<" "<<hist_posttag_mc[i_p]->GetBinContent(i_bin)<<std::endl;
@@ -544,7 +541,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
 
 
   //delete heap objects
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
    
     delete hist_pretag_mc[i_p];
     delete hist_posttag_mc[i_p];
@@ -603,7 +600,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
     TString mc_name_untag=regions[i_reg]+"_mjpt_PREFITUNTAG_"+sys;
     
 
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       if(i_p==0){
 	N_total_pretag_mc=0.;
 	N_total_posttag_mc=0.;
@@ -768,7 +765,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
     int size=m_config->GetAllRegions().size();
     for(int i=0; i<size; i++) fj_bins.push_back((float)i);
     fj_bins.push_back(fj_bins.back()+1.);
-  }else fj_bins=m_config->GetFatJetBins();
+  }else fj_bins=m_config->GetFatJetPtBins();
   
   std::vector<float> current_SF,current_data_eff, current_mc_eff;  
   std::vector<float> err_sq_up(fj_bins.size()-1,0.);
@@ -1093,9 +1090,9 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
 void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString plot_type){
   std::cout<<"INFO: ScaleFactorCalculator::MakeCalibrationPlots(): Making Calibration Plots of type: "<<plot_type<<std::endl;
 
-  std::vector<float> mutrackjetbins=m_config->GetMuTrackJetBins();
-  std::vector<float> nonmutrackjetbins=m_config->GetNonmuTrackJetBins();
-  std::vector<float> fj_bins=m_config->GetFatJetBins();
+  std::vector<float> mutrackjetbins=m_config->GetMuonJetPtBins();
+  std::vector<float> nonmutrackjetbins=m_config->GetNonMuJetPtBins();
+  std::vector<float> fj_bins=m_config->GetFatJetPtBins();
   std::vector<float> bin_xerr, bin_x;
 
   for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
@@ -1156,7 +1153,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     SF_band_sys->GetXaxis()->SetTitleSize(0.04);
     SF_band_sys->GetYaxis()->SetTitleSize(0.04);
     
-    SF_band_sys->GetXaxis()->SetRangeUser((m_config->GetFatJetBins())[0],m_config->GetFatJetBins().back());
+    SF_band_sys->GetXaxis()->SetRangeUser((m_config->GetFatJetPtBins())[0],m_config->GetFatJetPtBins().back());
     
     if(plot_type.EqualTo("SF")) SF_band_sys->GetYaxis()->SetRangeUser(0.6,1.6);
     if(plot_type.EqualTo("Eff")) SF_band_sys->GetYaxis()->SetRangeUser(0.,1.6);
@@ -1299,7 +1296,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   tex1->Draw("same");
   tex2->Draw("same");
 
-  TLine *line = new TLine((m_config->GetFatJetBins())[0],1.,(m_config->GetFatJetBins()).back(),1.);
+  TLine *line = new TLine((m_config->GetFatJetPtBins())[0],1.,(m_config->GetFatJetPtBins()).back(),1.);
   line->SetLineStyle(2);
   line->SetLineWidth(1.5);
 
@@ -1465,7 +1462,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
     mystack->Add(tmp_stacked_mc);
 
-    leg->AddEntry(tmp_stacked_mc,m_config->GetPairs()[i_p],"f");
+    leg->AddEntry(tmp_stacked_mc,m_config->GetFlavourPairs()[i_p],"f");
   }
 
   //divide by bin width
@@ -1786,10 +1783,10 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
   TString name_pretag, name_posttag;
 
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
-    name_pretag="hist_pretag_mc_"+(m_config->GetPairs())[i_p];
-    name_posttag="hist_posttag_mc_"+(m_config->GetPairs())[i_p];
+    name_pretag="hist_pretag_mc_"+(m_config->GetFlavourPairs())[i_p];
+    name_posttag="hist_posttag_mc_"+(m_config->GetFlavourPairs())[i_p];
 
     hist_pretag_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
     hist_posttag_mc.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
@@ -1812,7 +1809,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
 
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       
       if(!isPosttag){
 	help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
@@ -1859,7 +1856,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   
   TH1D *full_mc;
 
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
     tmp_stacked_mc=isPosttag ?  (TH1D*)hist_posttag_mc[i_p]->Clone() : (TH1D*)hist_pretag_mc[i_p]->Clone();
 
@@ -1872,7 +1869,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 
     mystack->Add(tmp_stacked_mc);
 
-    leg->AddEntry(tmp_stacked_mc,m_config->GetPairs()[i_p],"f");
+    leg->AddEntry(tmp_stacked_mc,m_config->GetFlavourPairs()[i_p],"f");
   }
 
   
@@ -2111,10 +2108,10 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
   TString name_pretag, name_posttag;
 
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
-    name_pretag="hist_pretag_mc_"+(m_config->GetPairs())[i_p];
-    name_posttag="hist_posttag_mc_"+(m_config->GetPairs())[i_p];
+    name_pretag="hist_pretag_mc_"+(m_config->GetFlavourPairs())[i_p];
+    name_posttag="hist_posttag_mc_"+(m_config->GetFlavourPairs())[i_p];
 
     hist_pretag_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
     hist_posttag_mc.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
@@ -2136,7 +2133,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
     TString name_mc_posttag=regions[i_reg]+"_"+var+"_PREFITPOSTTAG"+"_"+"Nom";
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
 
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       
     	help=(TH1D*)m_fatjet_histograms_pretag[name_mc_pretag][i_p]->Clone();
 	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
@@ -2174,7 +2171,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   TH1D *full_mc_pretag, *full_mc_posttag;
 
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
     if(i_p==0){
       full_mc_pretag=(TH1D*)hist_pretag_mc[i_p]->Clone();
@@ -2436,9 +2433,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
 
   TRandom3 r(0);
 
-  TVectorD randomv(m_config->GetPairs().size()), nomv(m_config->GetPairs().size()), eigenval(m_config->GetPairs().size());
+  TVectorD randomv(m_config->GetFlavourPairs().size()), nomv(m_config->GetFlavourPairs().size()), eigenval(m_config->GetFlavourPairs().size());
 
-  TMatrixD eigenvec(m_config->GetPairs().size(),m_config->GetPairs().size());
+  TMatrixD eigenvec(m_config->GetFlavourPairs().size(),m_config->GetFlavourPairs().size());
 
   std::vector<double> matrix;
 
@@ -2451,7 +2448,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
     
   }
 
-  TMatrixDSym mat(m_config->GetPairs().size(),&matrix[0]);
+  TMatrixDSym mat(m_config->GetFlavourPairs().size(),&matrix[0]);
   //mat.UnitMatrix();
   
   TMatrixDSymEigen mat_eigen(mat);
@@ -2463,10 +2460,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
   for( int i_toy=0; i_toy<n_toys; i_toy++){
 
     if(i_toy==0){ //nominal rate
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[region+"_"+sys][i_p];
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++) nomv(i_p)=m_fit_params[region+"_"+sys][i_p];
       randomv=nomv;
     }else{
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 	randomv(i_p)=r.Gaus(0.,TMath::Sqrt(eigenval(i_p)));
 	nomv(i_p)=m_fit_params[region+"_"+sys][i_p];
       }
@@ -2585,9 +2582,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
     
-    std::vector<float> flavour_norms(m_config->GetPairs().size(),0.);
+    std::vector<float> flavour_norms(m_config->GetFlavourPairs().size(),0.);
     
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       
       if(!isPosttag){
         help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
@@ -2733,9 +2730,9 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
   
   TRandom3 r(0);
 
-  TVectorD randomv(m_config->GetPairs().size()), nomv(m_config->GetPairs().size()), eigenval(m_config->GetPairs().size());
+  TVectorD randomv(m_config->GetFlavourPairs().size()), nomv(m_config->GetFlavourPairs().size()), eigenval(m_config->GetFlavourPairs().size());
 
-  TMatrixD eigenvec(m_config->GetPairs().size(),m_config->GetPairs().size());
+  TMatrixD eigenvec(m_config->GetFlavourPairs().size(),m_config->GetFlavourPairs().size());
 
   std::vector<double> matrix;
 
@@ -2760,7 +2757,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
 	
       }
       
-      TMatrixDSym mat(m_config->GetPairs().size(),&matrix[0]);
+      TMatrixDSym mat(m_config->GetFlavourPairs().size(),&matrix[0]);
       //mat.UnitMatrix();
       
       TMatrixDSymEigen mat_eigen(mat);
@@ -2768,10 +2765,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
       eigenvec=mat_eigen.GetEigenVectors();
       
       if(i_toy==0){ //nominal rate
-	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
+	for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	randomv=nomv;
       }else{
-	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+	for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 	  randomv(i_p)=r.Gaus(0.,TMath::Sqrt(eigenval(i_p)));
 	  nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	}
@@ -2781,7 +2778,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool is
       }
       
       
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 	
 	if(!isPosttag){
 	  help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
@@ -2918,10 +2915,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
 
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
     
-    std::vector<float> flavour_norms(m_config->GetPairs().size(),0.);
-    std::vector<float> flavour_norms_posttag(m_config->GetPairs().size(),0.);
+    std::vector<float> flavour_norms(m_config->GetFlavourPairs().size(),0.);
+    std::vector<float> flavour_norms_posttag(m_config->GetFlavourPairs().size(),0.);
     
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       
       help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
       help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
@@ -3087,11 +3084,11 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
 
   TRandom3 r(0);
 
-  TVectorD randomv(m_config->GetPairs().size()), nomv(m_config->GetPairs().size()), eigenval(m_config->GetPairs().size());
+  TVectorD randomv(m_config->GetFlavourPairs().size()), nomv(m_config->GetFlavourPairs().size()), eigenval(m_config->GetFlavourPairs().size());
 
-  TMatrixDSym mat(m_config->GetPairs().size());
+  TMatrixDSym mat(m_config->GetFlavourPairs().size());
 
-  TMatrixD eigenvec(m_config->GetPairs().size(),m_config->GetPairs().size());
+  TMatrixD eigenvec(m_config->GetFlavourPairs().size(),m_config->GetFlavourPairs().size());
 
   std::vector<double> matrix;
   std::vector<float> flavour_norms, flavour_norms_posttag;
@@ -3151,10 +3148,10 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
       */
 
       if(i_toy==0){ //nominal rate
-	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
+	for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++) nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	randomv=nomv;
       }else{
-	for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+	for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 	  randomv(i_p)=r.Gaus(0.,TMath::Sqrt(eigenval(i_p)));
 	  nomv(i_p)=m_fit_params[regions[i_reg]+"_Nom"][i_p];
 	}
@@ -3165,7 +3162,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
       
       //randomv.Print();
       
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 	
 	help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
 	help->SetDirectory(0);
@@ -3287,7 +3284,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getBTagUncert(TString& var, bool apply
     //std::cout<<"name_mc btag down: "<<name_mc_down<<std::endl;
 
     
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
         help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
         help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
         if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
@@ -3426,7 +3423,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
       //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
       
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
 	if(isPosttag || isEff){
 	  if(!isEff){
@@ -3647,7 +3644,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
       //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
       
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
 	if(isPosttag || isEff){
 	  if(i_sys==0){
@@ -3845,7 +3842,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
       //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
       double pythia_nominal_fraction=0.;
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
 	if(isPosttag || isEff){
 	  if(!isEff){
@@ -4058,13 +4055,13 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
   std::vector<TH1D*> hist_prefit_mc, hist_postfit_mc;
   TString name_pretag;
 
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
-    name_pretag="hist_prefit_mc_"+(m_config->GetPairs())[i_p];
+    name_pretag="hist_prefit_mc_"+(m_config->GetFlavourPairs())[i_p];
 
     hist_prefit_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
 
-    name_pretag="hist_postfit_mc_"+(m_config->GetPairs())[i_p];
+    name_pretag="hist_postfit_mc_"+(m_config->GetFlavourPairs())[i_p];
 
     hist_postfit_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
     
@@ -4082,7 +4079,7 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
     TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
     //std::cout<<"name_mc: "<<name_mc<<std::endl;
 
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
       help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
       hist_prefit_mc[i_p]->Add(help_rebinned);
@@ -4098,7 +4095,7 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
 
   scale_factors=new TH1D("scale_factors","",fj_bins.size()-1,&(fj_bins[0]));
 
-  for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
     tmp_stacked_mc=(TH1D*)hist_prefit_mc[i_p]->Clone();
 
@@ -4147,11 +4144,11 @@ void ScaleFactorCalculator::SaveFitCorrectionFactorsSys(){
 
     for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
       if(i_sys==0) std::cout<<"Sys is "<<systematics[i_sys]<<std::endl;
-      for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++) hists[i_p]->Fill(m_fit_params[regions[i_reg]+"_"+systematics[i_sys]][i_p]/m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++) hists[i_p]->Fill(m_fit_params[regions[i_reg]+"_"+systematics[i_sys]][i_p]/m_fit_params[regions[i_reg]+"_Nom"][i_p]);
     
     }
     
-    for(unsigned int i_p=0; i_p<m_config->GetPairs().size(); i_p++){
+    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       name=TString(hists[i_p]->GetName())+".pdf";
       canv->cd();
       hists[i_p]->Draw();
