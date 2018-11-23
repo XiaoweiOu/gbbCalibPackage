@@ -26,10 +26,13 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
     abort();
   }
 
-  m_Systematics=SplitString(config->GetValue("Systematics",""),',');
+  m_Systematics = SplitString(config->GetValue("Systematics",""),',');
   std::cout<<"Systematics: "<<config->GetValue("Systematics","")<<std::endl;
 
-  m_FlavourPairs=SplitString(config->GetValue("FlavourPairs",""),',');
+  m_doMergeFlavours = config->GetValue("doMergeFlavours",true);
+  std::cout<<"doMergeFlavours: "<<m_doMergeFlavours<<std::endl;
+
+  m_FlavourPairs = SplitString(config->GetValue("FlavourPairs",""),',');
   std::cout<<"FlavourPairs: "<<config->GetValue("FlavourPairs","")<<std::endl; 
 
   m_MuonJetPtBins = SplitStringD(config->GetValue("MuonJetPtBins",""),',');
@@ -117,6 +120,40 @@ std::vector<TString> GlobalConfig::GetTrkJetRegions() {
     }
   }
   return regions;
+}
+
+char GlobalConfig::GetFlavour(int truthType) {
+  switch (std::abs(truthType)) {
+    case 5:
+      return 'B';
+      break;
+    case 4:
+      return 'C';
+      break;
+    case 0:
+      return 'L';
+      break;
+    default:
+      std::cout<<"GlobalConfig - Unrecognized truth type: "<<truthType<<std::endl;
+      return 'O';
+      break;
+  }
+}
+
+TString GlobalConfig::GetFlavourPair(int muJetTruth, int nonMuJetTruth) {
+  TString output = "";
+  output += GetFlavour(muJetTruth);
+  output += GetFlavour(nonMuJetTruth);
+  if (output.Contains("O")) return "Other";
+  if (!m_doMergeFlavours) return output;
+  else {
+    //FIXME: Hard-coding this is sub-optimal if categories ever change
+    if (output == "BC") return "BL";
+    else if (output == "CB") return "CL";
+    else if (output == "LB") return "LL";
+    else if (output == "LC") return "LL";
+    else return output;
+  }
 }
 
 TString GlobalConfig::GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var) {

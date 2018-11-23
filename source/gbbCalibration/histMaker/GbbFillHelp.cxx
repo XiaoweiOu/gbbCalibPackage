@@ -7,368 +7,309 @@
  *  created by: rjacobs
  */
 
-
 #include "GbbTupleAna.h"
 #include <iostream>
 #include <TMath.h>
 #include <TLorentzVector.h>
+#include <functional>
 
-TString GbbTupleAna::makePlotName(const TString sys, const TString flav, const TString pt, const TString var, const TString tag) {
-  if (tag=="") return m_config->GetMCHistName(sys,pt,flav,var).Data(); 
-  else return m_config->GetMCHistName(sys,pt,flav,var+"_"+tag).Data(); 
+TString GbbTupleAna::makeMuJetPlotName(GbbCandidate* gbbcand, const TString var) {
+  int muojet_truth = this->trkjet_truth->at(gbbcand->muojet_index);
+  TString muo_flav = this->eve_isMC ? m_config->GetFlavour(muojet_truth) : TString("Data");
+  TString ptlabel = m_config->GetMuJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3);
+  return m_config->GetMCHistName(m_SysVarName,ptlabel,muo_flav,var);
 }
 
-TString GbbTupleAna::getFatjetPhiLabel(float fatjet_phi){
-  TString label="";
-
-  std::vector<double> fj_phi_bins={-2.,-1.,0.,1.,2.};
-
-  if(fatjet_phi<fj_phi_bins[0]) label+=Form("fjphi_l%.0f",fj_phi_bins[0]);
-  else if(fatjet_phi>=fj_phi_bins[fj_phi_bins.size()-1]) label+=Form("fjphi_g%.0f",fj_phi_bins[fj_phi_bins.size()-1]); 
-  else{
-    
-    for(unsigned int i_m=0; i_m<fj_phi_bins.size()-1; i_m++){
-      if(fatjet_phi>=fj_phi_bins[i_m] && fatjet_phi<fj_phi_bins[i_m+1]){
-        label+=Form("fjphi_g%.0fl%.0f",fj_phi_bins[i_m],fj_phi_bins[i_m+1]);
-      }
-    }
-  }
-  return label;
+TString GbbTupleAna::makeNonMuJetPlotName(GbbCandidate* gbbcand, const TString var) {
+  int nonmuojet_truth = this->trkjet_truth->at(gbbcand->nonmuojet_index);
+  TString nonmuo_flav = this->eve_isMC ? m_config->GetFlavour(nonmuojet_truth) : TString("Data");
+  TString ptlabel = m_config->GetNonMuJetLabel(this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
+  return m_config->GetMCHistName(m_SysVarName,ptlabel,nonmuo_flav,var);
 }
 
+TString GbbTupleAna::makeDiJetPlotName(GbbCandidate* gbbcand, const TString var) {
+  int muojet_truth = this->trkjet_truth->at(gbbcand->muojet_index);
+  int nonmuojet_truth = this->trkjet_truth->at(gbbcand->nonmuojet_index);
+  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
+  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,
+                                               this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
+  return m_config->GetMCHistName(m_SysVarName,ptlabel,dijet_flav,var);
+}
 
-TString GbbTupleAna::getFatjetEtaLabel(float fatjet_eta){
-  TString label="";
+TString GbbTupleAna::makeFatJetPlotName(GbbCandidate* gbbcand, const TString var) {
+  int muojet_truth = this->trkjet_truth->at(gbbcand->muojet_index);
+  int nonmuojet_truth = this->trkjet_truth->at(gbbcand->nonmuojet_index);
+  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
+  TString ptlabel = m_config->GetFatJetLabel(this->fat_pt->at(gbbcand->fat_index)/1e3);
+  return m_config->GetMCHistName(m_SysVarName,ptlabel,dijet_flav,var);
+}
 
-  std::vector<double> fj_eta_bins={-2.,-1.,0.,1.,2.};
-
-  if(fatjet_eta<fj_eta_bins[0]) label+=Form("fjeta_l%.0f",fj_eta_bins[0]);
-  else if(fatjet_eta>=fj_eta_bins[fj_eta_bins.size()-1]) label+=Form("fjeta_g%.0f",fj_eta_bins[fj_eta_bins.size()-1]); 
-  else{
-    
-    for(unsigned int i_m=0; i_m<fj_eta_bins.size()-1; i_m++){
-      if(fatjet_eta>=fj_eta_bins[i_m] && fatjet_eta<fj_eta_bins[i_m+1]){
-        label+=Form("fjeta_g%.0fl%.0f",fj_eta_bins[i_m],fj_eta_bins[i_m+1]);
-      }
-    }
-  }
-  return label;
+TString GbbTupleAna::makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString var) {
+  int muojet_truth = this->trkjet_truth->at(gbbcand->muojet_index);
+  int nonmuojet_truth = this->trkjet_truth->at(gbbcand->nonmuojet_index);
+  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
+  return m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,var);
 }
 
 void GbbTupleAna::FillReweightInfo(int i_trig_jet, float event_weight, TString nametag){
   
-  m_HistogramService->FastFillTH2D("reweight_trigjet_pt_eta_"+nametag,this->jet_pt->at(i_trig_jet)/1e3,this->jet_eta->at(i_trig_jet),75,0,2500.,10,-2.5,2.5,event_weight);
+  m_HistSvc->FastFillTH2D("reweight_trigjet_pt_eta_"+nametag,
+   ";trigger-matched jet p_{T} [GeV];trigger-matched jet #eta",
+   this->jet_pt->at(i_trig_jet)/1e3,this->jet_eta->at(i_trig_jet),75,0,2500.,10,-2.5,2.5,event_weight);
 
 }
 
 void GbbTupleAna::FillFatReweightInfo(float trigfat_pt,float trigfat_eta, float event_weight, TString nametag){
   
-  m_HistogramService->FastFillTH2D("reweight_trigfatjet_pt_eta_"+nametag,trigfat_pt/1e3,trigfat_eta,75,0,2500.,10,-2.5,2.5,event_weight);
+  m_HistSvc->FastFillTH2D("reweight_trigfatjet_pt_eta_"+nametag,
+   ";large-R jet p_{T} [GeV];large-R jet #eta",
+   trigfat_pt/1e3,trigfat_eta,75,0,2500.,10,-2.5,2.5,event_weight);
 
 }
 
 void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weight, TString nametag){
 
- if(!nametag.IsNull())nametag.Prepend("_");
+  if (!nametag.IsNull()) nametag.Prepend("_");
 
- int muojet_truth=this->trkjet_truth->at(gbbcand->muojet_index);
- int nonmuojet_truth=this->trkjet_truth->at(gbbcand->nonmuojet_index);
-
- TString muo_hist_name=this->eve_isMC ? m_trkjet_cat.at(this->getTruthType(muojet_truth)) : TString("Data");
- TString nonmuo_hist_name=this->eve_isMC ? m_trkjet_cat.at(this->getTruthType(nonmuojet_truth)) : TString("Data");
-
- //m_HistogramService->FastFillTH1D("h"+muo_hist_name+m_SysVarName+"_mjpt"+nametag,this->trkjet_pt->at(gbbcand->muojet_index)/1e3,20,0.,500.,event_weight);
- // m_HistogramService->FastFillTH1D("h"+nonmuo_hist_name+m_SysVarName+"_nmjpt"+nametag,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,20,0.,500.,event_weight);
-
- // m_HistogramService->FastFillTH1D("h"+muo_hist_name+m_SysVarName+"_mjeta"+nametag,this->trkjet_eta->at(gbbcand->muojet_index),10,-2.5,2.5,event_weight);
- // m_HistogramService->FastFillTH1D("h"+nonmuo_hist_name+m_SysVarName+"_nmjeta"+nametag,this->trkjet_eta->at(gbbcand->nonmuojet_index),10,-2.5,2.5,event_weight);
-
-  TString dijet_hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data") ;
-  
-  if(dijet_hist_name.EqualTo("other")) return;
-
-  //m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_mjpt"+nametag,this->trkjet_pt->at(gbbcand->muojet_index)/1e3,20,0.,500.,event_weight);
-  //m_HistogramService->FastFillTH1D("h"+dijet_hist_name+m_SysVarName+"_nmjpt"+nametag,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,20,0.,500.,event_weight);
-
-  TString ptlabel=m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
-
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"mjpt",nametag),
+  // Plot track-jet kinematics with single-flavour label
+  m_HistSvc->FastFillTH1D( makeMuJetPlotName(gbbcand,"mjpt"+nametag),";muon-jet p_{T} [GeV];Events/2 GeV;",
    this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"nmjpt",nametag),
+  m_HistSvc->FastFillTH1D( makeMuJetPlotName(gbbcand,"mjeta"+nametag),";muon-jet #eta;Events/0.2;",
+   this->trkjet_eta->at(gbbcand->muojet_index)/1e3,100,-2.5,2.5,event_weight);
+
+  m_HistSvc->FastFillTH1D( makeNonMuJetPlotName(gbbcand,"nmjpt"+nametag),";non-muon-jet p_{T} [GeV];Events/2 GeV;",
+   this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,250,0.,500.,event_weight);
+  m_HistSvc->FastFillTH1D( makeNonMuJetPlotName(gbbcand,"nmjeta"+nametag),";non-muon-jet #eta;Events/0.2;",
+   this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
+
+  // Plot track-jet kinematics with di-flavour label
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"mjpt"+nametag),";muon-jet p_{T} [GeV];Events/2 GeV;",
+   this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"nmjpt"+nametag),";non-muon-jet p_{T} [GeV];Events/2 GeV;",
    this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,250,0.,500.,event_weight);
   
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"mjeta",nametag),
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"mjeta"+nametag),";muon-jet #eta;Events/0.2;",
    this->trkjet_eta->at(gbbcand->muojet_index)/1e3,100,-2.5,2.5,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,dijet_hist_name,ptlabel,"nmjeta",nametag),
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"nmjeta"+nametag),";non-muon-jet #eta;Events/0.2;",
    this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
+
+  m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,"mjptVsnmjpt"+nametag),
+    "muon-jet p_{T} [GeV];non-muon jet p_{T} [GeV];",
+    this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
+    250,0.,500.,250,0.,500.,event_weight
+  );
+}
+
+void GbbTupleAna::FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc) {
+  // Using the giving plot naming function to make plots of all the requested s_d0 variables
+  m_HistSvc->FastFillTH1D( namingFunc("mjmaxSd0"),";muon-jet leading |s_{d0}|;Events/2;",
+   muSd0Info.maxSd0,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("nmjmaxSd0"),";non-muon-jet leading |s_{d0}|;Events/2;",
+   nonmuSd0Info.maxSd0,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("mjsubSd0"),";muon-jet sub-leading |s_{d0}|;Events/2;",
+   muSd0Info.subSd0,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("nmjsubSd0"),";non-muon-jet sub-leading |s_{d0}|;Events/2;",
+   nonmuSd0Info.subSd0,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("mjthirdSd0"),";muon-jet third-leading |s_{d0}|;Events/2;",
+   muSd0Info.thirdSd0,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("nmjthirdSd0"),";non-muon-jet third-leading |s_{d0}|;Events/2;",
+   nonmuSd0Info.thirdSd0,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("mjmeanSd0"),";muon-jet mean |s_{d0}|;Events/2;",
+   muSd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("nmjmeanSd0"),";non-muon-jet mean |s_{d0}|;Events/2;",
+   nonmuSd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("mjmaxSd0DR"),
+   ";muon-jet #Delta R(jet,track_{max |s_{d0}|});Events/0.02;",
+   muSd0Info.maxSd0_dR,25,0.,0.5,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("nmjmaxSd0DR"),
+   ";non-muon-jet #Delta R(jet,track_{max |s_{d0}|});Events/0.02;",
+   nonmuSd0Info.maxSd0_dR,25,0.,0.5,event_weight);
 }
 
 void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag){
   
-  if(!nametag.IsNull())nametag.Prepend("_");
+  if (!nametag.IsNull()) nametag.Prepend("_");
 
   int muojet_truth=this->trkjet_truth->at(gbbcand->muojet_index);
   int nonmuojet_truth=this->trkjet_truth->at(gbbcand->nonmuojet_index);
-  
-  //inclusive in Pt
-  TString hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
+  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
 
-  //calculate mean sd0 for leading three tracks
-  trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal",3);
-  trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal",3);
+  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,
+                                               this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
+
+  // Calculate sd0 variables 
+  trkjetSd0Info muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal",3);
+  trkjetSd0Info nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal",3);
   float muojet_maxsd0 = muojet_sd0Info.meanSd0_ptSort;
   float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_ptSort;
 
-  float muojet_maxsd0DR = muojet_sd0Info.maxSd0_dR;
-  float nonmuojet_maxsd0DR = nonmuojet_sd0Info.maxSd0_dR;
+  if(TMath::Abs(muojet_maxsd0+99)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99)<1e-5) return;
 
-  if(TMath::Abs(muojet_maxsd0+99)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99)<1e-5) return; //associated tracks do not fulfil selection cuts
+  // Make inclusive plots of s_d0 variables
+  // Custom lambda function defines names of plots
+  FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, 
+   [this,gbbcand,nametag](TString var) { return this->makeInclDiJetPlotName(gbbcand,var+nametag); }
+  );
 
+  // Make plots in pT bins
+  FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, 
+   [this,gbbcand,nametag](TString var) { return this->makeDiJetPlotName(gbbcand,var+nametag); }
+  );
 
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjmaxSd0",nametag),
-   muojet_sd0Info.maxSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjmaxSd0",nametag),
-   nonmuojet_sd0Info.maxSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjmeanSd0",nametag),
-   muojet_sd0Info.meanSd0_ptSort,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjmeanSd0",nametag),
-   nonmuojet_sd0Info.meanSd0_ptSort,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjsubSd0",nametag),
-   muojet_sd0Info.subSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjsubSd0",nametag),
-   nonmuojet_sd0Info.subSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","mjthirdSd0",nametag),
-   muojet_sd0Info.thirdSd0,50,-40,80,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"Incl","nmjthirdSd0",nametag),
-   nonmuojet_sd0Info.thirdSd0,50,-40,80,event_weight);
-
-
-  //In Pt Bins
-  TString ptlabel=m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
-  
-  if(m_doRandomSplitting){
+  // Make plots with randomized mu/non-mu jet
+  if (m_doRandomSplitting) {
     
-    if(m_doFillMujet) m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"mjmaxSd0",nametag), muojet_maxsd0,80,-40,80,event_weight);
-    else m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"nmjmaxSd0",nametag), nonmuojet_maxsd0,80,-40,80,event_weight);
+    if(m_doFillMujet) {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"meanSd0"+nametag),";mean |s_{d0}|;Events/2;",
+       muojet_sd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
+    } else {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"meanSd0"+nametag),";mean |s_{d0}|;Events/2;",
+       nonmuojet_sd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
+    }
     
-  }else{
-
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"mjmaxSd0",nametag),
-     muojet_maxsd0,80,-40,80,event_weight);
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"nmjmaxSd0",nametag),
-     nonmuojet_maxsd0,80,-40,80,event_weight);
-
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"","mjmaxSd0DR",nametag),
-     muojet_maxsd0DR,25,0.,0.5,event_weight);
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,"","nmjmaxSd0DR",nametag),
-     nonmuojet_maxsd0DR,25,0.,0.5,event_weight);
-
   }
 
-  //in Fat jet pt bins
-  /*TString fatptlabel=this->getFatjetPtLabel(this->fat_pt->at(gbbcand->fat_index)/1e3);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_mjmaxSd0"+nametag,muojet_maxsd0,80,-10,10,event_weight);
-  m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_nmjmaxSd0"+nametag,nonmuojet_maxsd0,80,-10,10,event_weight);
-  */
+  // Make plots in fatjet pT bins
+  FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, 
+   [this,gbbcand,nametag](TString var) { return this->makeFatJetPlotName(gbbcand,var+nametag); }
+  );
 
-  //Fill fat jet histograms for SF calculation
-  
-  if(m_isNominal){
-    
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjpt",nametag),
+  // Fill fatjet histograms for SF calculation if not done in FillFatJetProperties
+  if (!(m_RunMode & RunMode::FILL_FATJET_PROPERTIES)) {
+    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
      this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-    //m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+fatptlabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     
-    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) {
-      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
+    if(m_isMC) {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
        this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-    } else if(!this->eve_isMC) {
-      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
+    } else {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
        this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
     }
-       
-
-    
-    if(this->eve_isMC && m_isNominal){
-      
-      //calculate mean sd0 for leading three tracks
-      trkjetSd0Info  muojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"up",3);
-      trkjetSd0Info  nonmuojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"up",3);
-
-      float muojet_maxsd0_up = muojet_sd0Info_up.meanSd0_ptSort;
-      float nonmuojet_maxsd0_up = nonmuojet_sd0Info_up.meanSd0_ptSort;
- 
-      m_HistogramService->FastFillTH1D( makePlotName("SD0Smear__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-       muojet_maxsd0_up,80,-40,80,event_weight);
-      m_HistogramService->FastFillTH1D( makePlotName("SD0Smear__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-       nonmuojet_maxsd0_up,80,-40,80,event_weight);
-      
-      //calculate mean sd0 for leading three tracks
-      trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
-      trkjetSd0Info  nonmuojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"down",3);
-
-      float muojet_maxsd0_down = muojet_sd0Info_down.meanSd0_ptSort;
-      float nonmuojet_maxsd0_down = nonmuojet_sd0Info_down.meanSd0_ptSort;
-  
-      m_HistogramService->FastFillTH1D( makePlotName("SD0SMEAR__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-       muojet_maxsd0_down,80,-40,80,event_weight);
-      m_HistogramService->FastFillTH1D( makePlotName("SD0SMEAR__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-       nonmuojet_maxsd0_down,80,-40,80,event_weight);
-      
-      bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
-      this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);
-      if(hasConversion){
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*1.1);
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*0.9);
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
-      }else{
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("Conversion__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight);
-      }
-
-      if(hasHadMatInt){
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*1.1);
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*0.9);
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
-      }else{
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("HadMatInt__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight);
-      }
-
-      if(hasLightLongLived){
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*1.1);
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*1.1);
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*0.9);
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*0.9);  
-      }else{
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight);
-        m_HistogramService->FastFillTH1D( makePlotName("LightLongLived__1down",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight);
-      }
-
-      if(hasNoTruthMu){
-        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*3.);
-        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*3.);
-      }else{
-        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"mjmaxSd0",nametag),
-         muojet_maxsd0,80,-40,80,event_weight*3.);
-        m_HistogramService->FastFillTH1D( makePlotName("FakeMuons__1up",hist_name,ptlabel,"nmjmaxSd0",nametag),
-         nonmuojet_maxsd0,80,-40,80,event_weight*3.);
-      }
-    }
   }
+    
+  if (m_isNominal && m_isMC) {
+
+    auto makeSysNamingFunc = [config=this->m_config,dijet_flav,ptlabel,nametag](TString sys)
+     -> std::function<TString (TString)> {
+      return [config,sys,dijet_flav,ptlabel,nametag](TString var) {
+        return config->GetMCHistName(sys,ptlabel,dijet_flav,var+nametag);
+      };
+    };
+
+    // Calculate sd0 variables with up variation
+    trkjetSd0Info  muojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"up",3);
+    trkjetSd0Info  nonmuojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"up",3);
+    FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("SD0Smear__1up"));
+
+    // Calculate sd0 variables with down variation
+    trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
+    trkjetSd0Info  nonmuojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"down",3);
+
+    FillSd0Plots(muojet_sd0Info_down, nonmuojet_sd0Info_down, event_weight, makeSysNamingFunc("SD0Smear__1down"));
+    
+    bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
+    this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);
+
+    if(hasConversion){
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("Conversion__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("Conversion__1down"));
+    }else{
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("Conversion__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("Conversion__1down"));
+    }
+
+    if(hasHadMatInt){
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("HadMatInt__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("HadMatInt__1down"));
+    }else{
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("HadMatInt__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("HadMatInt__1down"));
+    }
+
+    if(hasLightLongLived){
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("LightLongLived__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("LightLongLived__1down"));
+    }else{
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1down"));
+    }
+
+    if(hasNoTruthMu){
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*3, makeSysNamingFunc("FakeMuons__1up"));
+    }else{
+      //FIXME: in older code this had same event_weight multiplier as other case. why?
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("FakeMuons__1up"));
+    }
+  } // End of extra systematics
 }
 
 void GbbTupleAna::FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag){
   
-  if(!nametag.IsNull())nametag.Prepend("_");
-
-  int muojet_truth=this->trkjet_truth->at(gbbcand->muojet_index);
-  int nonmuojet_truth=this->trkjet_truth->at(gbbcand->nonmuojet_index);
+  if (!nametag.IsNull()) nametag.Prepend("_");
   
-  TString dijet_hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
-  
-  m_HistogramService->FastFillTH2D( makePlotName("Nom",dijet_hist_name,"Incl","mjpt_vs_nmjpt_unweighted",nametag),
-   this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,50,0.,200.,50,0.,200.,1.);
+  m_HistSvc->FastFillTH2D( makeInclDiJetPlotName(gbbcand,"mjpt_vs_nmjpt_unweighted"+nametag),
+   ";muon-jet p_{T} [GeV];non-muon-jet p_{T} [GeV];",
+   this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
+   50,0.,200.,50,0.,200.,1.
+  );
 
 }
 
 void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight, TString nametag){
 
-  if(!nametag.IsNull())nametag.Prepend("_");
+  if (!nametag.IsNull()) nametag.Prepend("_");
   
   int muojet_truth=this->trkjet_truth->at(gbbcand->muojet_index);
   int nonmuojet_truth=this->trkjet_truth->at(gbbcand->nonmuojet_index);
-  
-  TString hist_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
+  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
 
-  //In Pt Bins
-  TString ptlabel=m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
+  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand->muojet_index)/1e3,
+                                               this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
   
   //inclusive only for pt and eta
   if(m_isNominal) {
-    m_HistogramService->FastFillTH1D( makePlotName("Nom","Incl","Incl","fjpt",nametag),
-     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-    m_HistogramService->FastFillTH1D( makePlotName("Nom","Incl","Incl","fjeta",nametag),
-     this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
+    m_HistSvc->FastFillTH1D(
+     m_config->GetMCHistName(m_SysVarName,"Incl","Incl","fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
+     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight
+    );
+    m_HistSvc->FastFillTH1D(
+     m_config->GetMCHistName(m_SysVarName,"Incl","Incl","fjeta"+nametag),";large-R jet #eta;Events/0.2;",
+     this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight
+    );
 
-    m_HistogramService->FastFillTH1D( makePlotName("Nom",hist_name,"Incl","fjpt",nametag),
+    m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
      this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-    //m_HistogramService->FastFillTH1D( makePlotName("Nom",hist_name,"Incl","fjptsc",nametag),
+    //m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjptsc"+nametag),
+    // ";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
     // this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-    m_HistogramService->FastFillTH1D( makePlotName("Nom",hist_name,"Incl","fjeta",nametag),
+    m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjeta"+nametag),";large-R jet #eta;Events/0.2;",
      this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
   }
 
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
+   this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
 
-  if(!m_isNominal){
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjpt",nametag),
-     this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-
-    if(this->eve_isMC && this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3)>250.) {
-      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
-       this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
-    } else if(!this->eve_isMC) {
-      m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjptsc",nametag),
-       this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-    }
-  
-  } else if(nametag.Contains("ANTITAG")) {
-    m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjpt",nametag),
+  if (m_isMC) {
+    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),
+     ";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
+     this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
+  } else {
+    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),
+     ";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
      this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
   }
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjD2",nametag),
-   this->fat_D2->at(gbbcand->fat_index),250,0.,4.5,event_weight);
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjtau21",nametag),
-   this->fat_tau21->at(gbbcand->fat_index),250,0.,0.9,event_weight);
+  
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjD2"+nametag),";large-R jet D2;Events/0.02;",
+   this->fat_D2->at(gbbcand->fat_index),250,0.,5.,event_weight);
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjtau21"+nametag),";large-R jet #tau_{21};Events/0.004;",
+   this->fat_tau21->at(gbbcand->fat_index),250,0.,1.,event_weight);
   
   TLorentzVector fatjet;
   fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand->fat_index),this->fat_eta->at(gbbcand->fat_index),this->fat_phi->at(gbbcand->fat_index),this->fat_E->at(gbbcand->fat_index));
   
-  m_HistogramService->FastFillTH1D( makePlotName(m_SysVarName,hist_name,ptlabel,"fjm",nametag),
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjm"+nametag),";large-R jet mass [GeV];Events/20 GeV;",
    fatjet.M()/1e3,25,0.,500.,event_weight);
-
-  if(nametag.IsNull()){
-    
-    //EtaPhiBins
-    //TString fatphilabel=getFatjetPhiLabel(this->fat_phi->at(gbbcand->fat_index));
-    //TString fatetalabel=getFatjetEtaLabel(this->fat_eta->at(gbbcand->fat_index));
-    //if(m_isNominal) m_HistogramService->FastFillTH1D("h"+hist_name+m_SysVarName+"_"+ptlabel+"_"+fatetalabel+"_"+fatphilabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-    
-  }
 
 }
 
@@ -376,33 +317,57 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
   
   TLorentzVector mujet,trigjet;
   
-  if(!nametag.IsNull())nametag.Prepend("_");
+  if (!nametag.IsNull()) nametag.Prepend("_");
   
   //Topology: Plot DR(fatjet,muonjet)
   mujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand->muojet_index),this->trkjet_eta->at(gbbcand->muojet_index),this->trkjet_phi->at(gbbcand->muojet_index),this->trkjet_E->at(gbbcand->muojet_index));
   
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trig_jet),this->jet_eta->at(i_trig_jet),this->jet_phi->at(i_trig_jet),this->jet_E->at(i_trig_jet));
   
-  m_HistogramService->FastFillTH1D("h_trjmjDR"+nametag,mujet.DeltaR(trigjet),50.,0.,5.,event_weight);
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","trjmjDR"+nametag),
+   ";#Delta R(trigger-matched jet, muon-jet);Events/0.1;",
+   mujet.DeltaR(trigjet),50,0.,5.,event_weight
+  );
   
   //Topology: Fill Trigger Jet Pt and Eta
-  m_HistogramService->FastFillTH1D("h_trjpt"+nametag,this->jet_pt->at(i_trig_jet)/1e3,25,0.,1000.,event_weight);
-  m_HistogramService->FastFillTH1D("h_trjeta"+nametag,this->jet_eta->at(i_trig_jet),10,-2.5,2.5,event_weight);
-  
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","trjpt"+nametag),
+   ";trigger-matched jet p_{T} [GeV];Events/4 GeV;",
+   this->jet_pt->at(i_trig_jet)/1e3,250,0.,1000.,event_weight
+  );
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","trjeta"+nametag),
+   ";trigger-matched #eta;Events/0.2;",
+   this->jet_eta->at(i_trig_jet),10,-2.5,2.5,event_weight
+  );
+
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","trjfjptratio"+nametag),
+   ";trig-jet p_{T} / large-R jet p_{T};Events/2;",
+   this->jet_pt->at(i_trig_jet)/this->fat_pt->at(gbbcand->fat_index),50,0.,10.,event_weight
+  );
+
+  m_HistSvc->FastFillTH2D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","trjptVsfjpt"+nametag),
+   ";trig-jet p_{T} [GeV];large-R jet p_{T} [GeV];",
+   this->jet_pt->at(i_trig_jet)/1e3,this->fat_pt->at(gbbcand->fat_index)/1e3,
+   250,0.,1000.,250,0.,1000.,event_weight
+  );
 }
 
 void GbbTupleAna::FillTriggerTurnOnHistograms(int i_trigjet, float event_weight){
 
   //Fill Histograms for Trigger turn-on curves
  
-  //if((this->eve_HLT_j60))m_HistogramService->FastFillTH1D("trigjet_pt_passHLT60",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j85))m_HistogramService->FastFillTH1D("trigjet_pt_passHLT85",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j110))m_HistogramService->FastFillTH1D("trigjet_pt_passHLT110",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j150))m_HistogramService->FastFillTH1D("trigjet_pt_passHLT150",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j175))m_HistogramService->FastFillTH1D("trigjet_pt_passHLT175",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j260))m_HistogramService->FastFillTH1D("trigjet_pt_passHLT260",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j360)) m_HistogramService->FastFillTH1D("trigjet_pt_passHLT360",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j380)) m_HistogramService->FastFillTH1D("trigjet_pt_passHLT380",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  m_HistogramService->FastFillTH1D("trigjet_pt_noHLTreq",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  //if((this->eve_HLT_j60))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT60",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if((this->eve_HLT_j85))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT85",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if((this->eve_HLT_j110))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT110",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if((this->eve_HLT_j150))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT150",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if((this->eve_HLT_j175))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT175",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if((this->eve_HLT_j260))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT260",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if((this->eve_HLT_j360)) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT360",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if((this->eve_HLT_j380)) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT380",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  m_HistSvc->FastFillTH1D("trigjet_pt_noHLTreq",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
 
 }
