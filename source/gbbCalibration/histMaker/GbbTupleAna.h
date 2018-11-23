@@ -143,16 +143,6 @@ private:
   GbbCandidate constructGbbCandidate();
   GbbCandidate constructGbbCandidateAlternative();
 
-  int getTruthType(int label);
-  int getCategoryNumber(int muo_truth, int nonmuo_truth, bool doMerged=false);
-  TString getPtLabel(float muojet_pt, float non_muojetpt);
-  TString getFatjetPtLabel(float fatjet_pt);
-  TString getFatjetPhiLabel(float fatjet_phi);
-  TString getFatjetEtaLabel(float fatjet_eta);
-  TString makePlotName(const TString sys, const TString flav, const TString pt, const TString var, const TString nametag) {
-    return m_config->GetMCHistName(sys,pt,flav,var+nametag);
-  }
-
   TString makeMuJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeNonMuJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeDiJetPlotName(GbbCandidate* gbbcand, const TString var);

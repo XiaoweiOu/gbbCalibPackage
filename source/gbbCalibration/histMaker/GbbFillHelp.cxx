@@ -7,7 +7,6 @@
  *  created by: rjacobs
  */
 
-
 #include "GbbTupleAna.h"
 #include <iostream>
 #include <TMath.h>
@@ -50,43 +49,6 @@ TString GbbTupleAna::makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString 
   int nonmuojet_truth = this->trkjet_truth->at(gbbcand->nonmuojet_index);
   TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
   return m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,var);
-}
-
-TString GbbTupleAna::getFatjetPhiLabel(float fatjet_phi){
-  TString label="";
-
-  std::vector<double> fj_phi_bins={-2.,-1.,0.,1.,2.};
-
-  if(fatjet_phi<fj_phi_bins[0]) label+=Form("fjphi_l%.0f",fj_phi_bins[0]);
-  else if(fatjet_phi>=fj_phi_bins[fj_phi_bins.size()-1]) label+=Form("fjphi_g%.0f",fj_phi_bins[fj_phi_bins.size()-1]); 
-  else{
-    
-    for(unsigned int i_m=0; i_m<fj_phi_bins.size()-1; i_m++){
-      if(fatjet_phi>=fj_phi_bins[i_m] && fatjet_phi<fj_phi_bins[i_m+1]){
-        label+=Form("fjphi_g%.0fl%.0f",fj_phi_bins[i_m],fj_phi_bins[i_m+1]);
-      }
-    }
-  }
-  return label;
-}
-
-
-TString GbbTupleAna::getFatjetEtaLabel(float fatjet_eta){
-  TString label="";
-
-  std::vector<double> fj_eta_bins={-2.,-1.,0.,1.,2.};
-
-  if(fatjet_eta<fj_eta_bins[0]) label+=Form("fjeta_l%.0f",fj_eta_bins[0]);
-  else if(fatjet_eta>=fj_eta_bins[fj_eta_bins.size()-1]) label+=Form("fjeta_g%.0f",fj_eta_bins[fj_eta_bins.size()-1]); 
-  else{
-    
-    for(unsigned int i_m=0; i_m<fj_eta_bins.size()-1; i_m++){
-      if(fatjet_eta>=fj_eta_bins[i_m] && fatjet_eta<fj_eta_bins[i_m+1]){
-        label+=Form("fjeta_g%.0fl%.0f",fj_eta_bins[i_m],fj_eta_bins[i_m+1]);
-      }
-    }
-  }
-  return label;
 }
 
 void GbbTupleAna::FillReweightInfo(int i_trig_jet, float event_weight, TString nametag){
@@ -244,40 +206,40 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
     trkjetSd0Info  nonmuojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"down",3);
 
-    FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("SD0Smear__1down"));
+    FillSd0Plots(muojet_sd0Info_down, nonmuojet_sd0Info_down, event_weight, makeSysNamingFunc("SD0Smear__1down"));
     
     bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
     this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);
 
     if(hasConversion){
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight*1.1, makeSysNamingFunc("Conversion__1up"));
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight*0.9, makeSysNamingFunc("Conversion__1down"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("Conversion__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("Conversion__1down"));
     }else{
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("Conversion__1up"));
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("Conversion__1down"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("Conversion__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("Conversion__1down"));
     }
 
     if(hasHadMatInt){
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight*1.1, makeSysNamingFunc("HadMatInt__1up"));
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight*0.9, makeSysNamingFunc("HadMatInt__1down"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("HadMatInt__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("HadMatInt__1down"));
     }else{
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("HadMatInt__1up"));
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("HadMatInt__1down"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("HadMatInt__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("HadMatInt__1down"));
     }
 
     if(hasLightLongLived){
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight*1.1, makeSysNamingFunc("LightLongLived__1up"));
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight*0.9, makeSysNamingFunc("LightLongLived__1down"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("LightLongLived__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("LightLongLived__1down"));
     }else{
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("LightLongLived__1up"));
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("LightLongLived__1down"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1down"));
     }
 
     if(hasNoTruthMu){
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight*3, makeSysNamingFunc("FakeMuons__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*3, makeSysNamingFunc("FakeMuons__1up"));
     }else{
       //FIXME: in older code this had same event_weight multiplier as other case. why?
-      FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("FakeMuons__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("FakeMuons__1up"));
     }
   } // End of extra systematics
 }
@@ -348,13 +310,6 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjm"+nametag),";large-R jet mass [GeV];Events/20 GeV;",
    fatjet.M()/1e3,25,0.,500.,event_weight);
-
-  if (nametag.IsNull()) {
-    //EtaPhiBins
-    //TString fatphilabel=getFatjetPhiLabel(this->fat_phi->at(gbbcand->fat_index));
-    //TString fatetalabel=getFatjetEtaLabel(this->fat_eta->at(gbbcand->fat_index));
-    //if(m_isNominal) m_HistSvc->FastFillTH1D("h"+dijet_flav+m_SysVarName+"_"+ptlabel+"_"+fatetalabel+"_"+fatphilabel+"_fjpt"+nametag,this->fat_pt->at(gbbcand->fat_index)/1e3,250,0.,1000.,event_weight);
-  }
 
 }
 

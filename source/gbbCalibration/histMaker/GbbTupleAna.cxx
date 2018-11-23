@@ -345,7 +345,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   // Initialize eventFlag - all cuts are initialized to false by default                                             
   unsigned long int eventFlag = 0;
 
-  bool IsLargeWeightEvent=false;
+  //bool IsLargeWeightEvent=false;
 
   updateFlag(eventFlag,GbbCuts::AllNtup,true);
 
@@ -354,7 +354,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //=========================================
  
   float total_evt_weight=(this->eve_mc_w*this->eve_pu_w);
-  float original_evt_weight=total_evt_weight;
+  //float original_evt_weight=total_evt_weight;
   //if(original_evt_weight>100) return false;
 
   icut++;
@@ -363,7 +363,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //m_SumWeightTuple+=total_evt_weight;
   m_SumWeightTuple+=this->eve_pu_w;
 
-  double mc_jet_ratio=1.;
+  //double mc_jet_ratio=1.;
 
   if (!this->isCleanEvt(total_evt_weight)) return false;
 
@@ -526,15 +526,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //define flavour truth labels & pt labels
   int muojet_truth=this->trkjet_truth->at(gbbcand.muojet_index);
   int nonmuojet_truth=this->trkjet_truth->at(gbbcand.nonmuojet_index);
+  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
 
-  if(m_Debug) std::cout<<"processgbb(): ditrkjet_cat.size "<<m_ditrkjet_cat.size()<<std::endl;
-  TString dijet_name=this->eve_isMC ? m_ditrkjet_cat.at(this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)) : TString("Data");
-
-  double muojet_pt=this->trkjet_pt->at(gbbcand.muojet_index);
-  double nonmuojet_pt=this->trkjet_pt->at(gbbcand.nonmuojet_index);
-  
-  if(m_Debug) std::cout<<"processgbb(): getting ditrk pt label"<<std::endl;
-  TString ptlabel=m_config->GetDiTrkJetLabel(muojet_pt/1e3,nonmuojet_pt/1e3);
+  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
+                                               this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3);
 
   if(m_Debug) std::cout<<"processgbb(): Got labels."<<std::endl;
 
@@ -706,7 +701,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"srjN"),";No. of R=0.4 jets;Events",
      this->jet_pt->size(),10,0.,10.,total_evt_weight);
 
-    for (int i=0; i < this->jet_pt->size(); i++) {
+    for (unsigned int i=0; i < this->jet_pt->size(); i++) {
       m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"allsrjpt"),";R=0.4 jet p_{T} [GeV];Events/4 GeV",
        this->jet_pt->at(i)/1e3,250,0.,1000.,total_evt_weight);
     }
@@ -782,8 +777,16 @@ bool GbbTupleAna::Processgbb(int i_evt){
   
   if(m_doFlavFracCorrection && this->eve_isMC){
     
-    if(m_isNominal)fffit_fact=m_FlavFracCorrector->GetCorrectionFactorNom(m_ditrkjet_cat[this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)], muojet_pt/1e3, nonmuojet_pt/1e3);
-    else fffit_fact=m_FlavFracCorrector->GetCorrectionFactorSys(m_ditrkjet_cat[this->getCategoryNumber(muojet_truth,nonmuojet_truth,m_doMergeDiTrkjetCat)], muojet_pt/1e3, nonmuojet_pt/1e3,m_SysVarName);
+    if(m_isNominal) {
+      fffit_fact = m_FlavFracCorrector->GetCorrectionFactorNom(dijet_flav, 
+                    this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
+                    this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3);
+    } else {
+      fffit_fact = m_FlavFracCorrector->GetCorrectionFactorSys(dijet_flav,
+                    this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
+                    this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3,
+                    m_SysVarName);
+    }
     
     if(passSpecificCuts(eventFlag, CutsNoBtag)){
       this->FillTemplates(&gbbcand,total_evt_weight*fffit_fact,"POSTFIT");
@@ -944,13 +947,13 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
       //}
   
       int n_assoc_selmuon=0;
-      bool hasTruthMuon=false;
+      gbbcand.hasTruthMuon=false;
 
-      for(unsigned int j=0; j<this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
+      for(int j=0; j < this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
 
         if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
           n_assoc_selmuon++;
-          if(this->muo_hasTruth->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))) hasTruthMuon=true;
+          if(this->muo_hasTruth->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))) gbbcand.hasTruthMuon=true;
           //TLorentzVector trkjet(this->trkjet_pt->at(assocTJ_ind),this->trkjet_eta->at(assocTJ_ind),this->trkjet_phi->at(assocTJ_ind),0);
           //TLorentzVector muon(this->muo_pt->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),this->muo_eta->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),this->muo_phi->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),0);
           //std::cout<<"Delta R between muon and trackjet is: "<<trkjet.DeltaR(muon)<<std::endl;
@@ -1087,51 +1090,6 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
   return gbbcand; 
 }
 
-
-int GbbTupleAna::getTruthType(int label){
-
-  label=TMath::Abs(label);
-  
-  if(label==0) return 2;
-  else if(label==4) return 1;
-  else if(label==5) return 0;
-
-  return 3;
-}
-
-int GbbTupleAna::getCategoryNumber(int muo_truth, int nonmuo_truth, bool doMerged){
-  
-  muo_truth=TMath::Abs(muo_truth);
-  nonmuo_truth=TMath::Abs(nonmuo_truth);
-
-  if(muo_truth==5){
-
-    if(nonmuo_truth==5) return 0; 
-    else if(nonmuo_truth==4 && !doMerged) return 1;
-    else if(nonmuo_truth==4 && doMerged) return 2; //merge BC with BL
-    else if (nonmuo_truth==0) return 2;
-
-  }else if(muo_truth==4){
-
-    if(nonmuo_truth==5 && !doMerged) return 3;
-    else if(nonmuo_truth==5 && doMerged) return 5; //merge CB with CL
-    else if(nonmuo_truth==4) return 4;
-    else if (nonmuo_truth==0) return 5;
-
-  }else if(muo_truth==0){
-
-    if(nonmuo_truth==5 && !doMerged) return 6;
-    else if(nonmuo_truth==5 && doMerged) return 8; //merge LB with LL
-    else if(nonmuo_truth==4 && !doMerged) return 7;
-    else if(nonmuo_truth==4 && doMerged) return 8; //merge LC with LL
-    else if (nonmuo_truth==0) return 8;
-
-  }
-  
-  return 9;
-  
-}
-
 float GbbTupleAna::getTrigJetWeight(int i_trig_jet,TString trigger_passed){
 
   return m_reweightHistos[trigger_passed].get()->GetBinContent(m_reweightHistos[trigger_passed].get()->FindBin(this->jet_pt->at(i_trig_jet)/1e3,this->jet_eta->at(i_trig_jet)));
@@ -1149,7 +1107,6 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   int tracks_passed=0;
   TLorentzVector jet,trk;
   jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0);
-  float px, py,pz;
   std::vector<track> tracks;
   trkjetSd0Info ret = {-99.,-99.,-99.,-99.,-99.,-99.,-99.,-99.,n};
 
@@ -1178,12 +1135,12 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   ret.thirdSd0 = tracks.at(2).sd0;
   ret.thirdSd0_dR = tracks.at(2).dr;
 
-  if (tracks.size() < n) return ret;
+  if ((int)tracks.size() < n) return ret;
 
   float sum=0.;
   for(int i=0; i<n; i++){
     //std::cout<<"track "<<i<<": pT"<<tracks.at(i).pt<<std::endl;
-    float d0=tracks.at(i).d0;
+    //float d0=tracks.at(i).d0;
     float sd0=tracks.at(i).sd0;
     //sum+=sd0<0 ? -1.*TMath::Abs(d0) : TMath::Abs(d0);
     sum+=sd0;
@@ -1194,7 +1151,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   sum=0.;
   for(int i=0; i<n; i++){
     //std::cout<<"track "<<i<<": pT"<<tracks.at(i).pt<<std::endl;
-    float d0=tracks.at(i).d0;
+    //float d0=tracks.at(i).d0;
     float sd0=tracks.at(i).sd0;
     //sum+=sd0<0 ? -1.*TMath::Abs(d0) : TMath::Abs(d0);
     sum+=sd0;
