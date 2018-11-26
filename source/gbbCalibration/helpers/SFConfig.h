@@ -34,9 +34,6 @@ class SFConfig{
   std::vector<TString> m_chans;
   std::vector<TString> m_params_names;
 
-  std::map<TString,std::vector<float>> m_binning;
-  std::vector<TString> m_plotvariables;
-
   std::vector<float> m_params_in;
   std::vector<float> m_params_low;
   std::vector<float> m_params_high;
@@ -74,7 +71,6 @@ class SFConfig{
   std::vector<TString> GetFlavourPairs() { return m_global_config->GetFlavourPairs(); }
   std::vector<TString> GetChans(){ return m_chans; };
   std::vector<TString> GetParamNames(){ return m_params_names; }
-  std::vector<TString> GetPlotVariables(){ return m_plotvariables; }
 
   int GetNPseudoExp(){return m_N_pseudo_exp;}
 
