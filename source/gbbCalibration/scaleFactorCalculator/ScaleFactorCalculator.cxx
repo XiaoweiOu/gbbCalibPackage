@@ -125,9 +125,9 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
       m_fitter.PrintParameters("Simple");
       fitstatus.push_back(m_fitter.getFitStatus()+"_"+systematics[i_sys]+"_"+regions[i_reg]);
       
-      m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ]=m_fitter.FitParameters();
+      m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ] = m_fitter.FitParameters();
       
-      if(systematics[i_sys].EqualTo("Nom")) m_nom_cov_mats[regions[i_reg]]=m_fitter.CovarianceMatrix();
+      if(systematics[i_sys].EqualTo("Nom")) m_nom_cov_mats[regions[i_reg]] = m_fitter.CovarianceMatrix();
       
       if(systematics[i_sys].EqualTo("Nom") || systematics[i_sys].EqualTo("MUON_ID__1up") || regions[i_reg].Contains("mjpt_g200_nmjpt_g300")){ //make control plots
 
@@ -365,98 +365,37 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doPseudo, unsigned int i_pseudo, bool doPseudoData){
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
-  std::vector<float> fj_bins=m_config->GetFatJetPtBins();
-  std::vector<TString> regions=m_config->GetAllRegions();
-  
-  std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc, hist_pretag_mc_unscaled, hist_posttag_mc_unscaled;
-  TString name_pretag, name_posttag;
+  std::vector<float> fj_bins = m_config->GetFatJetPtBins();
+  //std::vector<TString> regions = m_config->GetAllRegions();
 
-  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-
-    name_pretag="hist_pretag_mc_"+(m_config->GetFlavourPairs())[i_p];
-    name_posttag="hist_posttag_mc_"+(m_config->GetFlavourPairs())[i_p];
-
-    hist_pretag_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-    hist_posttag_mc.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-
-    name_pretag="hist_pretag_mc_unscaled_"+(m_config->GetFlavourPairs())[i_p];
-    name_posttag="hist_posttag_mc_unscaled_"+(m_config->GetFlavourPairs())[i_p];
-
-    hist_pretag_mc_unscaled.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-    hist_posttag_mc_unscaled.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-
-
-  }  
-
-  TH1D *hist_pretag_data=new TH1D("hist_pretag_data","",fj_bins.size()-1,&(fj_bins[0]));
-  TH1D *hist_posttag_data=new TH1D("hist_posttag_data","",fj_bins.size()-1,&(fj_bins[0])); 
-
-  
-  TH1D* help, *help_rebinned;
-
-  double* d_fj_bins = new double[fj_bins.size()];
-
-  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
-
-  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-    
-    TString mc_name=regions[i_reg]+"_fjpt_Nom";
-    TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
-
-    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-      
-      help=(TH1D*)m_fatjet_histograms_pretag[mc_name][i_p]->Clone();
-      help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-      
-      //get unscaled histogram for MC efficiency
-      hist_pretag_mc_unscaled[i_p]->Add(help_rebinned);
-
-      if(doPseudo)help_rebinned->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
-      else if(doPseudoData)help_rebinned->Scale(m_pseudo_fit_params_Data[regions[i_reg]][i_pseudo][i_p]);
-      else help_rebinned->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
-      
-      hist_pretag_mc[i_p]->Add(help_rebinned);
-
-      help=(TH1D*)m_fatjet_histograms_posttag[mc_name_posttag][i_p]->Clone();
-      help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-      
-      if(doPseudo)help_rebinned->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
-      else if(doPseudoData)help_rebinned->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
-      else help_rebinned->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
-
-      //get unscaled histogram for MC efficiency
-      hist_posttag_mc_unscaled[i_p]->Add(help_rebinned);
-
-
-      //std::cout<<"Correction factor "<<i_p<<" : "<< m_fit_params[regions[i_reg]+"_"+sys][i_p]<<std::endl;
-      hist_posttag_mc[i_p]->Add(help_rebinned);
-
-    }
-
-    TString data_name=regions[i_reg]+"_fjpt";
-    TString data_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG";
-
-    
-    help=(TH1D*)m_fatjet_histograms_pretag_data[data_name]->Clone();
-    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-    hist_pretag_data->Add(help_rebinned);
-    
-    help=(TH1D*)m_fatjet_histograms_posttag_data[data_name_posttag]->Clone();
-    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-    hist_posttag_data->Add(help_rebinned);
-
+//FIXME: why only Nominal?
+  std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC("fjpt", "Nom", 0);
+//NOTE: posttag_unscaled was scaled before
+  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 0);
+  std::vector<TH1D*> hist_pretag_mc();
+  std::vector<TH1D*> hist_posttag_mc();
+  if (doPseudo) {
+    hist_pretag_mc = GetRebinHistsMC("fjpt", "Nom", 2, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 2, i_pseudo);
+  } else if (doPseudoData) {
+    hist_pretag_mc = GetRebinHistsMC("fjpt", "Nom", 3, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 3, i_pseudo);
+  } else {
+    hist_pretag_mc = GetRebinHistsMC("fjpt", "Nom", 1);
+    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 1);
   }
 
+  TH1D* hist_pretag_data = GetRebinHistData("fjpt");
+  TH1D* hist_posttag_data = GetRebinHistData("fjpt_PREFITPOSTTAG");
 
   //subtract backgrounds and calculate scale factor (or data stat error)
-  
   float N_BB_pretag_mc, N_BB_posttag_mc, N_BB_pretag_data, N_BB_posttag_data, N_total_pretag_mc, N_total_pretag_data, N_total_posttag_data;
 
   std::vector<float> BB_SF, BB_SF_datastaterr, data_eff, mc_eff, data_eff_datastaterr;
 
   float err_factor_tagged, err_factor_untagged;
 
-  for(unsigned int i_bin=1; i_bin<fj_bins.size(); i_bin++){
+  for (unsigned int i_bin=1; i_bin < fj_bins.size(); i_bin++) {
 
     N_BB_pretag_mc=hist_pretag_mc_unscaled[0]->GetBinContent(i_bin);
     N_BB_posttag_mc=hist_posttag_mc_unscaled[0]->GetBinContent(i_bin);
@@ -513,24 +452,15 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
    //Binomial errors
    //data_eff_datastaterr.push_back(TMath::Sqrt(N_BB_posttag_data*(1-N_BB_posttag_data/N_BB_pretag_data))/N_BB_pretag_data);
    //BB_SF_datastaterr.push_back(TMath::Sqrt(N_BB_posttag_data*(1-N_BB_posttag_data/N_BB_pretag_data))/N_BB_pretag_data/(N_BB_posttag_mc/N_BB_pretag_mc));
-   
-
-
   }
-
-
 
   //delete heap objects
   for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-   
     delete hist_pretag_mc[i_p];
     delete hist_posttag_mc[i_p];
     delete hist_pretag_mc_unscaled[i_p];
     delete hist_posttag_mc_unscaled[i_p];
-
-
   }
-
   delete hist_pretag_data;
   delete hist_posttag_data;
 
@@ -542,7 +472,6 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
   result.feff_datastat_err=data_eff_datastaterr;
   
   return result;
-
 } 
 
 
@@ -551,8 +480,6 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
 
   std::vector<TString> regions=m_config->GetAllRegions();
   
-  TH1D* help(nullptr), *help_rebinned(nullptr);
-
   //subtract backgrounds and calculate scale factor (or data stat error)
   
   float N_BB_pretag_mc, N_BB_posttag_mc, N_BB_pretag_data, N_BB_posttag_data, N_total_pretag_mc=0., N_total_posttag_mc=0., N_total_pretag_data, N_total_posttag_data;
@@ -565,7 +492,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
 
   float err_factor_tagged, err_factor_untagged;
 
-  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
+  for (TString region : regions) {
     
     /* TString mc_name=regions[i_reg]+"_fjpt_Nom";
     TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
@@ -575,82 +502,68 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
       mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_"+sys;
     }*/
     
-    TString mc_name=regions[i_reg]+"_mjmaxSd0_"+sys;
-    TString mc_name_posttag=regions[i_reg]+"_mjmaxSd0_PREFITPOSTTAG_"+sys;
-    TString mc_name_untag=regions[i_reg]+"_mjpt_PREFITUNTAG_"+sys;
+    //TString mc_name=regions[i_reg]+"_mjmaxSd0_"+sys;
+    //TString mc_name_posttag=regions[i_reg]+"_mjmaxSd0_PREFITPOSTTAG_"+sys;
+    //TString mc_name_untag=regions[i_reg]+"_mjpt_PREFITUNTAG_"+sys;
     
+    std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 0);
+    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 0);
+    std::vector<TH1D*> hist_pretag_mc();
+    std::vector<TH1D*> hist_posttag_mc();
+    std::vector<TH1D*> hist_untag_mc_unscaled();
+    if (doPseudo) {
+      hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 2, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 2, i_pseudo);
+    } else if (doPseudoData) {
+      hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 3, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 3, i_pseudo);
+    } else {
+      if (sys.Contains("Nom") hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_PREFITUNTAG", sys, region, 0);
+      hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 1);
+      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", region, sys, 1);
+    }
+    unsigned int nBinsX = hist_pretag_mc_unscaled[0]->GetNbinsX(); // All hists have same binning
 
-    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-      if(i_p==0){
-	N_total_pretag_mc=0.;
-	N_total_posttag_mc=0.;
-	N_total_pretag_mc_unscaled=0.;
-	N_total_posttag_mc_unscaled=0.;
-	N_total_untag_mc_unscaled=0.;
+    TH1D* hist_pretag_data = GetRebinHistByRegionData("mjmaxSd0", region);
+    TH1D* hist_posttag_data = GetRebinHistByRegionData("mjmaxSd0_PREFITPOSTTAG", region);
 
-      }
+    N_total_pretag_mc=0.;
+    N_total_posttag_mc=0.;
+    N_total_pretag_mc_unscaled=0.;
+    N_total_posttag_mc_unscaled=0.;
+    N_total_untag_mc_unscaled=0.;
+    for (unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++) {
        
-      help=(TH1D*)m_fatjet_histograms_pretag[mc_name][i_p]->Clone();      
-      
-      N_total_pretag_mc_unscaled+=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-      if(i_p==0)N_BB_pretag_mc_unscaled=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-      
-      
-      if(doPseudo)help->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
-      else if(doPseudoData) help->Scale(m_pseudo_fit_params_Data[regions[i_reg]][i_pseudo][i_p]);
-      else{
-	if(sys.Contains("JET")) help->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	else help->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
-      }
       //consider also overflow and underflow bin in integral
-      N_total_pretag_mc+=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-      if(i_p==0)N_BB_pretag_mc=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-      
-      if(!doPseudo && !doPseudoData && sys.Contains("Nom")){
-	
-	help=(TH1D*)m_fatjet_histograms_pretag[mc_name_untag][i_p]->Clone();
-	N_total_untag_mc_unscaled+=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-	if(i_p==0){
-	  N_BB_untag_mc_unscaled=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-	  help->IntegralAndError(0,help->GetNbinsX()+1,Err_BB_untag_mc_unscaled);
-	}
+      N_total_pretag_mc_unscaled += hist_pretag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
+      N_total_pretag_mc += hist_pretag_mc[i_p]->Integral(0,nBinsX+1);
+      if (hist_untag_mc_unscaled.size() > 0) {
+        N_total_untag_mc_unscaled += hist_untag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
+      }
+      N_total_posttag_mc_unscaled += hist_posttag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
+      N_total_posttag_mc += hist_posttag_mc[i_p]->Integral(0,nBinsX+1);
 
+      if (m_config->GetFlavourPairs()[i_p] == "BB") {
+        N_BB_pretag_mc_unscaled = hist_pretag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
+        N_BB_pretag_mc = hist_pretag_mc[i_p]->Integral(0,nBinsX+1);
+        if (hist_untag_mc_unscaled.size() > 0) {
+          N_BB_untag_mc_unscaled = hist_untag_mc_unscaled[i_p]->IntegralAndError(0,nBinsX+1,Err_BB_untag_mc_unscaled);
+        }
+        N_BB_posttag_mc_unscaled = hist_posttag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
+        N_BB_posttag_mc = hist_posttag_mc[i_p]->Integral(0,nBinsX+1);
       }
 
-      help=(TH1D*)m_fatjet_histograms_posttag[mc_name_posttag][i_p]->Clone();
-
-      N_total_posttag_mc_unscaled+=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-      if(i_p==0){
-	N_BB_posttag_mc_unscaled=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-	help->IntegralAndError(0,help->GetNbinsX()+1,Err_BB_posttag_mc_unscaled);
-      }
-
-      if(doPseudo)help->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
-      else if(doPseudoData) help->Scale(m_pseudo_fit_params_Data[regions[i_reg]][i_pseudo][i_p]);
-      else{
-	if(sys.Contains("JET")) help->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	else help->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
-      }    
-
-      N_total_posttag_mc+=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-      if(i_p==0)N_BB_posttag_mc=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-      
+      //if(doPseudo)help->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
+      //else if(doPseudoData) help->Scale(m_pseudo_fit_params_Data[regions[i_reg]][i_pseudo][i_p]);
+      //else{
+      //FIXME: why use nominal scale for jet systematics?
+      //  if(sys.Contains("JET")) help->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
+      //  else help->Scale(m_fit_params[regions[i_reg]+"_"+sys][i_p]);
+      //}    
     }
 
-    /*TString data_name=regions[i_reg]+"_fjpt";
-      TString data_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG";*/
-    
-    TString data_name=regions[i_reg]+"_mjmaxSd0";
-    TString data_name_posttag=regions[i_reg]+"_mjmaxSd0_PREFITPOSTTAG";
-    
-    
-    help=(TH1D*)m_fatjet_histograms_pretag_data[data_name]->Clone();
-    //N_BB_pretag_data=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1)-(N_total_pretag_mc-N_BB_pretag_mc);
-    N_total_pretag_data=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
-    
-    help=(TH1D*)m_fatjet_histograms_posttag_data[data_name_posttag]->Clone();
-    //N_BB_posttag_data=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);//-(N_total_posttag_mc-N_BB_posttag_mc);
-    N_total_posttag_data=help->Integral()+help->GetBinContent(0)+help->GetBinContent(help->GetNbinsX()+1);
+    N_total_pretag_data = hist_pretag_data->Integral(0,nBinsX+1);
+    N_total_posttag_data = hist_posttag_data->Integral(0,nBinsX+1);
 
     //calculate efficiencies and errors
     
@@ -673,9 +586,6 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
       //N_BB_posttag_data=N_BB_posttag_mc/N_total_pretag_mc*N_total_pretag_data/N_total_posttag_mc*N_total_posttag_data; //scale to match pretag norm
     }
 
-
-
-
     //std::cout<<"N_BB_pretag_data"<<N_BB_pretag_data<<std::endl;
     //std::cout<<"N_BB_posttag_data"<<N_BB_posttag_data<<std::endl;    
 
@@ -686,15 +596,16 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
 
     BB_SF.push_back((N_BB_posttag_data/N_BB_pretag_data)/(N_BB_posttag_mc_unscaled/N_BB_pretag_mc_unscaled));
     
-    if(i_reg==11 && !doPseudo && !doPseudoData){
-      std::cout<<"Sys is:"<<sys<<std::endl;
-      std::cout<<"Diff BB is:"<<(m_fit_params[regions[i_reg]+"_Nom"][0]-m_fit_params[regions[i_reg]+"_"+sys][0])/m_fit_params[regions[i_reg]+"_Nom"][0]<<std::endl;
-      std::cout<<"Diff BL is:"<<(m_fit_params[regions[i_reg]+"_Nom"][1]-m_fit_params[regions[i_reg]+"_"+sys][1])/m_fit_params[regions[i_reg]+"_Nom"][1]<<std::endl;
-      std::cout<<"Diff CC is:"<<(m_fit_params[regions[i_reg]+"_Nom"][2]-m_fit_params[regions[i_reg]+"_"+sys][2])/m_fit_params[regions[i_reg]+"_Nom"][2]<<std::endl;
-      std::cout<<"Diff CL is:"<<(m_fit_params[regions[i_reg]+"_Nom"][3]-m_fit_params[regions[i_reg]+"_"+sys][3])/m_fit_params[regions[i_reg]+"_Nom"][3]<<std::endl;
-      std::cout<<"Diff LL is:"<<(m_fit_params[regions[i_reg]+"_Nom"][4]-m_fit_params[regions[i_reg]+"_"+sys][4])/m_fit_params[regions[i_reg]+"_Nom"][4]<<std::endl;
+    //FIXME: which is region 11?
+    //if(i_reg==11 && !doPseudo && !doPseudoData){
+    //  std::cout<<"Sys is:"<<sys<<std::endl;
+    //  std::cout<<"Diff BB is:"<<(m_fit_params[regions[i_reg]+"_Nom"][0]-m_fit_params[regions[i_reg]+"_"+sys][0])/m_fit_params[regions[i_reg]+"_Nom"][0]<<std::endl;
+    //  std::cout<<"Diff BL is:"<<(m_fit_params[regions[i_reg]+"_Nom"][1]-m_fit_params[regions[i_reg]+"_"+sys][1])/m_fit_params[regions[i_reg]+"_Nom"][1]<<std::endl;
+    //  std::cout<<"Diff CC is:"<<(m_fit_params[regions[i_reg]+"_Nom"][2]-m_fit_params[regions[i_reg]+"_"+sys][2])/m_fit_params[regions[i_reg]+"_Nom"][2]<<std::endl;
+    //  std::cout<<"Diff CL is:"<<(m_fit_params[regions[i_reg]+"_Nom"][3]-m_fit_params[regions[i_reg]+"_"+sys][3])/m_fit_params[regions[i_reg]+"_Nom"][3]<<std::endl;
+    //  std::cout<<"Diff LL is:"<<(m_fit_params[regions[i_reg]+"_Nom"][4]-m_fit_params[regions[i_reg]+"_"+sys][4])/m_fit_params[regions[i_reg]+"_Nom"][4]<<std::endl;
 
-    }
+    //}
 
     data_eff.push_back(N_BB_posttag_data/N_BB_pretag_data);
     mc_eff.push_back(N_BB_posttag_mc_unscaled/N_BB_pretag_mc_unscaled);
@@ -714,7 +625,6 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
     float delta_eff_mc_term1=(1./N_BB_pretag_mc_unscaled-N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*(1./N_BB_pretag_mc_unscaled-N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*Err_BB_posttag_mc_unscaled*Err_BB_posttag_mc_unscaled;
     float delta_eff_mc_term2=(N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*(N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*Err_BB_untag_mc_unscaled*Err_BB_untag_mc_unscaled;
     mc_eff_staterr.push_back(TMath::Sqrt(delta_eff_mc_term1+delta_eff_mc_term2));
-    
 
   }
 
@@ -1066,83 +976,57 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
 
 }
 
-void ScaleFactorCalculator::ReadInFatJetHists(std::vector<TString>& var, std::vector<TString>& sys){
-  
-  std::vector<TString> hist_mc;
-  TString hist_data;
+void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> var, const std::vector<TString> sys){
+  std::vector<TString> regions = m_config->GetFatJetRegions();
 
-  std::vector<TString> regions=m_config->GetAllRegions();
-
-  TFile *infile=TFile::Open(m_config->GetInfileName(),"READ");
-
-  std::cout<<"infile name"<<m_config->GetInfileName()<<std::endl;
-
-  TH1D* tmp=0, *clone_tmp=0;
-
-  
-  for(unsigned int i_var=0; i_var<var.size(); i_var++){
-  
-    TString jettype="fatjet";
-    
-    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-      
-      //Get Data Hist for region i_reg
-      if( ! (var[i_var].Contains("BTAGUP") || var[i_var].Contains("BTAGDOWN") ) ){
-	hist_data=m_config->GetDataHistName(regions[i_reg], var[i_var]);
-	
-	infile->GetObject(hist_data.Data(),tmp);
-	
-	//std::cout<<"Read in"<<hist_data<<"!!"<<std::endl;
-	
-	//if(tmp) std::cout<<"Read in "<<hist_data<<std::endl;
-
-	if(tmp){
-	  clone_tmp=(TH1D*)tmp->Clone();
-	  clone_tmp->SetDirectory(0);
-	  
-	  TString name_data=regions[i_reg]+"_"+var[i_var];
-	  
-	  if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
-	  else m_fatjet_histograms_pretag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
-	}else std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram"<<hist_data<<"ddd"<<std::endl;
-
-      }
-
-      for(unsigned int i_sys=0; i_sys<sys.size(); i_sys++){
-        
-        
-        
-        //Get MC Hists for region
-        hist_mc=m_config->GetMCHistNames(regions[i_reg],sys[i_sys],var[i_var]);
-        
-        for(unsigned int i_h=0; i_h<hist_mc.size(); i_h++){
-          
-          infile->GetObject(hist_mc[i_h],tmp);
-          
-          //if(tmp) std::cout<<"Read in "<<hist_mc[i_h]<<std::endl;
-          if(!tmp) std::cout<<"Error in ScaleFactorCalculator::ReadInFatJetHists(): Can't find histogram "<<hist_mc[i_h]<<"ddd"<<std::endl;
-          if(hist_mc[i_h].Contains("PREFITUNTAG")) std::cout<<"reading in untag hist: "<< hist_mc[i_h]<<std::endl;
-
-          clone_tmp=(TH1D*)tmp->Clone();
-          clone_tmp->SetDirectory(0);
-          
-          TString name_mc=regions[i_reg]+"_"+var[i_var]+"_"+sys[i_sys];
-	  //std::cout<<"name_mc read-in: "<<name_mc<<std::endl;
-	  if(name_mc.Contains("UNTAG")) std::cout<<"name_mc read-in: "<<name_mc<<std::endl;      
-
-          if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
-          else  m_fatjet_histograms_pretag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
-          
-          
-        }
-        
-      }
-    }
+  TFile *infile = TFile::Open(m_infilename.Data(),"READ");
+  if (infile->IsZombie()) {
+    std::cerr<<"Failed to open file "<<infilename.Data()<<std::endl;
+    return;
   }
-  
-  infile->Close();
+  TString histName;
+  TH1D *temp(nullptr), *clone(nullptr);
 
+  for (TString region : regions) {
+    for (TString var : vars) {
+      // Read in data hist
+      histName = m_config->GetDataHistName(region,var).Data();
+      infile->GetObject(histName.Data(), temp);
+      if (!temp) {
+        std::cerr<<"Failed to get histogram "<<histName.Data()<<std::endl;
+        return;
+      } 
+      clone = (TH1D*)temp->Clone();
+      clone.SetDirectory(0);
+      m_FatJetHistMap.emplace(histName,clone);
+      for (TString sys : systematics) {
+        for (histName : m_config->GetMCHistNamesBySys(sys,region,var)) {
+          // Read in MC hist
+          histName = m_config->GetDataHistName(region,var).Data();
+          infile->GetObject(histName.Data(), temp);
+          if (!temp) {
+            std::cerr<<"Failed to get histogram "<<histName.Data()<<std::endl;
+            return;
+          } 
+          clone = (TH1D*)temp->Clone();
+          clone.SetDirectory(0);
+          m_FatJetHistMap.emplace(histName,clone);
+        } // End loop over flavour pairs
+      } // End loop over systematics
+    } // End loop over variables
+  } // End loop over regions
+  infile->Close();
+  return;
 }
+     // //Get Data Hist for region i_reg
+     // if( ! (var[i_var].Contains("BTAGUP") || var[i_var].Contains("BTAGDOWN") ) ){
+     //     
+     //     if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
+     //     else m_fatjet_histograms_pretag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
+     //     TString name_mc=regions[i_reg]+"_"+var[i_var]+"_"+sys[i_sys];
+     //     if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
+     //     else  m_fatjet_histograms_pretag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
+     // }
 
 TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region){
 
@@ -1333,5 +1217,157 @@ void ScaleFactorCalculator::SaveFitCorrectionFactorsSys(){
   }
 }
 
+TH1D* ScaleFactorCalculator::GetRebinHistsData(const TString var) {
+  std::vector<TString> regions = m_config->GetAllRegions();
+  std::vector<float> bins = m_config->GetBins(var);
+  if (bins.size() == 0) {
+    std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
+    return nullptr;
+  }
+  //float* bins = new float[vec_bins.size()]; //Rebin doesn't take vectors, only pointers
+  //for (unsigned int i=0; i < vec_bins.size(); i++) bins[i] = vec_bins[i];
+
+  TH1D *help(nullptr), *sum(nullptr);
+
+  sum = new TH1D((sys+"_"+flav+"_"+var).Data(),"",(int)bins.size()-1,&(bins[0]));
+  for (TString region : regions) {
+    TString name = m_config->GetDataHistName(region,var);
+    help = (TH1D*) m_HistMap[name]->Clone();
+    if (!help) {
+      std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
+      continue;
+    }
+    //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
+    help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
+    sum->Add(help);
+  }
+  return sum;
+}
+
+TH1D* ScaleFactorCalculator::GetRebinHistsByRegionData(const TString var, const TString region) {
+  std::vector<float> bins = m_config->GetBins(var);
+  if (bins.size() == 0) {
+    std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
+    return nullptr;
+  }
+  //float* bins = new float[vec_bins.size()]; //Rebin doesn't take vectors, only pointers
+  //for (unsigned int i=0; i < vec_bins.size(); i++) bins[i] = vec_bins[i];
+
+  TH1D *help(nullptr);
+
+  TString name = m_config->GetDataHistName(region,var);
+  help = (TH1D*) m_HistMap[name]->Clone();
+  if (!help) {
+    std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
+    continue;
+  }
+  //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
+  help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
+  return help;
+}
+
+std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType, const unsigned int i_pseudo) {
+  std::vector<TH1D*> output = std::vector<TH1D*>();
+  std::vector<TString> regions = m_config->GetAllRegions();
+  std::vector<float> bins = m_config->GetBins(var);
+  if (bins.size() == 0) {
+    std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
+    return output;
+  }
+  //float* bins = new float[vec_bins.size()]; //Rebin doesn't take vectors, only pointers
+  //for (unsigned int i=0; i < vec_bins.size(); i++) bins[i] = vec_bins[i];
+
+  TH1D *help(nullptr), *sum(nullptr);
+
+  for (TString flav : m_config->GetFlavourPairs()) {
+    sum = new TH1D((sys+"_"+flav+"_"+var).Data(),"",(int)bins.size()-1,&(bins[0]));
+    for (TString region : regions) {
+      TString name = m_config->GetMCHistName(sys,region,flav,var);
+      help = (TH1D*) m_HistMap[name]->Clone();
+      if (!help) {
+        std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
+        continue;
+      }
+      //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
+      help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
+      if (scaleType == 1) help->Scale(GetFitScale(sys,region,flav));
+      else if (scaleType == 2) help->Scale(GetPseudoFitScale(region,flav,i_pseudo));
+      else if (scaleType == 3) help->Scale(GetPseudoDataFitScale(region,flav,i_pseudo));
+      sum->Add(help);
+    }
+    output.push_back(sum);
+  }
+  return output;
+}
+
+std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsByRegionMC(const TString var, const TString sys, const TString region, const unsigned int scaleType, const unsigned int i_pseudo) {
+  std::vector<TH1D*> output = std::vector<TH1D*>();
+  std::vector<float> bins = m_config->GetBins(var);
+  if (bins.size() == 0) {
+    std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
+    return output;
+  }
+  std::vector<const float> binsC();
+  for (float bin : bins) binsC.push_back(bin);
+  //float* bins = new float[vec_bins.size()]; //Rebin doesn't take vectors, only pointers
+  //for (unsigned int i=0; i < vec_bins.size(); i++) bins[i] = vec_bins[i];
+
+  TH1D *help(nullptr);
+
+  for (TString flav : m_config->GetFlavourPairs()) {
+    TString name = m_config->GetMCHistName(sys,region,flav,var);
+    help = (TH1D*) m_HistMap[name]->Clone();
+    if (!help) {
+      std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
+      continue;
+    }
+    //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
+    help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(binsC[0]));
+    if (scaleType == 1) help->Scale(GetFitScale(sys,region,flav));
+    else if (scaleType == 2) help->Scale(GetPseudoFitScale(region,flav,i_pseudo));
+    else if (scaleType == 3) help->Scale(GetPseudoDataFitScale(region,flav,i_pseudo));
+    output.push_back(help);
+  }
+  return output;
+}
+
+float ScaleFactorCalculator::GetFitScale(const TString sys, const TString region, const TString flav) {
+  unsigned int i_p=0;
+  bool found=false;
+  for (; i_p < m_config->GetFlavourPairs().size(); i_p++) {
+    if (m_config->GetFlavourPairs()[i_p] == flav) {
+      found = true;
+      break;
+    }
+  }
+  if (found) return m_fit_params[region+"_"+sys][i_p];
+  else return 0;
+}
+
+float ScaleFactorCalculator::GetPseudoFitScale(const TString region, const TString flav, const unsigned int i_pseudo) {
+  unsigned int i_p=0;
+  bool found=false;
+  for (; i_p < m_config->GetFlavourPairs().size(); i_p++) {
+    if (m_config->GetFlavourPairs()[i_p] == flav) {
+      found = true;
+      break;
+    }
+  }
+  if (found) return m_pseudo_fit_params[region][i_pseudo][i_p];
+  else return 0;
+}
+
+float ScaleFactorCalculator::GetPseudoDataFitScale(const TString region, const TString flav, const unsigned int i_pseudo) {
+  unsigned int i_p=0;
+  bool found=false;
+  for (; i_p < m_config->GetFlavourPairs().size(); i_p++) {
+    if (m_config->GetFlavourPairs()[i_p] == flav) {
+      found = true;
+      break;
+    }
+  }
+  if (found) return m_pseudo_fit_params_Data[region][i_pseudo][i_p];
+  else return 0;
+}
 
 //  LocalWords:  ReadInHistograms

@@ -115,6 +115,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   }else if(plot_type.Contains("2D")){
 
 
+    //FIXME: why adding extra bin? and why 2 for nonmu?
     mutrackjetbins.insert(mutrackjetbins.begin(),0.);
     mutrackjetbins.push_back(2*mutrackjetbins[mutrackjetbins.size()-1]-mutrackjetbins[mutrackjetbins.size()-2]);
 
@@ -126,6 +127,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     for(auto &el : mutrackjetbins) std::cout<<"Muon track jet bins: "<<el<<std::endl;
     for(auto &el : nonmutrackjetbins) std::cout<<"Non Muon track jet bins: "<<el<<std::endl;
 
+    //FIXME: set label by content of binning vector
     const char* mu_labels[3]={"p_{T}(#mu-jet) < 100GeV","100GeV < p_{T}(#mu-jet) < 200GeV", "p_{T}(#mu-jet) > 200GeV"};
     const char* nonmu_labels[4]={"p_{T}(non-#mu-jet) < 100GeV","100GeV < p_{T}(non-#mu-jet) < 200GeV","200GeV < p_{T}(non-#mu-jet) < 300GeV", "p_{T}(non-#mu-jet) > 300GeV"};
 
@@ -269,6 +271,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 
 void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist, std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys,  int rebin, bool isPosttag){
   
+  //FIXME: can some of this setup be moved to another function?
   std::shared_ptr<TCanvas> canv(new TCanvas("canv","",600,800));
   canv.get()->cd();
   std::shared_ptr<TPad> pad1(new TPad("pad1","pad1",0,0.25,1,1));
@@ -1034,7 +1037,6 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   canv->SaveAs(name.Data());
 
   delete leg;
-
 
 }
 

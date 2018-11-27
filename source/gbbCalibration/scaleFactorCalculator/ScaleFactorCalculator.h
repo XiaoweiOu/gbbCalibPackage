@@ -60,6 +60,21 @@ private:
   SFConfig* m_config;
 
 
+  std::map<TString, std::shared_ptr<TH1D> > m_HistMap;
+  std::map<TString, std::vector<double> > m_FitParamsMap;
+  std::map<TString, std::vector<double> > m_CovMatMap;
+  std::map<TString, std::vector<double> > m_PseudoFitParamsMap;
+  std::map<TString, std::vector<double> > m_PseudoFitParamsMapData;
+
+  TH1D* GetRebinHistsData(const TString var);
+  std::vector<TH1D*> GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType, const unsigned int i_pseudo = 0);
+  TH1D* GetRebinHistsByRegionData(const TString var, const TString region);
+  std::vector<TH1D*> GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType, const unsigned int i_pseudo = 0);
+  std::vector<TH1D*> GetRebinHistsByRegionMC(const TString var, const TString sys, const TString region, const unsigned int scaleType, const unsigned int i_pseudo = 0);
+  float GetFitScale(const TString sys, const TString region, const TString flav);
+  float GetPseudoFitScale(const TString region, const TString flav, const unsigned int i_pseudo);
+  float GetPseudoDataFitScale(const TString region, const TString flav, const unsigned int i_pseudo);
+
   std::map<TString,std::shared_ptr<TH1D>> m_fatjet_histograms_pretag_data;
   std::map<TString,std::shared_ptr<TH1D>> m_fatjet_histograms_posttag_data;
  
