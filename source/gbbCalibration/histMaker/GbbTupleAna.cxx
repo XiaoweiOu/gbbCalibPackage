@@ -146,14 +146,15 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_ditrkjet_cat={"BB","BC","BL","CB","CC","CL","LB","LC","LL","other"};
   
   m_doRandomSplitting=config->GetValue("doRandomSplitting",false);
- std::cout<<"m_doRandomSplitting: "<< m_doRandomSplitting<<std::endl;
+  std::cout<<"m_doRandomSplitting: "<< m_doRandomSplitting<<std::endl;
+ 
+  m_doPostfitPtReweighting=config->GetValue("doPostfitPtReweighting",false);
+  std::cout<<"m_doPostfitPtReweighting: "<<m_doPostfitPtReweighting<<std::endl;
+ 
+  m_PostfitPtReweightingFile=config->GetValue("PostfitPtReweightingFile","DEFAULT.root");
+  std::cout<<"m_PostfitPtReweightingFile: "<<m_PostfitPtReweightingFile<<std::endl;
 
- m_doPostfitPtReweighting=config->GetValue("doPostfitPtReweighting",false);
- std::cout<<"m_doPostfitPtReweighting: "<<m_doPostfitPtReweighting<<std::endl;
-
- m_PostfitPtReweightingFile=config->GetValue("PostfitPtReweightingFile","DEFAULT.root");
- std::cout<<"m_PostfitPtReweightingFile: "<<m_PostfitPtReweightingFile<<std::endl;
-
+  delete config;
   std::cout<<"=============================================="<<std::endl;
 }
 

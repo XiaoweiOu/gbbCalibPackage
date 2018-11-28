@@ -19,7 +19,7 @@
 #include <memory>
 #include "FitData.h"
 #include "Fitter.h"
-#include "helpers/SFConfig.h"
+#include "helpers/GlobalConfig.h"
 #include "TGraphAsymmErrors.h"
 
 struct CalibResult{
@@ -57,8 +57,26 @@ private:
   TString m_inputfile;
   Fitter m_fitter;
   FitData* m_fitdata;
-  SFConfig* m_config;
+  GlobalConfig* m_config;
 
+  bool m_Debug;
+  bool m_doMCStatsNP;
+  bool m_doFitInFatJetPtBins;
+  bool m_doControlPlots;
+  bool m_doCalibrationSequence;
+  int m_Ntimes_smooth;
+  std::vector<TString> m_chans;
+  std::vector<TString> m_fitpar_names;
+  std::vector<float> m_fitpar_start;
+  std::vector<float> m_fitpar_low;
+  std::vector<float> m_fitpar_high;
+  int m_N_pseudo_exp;
+  TString m_xlabel;
+  TString m_ylabel;
+  TString m_plot_label;
+  TString m_sub_label;
+  TString m_subsub_label;
+  float m_statThr_Rebin;
 
   std::map<TString, std::shared_ptr<TH1D> > m_HistMap;
   std::map<TString, std::vector<double> > m_FitParamsMap;
