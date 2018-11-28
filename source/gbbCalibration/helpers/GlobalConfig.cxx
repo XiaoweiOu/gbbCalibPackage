@@ -52,7 +52,9 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   std::cout<<"PlotVariables: "<<config->GetValue("PlotVariables","")<<std::endl;
 
   for (TString var : m_PlotVariables) {
-    std::vector<float> binning = SplitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
+    std::vector<float> tempBins = SplitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
+    std::vector<double> binning; //TH1::Rebin only works with double values
+    for (float bin : tempBins) binning.push_back((double)bin);
     m_PlotBinning.emplace(var, binning);
     std::cout <<("PlotBins."+var).Data()<<": "<<config->GetValue(("PlotBins."+var).Data(),"")<<std::endl;
   }
@@ -123,14 +125,14 @@ std::vector<TString> GlobalConfig::GetTrkJetRegions() {
   return regions;
 }
 
-std::vector<float> GlobalConfig::GetBinning(const TString var) {
+std::vector<double> GlobalConfig::GetBinning(const TString var) {
   TString temp = var;
   // If var has a tag, like _PREFITPOSTTAG, then remove it
   if (temp.Contains(TRegexp("_[A-Z]+"))) temp = temp(0,temp.Index(TRegexp("_[A-Z]+")));
   // Check the binning map for var
   if (m_PlotBinning.find(temp) != m_PlotBinning.end())
     return m_PlotBinning[temp];
-  else return std::vector<float>();
+  else return std::vector<double>();
 }
 
 char GlobalConfig::GetFlavour(int truthType) {

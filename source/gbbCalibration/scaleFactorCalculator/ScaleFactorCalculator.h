@@ -64,19 +64,19 @@ private:
   bool m_doFitInFatJetPtBins;
   bool m_doControlPlots;
   bool m_doCalibrationSequence;
-  int m_Ntimes_smooth;
+  int m_nSmoothingPasses;
   std::vector<TString> m_chans;
   std::vector<TString> m_fitpar_names;
   std::vector<float> m_fitpar_start;
   std::vector<float> m_fitpar_low;
   std::vector<float> m_fitpar_high;
-  int m_N_pseudo_exp;
+  int m_nPseudoExps;
   TString m_xlabel;
   TString m_ylabel;
   TString m_plot_label;
   TString m_sub_label;
   TString m_subsub_label;
-  float m_statThr_Rebin;
+  float m_rebinStatThr;
 
   std::map<TString, std::shared_ptr<TH1D> > m_HistMap;
   std::map<TString, std::vector<double> > m_FitParamsMap;
@@ -84,10 +84,9 @@ private:
   std::map<TString, std::vector<double> > m_PseudoFitParamsMap;
   std::map<TString, std::vector<double> > m_PseudoFitParamsMapData;
 
-  TH1D* GetRebinHistsData(const TString var);
+  TH1D* GetRebinHistData(const TString var);
   std::vector<TH1D*> GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType, const unsigned int i_pseudo = 0);
-  TH1D* GetRebinHistsByRegionData(const TString var, const TString region);
-  std::vector<TH1D*> GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType, const unsigned int i_pseudo = 0);
+  TH1D* GetRebinHistByRegionData(const TString var, const TString region);
   std::vector<TH1D*> GetRebinHistsByRegionMC(const TString var, const TString sys, const TString region, const unsigned int scaleType, const unsigned int i_pseudo = 0);
   float GetFitScale(const TString sys, const TString region, const TString flav);
   float GetPseudoFitScale(const TString region, const TString flav, const unsigned int i_pseudo);
@@ -108,12 +107,14 @@ private:
 	ScaleFactorCalculator();
 	ScaleFactorCalculator(TString &cfg_file);
 	virtual ~ScaleFactorCalculator();
+
+	void ReadConfig(const TString config_path);
 	
 	SFCalcResult CalculateScaleFactors(TString &sys, bool doPseudo=false, unsigned int i_pseudo=0,bool doPseudoData=false);
 	SFCalcResult CalculateScaleFactorsByRegion(TString &sys, bool doPseudo=false, unsigned int i_pseudo=0,bool doPseudoData=false);
 	CalibResult CalculateScaleFactorsAndErrors(bool doByRegion=false);
 	void MakeCalibrationPlots(CalibResult cl_result, TString plot_type);
-	void ReadInFatJetHists(std::vector<TString>& var, std::vector<TString>& sys);
+	void ReadInFatJetHists(const std::vector<TString> vars, const std::vector<TString> systematics);
 
 	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys, int rebin, bool isPosttag=false);
 
@@ -145,6 +146,9 @@ private:
   
 	void SaveReweightHists(TString &var, TString &outfilename);
 	void SaveFitCorrectionFactorsSys();
+
+	std::vector<TString> SplitString(TString str, char delim);
+	std::vector<float> SplitStringD(TString str, char delim);
 };
 
 #endif /* SCALEFACTORCALCULATOR_H_ */

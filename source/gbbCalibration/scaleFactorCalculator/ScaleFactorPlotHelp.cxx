@@ -85,8 +85,8 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     SF_band_sys->SetFillStyle(3001);
     SF_band_sys->SetTitle("");
     
-    SF_band_sys->GetXaxis()->SetTitle(m_config->GetXLabel().Data());
-    SF_band_sys->GetYaxis()->SetTitle(m_config->GetYLabel().Data());
+    SF_band_sys->GetXaxis()->SetTitle(m_xlabel.Data());
+    SF_band_sys->GetYaxis()->SetTitle(m_ylabel.Data());
     if(plot_type.EqualTo("Eff"))  SF_band_sys->GetYaxis()->SetTitle("Double-b-tagging Efficiency");
     
     SF_band_sys->GetXaxis()->SetTitleSize(0.04);
@@ -207,7 +207,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   //Add ATLAS label
   TLatex *tex0 = new TLatex();
   double lx = 0.6; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_config->GetPlotLabel();
+  TString text_0="#font[72]{ATLAS} "+m_plot_label;
   tex0= new TLatex(lx,ly,text_0.Data());
   tex0->SetNDC();
   tex0->SetTextSize(0.05);
@@ -217,7 +217,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   TLatex *tex1 = new TLatex();
   lx=0.5;
   ly=0.75;
-  tex1= new TLatex(lx,ly,m_config->GetSubLabel());
+  tex1= new TLatex(lx,ly,m_sub_label);
   tex1->SetNDC();
   tex1->SetTextSize(0.04);
   tex1->SetTextColor(1);
@@ -226,7 +226,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   TLatex *tex2 = new TLatex();
   lx=0.6;
   ly=0.68;
-  tex2= new TLatex(lx,ly,m_config->GetSubSubLabel());
+  tex2= new TLatex(lx,ly,m_subsub_label);
   tex2->SetNDC();
   tex2->SetTextSize(0.03);
   tex2->SetTextColor(1);
@@ -411,7 +411,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   //Add ATLAS label
   TLatex *tex0 = new TLatex();
   double lx = 0.25; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_config->GetPlotLabel();
+  TString text_0="#font[72]{ATLAS} "+m_plot_label;
   tex0= new TLatex(lx,ly,text_0.Data());
   tex0->SetNDC();
   tex0->SetTextSize(0.04);
@@ -421,7 +421,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   TLatex *tex1 = new TLatex();
   lx=0.25;
   ly=0.78;
-  tex1= new TLatex(lx,ly,m_config->GetSubLabel());
+  tex1= new TLatex(lx,ly,m_sub_label);
   tex1->SetNDC();
   tex1->SetTextSize(0.03);
   tex1->SetTextColor(1);
@@ -478,12 +478,12 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 
   //if plots in eta/phi bins, take binning for fat pt
   TString var_fjpt="fjpt";
-  std::vector<float> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta"))  ? m_config->GetBins(var_fjpt) : m_config->GetBins(var);
+  std::vector<double> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta"))  ? m_config->GetBinning(var_fjpt) : m_config->GetBinning(var);
 
   //std::cout<<"Bins for variable:"<<var<<std::endl;
   //for(auto &el : fj_bins) std::cout<<el<<std::endl;
 
-  std::vector<TString> regions=m_config->GetAllRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
   TString name_pretag, name_posttag;
@@ -740,7 +740,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   //Add ATLAS label
   TLatex *tex0 = new TLatex();
   double lx = 0.55; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_config->GetPlotLabel();
+  TString text_0="#font[72]{ATLAS} "+m_plot_label;
   tex0= new TLatex(lx,ly,text_0.Data());
   tex0->SetNDC();
   tex0->SetTextSize(0.04);
@@ -750,7 +750,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   TLatex *tex1 = new TLatex();
   lx=0.55;
   ly=0.78;
-  tex1= new TLatex(lx,ly,m_config->GetSubLabel());
+  tex1= new TLatex(lx,ly,m_sub_label);
   tex1->SetNDC();
   tex1->SetTextSize(0.03);
   tex1->SetTextColor(1);
@@ -802,12 +802,12 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
-  std::vector<float> fj_bins=m_config->GetBins(var);
+  std::vector<double> fj_bins=m_config->GetBinning(var);
 
   //std::cout<<"Bins for variable:"<<var<<std::endl;
   //for(auto &el : fj_bins) std::cout<<el<<std::endl;
 
-  std::vector<TString> regions=m_config->GetAllRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   
   std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
   TString name_pretag, name_posttag;
@@ -1009,7 +1009,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
     //Add ATLAS label
   TLatex *tex0 = new TLatex();
   double lx = 0.55; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_config->GetPlotLabel();
+  TString text_0="#font[72]{ATLAS} "+m_plot_label;
   tex0= new TLatex(lx,ly,text_0.Data());
   tex0->SetNDC();
   tex0->SetTextSize(0.04);
@@ -1019,7 +1019,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   TLatex *tex1 = new TLatex();
   lx=0.55;
   ly=0.78;
-  tex1= new TLatex(lx,ly,m_config->GetSubLabel());
+  tex1= new TLatex(lx,ly,m_sub_label);
   tex1->SetNDC();
   tex1->SetTextSize(0.03);
   tex1->SetTextColor(1);
@@ -1042,8 +1042,8 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
 void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename){
 
-  std::vector<float> fj_bins=m_config->GetBins(var);
-  std::vector<TString> regions=m_config->GetAllRegions();
+  std::vector<double> fj_bins=m_config->GetBinning(var);
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   
   std::vector<TH1D*> hist_prefit_mc, hist_postfit_mc;
   TString name_pretag;
