@@ -135,139 +135,107 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   std::cout<<"==================================================="<<std::endl;
 
   ReadConfig(cfg_file);  
-  m_fitdata=new FitData(m_inputfile,m_chans);
 
   std::vector<TString> systematics=m_config->GetSystematics();
+  systematics.emplace(systematics.begin(),TString("Nom")); //Run over nominal first
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
-  std::vector<TString> chans=m_chans;
+  std::vector<TString> tmpl_vars = m_config->GetTemplateVariables();
   std::vector<TString> fitpar_names=m_fitpar_names;
   std::vector<float> fitpar_start=m_fitpar_start;
   std::vector<float> fitpar_low=m_fitpar_low;
   std::vector<float> fitpar_high=m_fitpar_high;
 
-  TString tmpl_muo_data, tmpl_nonmuo_data;
-  std::vector<TString> tmpl_muo_mc, tmpl_nonmuo_mc;
+  m_fitdata=new FitData(m_inputfile,m_chans);
 
-  TString muo_name="muojet";
-  TString nonmuo_name="nonmuojet";
-  TString mj_maxSd0="mjmaxSd0";
-  TString nmj_maxSd0="nmjmaxSd0";
-
+  TString tmpl_data;
+  std::vector<TString> tmpl_mc;
 
   TString nominal="Nom";
 
   std::vector<TString> fitstatus, flav_fractions, mu_factors;
 
-  std::vector<std::vector<double>> binning;
+  //std::vector<std::vector<double>> binning;
+  std::map<TString, std::vector<double> > binning;
 
-  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-    
-    tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
-    tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
-
-
-    for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
-      
-      tmpl_muo_mc=m_config->GetMCHistNamesBySys(systematics[i_sys],regions[i_reg],mj_maxSd0);
-      tmpl_nonmuo_mc=m_config->GetMCHistNamesBySys(systematics[i_sys],regions[i_reg],nmj_maxSd0);
-  
-      m_fitdata->SetHistogramNames(chans[0],tmpl_muo_data,tmpl_muo_mc);
-      m_fitdata->SetHistogramNames(chans[1],tmpl_nonmuo_data,tmpl_nonmuo_mc);
+  for (TString region : regions) {
+    for (TString sys : systematics) {
+      for (TString var : tmpl_vars) {
+        tmpl_data = m_config->GetDataHistName(region,var); //FIXME?: less calls to GetDataHistName if this could be out of the systematics loop
+        tmpl_mc = m_config->GetMCHistNamesBySys(sys,region,var);
+        m_fitdata->SetHistogramNames(var,tmpl_data,tmpl_mc);
+      }
 
       m_fitdata->ReadInHistograms();
-      //m_fitdata->FitTemplateSlopes(-5.,10.);
-      m_fitter=Fitter(m_fitdata, fitpar_names.size() );
+      m_fitter = Fitter(m_fitdata, fitpar_names.size()); //FIXME: should this be re-constructed every loop?
 
       std::cout<<fitpar_names.size()<<std::endl;
       std::cout<<fitpar_start.size()<<std::endl;
       std::cout<<fitpar_low.size()<<std::endl;
       std::cout<<fitpar_high.size()<<std::endl;
 
-      
-      for(unsigned int i_par=0; i_par<fitpar_names.size(); i_par++){	
-
+      for (unsigned int i_par=0; i_par<fitpar_names.size(); i_par++) {
 	std::cout<<"Adding: "<<fitpar_names[i_par]<<" "<<fitpar_start[i_par]<<" "<<fitpar_low[i_par]<<" "<<fitpar_high[i_par]<<std::endl;
-
 	m_fitter.AddParameter(fitpar_names[i_par],fitpar_start[i_par],0.001,fitpar_low[i_par],fitpar_high[i_par]);
-
       } 
-      
       m_fitter.Initialize();      
 
       if (m_nSmoothingPasses > 0) m_fitdata->KernelSmoothTemplates(m_nSmoothingPasses);
 
-      for(unsigned int i_chan=0; i_chan<chans.size(); i_chan++){ //Auto rebin on nominal, use same bins for systematics
-	if(systematics[i_sys].EqualTo("Nom")) binning.push_back(m_fitdata->AutoRebinHistograms(chans[i_chan],m_rebinStatThr,1));
-	else{
-	  m_fitdata->FixHistogramBins(chans[i_chan],binning[2*i_reg+i_chan]);
-	}
+      for (TString var : tmpl_vars) {
+	if(sys.EqualTo("Nom")) binning[var] = m_fitdata->AutoRebinHistograms(var,m_rebinStatThr,1);
+	else m_fitdata->FixHistogramBins(var, binning[var]); //binning[2*i_reg+i_chan]);//why 2*i_reg?
       }
-      
-      //m_fitdata->FitTemplateSlopes(-10.,10.);
 
       m_fitter.PrintParameters("Simple");
       m_fitter.fit();
       m_fitter.PrintParameters("Simple");
-      fitstatus.push_back(m_fitter.getFitStatus()+"_"+systematics[i_sys]+"_"+regions[i_reg]);
+
+      fitstatus.push_back(m_fitter.getFitStatus()+"_"+sys+"_"+region);
       
-      m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ] = m_fitter.FitParameters();
-      
-      if(systematics[i_sys].EqualTo("Nom")) m_nom_cov_mats[regions[i_reg]] = m_fitter.CovarianceMatrix();
-      
-      if(systematics[i_sys].EqualTo("Nom") || systematics[i_sys].EqualTo("MUON_ID__1up") || regions[i_reg].Contains("mjpt_g200_nmjpt_g300")){ //make control plots
+      m_fit_params[ (region+"_"+sys) ] = m_fitter.FitParameters();
+
+      if(sys.EqualTo("Nom")) m_nom_cov_mats[region] = m_fitter.CovarianceMatrix();
+
+      //TODO: why muon_id__1up? region shouldn't be hard-coded
+      if(sys.EqualTo("Nom") || sys.EqualTo("MUON_ID__1up") || region.Contains("mjpt_g200_nmjpt_g300")){ //make control plots
 
 	if(m_doControlPlots){
-	  this->MakeTemplateControlPlots(false,m_fitdata->GetDataHist(chans[0]),m_fitdata->GetMCHists(chans[0]),chans[0],regions[i_reg],systematics[i_sys],1);
-	  this->MakeTemplateControlPlots(true,m_fitdata->GetDataHist(chans[0]),m_fitdata->GetMCHists(chans[0]),chans[0],regions[i_reg],systematics[i_sys],1);
-	  
-	  this->MakeTemplateControlPlots(false,m_fitdata->GetDataHist(chans[1]),m_fitdata->GetMCHists(chans[1]),chans[1],regions[i_reg],systematics[i_sys],1);
-	  this->MakeTemplateControlPlots(true,m_fitdata->GetDataHist(chans[1]),m_fitdata->GetMCHists(chans[1]),chans[1],regions[i_reg],systematics[i_sys],1);
+          for (TString var : tmpl_vars) {
+	    MakeTemplateControlPlots(false,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,1);
+	    MakeTemplateControlPlots(true,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,1);
+          }
 	}
 
-	flav_fractions.push_back(this->MakeFlavourFractionTable(true,m_fitdata->GetDataHist(chans[1]),m_fitdata->GetMCHists(chans[1]),chans[1],regions[i_reg]));
-	mu_factors.push_back(this->PrintMuAndError(regions[i_reg],m_fitdata->GetMCHists(chans[1])));
+        //TODO: should this loop over all tmpl_vars?
+	flav_fractions.push_back(this->MakeFlavourFractionTable(true,m_fitdata->GetDataHist(tmpl_vars[1]),m_fitdata->GetMCHists(tmpl_vars[1]),tmpl_vars[1],region));
+	mu_factors.push_back(this->PrintMuAndError(region,m_fitdata->GetMCHists(tmpl_vars[1])));
       }
 
-
       m_fitdata->ResetHists();
-
-    }
-  }
-
-  //make Posttag Template Plots
-  TString mj_maxSd0_posttag="mjmaxSd0_PREFITPOSTTAG";
-  TString nmj_maxSd0_posttag="nmjmaxSd0_PREFITPOSTTAG";
+    } // End loop over systematics
+  } // End loop over regions
   
-  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-    
-    tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0_posttag);
-    tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0_posttag);
-
-
-    for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
-      
-      tmpl_muo_mc=m_config->GetMCHistNamesBySys(systematics[i_sys],regions[i_reg],mj_maxSd0_posttag);
-      tmpl_nonmuo_mc=m_config->GetMCHistNamesBySys(systematics[i_sys],regions[i_reg],nmj_maxSd0_posttag);
-  
-      m_fitdata->SetHistogramNames(chans[0],tmpl_muo_data,tmpl_muo_mc);
-      m_fitdata->SetHistogramNames(chans[1],tmpl_nonmuo_data,tmpl_nonmuo_mc);
+  //FIXME: why even use fitdata here? no fit is being done so we can read the histograms directly instead
+  for (TString region : regions) {
+    for (TString sys : systematics) {
+      for (TString var : tmpl_vars) {
+        tmpl_data = m_config->GetDataHistName(region,var+"_PREFITPOSTTAG"); //FIXME?: less calls to GetDataHistName if this could be out of the systematics loop
+        tmpl_mc = m_config->GetMCHistNamesBySys(sys,region,var+"_PREFITPOSTTAG");
+        m_fitdata->SetHistogramNames(var,tmpl_data,tmpl_mc);
+      }
 
       m_fitdata->ReadInHistograms();
 
-      if(systematics[i_sys].EqualTo("Nom") && m_doControlPlots ){
-	this->MakeTemplateControlPlots(true,m_fitdata->GetDataHist(chans[0]),m_fitdata->GetMCHists(chans[0]),chans[0],regions[i_reg],systematics[i_sys],4,true);
-	this->MakeTemplateControlPlots(true,m_fitdata->GetDataHist(chans[1]),m_fitdata->GetMCHists(chans[1]),chans[1],regions[i_reg],systematics[i_sys],4,true);
-	this->MakeTemplateControlPlots(false,m_fitdata->GetDataHist(chans[0]),m_fitdata->GetMCHists(chans[0]),chans[0],regions[i_reg],systematics[i_sys],4,true);
-	this->MakeTemplateControlPlots(false,m_fitdata->GetDataHist(chans[1]),m_fitdata->GetMCHists(chans[1]),chans[1],regions[i_reg],systematics[i_sys],4,true);
-      
+      if(sys.EqualTo("Nom") && m_doControlPlots ){
+        for (TString var : tmpl_vars) {
+	  MakeTemplateControlPlots(false,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,4,true);
+	  MakeTemplateControlPlots(true,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,4,true);
+        }
       }
-
-
-    }
-
+    //FIXME: was only being reset in region loop. bug?
     m_fitdata->ResetHists();
-  }
-  
+    } // End loop over systematics
+  } // End loop over regions
 
 
   std::cout<<"=========================="<<std::endl;
@@ -303,80 +271,66 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   std::cout<<"=========================="<<std::endl;
   
 
-
   if(m_doCalibrationSequence){
+    std::vector<std::vector<double>> pseudo_exp_result;
     //Run Pseudo-Experiments for template stat. uncertainty
-  
-    std::vector<std::vector<double>> help;
-    
-    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-      tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
-      tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
-    
-      tmpl_muo_mc=m_config->GetMCHistNamesBySys(nominal,regions[i_reg],mj_maxSd0);
-      tmpl_nonmuo_mc=m_config->GetMCHistNamesBySys(nominal,regions[i_reg],nmj_maxSd0);
-      
-      m_fitdata->SetHistogramNames(chans[0],tmpl_muo_data,tmpl_muo_mc);
-      m_fitdata->SetHistogramNames(chans[1],tmpl_nonmuo_data,tmpl_nonmuo_mc);
-      
+    for (TString region : regions) {
+      pseudo_exp_result.clear();
+
+      for (TString var : tmpl_vars) {
+        tmpl_data = m_config->GetDataHistName(region,var);
+        tmpl_mc = m_config->GetMCHistNamesBySys("Nom",region,var);
+        m_fitdata->SetHistogramNames(var,tmpl_data,tmpl_mc);
+      }
+
       m_fitdata->ReadInHistograms();
       
-      help.clear();
-      
-      m_fitter.GetPseudoTemplateFitResult(help, m_nPseudoExps);
-      m_pseudo_fit_params[regions[i_reg]]=help;
+      m_fitter.GetPseudoTemplateFitResult(pseudo_exp_result, m_nPseudoExps);
+      m_pseudo_fit_params[region] = pseudo_exp_result;
       
       m_fitdata->ResetHists();
-      
     }
     
     
     //Run Pseudo-Experiments for data stat uncertainty
-    
-    
-    for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-      tmpl_muo_data=m_config->GetDataHistName(regions[i_reg],mj_maxSd0);
-      tmpl_nonmuo_data=m_config->GetDataHistName(regions[i_reg],nmj_maxSd0);
-      
-      tmpl_muo_mc=m_config->GetMCHistNamesBySys(nominal,regions[i_reg],mj_maxSd0);
-      tmpl_nonmuo_mc=m_config->GetMCHistNamesBySys(nominal,regions[i_reg],nmj_maxSd0);
-      
-      m_fitdata->SetHistogramNames(chans[0],tmpl_muo_data,tmpl_muo_mc);
-      m_fitdata->SetHistogramNames(chans[1],tmpl_nonmuo_data,tmpl_nonmuo_mc);
-      
+    for (TString region : regions) {
+      pseudo_exp_result.clear();
+
+      for (TString var : tmpl_vars) {
+        tmpl_data = m_config->GetDataHistName(region,var);
+        tmpl_mc = m_config->GetMCHistNamesBySys("Nom",region,var);
+        m_fitdata->SetHistogramNames(var,tmpl_data,tmpl_mc);
+      }
+
       m_fitdata->ReadInHistograms();
       
-      help.clear();
-      
-      m_fitter.GetPseudoDataFitResult(help, m_nPseudoExps);
-      m_pseudo_fit_params_Data[regions[i_reg]]=help;
+      m_fitter.GetPseudoDataFitResult(pseudo_exp_result, m_nPseudoExps);
+      m_pseudo_fit_params[region] = pseudo_exp_result;
       
       m_fitdata->ResetHists();
-      
     }
-    
   }
 
-
   //start calibration sequence
-  TString pt_name="fjpt", pt_posttag_name="pt_PREFITPOSTTAG";
   
   //  std::vector<TString> variables={"fjpt","fjm"};
-  std::vector<TString> variables = {"fjpt","mjmaxSd0"}; //m_config->GetPlotVariables();
-  std::vector<TString> sys = {"Nom","JET_Rtrk_Baseline_Kin__1up","JET_Rtrk_Baseline_Kin__1down","JET_Rtrk_Modelling_Kin__1up", "JET_Rtrk_Modelling_Kin__1down", "JET_Rtrk_Tracking_Kin__1up", "JET_Rtrk_Tracking_Kin__1down", "JET_Rtrk_TotalStat_Kin__1up", "JET_Rtrk_TotalStat_Kin__1down", "JET_Rtrk_Baseline_Sub__1up", "JET_Rtrk_Baseline_Sub__1down","JET_Rtrk_Modelling_Sub__1up", "JET_Rtrk_Modelling_Sub__1down", "JET_Rtrk_Tracking_Sub__1up","JET_Rtrk_Tracking_Sub__1down", "JET_Rtrk_TotalStat_Sub__1up", "JET_Rtrk_TotalStat_Sub__1down", "FATJET_JMR__1up","FATJET_JER__1up","Herwig__1up"};
-  //std::vector<TString> sys = m_config->GetFatJetSystematics();
-  //sys.insert(0,TString("Nom"));
+  //std::vector<TString> variables = {"fjpt","mjmaxSd0"};
+  std::vector<TString> variables = m_config->GetPlotVariables();
+  //std::vector<TString> sys = {"Nom","JET_Rtrk_Baseline_Kin__1up","JET_Rtrk_Baseline_Kin__1down","JET_Rtrk_Modelling_Kin__1up", "JET_Rtrk_Modelling_Kin__1down", "JET_Rtrk_Tracking_Kin__1up", "JET_Rtrk_Tracking_Kin__1down", "JET_Rtrk_TotalStat_Kin__1up", "JET_Rtrk_TotalStat_Kin__1down", "JET_Rtrk_Baseline_Sub__1up", "JET_Rtrk_Baseline_Sub__1down","JET_Rtrk_Modelling_Sub__1up", "JET_Rtrk_Modelling_Sub__1down", "JET_Rtrk_Tracking_Sub__1up","JET_Rtrk_Tracking_Sub__1down", "JET_Rtrk_TotalStat_Sub__1up", "JET_Rtrk_TotalStat_Sub__1down", "FATJET_JMR__1up","FATJET_JER__1up","Herwig__1up"};
+  //TODO: should come from config file
   std::vector<TString> sys_only={"JET_Rtrk_Baseline_Kin", "JET_Rtrk_Modelling_Kin", "JET_Rtrk_Tracking_Kin", "JET_Rtrk_TotalStat_Kin", "JET_Rtrk_Baseline_Sub","JET_Rtrk_Modelling_Sub","JET_Rtrk_Tracking_Sub","JET_Rtrk_TotalStat_Sub","FATJET_JMR","FATJET_JER"};
   std::vector<TString> model_sys={"Herwig"};
-  std::vector<TString> nominal_only={"Nom"};
   std::vector<TString> none={};
   std::vector<TString> variables_posttag, variables_posttag_btagsys;
   
-  std::vector<TString> calib_var={"mjmaxSd0", "mjmaxSd0_PREFITPOSTTAG"};
+  //std::vector<TString> calib_var={"mjmaxSd0", "mjmaxSd0_PREFITPOSTTAG"};
+  //TODO: should come from config file
+  //std::vector<TString> calib_sys = m_config->GetSd0Systematics();
   std::vector<TString> calib_sys={"Conversion__1up","Conversion__1down","HadMatInt__1up","HadMatInt__1down","LightLongLived__1up","LightLongLived__1down","SD0Smear__1up","SD0SMEAR__1down"};
 //,"MUON_ID__1up","MUON_ID__1down","MUON_MS__1up","MUON_MS__1down","MUON_SCALE__1up","MUON_SCALE__1down","MUON_SAGITTA_RESBIAS__1up","MUON_SAGITTA_RESBIAS__1down","MUON_SAGITTA_RHO__1up","MUON_SAGITTA_RHO__1down","MUON_EFF_STAT__1up","MUON_EFF_STAT__1down","MUON_EFF_SYS__1up","MUON_EFF_SYS__1down","MUON_EFF_STAT_LOWPT__1up","MUON_EFF_STAT_LOWPT__1down","MUON_EFF_SYS_LOWPT__1up","MUON_EFF_SYS_LOWPT__1down","MUON_TTVA_STAT__1up","MUON_TTVA_STAT__1down","MUON_TTVA_SYS__1up","MUON_TTVA_SYS__1down"};
-  
+
   for(auto& el : variables){
+  //TODO: can this be mre generic?
     if(el.Contains("ANTITAG") || el.Contains("trjpt") || el.Contains("srj") || el.Contains("evemu") || (el.Contains("fjeta") && el.Contains("fjphi")) || el.Contains("slR4jpt") || el.Contains("trjptfjptratio") || el.Contains("trjptgbbcandratio")) continue;
     variables_posttag.push_back(TString(el)+"_PREFITPOSTTAG");
   }
@@ -387,26 +341,25 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   }
   variables_posttag_btagsys.push_back("mjpt_PREFITUNTAG");
   
-  this->ReadInFatJetHists(variables,sys);
-  this->ReadInFatJetHists(variables_posttag,sys);
-  this->ReadInFatJetHists(variables_posttag_btagsys,nominal_only);
-  this->ReadInFatJetHists(calib_var,calib_sys);
-  
+  this->ReadInFatJetHists(variables,systematics);
+  this->ReadInFatJetHists(variables_posttag,systematics);
+  this->ReadInFatJetHists(variables_posttag_btagsys,{"Nom"});
+  this->ReadInFatJetHists(tmpl_vars,calib_sys);
+
   TString ts_pt="fjpt";
   
   if(m_doControlPlots && !m_doCalibrationSequence){
-    for(unsigned int i_var=0; i_var<variables.size(); i_var++){
+    for (TString var : variables) {
       //fat jet control plots
-      //this->MakeFatJetControlPlots(variables[i_var],false,false,sys_only,model_sys);
-      this->MakeFatJetControlPlots(variables[i_var],false,true,sys_only,model_sys);
+      //this->MakeFatJetControlPlots(var,false,false,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,false,true,sys_only,model_sys);
     }
     
     //posttag plots
-    for(unsigned int i_var=0; i_var<variables_posttag.size(); i_var++){
+    for (TString var : variables_posttag) {
       //this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only,model_sys);
-      this->MakeFatJetControlPlots(variables_posttag[i_var],true,true,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,true,true,sys_only,model_sys);
     }
-  
   }
 
   //fat jet binning control plots
@@ -443,8 +396,6 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
       for(unsigned int i_p=0; i_p<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ].size(); i_p++) std::cout<<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ][i_p]<<std::endl;
     }
     }*/
-
-    
 }
 
 

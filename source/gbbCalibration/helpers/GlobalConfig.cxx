@@ -48,6 +48,9 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   std::cout<<"FatJetPtBins: "<<config->GetValue("FatJetPtBins","")<<std::endl;
   m_FatJetRegions = MakeLabels(m_FatJetPtBins, "fjpt");
 
+  m_TemplateVariables = SplitString(config->GetValue("TemplateVariables",""),',');
+  std::cout<<"TemplateVariable: "<<config->GetValue("TemplateVariables","")<<std::endl;
+
   m_PlotVariables = SplitString(config->GetValue("PlotVariables",""),',');
   std::cout<<"PlotVariables: "<<config->GetValue("PlotVariables","")<<std::endl;
 

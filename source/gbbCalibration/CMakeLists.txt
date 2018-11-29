@@ -37,7 +37,7 @@ atlas_add_library( gbbTupleLib
    )
 atlas_add_library( ScaleFactorCalcLib
    scaleFactorCalculator/*.cxx scaleFactorCalculator/*.h
-   helpers/*.cxx helpers/*.h
+   helpers/*.cxx helpers/*.h  helpers/atlasstyle/*.C helpers/atlasstyle/*.h
    PUBLIC_HEADERS ScaleFactorCalc
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver

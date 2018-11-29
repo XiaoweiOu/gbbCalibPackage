@@ -437,21 +437,21 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   TH1D* hist_data(nullptr);
   if (doPrintByRegion) {
     hist_mc = GetRebinHistsByRegionMC(var, "Nom", region, (int)applyFitCorrection);
-    hist_data = GetRebinHistByRegionData(var, "Nom", region, (int)applyFitCorrection);
+    hist_data = GetRebinHistByRegionData(var, region);
   } else {
     hist_mc = GetRebinHistsMC(var, "Nom", (int)applyFitCorrection);
-    hist_data = GetRebinHistData(var, "Nom", (int)applyFitCorrection);
+    hist_data = GetRebinHistData(var);
   }
 
   THStack *mystack = new THStack("myStack","stack");
-  TH1D* full_mc(nullptr)
+  TH1D* full_mc(nullptr);
   for (unsigned int i=0; i < hist_mc.size(); i++) {
     if (i==0) full_mc = (TH1D*)hist_mc[0]->Clone();
     else full_mc->Add(hist_mc[i]);
 
     hist_mc[i]->SetFillColor(color[i]);
     hist_mc[i]->SetLineColor(kBlack);
-    leg->AddEntry(hist_mc,m_config->GetFlavourPairs()[i],"f");
+    leg->AddEntry(hist_mc[i],m_config->GetFlavourPairs()[i],"f");
   }
 
   hist_data->SetTitle("");
@@ -667,13 +667,13 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   std::vector<TH1D*> hist_pretag_mc = GetRebinHistsMC(var, "Nom", 1);
   std::vector<TH1D*> hist_posttag_mc = GetRebinHistsMC(var+"_PREFITPOSTTAG", "Nom", 1);
-  TH1D* hist_pretag_data = GetRebinHistsData(var, "Nom", 1);
-  TH1D* hist_posttag_data = GetRebinHistsData(var+"_PREFITPOSTTAG", "Nom", 1);
+  TH1D* hist_pretag_data = GetRebinHistData(var);
+  TH1D* hist_posttag_data = GetRebinHistData(var+"_PREFITPOSTTAG");
 
   TH1D* full_mc_pretag = (TH1D*)hist_pretag_mc[0]->Clone();
   for (unsigned int i=1; i < hist_pretag_mc.size(); i++) full_mc_pretag->Add(hist_pretag_mc[i]);
   TH1D* full_mc_posttag = (TH1D*)hist_posttag_mc[0]->Clone();
-  for (unsigned int i=1; i < hist_posttag_mc.size(); i++) full_mc->Add(hist_posttag_mc[i]);
+  for (unsigned int i=1; i < hist_posttag_mc.size(); i++) full_mc_posttag->Add(hist_posttag_mc[i]);
   
   //calculate data rate
   hist_posttag_data->Divide(hist_pretag_data);

@@ -45,6 +45,8 @@ class GlobalConfig {
     return GetPtLabel(nonMuJetPt, m_NonMuJetPtBins, m_NonMuJetRegions);
   }
 
+  std::vector<TString> GetTemplateVariables() { return m_TemplateVariables; }
+  std::vector<TString> GetPlotVariables() { return m_PlotVariables; }
   std::vector<double> GetBinning(const TString var);
 
   TString GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var);
@@ -66,6 +68,7 @@ class GlobalConfig {
   std::vector<TString> m_MuonJetRegions;
   std::vector<TString> m_NonMuJetRegions;
 
+  std::vector<TString> m_TemplateVariables;
   std::vector<TString> m_PlotVariables;
   std::map<TString, std::vector<double> > m_PlotBinning;
 
