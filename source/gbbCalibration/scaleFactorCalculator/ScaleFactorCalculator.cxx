@@ -1329,6 +1329,7 @@ TH1D* ScaleFactorCalculator::GetRebinHistData(const TString var) {
     help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
     sum->Add(help);
   }
+  delete help;
   return sum;
 }
 
@@ -1382,6 +1383,7 @@ std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsMC(const TString var, con
     }
     output.push_back(sum);
   }
+  delete help;
   return output;
 }
 
@@ -1408,6 +1410,7 @@ std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsByRegionMC(const TString 
     else if (scaleType == 3) help->Scale(GetPseudoDataFitScale(region,flav,i_pseudo));
     output.push_back(help);
   }
+  delete help;
   return output;
 }
 

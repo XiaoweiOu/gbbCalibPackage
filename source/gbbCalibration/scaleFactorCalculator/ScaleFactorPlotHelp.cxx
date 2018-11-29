@@ -25,6 +25,7 @@
 #include <TMatrixDSym.h>
 #include <TVectorD.h>
 #include "TH2.h"
+#include "helpers/atlasstyle/AtlasLabels.h"
 
 void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString plot_type){
   std::cout<<"INFO: ScaleFactorCalculator::MakeCalibrationPlots(): Making Calibration Plots of type: "<<plot_type<<std::endl;
@@ -202,40 +203,11 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   leg->SetEntrySeparation(0.15);
 
   leg->Draw();
-
-  
+ 
   //Add ATLAS label
-  TLatex *tex0 = new TLatex();
-  double lx = 0.6; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_plot_label;
-  tex0= new TLatex(lx,ly,text_0.Data());
-  tex0->SetNDC();
-  tex0->SetTextSize(0.05);
-  tex0->SetTextColor(1);
-  tex0->SetTextFont(42);
-
-  TLatex *tex1 = new TLatex();
-  lx=0.5;
-  ly=0.75;
-  tex1= new TLatex(lx,ly,m_sub_label);
-  tex1->SetNDC();
-  tex1->SetTextSize(0.04);
-  tex1->SetTextColor(1);
-  tex1->SetTextFont(42);
-  
-  TLatex *tex2 = new TLatex();
-  lx=0.6;
-  ly=0.68;
-  tex2= new TLatex(lx,ly,m_subsub_label);
-  tex2->SetNDC();
-  tex2->SetTextSize(0.03);
-  tex2->SetTextColor(1);
-  tex2->SetTextFont(42);
-  
-
-  tex0->Draw("same");
-  tex1->Draw("same");
-  tex2->Draw("same");
+  ATLASLabel2(0.6,0.825,m_plot_label.Data());
+  myText(0.5, 0.75, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
+  myText(0.6, 0.68, 1, Form("#scale[0.6]{%s}",m_subsub_label.Data()));
 
   TLine *line = new TLine((m_config->GetFatJetPtBins())[0],1.,(m_config->GetFatJetPtBins()).back(),1.);
   line->SetLineStyle(2);
@@ -260,12 +232,8 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   if(hist) delete hist;
   if(hist_err_up) delete hist_err_up;
   if(hist_err_down) delete hist_err_down;
-  delete tex0;
-  delete tex1;
-  delete tex2;
   delete canv;
   delete leg;
-
 
 }
 
@@ -286,7 +254,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
-  //prepare Legend                                                                                                                                                                                                             
+  //prepare legend
   TLegend *leg=new TLegend(0.55,0.5,0.88,0.825);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
@@ -331,7 +299,6 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   for(int i_bin=1; i_bin<=data_hist->GetNbinsX(); i_bin++){
     data_hist->SetBinContent(i_bin, data_hist->GetBinContent(i_bin)/data_hist->GetBinWidth(i_bin));
   }
-
   
   data_hist->SetTitle("");
   data_hist->SetLabelSize(0,"X");
@@ -361,10 +328,10 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   if(applyFitCorrection) std::cout<<"Normalization ratio in region "<<region<<" : "<<data_hist->Integral()/full_mc->Integral()<<std::endl;
 
-
   h_ratio->SetTitle("");
   h_ratio->SetMarkerStyle(20);
   h_ratio->SetYTitle("data/MC");
+  //TODO: for a function that ostensibly takes arbitrary hists, this shouldnt be hard-coded
   h_ratio->SetXTitle("transverse IP significance #LT s_{d0} #GT"); 
   h_ratio->SetLabelSize(0.08,"X");
   h_ratio->SetLabelSize(0.08,"Y");
@@ -393,46 +360,26 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
     h_ratio->GetYaxis()->SetRangeUser(0.,2);
   }
 
-
-
-
-  double chi2=data_hist->Chi2Test(full_mc,"WW CHI2/NDF");
-  TString text_Chi2=Form("Chi2/NDF = %f",chi2);
+  //double chi2=data_hist->Chi2Test(full_mc,"WW CHI2/NDF");
+  //TString text_Chi2=Form("Chi2/NDF = %f",chi2);
   
   pad1->cd();
   leg->Draw();
 
-  TLatex latex2;
-  latex2.SetNDC();
-  latex2.SetTextAlign(12);
-  latex2.SetTextSize(0.04);
+  //TLatex latex2;
+  //latex2.SetNDC();
+  //latex2.SetTextAlign(12);
+  //latex2.SetTextSize(0.04);
   //latex2.DrawLatex(0.5,0.8,text_Chi2.Data());
 
   //Add ATLAS label
-  TLatex *tex0 = new TLatex();
-  double lx = 0.25; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_plot_label;
-  tex0= new TLatex(lx,ly,text_0.Data());
-  tex0->SetNDC();
-  tex0->SetTextSize(0.04);
-  tex0->SetTextColor(1);
-  tex0->SetTextFont(42);
-
-  TLatex *tex1 = new TLatex();
-  lx=0.25;
-  ly=0.78;
-  tex1= new TLatex(lx,ly,m_sub_label);
-  tex1->SetNDC();
-  tex1->SetTextSize(0.03);
-  tex1->SetTextColor(1);
-  tex1->SetTextFont(42);
- 
   pad1->cd();
-  tex0->Draw("same");
-  tex1->Draw("same");
+  ATLASLabel2(0.25,0.825,m_plot_label.Data());
+  myText(0.25, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   pad1->RedrawAxis();
   
 
+  //TODO: can this go in a separate function?
   TString name= applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0.pdf"); 
   
   if(isPosttag) name=applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag.pdf"); 
@@ -448,7 +395,6 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   TString namelog= applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_log.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_log.pdf"); 
 
   if(isPosttag) namelog=applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag_log.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag_log.pdf");
-
 
   canv->SaveAs(namelog.Data());
 
@@ -473,142 +419,73 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   pad2->SetBottomMargin(0.3);
   pad2.get()->Draw();
   pad2.get()->SetTicks();
+  //prepare Legend
+  TLegend *leg=new TLegend(0.55,0.4,0.88,0.75);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
 
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
   //if plots in eta/phi bins, take binning for fat pt
   TString var_fjpt="fjpt";
+  //TODO: is this needed? if so, can it be added to GetRebinHists functions?
   std::vector<double> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta"))  ? m_config->GetBinning(var_fjpt) : m_config->GetBinning(var);
 
-  //std::cout<<"Bins for variable:"<<var<<std::endl;
-  //for(auto &el : fj_bins) std::cout<<el<<std::endl;
+  isPosttag = var.Contains("PREFITPOSTTAG");
 
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
-  
-  std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
-  TString name_pretag, name_posttag;
-
-  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-
-    name_pretag="hist_pretag_mc_"+(m_config->GetFlavourPairs())[i_p];
-    name_posttag="hist_posttag_mc_"+(m_config->GetFlavourPairs())[i_p];
-
-    hist_pretag_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-    hist_posttag_mc.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-
-  }  
-
-  TH1D *hist_pretag_data=new TH1D("hist_pretag_data","",fj_bins.size()-1,&(fj_bins[0]));
-  TH1D *hist_posttag_data=new TH1D("hist_posttag_data","",fj_bins.size()-1,&(fj_bins[0])); 
-  
-  TH1D* help(nullptr), *help_rebinned(nullptr);
-
-  double* d_fj_bins = new double[fj_bins.size()];
-
-  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
-
-  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-
-    if(doPrintByRegion && !(regions[i_reg].EqualTo(region))) continue;
-    
-    TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
-    //std::cout<<"name_mc: "<<name_mc<<std::endl;
-
-    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-      
-      if(!isPosttag){
-	help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
-	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-	if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	//std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_pretag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
-	hist_pretag_mc[i_p]->Add(help_rebinned);
-      }else{
-	help=(TH1D*)m_fatjet_histograms_posttag[name_mc][i_p]->Clone();
-	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-	if(applyFitCorrection){
-	  help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	  //std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_posttag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
-	}
-	hist_posttag_mc[i_p]->Add(help_rebinned);
-      }
-    }
-
-    //TODO take out, to check scaling only!!!!
-    TString name_data=regions[i_reg]+"_"+var;
-    
-    if(!isPosttag){
-      help=(TH1D*)m_fatjet_histograms_pretag_data[name_data]->Clone();
-      help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-      hist_pretag_data->Add(help_rebinned);
-    }else{
-      help=(TH1D*)m_fatjet_histograms_posttag_data[name_data]->Clone();
-      help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-      hist_posttag_data->Add(help_rebinned);
-    }
-      
+  std::vector<TH1D*> hist_mc;
+  TH1D* hist_data(nullptr);
+  if (doPrintByRegion) {
+    hist_mc = GetRebinHistsByRegionMC(var, "Nom", region, (int)applyFitCorrection);
+    hist_data = GetRebinHistByRegionData(var, "Nom", region, (int)applyFitCorrection);
+  } else {
+    hist_mc = GetRebinHistsMC(var, "Nom", (int)applyFitCorrection);
+    hist_data = GetRebinHistData(var, "Nom", (int)applyFitCorrection);
   }
 
-  //prepare Legend                                                                                                                                                                                                             
-  TLegend *leg=new TLegend(0.55,0.4,0.88,0.75);
-  leg->SetBorderSize(0);
-  leg->SetFillStyle(0);
+  THStack *mystack = new THStack("myStack","stack");
+  TH1D* full_mc(nullptr)
+  for (unsigned int i=0; i < hist_mc.size(); i++) {
+    if (i==0) full_mc = (TH1D*)hist_mc[0]->Clone();
+    else full_mc->Add(hist_mc[i]);
 
-  TH1D* data_hist= isPosttag ? hist_posttag_data : hist_pretag_data;
-
-  THStack *mystack=new THStack("myStack","stack");
-
-  TH1D* tmp_stacked_mc(nullptr);
-  
-  TH1D *full_mc(nullptr);
-
-  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-
-    tmp_stacked_mc=isPosttag ?  (TH1D*)hist_posttag_mc[i_p]->Clone() : (TH1D*)hist_pretag_mc[i_p]->Clone();
-
-    if(i_p==0) full_mc=(TH1D*)tmp_stacked_mc->Clone();
-    else full_mc->Add(tmp_stacked_mc);
-
-
-    tmp_stacked_mc->SetFillColor(color[i_p]);
-    tmp_stacked_mc->SetLineColor(kBlack);
-
-    mystack->Add(tmp_stacked_mc);
-
-    leg->AddEntry(tmp_stacked_mc,m_config->GetFlavourPairs()[i_p],"f");
+    hist_mc[i]->SetFillColor(color[i]);
+    hist_mc[i]->SetLineColor(kBlack);
+    leg->AddEntry(hist_mc,m_config->GetFlavourPairs()[i],"f");
   }
 
-  
-  data_hist->SetTitle("");
-  data_hist->SetLabelSize(0,"X");
-  if(var.Contains("fjpt")||var.Contains("fjm")) data_hist->SetYTitle(Form("events/%.0f GeV",(data_hist->GetBinWidth(1))));
-  else data_hist->SetYTitle(Form("events/%.1f",(data_hist->GetBinWidth(1))));
-  data_hist->SetMarkerStyle(20);
-  data_hist->SetTitleOffset(1.1,"Y");
-  data_hist->SetTitleSize(0.05,"Y");
-  data_hist->SetLabelSize(0.04, "Y");
+  hist_data->SetTitle("");
+  hist_data->SetLabelSize(0,"X");
+  if(var.Contains("fjpt")||var.Contains("fjm")) hist_data->SetYTitle(Form("events/%.0f GeV",(hist_data->GetBinWidth(1))));
+  else hist_data->SetYTitle(Form("events/%.1f",(hist_data->GetBinWidth(1))));
+  hist_data->SetMarkerStyle(20);
+  hist_data->SetTitleOffset(1.1,"Y");
+  hist_data->SetTitleSize(0.05,"Y");
+  hist_data->SetLabelSize(0.04, "Y");
 
-  leg->AddEntry(data_hist,"data","epl");
+  leg->AddEntry(hist_data,"data","epl");
   
-  data_hist->SetMinimum(0);
+  hist_data->SetMinimum(0);
   
   pad1->cd();
-  data_hist->Draw("EP");
-  if(var.Contains("PREFITPOSTTAG") || var.Contains("nmjpt")) data_hist->GetYaxis()->SetRangeUser(0.,data_hist->GetMaximum()*1.4);
-  else if(var.Contains("fjm") || var.Contains("mjpt")) data_hist->GetYaxis()->SetRangeUser(0.,data_hist->GetMaximum()*2.);
-  else data_hist->GetYaxis()->SetRangeUser(0.,data_hist->GetMaximum()*1.2);
+  hist_data->Draw("EP");
+  if(var.Contains("PREFITPOSTTAG") || var.Contains("nmjpt")) hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*1.4);
+  else if(var.Contains("fjm") || var.Contains("mjpt")) hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*2.);
+  else hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*1.2);
   mystack->Draw("HIST SAME");
-  data_hist->Draw("EP SAME");
+  hist_data->Draw("EP SAME");
   
   canv->cd();
 
   //ratio
-  TH1D *h_ratio=(TH1D*)data_hist->Clone();
+  TH1D *h_ratio=(TH1D*)hist_data->Clone();
   h_ratio->Divide(full_mc);
   h_ratio->SetMinimum();
 
   h_ratio->SetTitle("");
   h_ratio->SetMarkerStyle(20);
   h_ratio->SetYTitle("Data/MC");
+  //TODO: can this be taken from the histograms directly?
   if(var.Contains("fjpt")) h_ratio->SetXTitle("large-R jet p_{T} [GeV]");
   else if (var.Contains("fjm"))h_ratio->SetXTitle("large-R jet mass [GeV]");
   else if (var.Contains("fjD2"))h_ratio->SetXTitle("large-R jet D2");
@@ -628,13 +505,11 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   h_ratio->SetTitleOffset(1.0,"X");
   h_ratio->GetYaxis()->SetNdivisions(505);
 
-
   pad2->SetGrid();
   pad2->cd();
   h_ratio->Draw("EP");
   //h_ratio->GetYaxis()->SetRangeUser(0.9,1.1);
   h_ratio->GetYaxis()->SetRangeUser(0.4,1.6);
-
   
   //get Fit systematics band
   TGraphAsymmErrors* fitsys=0, *btagsys=0, *expsys=0, *mcstat=0, *totsys=0, *modsys=0;
@@ -722,43 +597,25 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   
     pad1->cd();
     tot_err->Draw("5");
-    data_hist->Draw("EP SAME");
+    hist_data->Draw("EP SAME");
   }
 
-  double chi2=data_hist->Chi2Test(full_mc,"UW CHI2/NDF");
-  TString text_Chi2=Form("Chi2/NDF = %f",chi2);
+  //double chi2=hist_data->Chi2Test(full_mc,"UW CHI2/NDF");
+  //TString text_Chi2=Form("Chi2/NDF = %f",chi2);
   
   pad1->cd();
   leg->Draw();
 
-  TLatex latex2;
-  latex2.SetNDC();
-  latex2.SetTextAlign(12);
-  latex2.SetTextSize(0.04);
+  //TLatex latex2;
+  //latex2.SetNDC();
+  //latex2.SetTextAlign(12);
+  //latex2.SetTextSize(0.04);
   //latex2.DrawLatex(0.5,0.8,text_Chi2.Data());
 
   //Add ATLAS label
-  TLatex *tex0 = new TLatex();
-  double lx = 0.55; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_plot_label;
-  tex0= new TLatex(lx,ly,text_0.Data());
-  tex0->SetNDC();
-  tex0->SetTextSize(0.04);
-  tex0->SetTextColor(1);
-  tex0->SetTextFont(42);
-
-  TLatex *tex1 = new TLatex();
-  lx=0.55;
-  ly=0.78;
-  tex1= new TLatex(lx,ly,m_sub_label);
-  tex1->SetNDC();
-  tex1->SetTextSize(0.03);
-  tex1->SetTextColor(1);
-  tex1->SetTextFont(42);
- 
   pad1->cd();
-  tex0->Draw("same");
-  tex1->Draw("same");
+  ATLASLabel2(0.55,0.825,m_plot_label.Data());
+  myText(0.55, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   pad1->RedrawAxis();
 
   TString name;
@@ -776,9 +633,11 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   }
   canv->SaveAs(name.Data());
 
-
   delete mystack;
   delete leg;
+  delete hist_data;
+  delete full_mc;
+  for (unsigned int i=0; i < hist_mc.size(); i++) delete hist_mc[i];
 
 }
 
@@ -799,94 +658,25 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   pad2->SetBottomMargin(0.3);
   pad2.get()->Draw();
   pad2.get()->SetTicks();
-
-  std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
-
-  std::vector<double> fj_bins=m_config->GetBinning(var);
-
-  //std::cout<<"Bins for variable:"<<var<<std::endl;
-  //for(auto &el : fj_bins) std::cout<<el<<std::endl;
-
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
-  
-  std::vector<TH1D*> hist_pretag_mc, hist_posttag_mc;
-  TString name_pretag, name_posttag;
-
-  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-
-    name_pretag="hist_pretag_mc_"+(m_config->GetFlavourPairs())[i_p];
-    name_posttag="hist_posttag_mc_"+(m_config->GetFlavourPairs())[i_p];
-
-    hist_pretag_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-    hist_posttag_mc.push_back(new TH1D(name_posttag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-
-  }  
-
-  TH1D *hist_pretag_data=new TH1D("hist_pretag_data","",fj_bins.size()-1,&(fj_bins[0]));
-  TH1D *hist_posttag_data=new TH1D("hist_posttag_data","",fj_bins.size()-1,&(fj_bins[0])); 
-  
-  TH1D* help, *help_rebinned;
-
-  double* d_fj_bins = new double[fj_bins.size()];
-
-  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
-
-  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-
-    TString name_mc_pretag=regions[i_reg]+"_"+var+"_"+"Nom";
-    TString name_mc_posttag=regions[i_reg]+"_"+var+"_PREFITPOSTTAG"+"_"+"Nom";
-    //std::cout<<"name_mc: "<<name_mc<<std::endl;
-
-    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-      
-    	help=(TH1D*)m_fatjet_histograms_pretag[name_mc_pretag][i_p]->Clone();
-	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-	help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	//std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_pretag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
-	hist_pretag_mc[i_p]->Add(help_rebinned);
-  
-	help=(TH1D*)m_fatjet_histograms_posttag[name_mc_posttag][i_p]->Clone();
-	help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-	help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	//std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_posttag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
-	hist_posttag_mc[i_p]->Add(help_rebinned);
-      
-    }
-
-    TString name_data=regions[i_reg]+"_"+var;
-    TString name_data_posttag=regions[i_reg]+"_"+var+"_PREFITPOSTTAG";
-    
-    help=(TH1D*)m_fatjet_histograms_pretag_data[name_data]->Clone();
-    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-    hist_pretag_data->Add(help_rebinned);
-    help=(TH1D*)m_fatjet_histograms_posttag_data[name_data_posttag]->Clone();
-    help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-    hist_posttag_data->Add(help_rebinned);
-      
-  }
-
-//prepare Legend                                                                                                                                                                                                             
+  //prepare legend
   TLegend *leg=new TLegend(0.55,0.4,0.88,0.75);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
+
+  std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
+
+  std::vector<TH1D*> hist_pretag_mc = GetRebinHistsMC(var, "Nom", 1);
+  std::vector<TH1D*> hist_posttag_mc = GetRebinHistsMC(var+"_PREFITPOSTTAG", "Nom", 1);
+  TH1D* hist_pretag_data = GetRebinHistsData(var, "Nom", 1);
+  TH1D* hist_posttag_data = GetRebinHistsData(var+"_PREFITPOSTTAG", "Nom", 1);
+
+  TH1D* full_mc_pretag = (TH1D*)hist_pretag_mc[0]->Clone();
+  for (unsigned int i=1; i < hist_pretag_mc.size(); i++) full_mc_pretag->Add(hist_pretag_mc[i]);
+  TH1D* full_mc_posttag = (TH1D*)hist_posttag_mc[0]->Clone();
+  for (unsigned int i=1; i < hist_posttag_mc.size(); i++) full_mc->Add(hist_posttag_mc[i]);
   
   //calculate data rate
   hist_posttag_data->Divide(hist_pretag_data);
-
-  TH1D *full_mc_pretag(nullptr), *full_mc_posttag(nullptr);
-
-  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-
-    if(i_p==0){
-      full_mc_pretag=(TH1D*)hist_pretag_mc[i_p]->Clone();
-      full_mc_posttag=(TH1D*)hist_posttag_mc[i_p]->Clone();      
-    }else{
-      full_mc_pretag->Add(hist_pretag_mc[i_p]);
-      full_mc_posttag->Add(hist_posttag_mc[i_p]);
-    }
-
-  }
-  
   //calculate MC rate
   full_mc_posttag->Divide(full_mc_pretag);
 
@@ -969,8 +759,6 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
     btagsys->SetPoint(i,x,1);
     btagsys->SetPointEYlow(i,btagsys->GetErrorYlow(i));
     btagsys->SetPointEYhigh(i,btagsys->GetErrorYhigh(i));
-    
-
   }
 
   btagsys->SetLineColor(kRed);
@@ -985,7 +773,6 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   TGraphAsymmErrors *modsys=this->getModellingUncert(fjpt,model_sys,true,true,true);
   modsys->SetFillColor(kBlue);
   modsys->SetFillStyle(3001);
-
 
   TGraphAsymmErrors *mcstat=this->getMCStat(full_mc_posttag);
   
@@ -1006,29 +793,10 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   h_ratio->Draw("EPsame");
 
 
-    //Add ATLAS label
-  TLatex *tex0 = new TLatex();
-  double lx = 0.55; double ly = 0.825;
-  TString text_0="#font[72]{ATLAS} "+m_plot_label;
-  tex0= new TLatex(lx,ly,text_0.Data());
-  tex0->SetNDC();
-  tex0->SetTextSize(0.04);
-  tex0->SetTextColor(1);
-  tex0->SetTextFont(42);
-
-  TLatex *tex1 = new TLatex();
-  lx=0.55;
-  ly=0.78;
-  tex1= new TLatex(lx,ly,m_sub_label);
-  tex1->SetNDC();
-  tex1->SetTextSize(0.03);
-  tex1->SetTextColor(1);
-  tex1->SetTextFont(42);
- 
+  //Add ATLAS label
   pad1->cd();
-  tex0->Draw("same");
-  tex1->Draw("same");
-  
+  ATLASLabel2(0.25,0.825,m_plot_label.Data());
+  myText(0.25, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   leg->Draw();
 
   TString name;
@@ -1037,83 +805,40 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   canv->SaveAs(name.Data());
 
   delete leg;
+  delete full_mc_pretag;
+  delete full_mc_posttag;
+  for (unsigned int i=0; i < hist_pretag_mc.size(); i++) delete hist_pretag_mc[i];
+  for (unsigned int i=0; i < hist_posttag_mc.size(); i++) delete hist_posttag_mc[i];
 
 }
 
 void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename){
 
-  std::vector<double> fj_bins=m_config->GetBinning(var);
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TH1D*> hist_prefit_mc = GetRebinHistsMC(var, "Nom", 0);
+  std::vector<TH1D*> hist_postfit_mc = GetRebinHistsMC(var, "Nom", 1);
+
+  TH1D* full_mc = (TH1D*)hist_prefit_mc[0]->Clone();
+  for (unsigned int i=1; i < hist_prefit_mc.size(); i++) full_mc->Add(hist_prefit_mc[i]);
+  TH1D* full_mc_postfit = (TH1D*)hist_postfit_mc[0]->Clone();
+  for (unsigned int i=1; i < hist_postfit_mc.size(); i++) full_mc->Add(hist_postfit_mc[i]);
   
-  std::vector<TH1D*> hist_prefit_mc, hist_postfit_mc;
-  TString name_pretag;
-
-  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-
-    name_pretag="hist_prefit_mc_"+(m_config->GetFlavourPairs())[i_p];
-
-    hist_prefit_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-
-    name_pretag="hist_postfit_mc_"+(m_config->GetFlavourPairs())[i_p];
-
-    hist_postfit_mc.push_back(new TH1D(name_pretag.Data(),"",fj_bins.size()-1,&(fj_bins[0])));
-    
-
-  }  
-
-  TH1D* help, *help_rebinned;
-
-  double* d_fj_bins = new double[fj_bins.size()];
-
-  for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++) d_fj_bins[i_b]=(double)fj_bins[i_b];
-
-  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
-
-    TString name_mc=regions[i_reg]+"_"+var+"_"+"Nom";
-    //std::cout<<"name_mc: "<<name_mc<<std::endl;
-
-    for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-      help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
-      help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
-      hist_prefit_mc[i_p]->Add(help_rebinned);
-      help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-      //std::cout<<"Correction factor "<<i_p<<" : for hist: "<<m_fatjet_histograms_pretag[name_mc][i_p]->GetName()<<" : "<<m_fit_params[regions[i_reg]+"_Nom"][i_p]<<std::endl;
-      hist_postfit_mc[i_p]->Add(help_rebinned);
-    }
-  }
-
-  TH1D* tmp_stacked_mc(nullptr);
-  
-  TH1D *full_mc(nullptr), *full_mc_postfit(nullptr), *scale_factors(nullptr);
-
-  scale_factors=new TH1D("scale_factors","",fj_bins.size()-1,&(fj_bins[0]));
-
-  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-
-    tmp_stacked_mc=(TH1D*)hist_prefit_mc[i_p]->Clone();
-
-    if(i_p==0) full_mc=(TH1D*)tmp_stacked_mc->Clone();
-    else full_mc->Add(tmp_stacked_mc);
-
-    tmp_stacked_mc=(TH1D*)hist_postfit_mc[i_p]->Clone();
-
-    if(i_p==0) full_mc_postfit=(TH1D*)tmp_stacked_mc->Clone();
-    else full_mc_postfit->Add(tmp_stacked_mc);
-    
-  }
+  TH1D* scale_factors = (TH1D*) full_mc_postfit->Clone();
+  scale_factors->Divide(full_mc);
 
   full_mc->SetName("full_mc");
   full_mc_postfit->SetName("full_mc_postfit");
-
-  scale_factors->Divide(full_mc_postfit,full_mc);
   scale_factors->SetName("scale_factors");
 
-  TFile *outfile=TFile::Open(outfilename.Data(),"RECREATE");
+  TFile *outfile = TFile::Open(outfilename.Data(),"RECREATE");
   outfile->cd();
   full_mc->Write();
   full_mc_postfit->Write();
   scale_factors->Write();
   outfile->Close();
 
-
+  delete full_mc;
+  delete full_mc_postfit;
+  delete scale_factors;
+  for (unsigned int i=0; i < hist_prefit_mc.size(); i++) delete hist_prefit_mc[i];
+  for (unsigned int i=0; i < hist_postfit_mc.size(); i++) delete hist_postfit_mc[i];
 }
