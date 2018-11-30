@@ -1,4 +1,3 @@
-import sys
 import string
 import os
 import re
