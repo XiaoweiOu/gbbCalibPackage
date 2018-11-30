@@ -6,29 +6,24 @@ import string
 #from TAxisFunctions import *
 import ConfigFunctions as config
 import os
+import argparse
 
 ROOT.gROOT.SetBatch(True)
 from ROOT import TCanvas,TPad
 
 #SetupStyle()
 
-outfilename = sys.argv[1]
+parser = argparse.ArgumentParser(description='Make reweight histograms.')
+parser.add_argument('outfile', help="Name of output ROOT file")
+parser.add_argument('infiles', help="JSON file with paths for data and MC files. See README for format")
+args = parser.parse_args()
+
+outfilename = args.outfile
+pathData, ListOfMCPaths, ListOfInclusiveMCPaths = config.GetPathsFromJSON(args.infiles)
 
 Lumi = 36000.0; #in pb^-1
 
 histHelper = config.HistHelper()
-
-basepath = '/data/users/aemerman/gbbCalibPackage/arcond/'
-
-#pathJZ3W = basepath + 'mc16_13TeV.427003.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ4W = basepath + 'mc16_13TeV.427004.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ5W = basepath + 'mc16_13TeV.427005.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ6W = basepath + 'mc16_13TeV.427106.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ7W = basepath + 'mc16_13TeV.427107.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-#ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
-ListOfMCPaths = [ pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
-
-pathData = basepath + 'data16_13TeV.FTAG1.FTNtupCalib.v00-05-02VRa.181126.gbbHist.root'
 
 ListOfTriggers = [ 'HLT85', 'HLT110', 'HLT150', 'HLT175', 'HLT260', 'HLT360', 'HLT380' ]
 

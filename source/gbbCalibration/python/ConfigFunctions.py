@@ -3,6 +3,23 @@ import string
 import os
 import re
 from ROOT import TFile,TTree
+import json
+
+def GetPathsFromJSON(infile):
+  inclMCPaths = []
+  with open(infile, 'r') as f:
+    tbl = json.load(f)
+    if "BasePath" in tbl:
+      dataPath = tbl["BasePath"]+tbl["Data"]
+      muFiltMCPaths = [tbl["BasePath"]+path for path in tbl["MuFilteredMC"]]
+      if "InclusiveMC" in tbl:
+        inclMCPaths = [tbl["BasePath"]+path for path in tbl["InclusiveMC"]]
+    else:
+      dataPath = tbl["Data"]
+      muFiltMCPaths = tbl["MuFilteredMC"]
+      if "InclusiveMC" in tbl:
+        inclMCPaths = tbl["InclusiveMC"]
+  return dataPath, muFiltMCPaths, inclMCPaths
 
 def GetDataFile(name):
   if os.path.exists(name):

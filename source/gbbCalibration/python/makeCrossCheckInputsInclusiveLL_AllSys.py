@@ -6,6 +6,7 @@ import string
 #from TAxisFunctions import *
 import ConfigFunctions as config
 import os
+import argparse
 
 ROOT.gROOT.SetBatch(True)
 from ROOT import TCanvas,TPad,TString
@@ -14,7 +15,13 @@ from ROOT import TCanvas,TPad,TString
 
 Lumi = 36000.0; #in pb^-1
 
-outfilename = sys.argv[1]
+parser = argparse.ArgumentParser(description='Make reweight histograms.')
+parser.add_argument('outfile', help="Name of output ROOT file")
+parser.add_argument('infiles', help="JSON file with paths for data and MC files. See README for format")
+args = parser.parse_args()
+
+outfilename = args.outfile
+pathData, ListOfMCPaths, ListOfInclusiveMCPaths = config.GetPathsFromJSON(args.infiles)
 
 MyConfig = config.LoadGlobalConfig()
 histHelper = config.HistHelper()
@@ -23,26 +30,6 @@ ListOfSystematics = [ ROOT.TString("Nom") ] #MyConfig.GetSystematics()
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfInclusiveFlavourPairs = [ 'LL' ]
 ListOfTJpt = MyConfig.GetTrkJetRegions()
-
-basepath = '/data/users/aemerman/gbbCalibPackage/arcond/'
-
-pathData = basepath + 'data16_13TeV.FTAG1.FTNtupCalib.v00-05-02VRa.181126.gbbHist.root'
-
-#pathJZ3W = basepath + 'mc16_13TeV.427003.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ4W = basepath + 'mc16_13TeV.427004.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ5W = basepath + 'mc16_13TeV.427005.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ6W = basepath + 'mc16_13TeV.427106.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ7W = basepath + 'mc16_13TeV.427107.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-#ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
-ListOfMCPaths = [ pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
-
-pathJZ3W_incl = basepath + 'mc16_13TeV.361023.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ4W_incl = basepath + 'mc16_13TeV.361024.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ5W_incl = basepath + 'mc16_13TeV.361025.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ6W_incl = basepath + 'mc16_13TeV.361026.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ7W_incl = basepath + 'mc16_13TeV.361027.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-#ListOfMCPaths_incl = [ pathJZ3W_incl, pathJZ4W_incl, pathJZ5W_incl, pathJZ6W_incl, pathJZ7W_incl ]
-ListOfInclusiveMCPaths = [ pathJZ4W_incl, pathJZ5W_incl, pathJZ6W_incl, pathJZ7W_incl ]
 
 #TODO: Add paths for Herwig samples?
 

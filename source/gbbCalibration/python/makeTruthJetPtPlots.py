@@ -6,6 +6,7 @@ from PlotFunctions import *
 from TAxisFunctions import *
 import ConfigFunctions as config
 import os
+import argparse
 
 ROOT.gROOT.SetBatch(True)
 from ROOT import TCanvas,TPad,TH2,TColor
@@ -13,21 +14,17 @@ from ROOT import TCanvas,TPad,TH2,TColor
 #ROOT.gStyle.SetOptStat(0)
 SetupStyle()
 
-outfilename = sys.argv[1]
+parser = argparse.ArgumentParser(description='Make reweight histograms.')
+parser.add_argument('outfile', help="Prefix of output files")
+parser.add_argument('infiles', help="JSON file with paths for data and MC files. See README for format")
+args = parser.parse_args()
+
+outfilename = args.outfile
+pathData, ListOfMCPaths, ListOfInclusiveMCPaths = config.GetPathsFromJSON(args.infiles)
 
 Lumi = 36000.0 #in pb^-1
 
 MapOfChannelWeights = config.GetChannelWeights()
-
-basepath = '/data/users/aemerman/gbbCalibPackage/arcond/'
-
-#pathJZ3W = basepath + 'mc16_13TeV.427003.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ4W = basepath + 'mc16_13TeV.427004.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ5W = basepath + 'mc16_13TeV.427005.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ6W = basepath + 'mc16_13TeV.427106.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-pathJZ7W = basepath + 'mc16_13TeV.427107.FTAG1.FTNtupCalib.v00-06-01VRa.181126.gbbHist.root'
-#ListOfMCPaths = [ pathJZ3W, pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
-ListOfMCPaths = [ pathJZ4W, pathJZ5W, pathJZ6W, pathJZ7W ]
 
 #make list of histograms
 histname = 'truthjet_pt'

@@ -1,0 +1,18 @@
+JSON files for input to python scripts need to have the following format:
+
+{
+  "BasePath" : "/my/path/",
+  "Data" : "datapath.root",
+  "MuFilteredMC" : [
+    "mcpath1.root",
+    "mcpath2.root",
+    "mcpath3.root"
+    ],
+  "InclusiveMC" : [
+    "mcpath4.root",
+    "mcpath5.root",
+    "mcpath6.root"
+    ]
+}
+
+Note that the BasePath and InclusiveMC fields are optional
