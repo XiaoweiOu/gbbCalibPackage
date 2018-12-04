@@ -29,7 +29,7 @@ listOfSamples=$(ls -d ${INPATH}/*v00-01-07* | xargs -n1 basename )
 listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-07* | xargs -n1 basename)
 listOfDataSamples=$(ls -d ${INPATH}/*data*v00-01-07* | xargs -n1 basename)
 listOfHerwigMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-07* | xargs -n1 basename | grep -e "42711" -e "42604")
-listOfTestMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-07* | xargs -n1 basename | grep "361027")
+listOfTestMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-07* | xargs -n1 basename | grep "3610")
 #listOfSamples=$(ls -d ${INPATH}/*v00-01-03* | xargs -n1 basename)
 #listOfMCSamples=$(ls -d ${INPATH}/*mc15*v00-01-03* | xargs -n1 basename)
 
@@ -51,20 +51,23 @@ then
     echo "Running Nominal!!!"
     mkdir -p /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_${OUT_TAG}
 
-    for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_${OUT_TAG}/${OUT_TAG}_*.root
-    do
-	if [ -d "${dir}" ];
-	then
-	    rm -rv $dir
+    #for dir in /nfs/dust/atlas/user/ruth/Ruth/QualiTask/Output_Calibration2016/Output_${OUT_TAG}/${OUT_TAG}_*.root
+    #do
+	#if [ -d "${dir}" ];
+	#then
+	    #rm -rv $dir
 	    #echo "directory exists: ${dir}"
-	fi
-    done
+	#fi
+    #done
 
 
     
     #for samp in ${listOfTestMCSamples}
-    for samp in ${listOfSamples}
+    #for samp in ${listOfSamples}
+    #for samp in ${listOfSamplesNoHerwig}
+    for samp in ${listOfMCSamples}
     #for samp in ${listOfDataSamples}
+    #for samp in ${listOfMCSamplesNoHerwig}
     do
 	echo "Sample is: $samp"
 	
@@ -81,7 +84,7 @@ then
 	if [ -d "${OUTPATH}/${OUT_TAG}_${samp}" ];
 	then
 	    echo "directory exists: ${OUTPATH}/${OUT_TAG}_${samp}"  
-	    #rm -rv ${OUTPATH}/${OUT_TAG}_${samp}
+	    rm -rv ${OUTPATH}/${OUT_TAG}_${samp}
 	fi
 
         #   echo "Ntup: ${NTUP}"
@@ -101,7 +104,8 @@ if [ "$DO_SYS" -gt 0 ]
 then
     echo "Running 2-sided Kin systematics!!!"
 
-    for sys in JET_Rtrk_Baseline_Kin JET_Rtrk_Modelling_Kin JET_Rtrk_Tracking_Kin JET_Rtrk_TotalStat_Kin JET_Rtrk_Baseline_Sub JET_Rtrk_Modelling_Sub JET_Rtrk_Tracking_Sub JET_Rtrk_TotalStat_Sub MUON_ID MUON_MS MUON_SCALE MUON_SAGITTA_RESBIAS MUON_SAGITTA_RHO MUON_EFF_STAT MUON_EFF_SYS MUON_EFF_STAT_LOWPT MUON_EFF_SYS_LOWPT MUON_TTVA_STAT MUON_TTVA_SYS 
+    for sys in JET_Rtrk_Baseline_Kin JET_Rtrk_Modelling_Kin JET_Rtrk_Tracking_Kin JET_Rtrk_TotalStat_Kin JET_Rtrk_Baseline_Sub JET_Rtrk_Modelling_Sub JET_Rtrk_Tracking_Sub JET_Rtrk_TotalStat_Sub JET_JvtEfficiency
+#MUON_ID MUON_MS MUON_SCALE MUON_SAGITTA_RESBIAS MUON_SAGITTA_RHO MUON_EFF_STAT MUON_EFF_SYS MUON_EFF_STAT_LOWPT MUON_EFF_SYS_LOWPT MUON_TTVA_STAT MUON_TTVA_SYS 
     do
 	for var in __1up __1down
 	do
@@ -150,7 +154,7 @@ fi
 # 1-sided systematics                                                                                                                                                                       
 #========================
 
-if [ "$DO_SYS" -gt 5 ]
+if [ "$DO_SYS" -gt 0 ]
 then
     echo "Running 1-sided systematics!!!"
 

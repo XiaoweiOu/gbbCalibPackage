@@ -43,6 +43,10 @@ cd ${FILEDIR}
 for dir in $(ls -d *mc*)
 do
     cd ${dir}
+    if [ -e "merged_hist_${dir}" ]
+    then
+        rm "merged_hist_${dir}"
+    fi
     echo `hadd -k ${TMPDIR}/merged_hist_${dir} *.root*`
 
     cd ${FILEDIR}
