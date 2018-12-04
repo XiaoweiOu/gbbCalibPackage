@@ -124,6 +124,9 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_doTrackSmearing = config->GetValue("doTrackSmearing",false);
   std::cout<<"doTrackSmearing: "<<m_doTrackSmearing<<std::endl;
 
+  m_doInclusiveGbb = config->GetValue("doInclusiveGbb",false);
+  std::cout<<"doInclusiveGbb: "<<m_doInclusiveGbb<<std::endl;
+
   m_doApplyBTaggingSF = config->GetValue("doApplyBTaggingSF",false);
   std::cout<<"doApplyBTaggingSF "<<m_doApplyBTaggingSF<<std::endl;
 
@@ -476,7 +479,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Constructing Gbb candidate..."<<std::endl;
 
-  GbbCandidate gbbcand=constructGbbCandidate();
+  GbbCandidate gbbcand= m_doInclusiveGbb ? constructGbbCandidateInclusive() : constructGbbCandidate();
+  //GbbCandidate gbbcand=constructGbbCandidate();
 
   if(gbbcand.fat_index==999){
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
@@ -641,9 +645,26 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //2Anti-b-tags
   if(this->trkjet_MV2c10->at(gbbcand.muojet_index)<0.6455 && this->trkjet_MV2c10->at(gbbcand.nonmuojet_index)<0.6455) updateFlag(eventFlag,GbbCuts::MuNonMuAnti2Btags,true);
 
-  //2Anti-b-tags
+  //Fail 2-b-tags
   if(this->trkjet_MV2c10->at(gbbcand.muojet_index)<0.6455 || this->trkjet_MV2c10->at(gbbcand.nonmuojet_index)<0.6455) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
   
+  //========================================= 
+  //7b.) Bhadron reweighting (temporary)
+  //=========================================
+
+  double Bhadupweight=1., Bhaddownweight=1.;
+  if(dijet_flav.EqualTo("BB")){
+    double BhadPt=this->trkjet_BHad_pt->at(gbbcand.muojet_index)/1e3;
+
+    //up by 10%
+    if(BhadPt<250.) Bhadupweight=0.88;
+    else Bhadupweight=0.15+0.0024*BhadPt;
+
+    //down by 10%
+    if(BhadPt<250.) Bhaddownweight=1.09;
+    else Bhaddownweight=1.95-0.0029*BhadPt;
+
+  }
 
   //=========================================
   //8.) Fill histograms
@@ -686,6 +707,83 @@ bool GbbTupleAna::Processgbb(int i_evt){
        ";#Delta R(fatjet, inv. sum of track-jets);large-R jet p_{T} [GeV]",
        DRditrkjetfatjet,fatjet.Pt()/1e3,25,0.,0.5,50,0.,1000.,total_evt_weight
       );
+
+      //Fill BHad fragmentation information for extrapolation studies
+      if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
+	int ID_transform=0;
+	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==511) ID_transform=1; //B0
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521)ID_transform=2; //B+-
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531)ID_transform=3; //B_s
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5122)ID_transform=4; //Lambda_B
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5132)ID_transform=5; //Cascade_B-
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5232)ID_transform=6; //Cascade_B0
+
+	
+	if(ID_transform) {
+          m_HistSvc->FastFillTH1D(
+           m_config->GetMCHistName(m_SysVarName,"Incl","BX","mjBHadPdgID"),
+           ";muon-jet b-hadron ID;Events",
+           ID_transform,6,0.5,6.5,total_evt_weight
+          );
+        }
+      }
+
+      //If mode specifies, fill extrapolation-specific histograms      
+      double Had_weight_incl=1., Had_weight_Mu=1.;
+      if(dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")){
+
+        //FIXME: where do these values come from?
+	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==511){//B0
+	  Had_weight_incl=0.93;
+	  Had_weight_Mu=0.97;
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521){//B+-
+	  Had_weight_incl=0.95;
+	  Had_weight_Mu=0.95;	  
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531){ //B_s
+	  Had_weight_incl=1.06;
+	  Had_weight_Mu=1.07;
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5122){//Lambda_B
+	  Had_weight_incl=1.81;
+	  Had_weight_Mu=2.16;
+	}
+	
+	/*if(dijet_flav.EqualTo("BB")){
+	  FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl);
+	 }*/
+
+      }
+
+      if (m_RunMode & RunMode::FILL_EXTRAP_INCL) {
+	FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl,"EXTRDATA");
+	FillTemplates(&gbbcand,total_evt_weight,"EXTR");
+      }
+      if (m_RunMode & RunMode::FILL_EXTRAP_MU) {
+	FillTemplates(&gbbcand,total_evt_weight*Had_weight_Mu,"EXTRDATA");
+	FillTemplates(&gbbcand,total_evt_weight,"EXTR");
+      }
+    }
+
+    //fill BHadron pt for reweighting
+    if(dijet_flav.EqualTo("BB")){
+      m_HistSvc->FastFillTH1D(
+        m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPt"),
+        ";muon-jet b-hadron p_{T} [GeV];Events/5 GeV;",
+        this->trkjet_BHad_pt->at(gbbcand.muojet_index)/1e3,100,0.,500.,total_evt_weight
+      );
+      //FIXME: don't these just shift the plot left/right slightly?
+      m_HistSvc->FastFillTH1D(
+        m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledUp"),
+        ";muon-jet b-hadron p_{T} (scaled up) [GeV];Events/5 GeV;",
+        this->trkjet_BHad_pt->at(gbbcand.muojet_index)*1.1/1e3,100,0.,500.,total_evt_weight
+      );
+      m_HistSvc->FastFillTH1D(
+        m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledDown"),
+        ";muon-jet b-hadron p_{T} (scaled down) [GeV];Events/5 GeV;",
+        this->trkjet_BHad_pt->at(gbbcand.muojet_index)*0.9/1e3,100,0.,500.,total_evt_weight
+      );
+      
+      this->FillTemplates(&gbbcand,total_evt_weight*Bhadupweight,"BHADPTUP");
+      this->FillTemplates(&gbbcand,total_evt_weight*Bhaddownweight,"BHADPTDOWN");
     }
 
     TLorentzVector smallRJet;
@@ -710,7 +808,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
   
   //2.) Before Fit and after b-tagging  
   float btag_SF_nom=1., btag_SF_up=1., btag_SF_down=1.; 
-  if(this->eve_isMC && m_doApplyBTaggingSF) this->getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
+  //FIXME: shouldn't the doApplyBTaggingSF flag turn off BTagging SFs?
+  if(this->eve_isMC && (m_doApplyBTaggingSF || !dijet_flav.Contains("BB"))) this->getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
 
   if (passSpecificCuts(eventFlag, CutsWith2Btags)) {
     //std::cout<<"Filling post-tag plots for"<<m_SysVarName<<"with btag_SF :"<<btag_SF_nom<<std::endl;
@@ -736,8 +835,47 @@ bool GbbTupleAna::Processgbb(int i_evt){
       if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
       if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
       if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-    if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) this->FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-      
+      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) this->FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
+
+      //If mode specifies, fill extrapolation-specific histograms      
+      double Had_weight_incl=1., Had_weight_Mu=1.;
+      if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
+
+        //FIXME: where do these values come from?
+	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==511){//B0
+	  Had_weight_incl=0.93;
+	  Had_weight_Mu=0.97;
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521){//B+-
+	  Had_weight_incl=0.95;
+	  Had_weight_Mu=0.95;	  
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531){ //B_s
+	  Had_weight_incl=1.06;
+	  Had_weight_Mu=1.07;
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5122){//Lambda_B
+	  Had_weight_incl=1.81;
+	  Had_weight_Mu=2.16;
+	}
+	
+	/*if(dijet_flav.EqualTo("BB")){
+	  FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl);
+	 }*/
+
+      }
+
+      if (m_RunMode & RunMode::FILL_EXTRAP_INCL) {
+	FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl,"PREFITPOSTTAG_EXTRDATA");
+	FillTemplates(&gbbcand,total_evt_weight,"PREFITPOSTTAG_EXTR");
+      }
+      if (m_RunMode & RunMode::FILL_EXTRAP_MU) {
+	FillTemplates(&gbbcand,total_evt_weight*Had_weight_Mu,"PREFITPOSTTAG_EXTRDATA");
+	FillTemplates(&gbbcand,total_evt_weight,"PREFITPOSTTAG_EXTR");
+      }
+    }
+
+    //fill BHadron pt for reweighting
+    if (dijet_flav.EqualTo("BB")) {
+      this->FillTemplates(&gbbcand,total_evt_weight*Bhadupweight,"PREFITPOSTTAG_BHADPTUP");
+      this->FillTemplates(&gbbcand,total_evt_weight*Bhaddownweight,"PREFITPOSTTAG_BHADPTDOWN");
     }
   }
 
@@ -989,11 +1127,23 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
     }
 
     if(muonjet_index != 999 && nonmuonjet_index != 999 && this->fat_pt->at(i_jet)>gbbcand.fat_pt){ //get leading pt Gbb candidate
-      gbbcand.fat_pt=this->fat_pt->at(i_jet);
-      gbbcand.muojet_index=muonjet_index;
-      gbbcand.nonmuojet_index=nonmuonjet_index;
-      gbbcand.fat_index=i_jet;
-      gbbcand.hasleading2trackjets=leading_2trackjets;
+      TLorentzVector tj1,tj2;
+      tj1.SetPtEtaPhiM(this->trkjet_pt->at(muonjet_index),this->trkjet_eta->at(muonjet_index),this->trkjet_phi->at(muonjet_index),0.);
+      tj2.SetPtEtaPhiM(this->trkjet_pt->at(nonmuonjet_index),this->trkjet_eta->at(nonmuonjet_index),this->trkjet_phi->at(nonmuonjet_index),0.);
+      double deltaR=tj1.DeltaR(tj2);
+
+      //std::cout<<"Delta R is"<<deltaR<<std::endl;
+
+      if (deltaR > 0.5 && false) { //turn off requirement for now, was just for testing
+	muonjet_index = 999;
+	nonmuonjet_index = 999;
+      } else {
+	gbbcand.fat_pt=this->fat_pt->at(i_jet);
+	gbbcand.muojet_index=muonjet_index;
+	gbbcand.nonmuojet_index=nonmuonjet_index;
+	gbbcand.fat_index=i_jet;
+	gbbcand.hasleading2trackjets=leading_2trackjets;
+      }
     }
   }
 
@@ -1089,6 +1239,113 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
 
   return gbbcand; 
 }
+
+GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
+  //function to get Gbb candidate without muon reqirement (inclusive selection
+  
+
+  GbbCandidate gbbcand;
+  gbbcand.fat_pt=0.;
+  gbbcand.muojet_index=999;
+  gbbcand.nonmuojet_index=999;
+  gbbcand.fat_index=999;
+
+
+  unsigned int muonjet_index=999, nonmuonjet_index=999;
+
+  for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
+    
+    if(!passR10CaloJetCuts(i_jet)) continue;
+    
+    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
+	    //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
+	    continue; 
+    }
+    int assocTJ_ind=-1;
+    
+    std::vector<unsigned int> nonmuon_cand_index;
+    
+    muonjet_index=999;
+    nonmuonjet_index=999;
+
+    int n_assoc_selmuon=0;
+  
+    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
+      
+      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
+
+      if(assocTJ_ind<0){
+	if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
+	continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
+      }
+     
+    
+      //Track jet selection cuts already applied in CxAODFramework (Tuple Maker)
+      if(!(this->passR2TrackJetCuts(assocTJ_ind))) continue;
+      // else continue;
+
+
+      //count all muons in all associated track jets, if one of them has one, continue
+      for(unsigned int j=0; j<this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
+	      if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
+		      n_assoc_selmuon++;
+
+	      }
+	      
+      }
+
+
+      
+      if(muonjet_index==999){ //first associated track jet (assoc trkjets are sorted by pt)
+	      muonjet_index=assocTJ_ind;	      
+      }else{
+	      nonmuon_cand_index.push_back(assocTJ_ind);
+      }
+      
+
+    }
+
+    //nonmuon-jet: leading associated track jet that is not the muon jet
+    if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
+  
+    //check if leading two associated track jets are used
+    bool leading_2trackjets=false;
+    if(nonmuon_cand_index.size() && muonjet_index!=999){
+
+      if(nonmuon_cand_index.size()>1){
+	leading_2trackjets=(muonjet_index<nonmuonjet_index || muonjet_index<nonmuon_cand_index[1] );
+
+      }else leading_2trackjets=true;
+
+
+    }
+    
+    //This would be to veto muons
+    /*if(n_assoc_selmuon){
+      muonjet_index = 999;
+      nonmuonjet_index = 999;
+      }*/
+
+    if(muonjet_index != 999 && nonmuonjet_index != 999 && this->fat_pt->at(i_jet)>gbbcand.fat_pt){ //get leading pt Gbb candidate
+      gbbcand.fat_pt=this->fat_pt->at(i_jet);
+      gbbcand.muojet_index=muonjet_index;
+      gbbcand.nonmuojet_index=nonmuonjet_index;
+      gbbcand.fat_index=i_jet;
+      gbbcand.hasleading2trackjets=leading_2trackjets;
+    }
+
+   
+
+  }
+
+  if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
+  else if(nonmuonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find nonmuon jet"<<std::endl;
+ 
+  if(nonmuonjet_index == 999 && muonjet_index == 999 && m_Debug)  std::cout<<"constructGbbCandidate(): Failed to find any subjet or fat jet"<<std::endl;
+
+  return gbbcand; 
+}
+
 
 float GbbTupleAna::getTrigJetWeight(int i_trig_jet,TString trigger_passed){
 

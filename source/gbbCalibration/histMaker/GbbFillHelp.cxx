@@ -302,8 +302,8 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjD2"+nametag),";large-R jet D2;Events/0.02;",
    this->fat_D2->at(gbbcand->fat_index),250,0.,5.,event_weight);
-  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjtau21"+nametag),";large-R jet #tau_{21};Events/0.004;",
-   this->fat_tau21->at(gbbcand->fat_index),250,0.,1.,event_weight);
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjtau21"+nametag),";large-R jet #tau_{21};Events/0.005;",
+   this->fat_tau21->at(gbbcand->fat_index),260,0.,1.3,event_weight);
   
   TLorentzVector fatjet;
   fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand->fat_index),this->fat_eta->at(gbbcand->fat_index),this->fat_phi->at(gbbcand->fat_index),this->fat_E->at(gbbcand->fat_index));

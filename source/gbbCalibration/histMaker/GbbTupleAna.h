@@ -78,6 +78,8 @@ private:
     FILL_PRW = 0x040,
     FILL_TRIGGER = 0x080,
     FOR_FIT_ONLY = 0x100,
+    FILL_EXTRAP_INCL = 0x200,
+    FILL_EXTRAP_MU = 0x400,
   } RunMode;
   
   bool m_Debug;
@@ -103,6 +105,8 @@ private:
   FlavourFracCorrector* m_FlavFracCorrector; 
   
   bool m_doTrackSmearing;
+
+  bool m_doInclusiveGbb;
   
   bool m_doApplyBTaggingSF;
   
@@ -142,6 +146,7 @@ private:
 
   GbbCandidate constructGbbCandidate();
   GbbCandidate constructGbbCandidateAlternative();
+  GbbCandidate constructGbbCandidateInclusive();
 
   TString makeMuJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeNonMuJetPlotName(GbbCandidate* gbbcand, const TString var);

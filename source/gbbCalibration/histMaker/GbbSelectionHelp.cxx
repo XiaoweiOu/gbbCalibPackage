@@ -24,10 +24,9 @@ bool GbbTupleAna::isCleanEvt(const float total_evt_weight) {
 
     m_HistSvc->FastFillTH1D("truthjet_pt",";truth jet p_{T} [GeV];Events/50 GeV;",
      this->truthjet_pt->at(0)/1e3,100,0.,5000.,total_evt_weight);
-#if 0 //FIXME: ask Ruth why this cut exists. Tuples only contain one (R=0.4) jet, is that new?
     if(this->jet_pt->size()>=2 && this->truthjet_pt->size()){
       
-      mc_jet_ratio=0.5*(this->jet_pt->at(0)+this->jet_pt->at(1))/this->truthjet_pt->at(0);
+      double mc_jet_ratio=0.5*(this->jet_pt->at(0)+this->jet_pt->at(1))/this->truthjet_pt->at(0);
 
       if(mc_jet_ratio>1.4){ 
         std::cout<<"Have event with funny pt(reco)/pt(truth) ratio!"<<std::endl;
@@ -38,7 +37,6 @@ bool GbbTupleAna::isCleanEvt(const float total_evt_weight) {
       std::cout<<"Have less than 2 jets"<<std::endl;
       return false;
     }
-#endif
   }
   return true;
 }
