@@ -129,6 +129,10 @@ public :
    vector<float>   *fat_tau32;
    vector<float>   *fat_C2;
    vector<float>   *fat_D2;
+   vector<float>   *fat_HbbScore;
+   vector<float>   *fat_XbbScoreHiggs;
+   vector<float>   *fat_XbbScoreQCD;
+   vector<float>   *fat_XbbScoreTop;
    vector<int>     *fat_trkjet_isGbbJet;
    vector<vector<int> > *fat_assocTrkjet_ind;
    vector<vector<int> > *fat_trkjet_assocTrkjetDR_ind;
@@ -287,6 +291,10 @@ public :
    TBranch        *b_fat_tau32;   //!
    TBranch        *b_fat_C2;   //!
    TBranch        *b_fat_D2;   //!
+   TBranch        *b_fat_HbbScore;   //!
+   TBranch        *b_fat_XbbScoreHiggs;   //!
+   TBranch        *b_fat_XbbScoreQCD;   //!
+   TBranch        *b_fat_XbbScoreTop;   //!
    TBranch        *b_fat_trkjet_isGbbJet;   //!
    TBranch        *b_fat_assocTrkjet_ind;   //!
    TBranch        *b_fat_trkjet_assocTrkjetDR_ind;   //!
@@ -457,6 +465,10 @@ void TupleAna::Init(TTree *tree)
    fat_tau32 = 0;
    fat_C2 = 0;
    fat_D2 = 0;
+   fat_HbbScore = 0;
+   fat_XbbScoreHiggs = 0;
+   fat_XbbScoreQCD = 0;
+   fat_XbbScoreTop = 0;
    fat_trkjet_isGbbJet = 0;
    fat_assocTrkjet_ind = 0;
    fat_trkjet_assocTrkjetDR_ind = 0;
@@ -622,6 +634,10 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("fat_tau32", &fat_tau32, &b_fat_tau32);
    fChain->SetBranchAddress("fat_C2", &fat_C2, &b_fat_C2);
    fChain->SetBranchAddress("fat_D2", &fat_D2, &b_fat_D2);
+   fChain->SetBranchAddress("fat_HbbScore", &fat_HbbScore, &b_fat_HbbScore);
+   fChain->SetBranchAddress("fat_XbbScoreHiggs", &fat_XbbScoreHiggs, &b_fat_XbbScoreHiggs);
+   fChain->SetBranchAddress("fat_XbbScoreQCD", &fat_XbbScoreQCD, &b_fat_XbbScoreQCD);
+   fChain->SetBranchAddress("fat_XbbScoreTop", &fat_XbbScoreTop, &b_fat_XbbScoreTop);
    fChain->SetBranchAddress("fat_trkjet_isGbbJet", &fat_trkjet_isGbbJet, &b_fat_trkjet_isGbbJet);
    fChain->SetBranchAddress("fat_assocTrkjet_ind", &fat_assocTrkjet_ind, &b_fat_assocTrkjet_ind);
    fChain->SetBranchAddress("fat_trkjet_assocTrkjetDR_ind", &fat_trkjet_assocTrkjetDR_ind, &b_fat_trkjet_assocTrkjetDR_ind);
