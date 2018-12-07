@@ -77,8 +77,8 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_doControlPlots = config->GetValue("doControlPlots",false); 
   std::cout<<"doControlPlots: "<<m_doControlPlots<<std::endl; 
 
-  m_doCalibrationSequence = config->GetValue("doCalibrationSequence",false); 
-  std::cout<<"doCalibrationSequence: "<<m_doCalibrationSequence<<std::endl; 
+  m_doCalibSequence = config->GetValue("doCalibSequence",false);
+  std::cout<<"doCalibSequence: "<<m_doCalibSequence<<std::endl;
 
   m_chans=SplitString(config->GetValue("Channels","muo,nonmuo"),',');
   std::cout<<"Channels: "<<config->GetValue("Channels","")<<std::endl;   
@@ -138,6 +138,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
   std::vector<TString> systematics=m_config->GetSystematics();
   systematics.emplace(systematics.begin(),TString("Nom")); //Run over nominal first
+  //std::vector<TString> systematics = { "Nom" };
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   std::vector<TString> tmpl_vars = m_config->GetTemplateVariables();
   std::vector<TString> fitpar_names=m_fitpar_names;
@@ -145,7 +146,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   std::vector<float> fitpar_low=m_fitpar_low;
   std::vector<float> fitpar_high=m_fitpar_high;
 
-  m_fitdata=new FitData(m_inputfile,m_chans);
+  m_fitdata=new FitData(m_inputfile,tmpl_vars);
 
   TString tmpl_data;
   std::vector<TString> tmpl_mc;
@@ -161,7 +162,9 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
     for (TString sys : systematics) {
       for (TString var : tmpl_vars) {
         tmpl_data = m_config->GetDataHistName(region,var); //FIXME?: less calls to GetDataHistName if this could be out of the systematics loop
+        std::cout<<"found hists for "<<region.Data()<<" "<<var.Data()<<std::endl;
         tmpl_mc = m_config->GetMCHistNamesBySys(sys,region,var);
+        std::cout<<"found hists for "<<region.Data()<<" "<<sys.Data()<<" "<<var.Data()<<std::endl;
         m_fitdata->SetHistogramNames(var,tmpl_data,tmpl_mc);
       }
 
@@ -174,16 +177,16 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
       std::cout<<fitpar_high.size()<<std::endl;
 
       for (unsigned int i_par=0; i_par<fitpar_names.size(); i_par++) {
-	std::cout<<"Adding: "<<fitpar_names[i_par]<<" "<<fitpar_start[i_par]<<" "<<fitpar_low[i_par]<<" "<<fitpar_high[i_par]<<std::endl;
-	m_fitter.AddParameter(fitpar_names[i_par],fitpar_start[i_par],0.001,fitpar_low[i_par],fitpar_high[i_par]);
+        std::cout<<"Adding: "<<fitpar_names[i_par]<<" "<<fitpar_start[i_par]<<" "<<fitpar_low[i_par]<<" "<<fitpar_high[i_par]<<std::endl;
+        m_fitter.AddParameter(fitpar_names[i_par],fitpar_start[i_par],0.001,fitpar_low[i_par],fitpar_high[i_par]);
       } 
       m_fitter.Initialize();      
 
       if (m_nSmoothingPasses > 0) m_fitdata->KernelSmoothTemplates(m_nSmoothingPasses);
 
       for (TString var : tmpl_vars) {
-	if(sys.EqualTo("Nom")) binning[var] = m_fitdata->AutoRebinHistograms(var,m_rebinStatThr,1);
-	else m_fitdata->FixHistogramBins(var, binning[var]); //binning[2*i_reg+i_chan]);//why 2*i_reg?
+        if(sys.EqualTo("Nom")) binning[var] = m_fitdata->AutoRebinHistograms(var,m_rebinStatThr,1);
+        else m_fitdata->FixHistogramBins(var, binning[var]); //binning[2*i_reg+i_chan]);//why 2*i_reg?
       }
 
       m_fitter.PrintParameters("Simple");
@@ -199,16 +202,16 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
       //TODO: why muon_id__1up? region shouldn't be hard-coded
       if(sys.EqualTo("Nom") || sys.EqualTo("MUON_ID__1up") || region.Contains("mjpt_g200_nmjpt_g300")){ //make control plots
 
-	if(m_doControlPlots){
+        if(m_doControlPlots){
           for (TString var : tmpl_vars) {
-	    MakeTemplateControlPlots(false,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,1);
-	    MakeTemplateControlPlots(true,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,1);
+            MakeTemplateControlPlots(false,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,1);
+            MakeTemplateControlPlots(true,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,1);
           }
-	}
+        }
 
         //TODO: should this loop over all tmpl_vars?
-	flav_fractions.push_back(this->MakeFlavourFractionTable(true,m_fitdata->GetDataHist(tmpl_vars[1]),m_fitdata->GetMCHists(tmpl_vars[1]),tmpl_vars[1],region));
-	mu_factors.push_back(this->PrintMuAndError(region,m_fitdata->GetMCHists(tmpl_vars[1])));
+        flav_fractions.push_back(this->MakeFlavourFractionTable(true,m_fitdata->GetDataHist(tmpl_vars[1]),m_fitdata->GetMCHists(tmpl_vars[1]),tmpl_vars[1],region));
+        mu_factors.push_back(this->PrintMuAndError(region,m_fitdata->GetMCHists(tmpl_vars[1])));
       }
 
       m_fitdata->ResetHists();
@@ -228,8 +231,8 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
 
       if(sys.EqualTo("Nom") && m_doControlPlots ){
         for (TString var : tmpl_vars) {
-	  MakeTemplateControlPlots(false,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,4,true);
-	  MakeTemplateControlPlots(true,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,4,true);
+          MakeTemplateControlPlots(false,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,4,true);
+          MakeTemplateControlPlots(true,m_fitdata->GetDataHist(var),m_fitdata->GetMCHists(var),var,region,sys,4,true);
         }
       }
     //FIXME: was only being reset in region loop. bug?
@@ -271,7 +274,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   std::cout<<"=========================="<<std::endl;
   
 
-  if(m_doCalibrationSequence){
+  if(m_doCalibSequence){
     std::vector<std::vector<double>> pseudo_exp_result;
     //Run Pseudo-Experiments for template stat. uncertainty
     for (TString region : regions) {
@@ -305,11 +308,12 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
       m_fitdata->ReadInHistograms();
       
       m_fitter.GetPseudoDataFitResult(pseudo_exp_result, m_nPseudoExps);
-      m_pseudo_fit_params[region] = pseudo_exp_result;
+      m_pseudo_fit_params_Data[region] = pseudo_exp_result;
       
       m_fitdata->ResetHists();
     }
   }
+  std::cout << "Finished pseudo-experiments" << std::endl;
 
   //start calibration sequence
   
@@ -347,20 +351,21 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   this->ReadInFatJetHists(tmpl_vars,calib_sys);
 
   TString ts_pt="fjpt";
-  
-  if(m_doControlPlots && !m_doCalibrationSequence){
-    for (TString var : variables) {
-      //fat jet control plots
-      //this->MakeFatJetControlPlots(var,false,false,sys_only,model_sys);
-      this->MakeFatJetControlPlots(var,false,true,sys_only,model_sys);
-    }
-    
-    //posttag plots
-    for (TString var : variables_posttag) {
-      //this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only,model_sys);
-      this->MakeFatJetControlPlots(var,true,true,sys_only,model_sys);
-    }
-  }
+
+  //FIXME: broken when doing 2D fits (per Migle)
+  //if(m_doControlPlots && !m_doCalibSequence){
+  //  for (TString var : variables) {
+  //    //fat jet control plots
+  //    //this->MakeFatJetControlPlots(var,false,false,sys_only,model_sys);
+  //    this->MakeFatJetControlPlots(var,false,true,sys_only,model_sys);
+  //  }
+  //  
+  //  //posttag plots
+  //  for (TString var : variables_posttag) {
+  //    //this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only,model_sys);
+  //    this->MakeFatJetControlPlots(var,true,true,sys_only,model_sys);
+  //  }
+  //}
 
   //fat jet binning control plots
   //for(auto& reg : regions){
@@ -370,13 +375,14 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   //}
   
 
-  //BTagging Rate Plots
-  if(m_doControlPlots && !m_doCalibrationSequence) this->MakeBTaggingRatePlots(sys_only,model_sys);
+  //FIXME: also broken. maybe needs fatjet bins?
+  ////BTagging Rate Plots
+  //if(m_doControlPlots && !m_doCalibSequence) this->MakeBTaggingRatePlots(sys_only,model_sys);
 
   //TString reweight_name="test_reweight_hists.root";
   //this->SaveReweightHists(pt_name, reweight_name);
   
-  if(m_doCalibrationSequence){
+  if(m_doCalibSequence){
   
     CalibResult c_res=this->CalculateScaleFactorsAndErrors(true);
     this->MakeCalibrationPlots(c_res,"2DSF");
@@ -513,6 +519,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
 
 
 SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, bool doPseudo, unsigned int i_pseudo, bool doPseudoData){
+std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
@@ -524,13 +531,14 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
   float N_BB_pretag_mc_unscaled=0. , N_BB_posttag_mc_unscaled=0., N_total_pretag_mc_unscaled=0., N_total_posttag_mc_unscaled=0., N_BB_untag_mc_unscaled=0., N_total_untag_mc_unscaled=0.;
 
   double Err_BB_posttag_mc_unscaled=0., Err_BB_untag_mc_unscaled=0.;
+  double Err_flavour=0., Int_flavour=0.;
 
   std::vector<float> BB_SF, BB_SF_datastaterr, data_eff, mc_eff, data_eff_datastaterr, mc_eff_staterr;
 
   float err_factor_tagged, err_factor_untagged;
 
   for (TString region : regions) {
-    
+
     /* TString mc_name=regions[i_reg]+"_fjpt_Nom";
     TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
 
@@ -555,10 +563,10 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
       hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 3, i_pseudo);
       hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 3, i_pseudo);
     } else {
-      if (sys.Contains("Nom")) hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_PREFITUNTAG", sys, region, 0);
       hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 1);
-      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", region, sys, 1);
+      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 1);
     }
+    if (sys.Contains("Nom")) hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_PREFITUNTAG", sys, region, 0);
     unsigned int nBinsX = hist_pretag_mc_unscaled[0]->GetNbinsX(); // All hists have same binning
 
     TH1D* hist_pretag_data = GetRebinHistByRegionData("mjmaxSd0", region);
@@ -575,7 +583,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
       N_total_pretag_mc_unscaled += hist_pretag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
       N_total_pretag_mc += hist_pretag_mc[i_p]->Integral(0,nBinsX+1);
       if (hist_untag_mc_unscaled.size() > 0) {
-        N_total_untag_mc_unscaled += hist_untag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
+        N_total_untag_mc_unscaled += hist_untag_mc_unscaled[i_p]->Integral(0,hist_untag_mc_unscaled[i_p]->GetNbinsX()+1);
       }
       N_total_posttag_mc_unscaled += hist_posttag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
       N_total_posttag_mc += hist_posttag_mc[i_p]->Integral(0,nBinsX+1);
@@ -588,6 +596,14 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
         }
         N_BB_posttag_mc_unscaled = hist_posttag_mc_unscaled[i_p]->Integral(0,nBinsX+1);
         N_BB_posttag_mc = hist_posttag_mc[i_p]->Integral(0,nBinsX+1);
+
+        if(sys.EqualTo("Nom") && region.Contains("l100") && region.Contains("g300") && !doPseudo && !doPseudoData){
+          Int_flavour=hist_posttag_mc_unscaled[i_p]->IntegralAndError(0,nBinsX+1,Err_flavour);
+          if(Err_flavour/Int_flavour>0.2) std::cout<<"Have bigger than 20% error on flavour fraction"<<i_p<<std::endl;
+          if(Err_flavour/Int_flavour>0.3) std::cout<<"Have bigger than 30% error on flavour fraction"<<i_p<<std::endl;
+          if(Err_flavour/Int_flavour>0.4) std::cout<<"Have bigger than 40% error on flavour fraction"<<i_p<<std::endl;
+          if(Err_flavour/Int_flavour>0.5) std::cout<<"Have bigger than 50% error on flavour fraction"<<i_p<<std::endl;
+        }
       }
 
       //if(doPseudo)help->Scale(m_pseudo_fit_params[regions[i_reg]][i_pseudo][i_p]);
@@ -681,7 +697,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
 
 
 CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegion){
-
+std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl;
   std::vector<float> sf_nom, err_up, err_down, sf_nom_datastaterr;
 
   std::vector<float> data_eff_nom, data_eff_err_up, data_eff_err_down, data_eff_nom_datastaterr;
@@ -691,7 +707,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
   if(doByRegion){
     int size = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions().size() : m_config->GetTrkJetRegions().size();
     for(int i=0; i<size; i++) fj_bins.push_back((float)i);
-    fj_bins.push_back(fj_bins.back()+1.);
+    //fj_bins.push_back(fj_bins.back()+1.);
   }else fj_bins=m_config->GetFatJetPtBins();
   
   std::vector<float> current_SF,current_data_eff, current_mc_eff;  
@@ -701,6 +717,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
   std::vector<float> data_eff_err_sq_down(fj_bins.size()-1,0.);
 
   std::vector<TString> systematics=m_config->GetSystematics();
+  systematics.emplace(systematics.begin(),TString("Nom")); //Run over nominal first
  
   sf_nom.clear();
   err_up.clear();
@@ -713,14 +730,14 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
   std::map<TString,std::vector<double>> error_map_down;
 
 
-   for(unsigned int i_sys=0; i_sys<systematics.size(); i_sys++){
+   for (TString sys : systematics) {
     //FOR NOW: Don't consider Herwig systematics
-    if(systematics[i_sys].Contains("Herwig")) continue;
+    if(sys.Contains("Herwig")) continue;
 
-    if(doByRegion) sf_result=this->CalculateScaleFactorsByRegion(systematics[i_sys]);
-    else sf_result=this->CalculateScaleFactors(systematics[i_sys]);
+    if(doByRegion) sf_result=this->CalculateScaleFactorsByRegion(sys);
+    else sf_result=this->CalculateScaleFactors(sys);
 
-    if(systematics[i_sys].EqualTo("Nom")){
+    if(sys.EqualTo("Nom")){
       sf_nom=sf_result.fsf;
       //sf_nom_datastaterr=sf_result.fsf_datastat_err;
       data_eff_nom=sf_result.feff_data;
@@ -740,33 +757,32 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
     }
     for(unsigned int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
 
-      //if(!systematics[i_sys].EqualTo("Nom")) current_SF[i_bin]=current_SF[i_bin]*current_mc_eff[i_bin]/mc_eff_nom[i_bin];
+      //if(!sys.EqualTo("Nom")) current_SF[i_bin]=current_SF[i_bin]*current_mc_eff[i_bin]/mc_eff_nom[i_bin];
       
-      if(i_bin==11)std::cout<<"Region: "<<m_config->GetTrkJetRegions()[i_bin]<<std::endl;
+      //FIXME: what is bin 11?
+      //if(i_bin==11)std::cout<<"Region: "<<m_config->GetTrkJetRegions()[i_bin]<<std::endl;
 
       float diff=current_SF[i_bin]-sf_nom[i_bin];
-      if(i_bin==11) std::cout<<"SF diff: "<<diff<<std::endl;
-      if(i_bin==11) std::cout<<"data eff diff: "<<current_data_eff[i_bin]-data_eff_nom[i_bin]<<std::endl;
-      if(i_bin==11) std::cout<<"MC eff diff: "<<current_mc_eff[i_bin]-mc_eff_nom[i_bin]<<std::endl;
+      //if(i_bin==11) std::cout<<"SF diff: "<<diff<<std::endl;
+      //if(i_bin==11) std::cout<<"data eff diff: "<<current_data_eff[i_bin]-data_eff_nom[i_bin]<<std::endl;
+      //if(i_bin==11) std::cout<<"MC eff diff: "<<current_mc_eff[i_bin]-mc_eff_nom[i_bin]<<std::endl;
 
       /*if(TMath::Abs(diff)>0.058){
 	std::cout<<"Region: "<<m_config->GetAllRegions()[i_bin]<<std::endl;
-	std::cout<<"Big Diff SF for sys "<<systematics[i_sys]<< " :"<<diff<<std::endl;
+	std::cout<<"Big Diff SF for sys "<<sys<< " :"<<diff<<std::endl;
 	}*/
       if(diff>0) err_sq_up[i_bin]+=diff*diff;
       else err_sq_down[i_bin]+=diff*diff;
       
       float diff_data_eff=current_data_eff[i_bin]-data_eff_nom[i_bin]; 
       
-      //std::cout<<"Diff data eff for sys "<<systematics[i_sys]<< " :"<<diff<<std::endl;
-
+      //std::cout<<"Diff data eff for sys "<<sys<< " :"<<diff<<std::endl;
 
       /*if(TMath::Abs(diff)>0.1 || diff_data_eff> 0.1){
 	std::cout<<"Region: "<<m_config->GetAllRegions()[i_bin]<<std::endl;
-	std::cout<<"Big Diff SF for sys "<<systematics[i_sys]<< " :"<<diff<<std::endl;
-	std::cout<<"Big Diff SF for sys "<<systematics[i_sys]<< " :"<<diff_data_eff<<std::endl;
+	std::cout<<"Big Diff SF for sys "<<sys<< " :"<<diff<<std::endl;
+	std::cout<<"Big Diff SF for sys "<<sys<< " :"<<diff_data_eff<<std::endl;
 	}*/
-
 
       if(diff_data_eff>0) data_eff_err_sq_up[i_bin]+=diff_data_eff*diff_data_eff;
       else data_eff_err_sq_down[i_bin]+=diff_data_eff*diff_data_eff;
@@ -775,18 +791,17 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
       error_map_up[m_config->GetTrkJetRegions()[i_bin]].push_back(TMath::Sqrt(err_sq_up[i_bin]));
       error_map_down[m_config->GetTrkJetRegions()[i_bin]].push_back(TMath::Sqrt(err_sq_down[i_bin]));
 
-
       /*std::cout<<"After: "<<systematics[i_sys]<<std::endl;
       std::cout<<"Up is now "<<TMath::Sqrt(data_eff_err_sq_up[i_bin])<<std::endl;
       std::cout<<"Down is now "<<TMath::Sqrt(data_eff_err_sq_down[i_bin])<<std::endl;
       */
-
     }    
   }
 
-   std::cout<<"Total: "<<std::endl;
-   std::cout<<"Up is now "<<error_map_up[m_config->GetTrkJetRegions()[11]].back()<<std::endl;
-   std::cout<<"Down is now "<<error_map_down[m_config->GetTrkJetRegions()[11]].back()<<std::endl;
+   //FIXME: what is region 11?
+   //std::cout<<"Total: "<<std::endl;
+   //std::cout<<"Up is now "<<error_map_up[m_config->GetTrkJetRegions()[11]].back()<<std::endl;
+   //std::cout<<"Down is now "<<error_map_down[m_config->GetTrkJetRegions()[11]].back()<<std::endl;
    
 
    /*for(unsigned int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
@@ -863,11 +878,7 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
       PseudoTemplateEfficiencies_Data[i_bin].push_back((double)pseudo_templates_result.feff_data[i_bin]);
       //PseudoEfficiencies_MC[i_bin].push_back((double)pseudo_templates_result.feff_mc[i_bin]);
       //std::cout<<"Pseudo-Efficiency MC"<<pseudo_templates_result.feff_mc[i_bin]<<std::endl;
-
-
     }
-    
-
   }
 
   //loop over all fits with pseudo-data
@@ -881,15 +892,8 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
     for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
       PseudoDataScaleFactors[i_bin].push_back((double)pseudo_data_result.fsf[i_bin]);
       PseudoDataEfficiencies_Data[i_bin].push_back((double)pseudo_data_result.feff_data[i_bin]);
-
     }
-    
-
   }
-
-
-
-
 
     /*current_SF=pseudo_templates_result.fsf;
   
@@ -902,8 +906,6 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
 
       if(i==(m_pseudo_fit_params[m_config->GetAllRegions()[0]].size()-1)) pseudo_err_sq[i_bin]=M2[i_bin]/(n[i_bin]-1);
       }*/
- 
-  
 
   for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
 
@@ -1016,7 +1018,8 @@ CalibResult ScaleFactorCalculator::CalculateScaleFactorsAndErrors(bool doByRegio
 }
 
 void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, const std::vector<TString> systematics){
-  std::vector<TString> regions = m_config->GetFatJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  //std::vector<TString> regions = m_config->GetFatJetRegions();
 
   TFile *infile = TFile::Open(m_inputfile.Data(),"READ");
   if (infile->IsZombie()) {
@@ -1029,19 +1032,22 @@ void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, c
   for (TString region : regions) {
     for (TString var : vars) {
       // Read in data hist
-      histName = m_config->GetDataHistName(region,var).Data();
-      infile->GetObject(histName.Data(), temp);
-      if (!temp) {
-        std::cerr<<"Failed to get histogram "<<histName.Data()<<std::endl;
-        return;
-      } 
-      clone = (TH1D*)temp->Clone();
-      clone->SetDirectory(0);
-      m_HistMap.emplace(histName,clone);
+      if ( !var.Contains("BTAG") && !var.Contains("UNTAG") ) {
+        histName = m_config->GetDataHistName(region,var).Data();
+        infile->GetObject(histName.Data(), temp);
+        if (!temp) {
+          std::cerr<<"Failed to get histogram "<<histName.Data()<<std::endl;
+          return;
+        } 
+        clone = (TH1D*)temp->Clone();
+        clone->SetDirectory(0);
+        m_HistMap.emplace(histName,clone);
+        if (m_Debug) std::cout<<"Added "<<histName.Data()<<" to HistMap"<<std::endl;
+        temp = nullptr;
+      }
       for (TString sys : systematics) {
+        // Read in MC hists
         for (TString histName : m_config->GetMCHistNamesBySys(sys,region,var)) {
-          // Read in MC hist
-          histName = m_config->GetDataHistName(region,var).Data();
           infile->GetObject(histName.Data(), temp);
           if (!temp) {
             std::cerr<<"Failed to get histogram "<<histName.Data()<<std::endl;
@@ -1050,6 +1056,8 @@ void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, c
           clone = (TH1D*)temp->Clone();
           clone->SetDirectory(0);
           m_HistMap.emplace(histName,clone);
+          if (m_Debug) std::cout<<"Added "<<histName.Data()<<" to HistMap"<<std::endl;
+          temp = nullptr;
         } // End loop over flavour pairs
       } // End loop over systematics
     } // End loop over variables
@@ -1271,11 +1279,12 @@ TH1D* ScaleFactorCalculator::GetRebinHistData(const TString var) {
   sum = new TH1D(("data_"+var).Data(),"",(int)bins.size()-1,&(bins[0]));
   for (TString region : regions) {
     TString name = m_config->GetDataHistName(region,var);
-    help = (TH1D*) m_HistMap[name]->Clone();
+    help = m_HistMap[name];
     if (!help) {
       std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
       continue;
     }
+    help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
     //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
     help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
     sum->Add(help);
@@ -1296,11 +1305,12 @@ TH1D* ScaleFactorCalculator::GetRebinHistByRegionData(const TString var, const T
   TH1D *help(nullptr);
 
   TString name = m_config->GetDataHistName(region,var);
-  help = (TH1D*) m_HistMap[name]->Clone();
+  help = m_HistMap[name];
   if (!help) {
     std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
     return nullptr;
   }
+  help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
   //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
   help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
   return help;
@@ -1321,11 +1331,12 @@ std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsMC(const TString var, con
     sum = new TH1D((sys+"_"+flav+"_"+var).Data(),"",(int)bins.size()-1,&(bins[0]));
     for (TString region : regions) {
       TString name = m_config->GetMCHistName(sys,region,flav,var);
-      help = (TH1D*) m_HistMap[name]->Clone();
+      help = m_HistMap[name];
       if (!help) {
         std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
         continue;
       }
+      help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
       help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
       if (scaleType == 1) help->Scale(GetFitScale(sys,region,flav));
       else if (scaleType == 2) help->Scale(GetPseudoFitScale(region,flav,i_pseudo));
@@ -1350,16 +1361,18 @@ std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsByRegionMC(const TString 
 
   for (TString flav : m_config->GetFlavourPairs()) {
     TString name = m_config->GetMCHistName(sys,region,flav,var);
-    help = (TH1D*) m_HistMap[name]->Clone();
+    help = m_HistMap[name];
     if (!help) {
       std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
       continue;
     }
+    help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
     help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
     if (scaleType == 1) help->Scale(GetFitScale(sys,region,flav));
     else if (scaleType == 2) help->Scale(GetPseudoFitScale(region,flav,i_pseudo));
     else if (scaleType == 3) help->Scale(GetPseudoDataFitScale(region,flav,i_pseudo));
     output.push_back(help);
+    help = nullptr;
   }
   delete help;
   return output;

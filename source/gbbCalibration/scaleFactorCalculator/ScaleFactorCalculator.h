@@ -63,7 +63,7 @@ private:
   bool m_doMCStatsNP;
   bool m_doFitInFatJetPtBins;
   bool m_doControlPlots;
-  bool m_doCalibrationSequence;
+  bool m_doCalibSequence;
   int m_nSmoothingPasses;
   std::vector<TString> m_chans;
   std::vector<TString> m_fitpar_names;
@@ -78,7 +78,7 @@ private:
   TString m_subsub_label;
   float m_rebinStatThr;
 
-  std::map<TString, std::shared_ptr<TH1D> > m_HistMap;
+  std::map<TString, TH1D* > m_HistMap;
   std::map<TString, std::vector<double> > m_FitParamsMap;
   std::map<TString, std::vector<double> > m_CovMatMap;
   std::map<TString, std::vector<double> > m_PseudoFitParamsMap;

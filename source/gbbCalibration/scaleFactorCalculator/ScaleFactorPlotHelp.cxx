@@ -116,12 +116,12 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   }else if(plot_type.Contains("2D")){
 
 
-    //FIXME: why adding extra bin? and why 2 for nonmu?
     mutrackjetbins.insert(mutrackjetbins.begin(),0.);
     mutrackjetbins.push_back(2*mutrackjetbins[mutrackjetbins.size()-1]-mutrackjetbins[mutrackjetbins.size()-2]);
 
     nonmutrackjetbins.insert(nonmutrackjetbins.begin(),0.);
     nonmutrackjetbins.push_back(2*nonmutrackjetbins[nonmutrackjetbins.size()-1]-nonmutrackjetbins[nonmutrackjetbins.size()-2]);
+    //NB: adding extra bin to provide blank space for header
     nonmutrackjetbins.push_back(nonmutrackjetbins[nonmutrackjetbins.size()-1]+140.);
 
 
@@ -255,7 +255,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
   //prepare legend
-  TLegend *leg=new TLegend(0.55,0.5,0.88,0.825);
+  TLegend *leg=new TLegend(0.78,0.5,0.88,0.825);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
 
@@ -263,7 +263,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   if(rebin>1) data_hist->Rebin(rebin);
 
-  THStack *mystack=new THStack("myStack","stack");
+  THStack *mystack=new THStack("myStack","");
 
   TH1D* tmp_stacked_mc(nullptr);
   
@@ -374,8 +374,8 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   //Add ATLAS label
   pad1->cd();
-  ATLASLabel2(0.25,0.825,m_plot_label.Data());
-  myText(0.25, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
+  ATLASLabel(0.45,0.825,m_plot_label.Data());
+  myText(0.45, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   pad1->RedrawAxis();
   
 

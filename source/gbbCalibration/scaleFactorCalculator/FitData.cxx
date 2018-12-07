@@ -340,7 +340,7 @@ std::vector<double> FitData::AutoRebinHistograms(TString& channel, double statTh
     for(auto& mc_hist :  m_templateHistsMap[channel]){
 		  
       int pos = &mc_hist-&(m_templateHistsMap[channel][0]);
-      //std::cout<<"pos:"<<pos<<std::endl;
+      //std::cout<<"pos: "<<pos<<std::endl;
 
       n_mc_template[pos]+=mc_hist.get()->GetBinContent(i_bin);
       err_mc_template[pos]+=mc_hist.get()->GetBinError(i_bin)*mc_hist.get()->GetBinError(i_bin);
@@ -348,9 +348,9 @@ std::vector<double> FitData::AutoRebinHistograms(TString& channel, double statTh
       n_mc_total+=mc_hist.get()->GetBinContent(i_bin);
       err_mc_total+=mc_hist.get()->GetBinError(i_bin)*mc_hist.get()->GetBinError(i_bin);
     }
-		
-    //std::cout<<"difference is"<<i_bin+1-curr_bin<<std::endl;
-    //std::cout<<"bin center is"<<m_templateHistsMap[channel][0]->GetBinCenter(i_bin)<<std::endl;
+
+    //std::cout<<"difference is "<<i_bin+1-curr_bin<<std::endl;
+    //std::cout<<"bin center is "<<m_templateHistsMap[channel][0]->GetBinCenter(i_bin)<<std::endl;
 		
 		
     bool hasStatsTemplates=true;
@@ -412,7 +412,7 @@ std::vector<double> FitData::AutoRebinHistograms(TString& channel, double statTh
 	
   m_dataHistMap[channel]=std::shared_ptr<TH1D>(new TH1D(*temp_data));
 
-  std::cout<<"Data histogram has"<<m_dataHistMap[channel].get()->GetNbinsX()<<" bins"<<std::endl;                                                                                                                            
+  std::cout<<"Data histogram has "<<m_dataHistMap[channel].get()->GetNbinsX()<<" bins"<<std::endl;                                                                                                                            
 
 
   for(unsigned int i_mc=0; i_mc<m_templateHistsMap[channel].size(); i_mc++){
@@ -748,7 +748,7 @@ void FitData::ReadInHistograms(TString &channel, int smooth_Ntimes){
   m_infile.get()->GetObject(m_Data_HistNamesMap[channel].Data(),tmp);
 
   if(tmp) std::cout<<"Read in "<<m_Data_HistNamesMap[channel]<<std::endl;
-  else std::cout<<"Error in FitData::ReadInHistograms(): Can't find histogram"<<m_Data_HistNamesMap[channel]<<"!"<<std::endl;
+  else std::cout<<"Error in FitData::ReadInHistograms(): Can't find histogram "<<m_Data_HistNamesMap[channel]<<"!"<<std::endl;
 
   clone_tmp=(TH1D*)tmp->Clone();
   clone_tmp->SetDirectory(0);
