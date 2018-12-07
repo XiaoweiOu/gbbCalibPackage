@@ -45,15 +45,13 @@ class GlobalConfig {
     return GetPtLabel(nonMuJetPt, m_NonMuJetPtBins, m_NonMuJetRegions);
   }
 
-  std::vector<float> GetBinning(TString var) {
-    if (m_PlotBinning.find(var) != m_PlotBinning.end())
-      return m_PlotBinning[var];
-    else return std::vector<float>();
-  }
+  std::vector<TString> GetTemplateVariables() { return m_TemplateVariables; }
+  std::vector<TString> GetPlotVariables() { return m_PlotVariables; }
+  std::vector<double> GetBinning(const TString var);
 
   TString GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var);
   TString GetDataHistName(const TString ptLabel, const TString var) {
-    return GetMCHistName("Data",ptLabel,"",var);
+    return GetMCHistName("Nom",ptLabel,"Data",var);
   }
   std::vector<TString> GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var);
   std::map<TString,std::vector<TString> > GetMCHistNames(const TString ptLabel, const TString var);
@@ -70,8 +68,9 @@ class GlobalConfig {
   std::vector<TString> m_MuonJetRegions;
   std::vector<TString> m_NonMuJetRegions;
 
+  std::vector<TString> m_TemplateVariables;
   std::vector<TString> m_PlotVariables;
-  std::map<TString, std::vector<float> > m_PlotBinning;
+  std::map<TString, std::vector<double> > m_PlotBinning;
 
   std::vector<TString> MakeLabels(const std::vector<float> ptBins, const TString prefix);
   TString GetPtLabel(float pt, std::vector<float> ptBins, std::vector<TString> ptRegions);

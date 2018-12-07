@@ -43,12 +43,8 @@ void HistogramService::FastFillTH1D(TString tkey, TString title, double x, int n
    string dir = key.substr(0,key.find_last_of("/")+1);
    key = fCurrentDir + "/" + key;
    if (fMegaList.find(key)==fMegaList.end()){  // book histogram
-      //fMegaList[key] = new TH1D(tkey, tkey, nbin, xmin, xmax);
       fMegaList[key] = new TH1D(hist.c_str(), title, nbin, xmin, xmax);
       fDirMap[key] = fCurrentDir + "/" + dir;
-//      int len = key.find_last_of("/")-key.find_first_not_of("/");
-//      if (len < 1) fDirMap[key] = fCurrentDir;
-//      else fDirMap[key] = key.substr(key.find_first_not_of("/"),len);
 
       ((TH1D*)fMegaList[key])->Sumw2();
    }
@@ -66,9 +62,6 @@ void HistogramService::FastFillTH2D(TString tkey, TString title, double x, doubl
                                 nbinx, xmin, xmax, 
                                 nbiny, ymin, ymax);
       fDirMap[key] = fCurrentDir + "/" + dir;
-      //int len = key.find_last_of("/")-key.find_first_not_of("/");
-      //if (len < 1) fDirMap[key] = fCurrentDir;
-      //else fDirMap[key] = key.substr(key.find_first_not_of("/"),len);
       ((TH2D*)fMegaList[key])->Sumw2();
    }
    ((TH2D*) fMegaList[key])->Fill(x,y,weight);
@@ -93,7 +86,6 @@ void HistogramService::WriteRootFile(TString fileName)
       else if ( dirIt == mapOfCreatedDirs.end()) {
          //  create directories recursively
          size_t pos(0), prev_pos(0);
-         TDirectory* lstDir = f;
          while ( (pos=dirName.find("/",prev_pos)) != std::string::npos) {
            string subdirName = dirName.substr(prev_pos, pos-prev_pos);
            string subdirPath = dirName.substr(0, pos);
@@ -101,7 +93,7 @@ void HistogramService::WriteRootFile(TString fileName)
            if (subdirName=="") { prev_pos++; continue; } // Skip past "//" sequences
            else if ( subdirIt == mapOfCreatedDirs.end()) {
              cout << "creating dir "<<subdirPath<<" for key "<<key<<endl;
-             lstDir = f->mkdir(subdirPath.data(), subdirName.data());
+             f->mkdir(subdirPath.data(), subdirName.data());
              f->cd(subdirPath.data());
              mapOfCreatedDirs[subdirPath] = gDirectory->CurrentDirectory();
            } else subdirIt->second->cd();
@@ -110,15 +102,12 @@ void HistogramService::WriteRootFile(TString fileName)
          string subdirName = dirName.substr(prev_pos);
          if (subdirName!="") {
            //cout << "creating dir "<<subdirName<<" for key "<<key<<endl;
-           lstDir = f->mkdir(dirName.data(), subdirName.data());
+           f->mkdir(dirName.data(), subdirName.data());
            f->cd(dirName.data());
            mapOfCreatedDirs[dirName] = gDirectory->CurrentDirectory();
-           //mapOfCreatedDirs[dirName] = lstDir;
-gDirectory->pwd();
          }
       } else dirIt->second->cd(); // cd to dir 
-gDirectory->pwd();
-      cout << "writing histo "<<it->first<< " to dir "<<dirName<<std::endl;
+      //cout << "writing histo "<<it->first<< " to dir "<<dirName<<std::endl;
       it->second->Write();
       f->cd();
    }
@@ -130,7 +119,7 @@ gDirectory->pwd();
 
 bool HistogramService::BookRootObject(TObject* hist){
    string key = hist->GetName();
-   if (fMegaList.find(key)==fMegaList.end()){
+   if (fMegaList.find(key)==fMegaList.end()) {
       //hist->SetDirectory(fDir);  ToDo is this ok???
       fMegaList[key]=hist;
       return true;
@@ -139,14 +128,12 @@ bool HistogramService::BookRootObject(TObject* hist){
 }
 
 TObject* HistogramService::GetHisto(TString tkey){
-	string key = tkey.Data();
-	key = fCurrentDir + "/" + key;
-	if (fMegaList.find(key)!=fMegaList.end()){
-		//hist->SetDirectory(fDir);  ToDo is this ok???
+  string key = tkey.Data();
+  key = fCurrentDir + "/" + key;
+  if (fMegaList.find(key)!=fMegaList.end()) {
+    //hist->SetDirectory(fDir);  ToDo is this ok???
+    return fMegaList[key];
+  } else std::cout<<"Could not get Histo: "<<key<<std::endl;
 
-		return fMegaList[key];
-
-	}else std::cout<<"Could not get Histo: "<<key<<std::endl;
-
-	return 0;
+  return 0;
 }

@@ -2,6 +2,7 @@
 #include "TEnv.h"
 #include "TObjString.h"
 #include "TObjArray.h"
+#include "TRegexp.h"
 #include "PathResolver/PathResolver.h"
 
 GlobalConfig::~GlobalConfig() {
@@ -47,11 +48,16 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   std::cout<<"FatJetPtBins: "<<config->GetValue("FatJetPtBins","")<<std::endl;
   m_FatJetRegions = MakeLabels(m_FatJetPtBins, "fjpt");
 
+  m_TemplateVariables = SplitString(config->GetValue("TemplateVariables",""),',');
+  std::cout<<"TemplateVariable: "<<config->GetValue("TemplateVariables","")<<std::endl;
+
   m_PlotVariables = SplitString(config->GetValue("PlotVariables",""),',');
   std::cout<<"PlotVariables: "<<config->GetValue("PlotVariables","")<<std::endl;
 
   for (TString var : m_PlotVariables) {
-    std::vector<float> binning = SplitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
+    std::vector<float> tempBins = SplitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
+    std::vector<double> binning; //TH1::Rebin only works with double values
+    for (float bin : tempBins) binning.push_back((double)bin);
     m_PlotBinning.emplace(var, binning);
     std::cout <<("PlotBins."+var).Data()<<": "<<config->GetValue(("PlotBins."+var).Data(),"")<<std::endl;
   }
@@ -122,6 +128,16 @@ std::vector<TString> GlobalConfig::GetTrkJetRegions() {
   return regions;
 }
 
+std::vector<double> GlobalConfig::GetBinning(const TString var) {
+  TString temp = var;
+  // If var has a tag, like _PREFITPOSTTAG, then remove it
+  if (temp.Contains(TRegexp("_[A-Z]+"))) temp = temp(0,temp.Index(TRegexp("_[A-Z]+")));
+  // Check the binning map for var
+  if (m_PlotBinning.find(temp) != m_PlotBinning.end())
+    return m_PlotBinning[temp];
+  else return std::vector<double>();
+}
+
 char GlobalConfig::GetFlavour(int truthType) {
   switch (std::abs(truthType)) {
     case 5:
@@ -159,8 +175,9 @@ TString GlobalConfig::GetFlavourPair(int muJetTruth, int nonMuJetTruth) {
 TString GlobalConfig::GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var) {
   TString _sys(sys); if (_sys!="") _sys=="Nom"; _sys+="_";
   TString _ptLabel(ptLabel); if (_ptLabel=="") _ptLabel=="Incl"; _ptLabel+="_";
-  TString _flav(flav); if (_flav!="") _flav+="_";
-  return "h_"+_sys+_ptLabel+_flav+var;
+  //TString _flav(flav); if (_flav!="") _flav+="_";
+  //return "h_"+_sys+_ptLabel+_flav+var;
+  return "h"+flav+_sys+_ptLabel+var;
 }
 
 std::vector<TString> GlobalConfig::GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var) {

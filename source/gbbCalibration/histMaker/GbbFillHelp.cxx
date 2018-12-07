@@ -94,7 +94,7 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
    this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
 
   m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,"mjptVsnmjpt"+nametag),
-    "muon-jet p_{T} [GeV];non-muon jet p_{T} [GeV];",
+    ";muon-jet p_{T} [GeV];non-muon jet p_{T} [GeV];",
     this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
     250,0.,500.,250,0.,500.,event_weight
   );
