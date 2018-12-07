@@ -223,6 +223,8 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
 
   m_Outputname = outfilename;
   
+  //FIXME
+  m_GeneratorName="Pythia";
   std::cout<<"Generator is:"<<m_GeneratorName<<std::endl;
 
   //running on the nominal sample?
@@ -364,8 +366,11 @@ bool GbbTupleAna::Processgbb(int i_evt){
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
-  //m_SumWeightTuple+=total_evt_weight;
-  m_SumWeightTuple+=this->eve_pu_w;
+  //if (m_isNominal) m_SumWeightTuple+=total_evt_weight;
+  if (m_isNominal) m_SumWeightTuple+=this->eve_pu_w;
+
+  m_HistSvc->FastFillTH1D("PUWeights",this->eve_pu_w,50,0.,5.,1.);
+  m_HistSvc->FastFillTH1D("EventWeights",total_evt_weight,102,-1.,100.,1.);
 
   //double mc_jet_ratio=1.;
 
@@ -637,7 +642,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //if(this->trkjet_MV2c20->at(gbbcand.muojet_index)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.nonmuojet_index)<-0.3098) return false;
   //Moved to MV2c10 at 70% efficiency
 
-  int isTagged = passBTagCut(gbbcand, GbbTupleAna::BTagType::XBB_WP60);
+  int isTagged = passBTagCut(gbbcand, GbbTupleAna::BTagType::MV2C10_WP70);
   if (isTagged == -99) {
     std::cout<<"processgbb(): Unrecognized b-tag type"<<std::endl;
     return false;
@@ -971,12 +976,12 @@ void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
   
   TH2D *hist;
 
-  TString hist_name="reweight_trigjet_pt_eta_"+trigger_passed;
+  TString hist_name="h_reweight_trigjet_pt_eta_"+trigger_passed;
   //TString hist_name="reweight_trigfatjet_pt_eta_"+trigger_passed;
   
   std::cout<<"Looking for hist: "<<hist_name<<std::endl;
 
-  TFile* file=TFile::Open(filename.Data(),"READ");
+  TFile* file=TFile::Open(PathResolverFindCalibFile(filename.Data()).data(),"READ");
   file->GetObject(hist_name,hist);
   hist->SetDirectory(0);
   m_reweightHistos[trigger_passed]=std::shared_ptr<TH2D>(new TH2D(*hist));

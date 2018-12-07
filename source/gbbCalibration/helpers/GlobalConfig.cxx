@@ -175,8 +175,9 @@ TString GlobalConfig::GetFlavourPair(int muJetTruth, int nonMuJetTruth) {
 TString GlobalConfig::GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var) {
   TString _sys(sys); if (_sys!="") _sys=="Nom"; _sys+="_";
   TString _ptLabel(ptLabel); if (_ptLabel=="") _ptLabel=="Incl"; _ptLabel+="_";
-  TString _flav(flav); if (_flav!="") _flav+="_";
-  return "h_"+_sys+_ptLabel+_flav+var;
+  //TString _flav(flav); if (_flav!="") _flav+="_";
+  //return "h_"+_sys+_ptLabel+_flav+var;
+  return "h"+flav+_sys+_ptLabel+var;
 }
 
 std::vector<TString> GlobalConfig::GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var) {

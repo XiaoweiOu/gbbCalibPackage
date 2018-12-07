@@ -51,7 +51,7 @@ class GlobalConfig {
 
   TString GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var);
   TString GetDataHistName(const TString ptLabel, const TString var) {
-    return GetMCHistName("Data",ptLabel,"",var);
+    return GetMCHistName("Nom",ptLabel,"Data",var);
   }
   std::vector<TString> GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var);
   std::map<TString,std::vector<TString> > GetMCHistNames(const TString ptLabel, const TString var);
