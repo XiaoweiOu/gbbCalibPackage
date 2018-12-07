@@ -5,19 +5,18 @@ from ROOT import TFile,TTree
 import json
 
 def GetPathsFromJSON(infile):
+  dataPath = ''
   inclMCPaths = []
+  mufiltMCPaths = []
   with open(infile, 'r') as f:
     tbl = json.load(f)
     if "BasePath" in tbl:
-      dataPath = tbl["BasePath"]+tbl["Data"]
-      muFiltMCPaths = [tbl["BasePath"]+path for path in tbl["MuFilteredMC"]]
+      if "Data" in tbl:
+        dataPath = tbl["BasePath"]+tbl["Data"]
+      if "MuFilteredMC" in tbl:
+        muFiltMCPaths = [tbl["BasePath"]+path for path in tbl["MuFilteredMC"]]
       if "InclusiveMC" in tbl:
         inclMCPaths = [tbl["BasePath"]+path for path in tbl["InclusiveMC"]]
-    else:
-      dataPath = tbl["Data"]
-      muFiltMCPaths = tbl["MuFilteredMC"]
-      if "InclusiveMC" in tbl:
-        inclMCPaths = tbl["InclusiveMC"]
   return dataPath, muFiltMCPaths, inclMCPaths
 
 def GetDataFile(name):
@@ -111,4 +110,6 @@ class HistHelper:
         else:
           print("Cannot find hist "+histname+" in file "+path)
       #file_curr.Close()
+    if not hist:
+      print("Hist "+histname+" not found in any input MC files!")
     return hist

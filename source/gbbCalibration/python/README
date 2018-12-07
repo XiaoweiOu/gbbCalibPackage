@@ -15,4 +15,4 @@ JSON files for input to python scripts need to have the following format:
     ]
 }
 
-Note that the BasePath and InclusiveMC fields are optional
+Only BasePath is required
