@@ -707,7 +707,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   if(doByRegion){
     int size = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions().size() : m_config->GetTrkJetRegions().size();
     for(int i=0; i<size; i++) fj_bins.push_back((float)i);
-    //fj_bins.push_back(fj_bins.back()+1.);
+    fj_bins.push_back(fj_bins.back()+1.);
   }else fj_bins=m_config->GetFatJetPtBins();
   
   std::vector<float> current_SF,current_data_eff, current_mc_eff;  
