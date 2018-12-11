@@ -398,8 +398,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
 
-  //if (m_isNominal) m_SumWeightTuple+=total_evt_weight;
-  if (m_isNominal) m_SumWeightTuple+=this->eve_pu_w;
+  if (m_isNominal) m_SumWeightTuple+=total_evt_weight;
+  //if (m_isNominal) m_SumWeightTuple+=this->eve_pu_w;
 
   m_HistSvc->FastFillTH1D("PUWeights",this->eve_pu_w,50,0.,5.,1.);
   m_HistSvc->FastFillTH1D("EventWeights",total_evt_weight,102,-1.,100.,1.);
