@@ -160,10 +160,42 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
 
 GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& outfilename, const TString& configname) :
   TupleAna(),
+  m_config(nullptr),
+  m_HistSvc(nullptr),
+  m_Outputname(""),
+  //m_chains(),
+  m_RunMode(0),
   m_Debug(false),
+  m_doJetPtReweighting(false),
+  m_JetPtReweightFile(""),
+  m_JetPtReweightFileInclusive(""),
   m_isMC(false),
+  m_isNominal(false),
+  m_SysVarName(""),
+  m_GeneratorName(""),
   m_SumWeightTuple(0),
-  m_nevtTuple(0)
+  m_nevtTuple(0),
+  //m_reweightHistos(),
+  m_doEvenOddTemplates(false),
+  m_doFlavFracCorrection(false),
+  m_FlavFracCorrectorFile(""),
+  m_FlavFracCorrector(nullptr),
+  m_doTrackSmearing(false),
+  m_doInclusiveGbb(false),
+  m_doApplyBTaggingSF(false),
+  m_doMergeDiTrkjetCat(false),
+  //m_ditrkjet_cat(),
+  //m_trkjet_cat(),
+  //m_muojet_pt_bins(),
+  //m_nonmuojet_pt_bins(),
+  //m_random(),
+  m_doRandomSplitting(false),
+  m_doFillMujet(false),
+  //m_fatjet_pt_bins(),
+  m_doPostfitPtReweighting(false),
+  m_PostfitPtReweightingFile(""),
+  m_postfit_reweight_hist(nullptr)
+
 {
   TH1::AddDirectory(0);
 
@@ -328,7 +360,7 @@ void GbbTupleAna::Loop(const TString& sys) {
 
     if(!(jentry%1000)) std::cout<<"Processing event: "<<jentry<<" of "<<nentries<<std::endl;
     // if (Cut(ientry) < 0) continue;
-    m_nevtTuple++;
+    if (m_isNominal) m_nevtTuple++;
 
     if (jentry == 0 && m_isNominal) m_isMC = this->eve_isMC;
 
