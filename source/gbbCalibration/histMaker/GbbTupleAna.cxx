@@ -397,6 +397,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "nEvents total");
 
   if (m_isNominal) m_SumWeightTuple+=total_evt_weight;
   //if (m_isNominal) m_SumWeightTuple+=this->eve_pu_w;
@@ -414,8 +415,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass cleaning");
 
-  //=========================================                                                                          
+  //=========================================
   //2.) Trigger jet selection (leading AntiKt4EMTopo Jet)
   //=========================================
 
@@ -449,6 +451,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
  
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trigger match");
 
   //FILL TRIGGER TURNONHISTS
   if(m_RunMode & RunMode::FILL_TRIGGER) FillTriggerTurnOnHistograms(i_trigjet,total_evt_weight);
@@ -480,6 +483,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trigger");
 
   //FILL REWEIGHT HISTOGRAMS
   if(m_isNominal && m_RunMode & RunMode::FILL_REWEIGHT){
@@ -510,6 +514,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
    icut++;
    m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "trig-jet reweight");
 
   //=========================================                                                                                               
   //3.) Gbb candidate selection & definition                                                                                                              
@@ -526,6 +531,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   }
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "has gbb candidate");
 
   if(m_Debug) std::cout<<"constructGbbCandidate(): Finish Gbb construction!"<<std::endl;
   TLorentzVector muojet_vec, nonmuojet_vec;
@@ -551,6 +557,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   }
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trackjet overlap cut");
   //if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
   //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
   //  return false;
@@ -583,6 +590,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(m_Debug) std::cout<<"processgbb(): Pass pt cuts."<<std::endl;
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trigger bias cut");
 
 
   /*  if(gbbcandpt>250e3 && gbbcandpt<=280e3 && trigger_passed.EqualTo("HLT_j150")){
@@ -614,6 +622,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "got Sd0 variables");
 
   //=========================================                                                                                               
   //5.) Topo cut                                                                                                                
@@ -641,6 +650,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass topo cuts");
 
   //=========================================
   //6.) Trigjet reweighting
