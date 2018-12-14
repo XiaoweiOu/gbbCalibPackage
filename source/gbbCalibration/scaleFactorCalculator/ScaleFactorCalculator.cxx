@@ -771,8 +771,15 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
 	std::cout<<"Region: "<<m_config->GetAllRegions()[i_bin]<<std::endl;
 	std::cout<<"Big Diff SF for sys "<<sys<< " :"<<diff<<std::endl;
 	}*/
-      if(diff>0) err_sq_up[i_bin]+=diff*diff;
-      else err_sq_down[i_bin]+=diff*diff;
+      //symmetrize for one-sided systematics (for now hardcoded JER and JMR)
+      if (sys.Contains("JER") || sys.Contains("JMR") || sys.Contains("MassRes")) {
+        err_sq_up[i_bin]+=diff*diff;
+        err_sq_down[i_bin]+=diff*diff;
+      } else {
+        if(diff>0) err_sq_up[i_bin]+=diff*diff;
+        else err_sq_down[i_bin]+=diff*diff;
+      }
+
       
       float diff_data_eff=current_data_eff[i_bin]-data_eff_nom[i_bin]; 
       
@@ -784,8 +791,14 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
 	std::cout<<"Big Diff SF for sys "<<sys<< " :"<<diff_data_eff<<std::endl;
 	}*/
 
-      if(diff_data_eff>0) data_eff_err_sq_up[i_bin]+=diff_data_eff*diff_data_eff;
-      else data_eff_err_sq_down[i_bin]+=diff_data_eff*diff_data_eff;
+      //symmetrize for one-sided systematics (for now hardcoded JER and JMR)
+      if (sys.Contains("JER") || sys.Contains("JMR") || sys.Contains("MassRes")) {
+        data_eff_err_sq_up[i_bin]+=diff_data_eff*diff_data_eff;
+        data_eff_err_sq_down[i_bin]+=diff_data_eff*diff_data_eff;
+      } else {
+        if(diff_data_eff>0) data_eff_err_sq_up[i_bin]+=diff_data_eff*diff_data_eff;
+        else data_eff_err_sq_down[i_bin]+=diff_data_eff*diff_data_eff;
+      }
 
 //FIXME
       error_map_up[m_config->GetTrkJetRegions()[i_bin]].push_back(TMath::Sqrt(err_sq_up[i_bin]));
