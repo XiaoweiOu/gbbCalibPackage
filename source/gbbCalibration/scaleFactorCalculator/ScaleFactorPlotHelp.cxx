@@ -218,11 +218,11 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   TDatime today;
   
   TString name;
-  if(plot_type.EqualTo("SF")) name.Form("%d_ScaleFactors.pdf",today.GetDate());
-  if(plot_type.EqualTo("Eff")) name.Form("%d_Efficiencies.pdf",today.GetDate());
-  if(plot_type.EqualTo("2DSF")) name.Form("%d_2DScaleFactors.pdf",today.GetDate());
-  if(plot_type.EqualTo("2DEffData")) name.Form("%d_2DEfficienciesData.pdf",today.GetDate());
-  if(plot_type.EqualTo("2DEffMC")) name.Form("%d_2DEfficienciesMC.pdf",today.GetDate());
+  if(plot_type.EqualTo("SF")) name = m_outdir + "/SF/ScaleFactors.pdf";
+  if(plot_type.EqualTo("Eff")) name = m_outdir + "/SF/Efficiencies.pdf";
+  if(plot_type.EqualTo("2DSF")) name = m_outdir + "/SF/2DScaleFactors.pdf";
+  if(plot_type.EqualTo("2DEffData")) name = m_outdir + "/SF/2DEfficienciesData.pdf";
+  if(plot_type.EqualTo("2DEffMC")) name = m_outdir + "/SF/2DEfficienciesMC.pdf";
 
   canv->SaveAs(name.Data());
 
@@ -380,9 +380,9 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   
 
   //TODO: can this go in a separate function?
-  TString name= applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0.pdf"); 
+  TString name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0.pdf") : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0.pdf"); 
   
-  if(isPosttag) name=applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag.pdf"); 
+  if(isPosttag) name=applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag.pdf") : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag.pdf"); 
   
 
   canv->SaveAs(name.Data());
@@ -392,9 +392,9 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   pad1->SetLogy();
   pad1->RedrawAxis();
   
-  TString namelog= applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_log.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_log.pdf"); 
+  TString namelog= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_log.pdf") : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_log.pdf"); 
 
-  if(isPosttag) namelog=applyFitCorrection ? TString("./ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag_log.pdf") : TString("./ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag_log.pdf");
+  if(isPosttag) namelog=applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag_log.pdf") : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag_log.pdf");
 
   canv->SaveAs(namelog.Data());
 
@@ -623,13 +623,13 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   if(doPrintByRegion){
 
     if(isPosttag){
-      name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_posttag_")+region+TString("_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_posttag_")+region+TString("_")+var+TString(".pdf");
-    }else name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_pretag_")+region+TString("_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_pretag_")+region+TString("_")+var+TString(".pdf");
+      name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_posttag_")+region+TString("_")+var+TString(".pdf") : TString(m_outdir+"/ctrl_plots/FatJet_prefit_posttag_")+region+TString("_")+var+TString(".pdf");
+    }else name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_pretag_")+region+TString("_")+var+TString(".pdf") : TString(m_outdir+"/ctrl_plots/FatJet_prefit_pretag_")+region+TString("_")+var+TString(".pdf");
     
   }else{
     if(isPosttag){
-      name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_posttag_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_posttag_")+var+TString(".pdf");
-    }else name= applyFitCorrection ? TString("./ctrl_plots/FatJet_postfit_pretag_")+var+TString(".pdf") : TString("./ctrl_plots/FatJet_prefit_pretag")+var+TString(".pdf");
+      name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_posttag_")+var+TString(".pdf") : TString(m_outdir+"/ctrl_plots/FatJet_prefit_posttag_")+var+TString(".pdf");
+    }else name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_pretag_")+var+TString(".pdf") : TString(m_outdir+"/ctrl_plots/FatJet_prefit_pretag")+var+TString(".pdf");
   }
   canv->SaveAs(name.Data());
 
@@ -800,7 +800,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   leg->Draw();
 
   TString name;
-  name= TString("./ctrl_plots/BTaggingRate.pdf");
+  name= TString(m_outdir+"/ctrl_plots/BTaggingRate.pdf");
   
   canv->SaveAs(name.Data());
 

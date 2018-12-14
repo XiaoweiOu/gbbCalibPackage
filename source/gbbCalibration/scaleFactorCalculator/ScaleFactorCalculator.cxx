@@ -123,7 +123,7 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   std::cout<<"=============================================="<<std::endl;
 }
 
-ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
+ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_dir){
 
   gStyle->SetOptStat(0);
   TGaxis::SetMaxDigits(4);
@@ -133,6 +133,8 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file){
   std::cout<<"| HELLO THIS IS THE GBB SCALE FACTOR CALCULATOR!   "<<std::endl;
   //std::cout<<"| Brumm... "<<std::endl;
   std::cout<<"==================================================="<<std::endl;
+
+  m_outdir = output_dir;
 
   ReadConfig(cfg_file);  
 
@@ -1269,7 +1271,7 @@ void ScaleFactorCalculator::SaveFitCorrectionFactorsSys(){
     }
     
     for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
-      name=TString(hists[i_p]->GetName())+".pdf";
+      name=m_outdir+"/SF/"+TString(hists[i_p]->GetName())+".pdf";
       canv->cd();
       hists[i_p]->Draw();
       canv->SaveAs(name.Data());
