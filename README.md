@@ -38,7 +38,7 @@ Run the full scale factor calculation chain takes several steps and will depend 
       * Run from the `source/gbbCalibration/python` directory
       * Will use the systematics list from `GlobalConfig.cfg`
 4. Calculate scale factors
-   * run\_calculateSF gbbCalibration/configs/config\_Calib\_SF.cfg
+   * run\_calculateSF ../source/gbbCalibration/data/configs/config\_Calib\_SF.cfg &lt;output\_Folder\_name&gt;
       * TODO: provide input file as separate argument
 
 ## Package structure

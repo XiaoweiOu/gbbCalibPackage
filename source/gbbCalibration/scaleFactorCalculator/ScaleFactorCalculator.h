@@ -59,6 +59,8 @@ private:
   FitData* m_fitdata;
   GlobalConfig* m_config;
 
+  TString m_outdir;
+  
   bool m_Debug;
   bool m_doMCStatsNP;
   bool m_doFitInFatJetPtBins;
@@ -105,7 +107,7 @@ private:
 
  public:
 	ScaleFactorCalculator();
-	ScaleFactorCalculator(TString &cfg_file);
+	ScaleFactorCalculator(TString &cfg_file, TString &output_dir);
 	virtual ~ScaleFactorCalculator();
 
 	void ReadConfig(const TString config_path);
