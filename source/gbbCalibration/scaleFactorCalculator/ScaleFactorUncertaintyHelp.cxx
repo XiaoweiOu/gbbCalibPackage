@@ -1188,8 +1188,12 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
         float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
 	if(isEff || 1) std::cout<<"delta up one-sided: "<< sys[i_sys]<<" : "<<delta_up<<std::endl;
 
-        if(delta_up>0) total_errsquare_up[i-1]+=delta_up*delta_up;
-        else total_errsquare_down[i-1]+=delta_up*delta_up;
+        //if(delta_up>0) total_errsquare_up[i-1]+=delta_up*delta_up;
+        //else total_errsquare_down[i-1]+=delta_up*delta_up;
+        
+        //Symmetrize Errors
+        total_errsquare_up[i-1]+=delta_up*delta_up;
+        total_errsquare_down[i-1]+=delta_up*delta_up;
         
       }
       
@@ -1420,12 +1424,19 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
         float delta_up=h_up->GetBinContent(i)-h_nom->GetBinContent(i);
 	if(h_nom->GetBinContent(i)) y_values_up[i-1]=1.+delta_up/h_nom->GetBinContent(i);
 	
+        //get symmetrized down variation
+        if(h_nom->GetBinContent(i)) y_values_down[i-1]=1.-delta_up/h_nom->GetBinContent(i);
       }
 
       uncertainty_graphs.push_back(new TGraphAsymmErrors(n_bins,x_values,y_values_up,x_error_down,x_error_up,total_errors_down,total_errors_up));
       uncertainty_graphs[uncertainty_graphs.size()-1]->SetLineColor(color[i_sys]);
       uncertainty_graphs[uncertainty_graphs.size()-1]->SetMarkerStyle(1);
-      
+
+      //make symmetrized down variation graph
+      uncertainty_graphs.push_back(new TGraphAsymmErrors(n_bins,x_values,y_values_down,x_error_down,x_error_up,total_errors_down,total_errors_up));
+      uncertainty_graphs[uncertainty_graphs.size()-1]->SetLineColor(color[i_sys]);
+      uncertainty_graphs[uncertainty_graphs.size()-1]->SetLineStyle(2);
+      uncertainty_graphs[uncertainty_graphs.size()-1]->SetMarkerStyle(1);
     }else{
       
       for( int i=1; i<=n_bins; i++){
