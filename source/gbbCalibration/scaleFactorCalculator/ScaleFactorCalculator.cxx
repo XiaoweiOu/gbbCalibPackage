@@ -317,23 +317,34 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   }
   std::cout << "Finished pseudo-experiments" << std::endl;
 
+  
   //start calibration sequence
   
-  //  std::vector<TString> variables={"fjpt","fjm"};
-  //std::vector<TString> variables = {"fjpt","mjmaxSd0"};
   std::vector<TString> variables = m_config->GetPlotVariables();
-  //std::vector<TString> sys = {"Nom","JET_Rtrk_Baseline_Kin__1up","JET_Rtrk_Baseline_Kin__1down","JET_Rtrk_Modelling_Kin__1up", "JET_Rtrk_Modelling_Kin__1down", "JET_Rtrk_Tracking_Kin__1up", "JET_Rtrk_Tracking_Kin__1down", "JET_Rtrk_TotalStat_Kin__1up", "JET_Rtrk_TotalStat_Kin__1down", "JET_Rtrk_Baseline_Sub__1up", "JET_Rtrk_Baseline_Sub__1down","JET_Rtrk_Modelling_Sub__1up", "JET_Rtrk_Modelling_Sub__1down", "JET_Rtrk_Tracking_Sub__1up","JET_Rtrk_Tracking_Sub__1down", "JET_Rtrk_TotalStat_Sub__1up", "JET_Rtrk_TotalStat_Sub__1down", "FATJET_JMR__1up","FATJET_JER__1up","Herwig__1up"};
+  
   //TODO: should come from config file
-  std::vector<TString> sys_only={"JET_Rtrk_Baseline_Kin", "JET_Rtrk_Modelling_Kin", "JET_Rtrk_Tracking_Kin", "JET_Rtrk_TotalStat_Kin", "JET_Rtrk_Baseline_Sub","JET_Rtrk_Modelling_Sub","JET_Rtrk_Tracking_Sub","JET_Rtrk_TotalStat_Sub","FATJET_JMR","FATJET_JER"};
-  std::vector<TString> model_sys={"Herwig"};
+  //R20.7
+  //std::vector<TString> sys_only={"JET_Rtrk_Baseline_Kin", "JET_Rtrk_Modelling_Kin", "JET_Rtrk_Tracking_Kin", "JET_Rtrk_TotalStat_Kin", "JET_Rtrk_Baseline_Sub","JET_Rtrk_Modelling_Sub","JET_Rtrk_Tracking_Sub","JET_Rtrk_TotalStat_Sub","FATJET_JMR","FATJET_JER"};
+  //R21
+  std::vector<TString> sys_only={"JET_Comb_Baseline_Kin", "JET_Comb_Modelling_Kin", "JET_Comb_Tracking_Kin", "JET_Comb_TotalStat_Kin", "JET_Rtrk_Baseline_Sub","JET_Rtrk_Modelling_Sub","JET_Rtrk_Tracking_Sub","JET_Rtrk_TotalStat_Sub","JET_MassRes_Hbb","FATJET_JER"};
+  // Nominal
+  //std::vector<TString> sys_only={};
+  
+  
+  //std::vector<TString> model_sys={"Herwig"}; //if using herwig in R20.7
+  std::vector<TString> model_sys={};
+  
   std::vector<TString> none={};
   std::vector<TString> variables_posttag, variables_posttag_btagsys;
   
   //std::vector<TString> calib_var={"mjmaxSd0", "mjmaxSd0_PREFITPOSTTAG"};
+  
   //TODO: should come from config file
   //std::vector<TString> calib_sys = m_config->GetSd0Systematics();
   std::vector<TString> calib_sys={"Conversion__1up","Conversion__1down","HadMatInt__1up","HadMatInt__1down","LightLongLived__1up","LightLongLived__1down","SD0Smear__1up","SD0SMEAR__1down"};
 //,"MUON_ID__1up","MUON_ID__1down","MUON_MS__1up","MUON_MS__1down","MUON_SCALE__1up","MUON_SCALE__1down","MUON_SAGITTA_RESBIAS__1up","MUON_SAGITTA_RESBIAS__1down","MUON_SAGITTA_RHO__1up","MUON_SAGITTA_RHO__1down","MUON_EFF_STAT__1up","MUON_EFF_STAT__1down","MUON_EFF_SYS__1up","MUON_EFF_SYS__1down","MUON_EFF_STAT_LOWPT__1up","MUON_EFF_STAT_LOWPT__1down","MUON_EFF_SYS_LOWPT__1up","MUON_EFF_SYS_LOWPT__1down","MUON_TTVA_STAT__1up","MUON_TTVA_STAT__1down","MUON_TTVA_SYS__1up","MUON_TTVA_SYS__1down"};
+  // Nominal
+  //std::vector<TString> calib_sys={};
 
   for(auto& el : variables){
   //TODO: can this be mre generic?
