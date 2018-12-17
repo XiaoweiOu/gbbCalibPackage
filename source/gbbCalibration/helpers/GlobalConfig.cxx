@@ -30,6 +30,12 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   m_Systematics = SplitString(config->GetValue("Systematics",""),',');
   std::cout<<"Systematics: "<<config->GetValue("Systematics","")<<std::endl;
 
+  m_Systematics_Sd0 = SplitString(config->GetValue("Systematics_Sd0",""),',');
+  std::cout<<"Systematics_Sd0: "<<config->GetValue("Systematics_Sd0","")<<std::endl;
+
+  m_Systematics_WeightVar = SplitString(config->GetValue("Systematics_WeightVar",""),',');
+  std::cout<<"Systematics_WeightVar: "<<config->GetValue("Systematics_WeightVar","")<<std::endl;
+
   m_doMergeFlavours = config->GetValue("doMergeFlavours",true);
   std::cout<<"doMergeFlavours: "<<m_doMergeFlavours<<std::endl;
 
@@ -189,5 +195,7 @@ std::vector<TString> GlobalConfig::GetMCHistNamesBySys(const TString sys, const 
 std::map<TString,std::vector<TString> > GlobalConfig::GetMCHistNames(const TString ptLabel, const TString var) {
   std::map<TString,std::vector<TString> > names;
   for (TString sys : m_Systematics) names.emplace(sys,GetMCHistNamesBySys(sys,ptLabel,var));
+  for (TString sys : m_Systematics_Sd0) names.emplace(sys,GetMCHistNamesBySys(sys,ptLabel,var));
+  for (TString sys : m_Systematics_WeightVar) names.emplace(sys,GetMCHistNamesBySys("Nom",ptLabel,var+"_"+sys));
   return names;
 }
