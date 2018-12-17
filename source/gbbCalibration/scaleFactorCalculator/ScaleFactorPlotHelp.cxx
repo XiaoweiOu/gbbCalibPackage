@@ -756,9 +756,11 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   TGraphAsymmErrors *btagsys=getBTagUncert(fjpt_posttag,true);
   for(int i=0; i<btagsys->GetN(); i++){
     btagsys->GetPoint(i,x,y);
+    eyl = btagsys->GetErrorYlow(i);
+    eyh = btagsys->GetErrorYhigh(i);
     btagsys->SetPoint(i,x,1);
-    btagsys->SetPointEYlow(i,btagsys->GetErrorYlow(i));
-    btagsys->SetPointEYhigh(i,btagsys->GetErrorYhigh(i));
+    btagsys->SetPointEYlow(i,eyl);
+    btagsys->SetPointEYhigh(i,eyh);
   }
 
   btagsys->SetLineColor(kRed);

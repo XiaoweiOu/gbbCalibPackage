@@ -113,7 +113,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncert(bool applyFitCorr
 
 TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin){
 
-  TH1D* tmp_stacked_mc, *hist_total;
+  TH1D* tmp_stacked_mc(nullptr), *hist_total(nullptr);
 
   std::vector<TH1D*> toy_bins;
 
@@ -184,7 +184,11 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
   
 
   }//toys
-  
+
+  if (!hist_total) {
+    std::cout<<"ScaleFactorCalculator::getTemplateFitUncertToys: No histograms found!"<<std::endl;
+    return nullptr;
+  }
   int n_bins=hist_total->GetNbinsX();
   
   double* x_values = new double[n_bins];
@@ -880,8 +884,8 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
 
   int n_bins=hist_total->GetNbinsX();
   
-  double* btagerrors_up = new double[n_bins];
-  double* btagerrors_down = new double[n_bins];
+  //double* btagerrors_up = new double[n_bins];
+  //double* btagerrors_down = new double[n_bins];
   double* x_values = new double[n_bins];
   double* y_values = new double[n_bins];
   double* x_error_up = new double[n_bins];
@@ -1510,7 +1514,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
   }
   
   for(unsigned int i_sys=0; i_sys<sys.size(); i_sys++){
-    bool isOneSided=false;
+    //bool isOneSided=false;
 
     TH1D *h_up=new TH1D("h_up","",fj_bins.size()-1,&(fj_bins[0]));
 
@@ -1531,7 +1535,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
       //std::cout<<"name_mc sys up: "<<name_mc_up<<std::endl;
       //std::cout<<"name_mc sys down: "<<name_mc_down<<std::endl;
       
-      double pythia_nominal_fraction=0.;
+      //double pythia_nominal_fraction=0.;
       for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
 
 	if(isPosttag || isEff){
@@ -1545,7 +1549,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
 	  help=(TH1D*)m_fatjet_histograms_posttag[name_mc_posttag][i_p]->Clone();
 	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
 	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	  pythia_nominal_fraction=help_rebinned->Integral();
+	  //pythia_nominal_fraction=help_rebinned->Integral();
 	  h_nom->Add(help_rebinned);
 	  
 	  //get up variation
@@ -1566,7 +1570,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
 	  help=(TH1D*)m_fatjet_histograms_pretag[name_mc][i_p]->Clone();
 	  help_rebinned=(TH1D*)help->Rebin((int)fj_bins.size()-1,"help_rebinned",d_fj_bins);
 	  if(applyFitCorrection) help_rebinned->Scale(m_fit_params[regions[i_reg]+"_Nom"][i_p]);
-	  pythia_nominal_fraction=help_rebinned->Integral();
+	  //pythia_nominal_fraction=help_rebinned->Integral();
 	  if(!isEff) h_nom->Add(help_rebinned);
 	  else h_nom_eff_pretag->Add(help_rebinned);
 	  

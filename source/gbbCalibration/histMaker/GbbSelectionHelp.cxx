@@ -199,7 +199,12 @@ bool GbbTupleAna::passTrigger(const float trigjet_pt, float& prescale, TString& 
 
 bool GbbTupleAna::cutTriggerBias(const float gbbcandpt, const TString trigger_passed) {
   //cut away region where jet bias is introduced
-  if (gbbcandpt < 500e3) return false;
+  if (gbbcandpt < 500e3) {
+    return false;
+  }
+  if (!trigger_passed.EqualTo("HLT_j380")) {
+    std::cout<<"Event with (R=1.0) pT "<<gbbcandpt<<" that didn't pass j380!"<<std::endl;
+  }
 
   /*  if(gbbcandpt>250e3 && gbbcandpt<=280e3 && trigger_passed.EqualTo("HLT_j150")){
   }else if(gbbcandpt>280e3 && gbbcandpt<=380e3 && trigger_passed.EqualTo("HLT_j175")){
