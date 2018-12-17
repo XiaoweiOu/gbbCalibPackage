@@ -24,6 +24,8 @@ histHelper = config.HistHelper()
 
 ListOfSystematics = MyConfig.GetSystematics() 
 ListOfSystematics.push_back(TString("Nom"))
+ListOfSd0Systematics = MyConfig.GetSystematics_Sd0() 
+ListOfWeightVariations = MyConfig.GetSystematics_WeightVar() 
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfInclusiveFlavourPairs = [ 'LL' ]
 ListOfTJpt = MyConfig.GetTrkJetRegions()
@@ -31,7 +33,8 @@ ListOfTJpt = MyConfig.GetTrkJetRegions()
 #TODO: Add paths for Herwig samples?
 
 #ListOfVariables = [ 'fjpt', 'nmjpt', 'mjpt', 'mjmaxSd0', 'nmjmaxSd0' ]
-ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'nmjmaxSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjpt_PREFITPOSTTAG_BTAGUP', 'fjm_PREFITPOSTTAG_BTAGUP', 'fjD2_PREFITPOSTTAG_BTAGUP','mjpt_PREFITPOSTTAG_BTAGUP','nmjpt_PREFITPOSTTAG_BTAGUP','mjeta_PREFITPOSTTAG_BTAGUP','nmjeta_PREFITPOSTTAG_BTAGUP','fjptsc_PREFITPOSTTAG_BTAGUP', 'fjpt_PREFITPOSTTAG_BTAGDOWN', 'fjm_PREFITPOSTTAG_BTAGDOWN', 'fjD2_PREFITPOSTTAG_BTAGDOWN','mjpt_PREFITPOSTTAG_BTAGDOWN','nmjpt_PREFITPOSTTAG_BTAGDOWN','mjeta_PREFITPOSTTAG_BTAGDOWN','nmjeta_PREFITPOSTTAG_BTAGDOWN','fjptsc_PREFITPOSTTAG_BTAGDOWN','fjtau21','fjtau21_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG_BTAGUP','fjtau21_PREFITPOSTTAG_BTAGDOWN']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
+#ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'nmjmaxSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjpt_PREFITPOSTTAG_BTAGUP', 'fjm_PREFITPOSTTAG_BTAGUP', 'fjD2_PREFITPOSTTAG_BTAGUP','mjpt_PREFITPOSTTAG_BTAGUP','nmjpt_PREFITPOSTTAG_BTAGUP','mjeta_PREFITPOSTTAG_BTAGUP','nmjeta_PREFITPOSTTAG_BTAGUP','fjptsc_PREFITPOSTTAG_BTAGUP', 'fjpt_PREFITPOSTTAG_BTAGDOWN', 'fjm_PREFITPOSTTAG_BTAGDOWN', 'fjD2_PREFITPOSTTAG_BTAGDOWN','mjpt_PREFITPOSTTAG_BTAGDOWN','nmjpt_PREFITPOSTTAG_BTAGDOWN','mjeta_PREFITPOSTTAG_BTAGDOWN','nmjeta_PREFITPOSTTAG_BTAGDOWN','fjptsc_PREFITPOSTTAG_BTAGDOWN','fjtau21','fjtau21_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG_BTAGUP','fjtau21_PREFITPOSTTAG_BTAGDOWN']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
+ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'nmjmaxSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjtau21','fjtau21_PREFITPOSTTAG']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
 
 #make list of histograms in Data
 ListOfDataHists = []
@@ -44,34 +47,22 @@ ListOfDataHists.append('CutFlow_Nom');
 #make list of histograms in MC
 ListOfHists = []
 ListOfHerwigHists = []
-for sys in ListOfSystematics :
-  print("Getting Hists for Systematic Variation: "+sys.Data())
-  if sys.Data() is 'Nom':
-    ListOfHists.append('CutFlow_Nom')
-
-  for flavour in ListOfFlavourPairs :
-    for tjpt in ListOfTJpt :
-      for var in ListOfVariables :
+ListOfHists.append('CutFlow_Nom')
+for flavour in ListOfFlavourPairs :
+  for tjpt in ListOfTJpt :
+    for var in ListOfVariables :
+      ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var).Data())
+      for sys in ListOfSystematics :
 #TODO: don't hard-code these exceptions
-        if "BTAG" in var and "Nom" not in sys.Data():
-          continue
-        if "SD0_Smear" in var and "Nom" not in sys.Data():
-          continue
         if "fjeta" in var and "fjphi" in var and "Nom" not in sys.Data():
           continue
-        if "Nom" in sys.Data() and "maxSd0" in var :
-          ListOfHists.append(MyConfig.GetMCHistName("SD0Smear__1up",tjpt,flavour,var).Data())
-          ListOfHists.append(MyConfig.GetMCHistName("SD0Smear__1down",tjpt,flavour,var).Data())
-          ListOfHists.append(MyConfig.GetMCHistName("Conversion__1down",tjpt,flavour,var).Data())
-          ListOfHists.append(MyConfig.GetMCHistName("Conversion__1up",tjpt,flavour,var).Data())
-          ListOfHists.append(MyConfig.GetMCHistName("HadMatInt__1up",tjpt,flavour,var).Data())
-          ListOfHists.append(MyConfig.GetMCHistName("HadMatInt__1down",tjpt,flavour,var).Data())
-          ListOfHists.append(MyConfig.GetMCHistName("LightLongLived__1up",tjpt,flavour,var).Data())
-          ListOfHists.append(MyConfig.GetMCHistName("LightLongLived__1down",tjpt,flavour,var).Data())
-
         ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
-        if sys.Data() is "Nom":
-          ListOfHerwigHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
+      if "Sd0" in var :
+        for sys in ListOfSd0Systematics :
+          ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
+      if "PREFITPOSTTAG" in var :
+        for sys in ListOfWeightVariations :
+          ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys).Data())
  
 
 #open output file
