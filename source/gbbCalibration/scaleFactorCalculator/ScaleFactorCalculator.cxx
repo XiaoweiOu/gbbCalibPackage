@@ -138,9 +138,20 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
 
   ReadConfig(cfg_file);  
 
-  std::vector<TString> systematics=m_config->GetSystematics();
+  std::vector<TString> systematics = m_config->GetSystematics();
   systematics.emplace(systematics.begin(),TString("Nom")); //Run over nominal first
   //std::vector<TString> systematics = { "Nom" };
+  std::vector<TString> calib_sys = m_config->GetSystematics_Sd0();
+  std::vector<TString> btag_sys = m_config->GetSystematics_WeightVar();
+  //std::vector<TString> model_sys={"Herwig"}; //if using herwig in R20.7
+  std::vector<TString> model_sys={};
+  // Store sys names (without up/down label)
+  std::vector<TString> sys_only;
+  for (TString sys : systematics) {
+    if (sys.Contains("Nom")) continue;
+    if (sys.Contains("__1up")) sys_only.push_back(TString(sys(0,sys.Length()-5)));
+  }
+
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   std::vector<TString> tmpl_vars = m_config->GetTemplateVariables();
   std::vector<TString> fitpar_names=m_fitpar_names;
@@ -317,35 +328,12 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   }
   std::cout << "Finished pseudo-experiments" << std::endl;
 
-  
   //start calibration sequence
-  
-  std::vector<TString> variables = m_config->GetPlotVariables();
-  
-  //TODO: should come from config file
-  //R20.7
-  //std::vector<TString> sys_only={"JET_Rtrk_Baseline_Kin", "JET_Rtrk_Modelling_Kin", "JET_Rtrk_Tracking_Kin", "JET_Rtrk_TotalStat_Kin", "JET_Rtrk_Baseline_Sub","JET_Rtrk_Modelling_Sub","JET_Rtrk_Tracking_Sub","JET_Rtrk_TotalStat_Sub","FATJET_JMR","FATJET_JER"};
-  //R21
-  std::vector<TString> sys_only={"JET_Comb_Baseline_Kin", "JET_Comb_Modelling_Kin", "JET_Comb_Tracking_Kin", "JET_Comb_TotalStat_Kin", "JET_Rtrk_Baseline_Sub","JET_Rtrk_Modelling_Sub","JET_Rtrk_Tracking_Sub","JET_Rtrk_TotalStat_Sub","JET_MassRes_Hbb","FATJET_JER"};
-  // Nominal
-  //std::vector<TString> sys_only={};
-  
-  
-  //std::vector<TString> model_sys={"Herwig"}; //if using herwig in R20.7
-  std::vector<TString> model_sys={};
-  
   std::vector<TString> none={};
+  std::vector<TString> variables = m_config->GetPlotVariables();
   std::vector<TString> variables_posttag, variables_posttag_btagsys;
-  
   //std::vector<TString> calib_var={"mjmaxSd0", "mjmaxSd0_PREFITPOSTTAG"};
   
-  //TODO: should come from config file
-  //std::vector<TString> calib_sys = m_config->GetSd0Systematics();
-  std::vector<TString> calib_sys={"Conversion__1up","Conversion__1down","HadMatInt__1up","HadMatInt__1down","LightLongLived__1up","LightLongLived__1down","SD0Smear__1up","SD0SMEAR__1down"};
-//,"MUON_ID__1up","MUON_ID__1down","MUON_MS__1up","MUON_MS__1down","MUON_SCALE__1up","MUON_SCALE__1down","MUON_SAGITTA_RESBIAS__1up","MUON_SAGITTA_RESBIAS__1down","MUON_SAGITTA_RHO__1up","MUON_SAGITTA_RHO__1down","MUON_EFF_STAT__1up","MUON_EFF_STAT__1down","MUON_EFF_SYS__1up","MUON_EFF_SYS__1down","MUON_EFF_STAT_LOWPT__1up","MUON_EFF_STAT_LOWPT__1down","MUON_EFF_SYS_LOWPT__1up","MUON_EFF_SYS_LOWPT__1down","MUON_TTVA_STAT__1up","MUON_TTVA_STAT__1down","MUON_TTVA_SYS__1up","MUON_TTVA_SYS__1down"};
-  // Nominal
-  //std::vector<TString> calib_sys={};
-
   for(auto& el : variables){
   //TODO: can this be mre generic?
     if(el.Contains("ANTITAG") || el.Contains("trjpt") || el.Contains("srj") || el.Contains("evemu") || (el.Contains("fjeta") && el.Contains("fjphi")) || el.Contains("slR4jpt") || el.Contains("trjptfjptratio") || el.Contains("trjptgbbcandratio")) continue;
@@ -353,8 +341,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   }
   for(auto& el : variables_posttag){
     if(el.Contains("mjmaxSd0")) continue;
-    variables_posttag_btagsys.push_back(TString(el)+"_BTAGUP");
-    variables_posttag_btagsys.push_back(TString(el)+"_BTAGDOWN");
+    for (TString sys : btag_sys) variables_posttag_btagsys.push_back(TString(el)+"_"+sys);
   }
   variables_posttag_btagsys.push_back("mjpt_PREFITUNTAG");
   
