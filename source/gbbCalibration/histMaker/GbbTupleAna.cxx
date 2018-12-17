@@ -1336,7 +1336,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
 
 
       //count all muons in all associated track jets, if one of them has one, continue
-      for(unsigned int j=0; j<this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
+      for(int j=0; j<this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
 	      if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
 		      n_assoc_selmuon++;
 

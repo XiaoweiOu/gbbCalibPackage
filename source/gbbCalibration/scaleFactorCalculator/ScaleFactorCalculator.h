@@ -124,7 +124,7 @@ private:
 
 	void MakeBTaggingRatePlots(std::vector<TString> &sys, std::vector<TString> &model_sys);
 
-	TString MakeFlavourFractionTable(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region);
+	TString MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
 	TString PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists);
   
 	TGraphAsymmErrors* getFitUncert(TString& var, bool isPosttag);

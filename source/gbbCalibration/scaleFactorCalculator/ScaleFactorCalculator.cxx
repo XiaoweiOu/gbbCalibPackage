@@ -223,7 +223,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
         }
 
         //TODO: should this loop over all tmpl_vars?
-        flav_fractions.push_back(this->MakeFlavourFractionTable(true,m_fitdata->GetDataHist(tmpl_vars[1]),m_fitdata->GetMCHists(tmpl_vars[1]),tmpl_vars[1],region));
+        flav_fractions.push_back(this->MakeFlavourFractionTable(true,m_fitdata->GetMCHists(tmpl_vars[1]),region));
         mu_factors.push_back(this->PrintMuAndError(region,m_fitdata->GetMCHists(tmpl_vars[1])));
       }
 
@@ -412,20 +412,20 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
   //std::vector<TString> regions = m_config->GetAllRegions();
 
 //FIXME: why only Nominal?
-  std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC("fjpt", "Nom", 0);
+  std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC("fjpt", sys, 0);
 //NOTE: posttag_unscaled was scaled before
-  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 0);
+  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 0);
   std::vector<TH1D*> hist_pretag_mc;
   std::vector<TH1D*> hist_posttag_mc;
   if (doPseudo) {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", "Nom", 2, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 2, i_pseudo);
+    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 2, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 2, i_pseudo);
   } else if (doPseudoData) {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", "Nom", 3, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 3, i_pseudo);
+    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 3, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 3, i_pseudo);
   } else {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", "Nom", 1);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", "Nom", 1);
+    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 1);
+    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 1);
   }
 
   TH1D* hist_pretag_data = GetRebinHistData("fjpt");
@@ -526,7 +526,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
   
   //subtract backgrounds and calculate scale factor (or data stat error)
   
-  float N_BB_pretag_mc, N_BB_posttag_mc, N_BB_pretag_data, N_BB_posttag_data, N_total_pretag_mc=0., N_total_posttag_mc=0., N_total_pretag_data, N_total_posttag_data;
+  float N_BB_pretag_mc=0, N_BB_posttag_mc=0, N_BB_pretag_data, N_BB_posttag_data, N_total_pretag_mc=0., N_total_posttag_mc=0., N_total_pretag_data, N_total_posttag_data;
 
   float N_BB_pretag_mc_unscaled=0. , N_BB_posttag_mc_unscaled=0., N_total_pretag_mc_unscaled=0., N_total_posttag_mc_unscaled=0., N_BB_untag_mc_unscaled=0., N_total_untag_mc_unscaled=0.;
 
@@ -535,7 +535,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
 
   std::vector<float> BB_SF, BB_SF_datastaterr, data_eff, mc_eff, data_eff_datastaterr, mc_eff_staterr;
 
-  float err_factor_tagged, err_factor_untagged;
+  //float err_factor_tagged, err_factor_untagged;
 
   for (TString region : regions) {
 
@@ -1088,7 +1088,7 @@ void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, c
      //     else  m_fatjet_histograms_pretag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
      // }
 
-TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region){
+TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region){
 
   std::cout<<"Flavour fraction region: "<<region<<std::endl;
   
