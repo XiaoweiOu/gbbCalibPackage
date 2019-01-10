@@ -12,7 +12,6 @@ After first-time compilation, you will need to source the `build/${AnalysisBase_
 
 To change AnalysisBase releases, remove the `.asetup.save` file from the `source` directory and set up your new release there. The `setup.sh` script will then use that automatically.
 
-NB: There is a .gitignore file in the `build` directory. If you need to clean the `build` directory (e.g. while changing releases or to fix compilation problems) please put this back or be very careful not to add build files to the repository.
 
 ## Running the code
 Run the full scale factor calculation chain takes several steps and will depend on your batch submission system. There are a few scripts provided for different systems (not yet working). Generally speaking though, the steps are as follows:
