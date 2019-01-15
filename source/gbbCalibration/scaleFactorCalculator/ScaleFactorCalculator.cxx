@@ -101,19 +101,19 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_nPseudoExps=config->GetValue("NPseudoExperiments",1000);
   std::cout<<"NPseudoExperiments: "<<m_nPseudoExps<<std::endl;
 
-  m_xlabel   = config->GetValue("XAxisLabel",         "Large-R Jet p_{T} [GeV]");
+  m_xlabel = config->GetValue("XAxisLabel","Large-R Jet p_{T} [GeV]");
   std::cout<<"XAxisLabel: "<<m_xlabel<<std::endl;
 
-  m_ylabel   = config->GetValue("YAxisLabel",         "Scale Factor");
+  m_ylabel = config->GetValue("YAxisLabel","Scale Factor");
   std::cout<<"XAxisLabel: "<<m_ylabel<<std::endl;
   
-  m_plot_label   = config->GetValue("PlotLabel",         "Internal");
+  m_plot_label = config->GetValue("PlotLabel","Internal");
   std::cout<<"PlotLabel: "<<m_plot_label<<std::endl;
  
-  m_sub_label   = config->GetValue("SubLabel",         "#sqrt{s}=13 TeV, 36.1 fb^{-1}");
+  m_sub_label = config->GetValue("SubLabel","#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
   std::cout<<"SubLabel: "<<m_sub_label<<std::endl;
    
-  m_subsub_label   = config->GetValue("SubSubLabel",         "#bf{g #rightarrow bb calibration}");
+  m_subsub_label = config->GetValue("SubSubLabel","#bf{g #rightarrow bb calibration}");
   std::cout<<"SubSubLabel: "<<m_subsub_label<<std::endl;
 
   m_rebinStatThr = config->GetValue("RebinStatThreshold",0.5);

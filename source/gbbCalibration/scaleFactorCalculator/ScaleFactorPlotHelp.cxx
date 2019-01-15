@@ -30,9 +30,9 @@
 void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString plot_type){
   std::cout<<"INFO: ScaleFactorCalculator::MakeCalibrationPlots(): Making Calibration Plots of type: "<<plot_type<<std::endl;
 
-  std::vector<float> mutrackjetbins=m_config->GetMuonJetPtBins();
-  std::vector<float> nonmutrackjetbins=m_config->GetNonMuJetPtBins();
-  std::vector<float> fj_bins=m_config->GetFatJetPtBins();
+  std::vector<float> mutrackjetbins = m_config->GetMuonJetPtBins();
+  std::vector<float> nonmutrackjetbins = m_config->GetNonMuJetPtBins();
+  std::vector<float> fj_bins = m_config->GetFatJetPtBins();
   std::vector<float> bin_xerr, bin_x;
 
   for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
@@ -115,6 +115,18 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 
   }else if(plot_type.Contains("2D")){
 
+    std::vector<TString> mu_labels, nonmu_labels;
+    mu_labels.push_back(Form("p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins.front()));
+    for (unsigned int i=0; i < mutrackjetbins.size()-1; i++) {
+      mu_labels.push_back(Form("%iGeV < p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins[i],(int)mutrackjetbins[i+1]));
+    }
+    mu_labels.push_back(Form("p_{T}(#mu-jet) > %iGeV",(int)mutrackjetbins.back()));
+
+    nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) < %iGeV",(int)nonmutrackjetbins.front()));
+    for (unsigned int i=0; i < nonmutrackjetbins.size()-1; i++) {
+      nonmu_labels.push_back(Form("%iGeV < p_{T}(non-#mu-jet) < %iGeV",(int)nonmutrackjetbins[i],(int)nonmutrackjetbins[i+1]));
+    }
+    nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) > %iGeV",(int)nonmutrackjetbins.back()));
 
     mutrackjetbins.insert(mutrackjetbins.begin(),0.);
     mutrackjetbins.push_back(2*mutrackjetbins[mutrackjetbins.size()-1]-mutrackjetbins[mutrackjetbins.size()-2]);
@@ -127,10 +139,6 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 
     for(auto &el : mutrackjetbins) std::cout<<"Muon track jet bins: "<<el<<std::endl;
     for(auto &el : nonmutrackjetbins) std::cout<<"Non Muon track jet bins: "<<el<<std::endl;
-
-    //FIXME: set label by content of binning vector
-    const char* mu_labels[3]={"p_{T}(#mu-jet) < 100GeV","100GeV < p_{T}(#mu-jet) < 200GeV", "p_{T}(#mu-jet) > 200GeV"};
-    const char* nonmu_labels[4]={"p_{T}(non-#mu-jet) < 100GeV","100GeV < p_{T}(non-#mu-jet) < 200GeV","200GeV < p_{T}(non-#mu-jet) < 300GeV", "p_{T}(non-#mu-jet) > 300GeV"};
 
 
     hist=new TH2D("hist","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
@@ -206,8 +214,8 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
  
   //Add ATLAS label
   ATLASLabel2(0.6,0.825,m_plot_label.Data());
-  myText(0.5, 0.75, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
-  myText(0.6, 0.68, 1, Form("#scale[0.6]{%s}",m_subsub_label.Data()));
+  myText(0.6, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
+  myText(0.6, 0.74, 1, Form("#scale[0.8]{%s}",m_subsub_label.Data()));
 
   TLine *line = new TLine((m_config->GetFatJetPtBins())[0],1.,(m_config->GetFatJetPtBins()).back(),1.);
   line->SetLineStyle(2);
