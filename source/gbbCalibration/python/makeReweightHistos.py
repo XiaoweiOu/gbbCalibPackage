@@ -12,10 +12,12 @@ from ROOT import TCanvas,TPad,TH2,TTree
 parser = argparse.ArgumentParser(description='Make reweight histograms.')
 parser.add_argument('outfile', help="Name of output ROOT file")
 parser.add_argument('infiles', help="JSON file with paths for data and MC files. See README for format")
+parser.add_argument('inc', help="0 -- mufiltered, 1 -- inclusive")
 args = parser.parse_args()
 
 outfilename = args.outfile
 pathData, ListOfMCPaths, ListOfInclusiveMCPaths = config.GetPathsFromJSON(args.infiles)
+inclusive = args.inc
 
 Lumi = 36000.0 #in pb^-1
 
@@ -46,7 +48,11 @@ for histname in ListOfHists :
     print("Cannot find hist "+histname+" in file "+pathData)
     continue
 
-  histMC = histHelper.AddMCHists(histname,ListOfMCPaths)
+  if inclusive:
+    histMC = histHelper.AddMCHists(histname,ListOfInclusiveMCPaths)
+  else:
+    histMC = histHelper.AddMCHists(histname,ListOfMCPaths)
+
   if histMC:
     histMC.Scale(Lumi)
     histData.Divide(histMC)

@@ -1,4 +1,3 @@
-
 /*
  * GbbTupleAna.h
  *
@@ -44,7 +43,7 @@ class GbbTupleAna : public TupleAna {
 
 public:
   GbbTupleAna();
-  GbbTupleAna(const std::vector<TString>& infiles, const TString& outfilename, const TString& configname);
+  GbbTupleAna(const std::vector<TString> infiles, const TString outfilename, const TString treename, const TString configname);
   virtual ~GbbTupleAna();
 
   void ReadConfig(const TString& config_path);
@@ -65,7 +64,6 @@ private:
   GlobalConfig *m_config;
   HistogramService *m_HistSvc; //!
   TString m_Outputname; //! name of output file
-  std::map<TString, TChain*> m_chains;
 
   int m_RunMode;
   typedef enum {
@@ -97,6 +95,7 @@ private:
   bool m_isNominal;
   TString m_SysVarName;
   TString m_GeneratorName;
+  TString m_FilterType;
     
   float m_SumWeightTuple;
   int m_nevtTuple;
@@ -114,6 +113,8 @@ private:
   bool m_doInclusiveGbb;
   
   bool m_doApplyBTaggingSF;
+  
+  bool m_doSd0Systematics;
   
   bool m_doMergeDiTrkjetCat;
   std::vector<TString> m_ditrkjet_cat;
@@ -134,7 +135,7 @@ private:
   void Loop(const TString& sys);
   bool Processgbb(int i_evt);
   
-  void GetGeneratorName(TString url);
+  void GetFilterType(TString url);
   bool passR4CaloJetCuts(unsigned int i_jet);
   bool passR10CaloJetCuts(unsigned int i_jet);
   bool passR2TrackJetCuts(unsigned int i_jet);

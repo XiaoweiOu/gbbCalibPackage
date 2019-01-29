@@ -7,16 +7,23 @@ import json
 def GetPathsFromJSON(infile):
   dataPath = ''
   inclMCPaths = []
-  mufiltMCPaths = []
+  muFiltMCPaths = []
   with open(infile, 'r') as f:
     tbl = json.load(f)
+    print "ConfigFunctions >> json file imported"
     if "BasePath" in tbl:
       if "Data" in tbl:
         dataPath = tbl["BasePath"]+tbl["Data"]
-      if "MuFilteredMC" in tbl:
-        muFiltMCPaths = [tbl["BasePath"]+path for path in tbl["MuFilteredMC"]]
-      if "InclusiveMC" in tbl:
-        inclMCPaths = [tbl["BasePath"]+path for path in tbl["InclusiveMC"]]
+      for syspath in tbl["Sys"]:
+        if "MuFilteredMC" in tbl:
+          muFiltMCPaths = muFiltMCPaths+[tbl["BasePath"]+tbl["MuBase"]+syspath+path for path in tbl["MuFilteredMC"]]
+        if "InclusiveMC" in tbl:
+          inclMCPaths = inclMCPaths+[tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
+      #for syspath in tbl["Sys"]:
+      #  if "MuFilteredMC" in tbl:
+      #    muFiltMCPaths = [tbl["BasePath"]+tbl["MuBase"]+syspath+path for path in tbl["MuFilteredMC"]]
+      #  if "InclusiveMC" in tbl:
+      #    inclMCPaths = [tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
   return dataPath, muFiltMCPaths, inclMCPaths
 
 def GetDataFile(name):
@@ -94,21 +101,26 @@ class HistHelper:
       if self.MapOfChannelWeights[channel] == 0:
         print "missing channel: ",channel
         return None
-      weight = self.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(3)
+      if not bookkeep_hist.GetBinContent(3):
+        weight = 0;
+        print "Warning: nevt in bookKeeping for tuple = 0, event weight set to 0 --- file: ",path
+      else: 
+        weight = self.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(3)
+      
 
       if not hist:
         hist = file_curr.Get(histname)
         if hist:
           hist.SetDirectory(0)
           hist.Scale(weight)
-        else:
-          print("Cannot find hist "+histname+" in file "+path)
+        #else:
+          #print("Cannot find hist "+histname+" in file "+path)
       else :
         histTemp = file_curr.Get(histname)
         if histTemp:
           hist.Add(histTemp,weight)
-        else:
-          print("Cannot find hist "+histname+" in file "+path)
+        #else:
+          #print("Cannot find hist "+histname+" in file "+path)
       #file_curr.Close()
     if not hist:
       print("Hist "+histname+" not found in any input MC files!")

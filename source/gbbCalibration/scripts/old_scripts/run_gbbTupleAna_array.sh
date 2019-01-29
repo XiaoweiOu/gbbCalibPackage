@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOMEDIR=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna
+HOMEDIR=/nfs/dust/atlas/user/ruth/Ruth/QualiTask/Code/gbbTupleAna_improved
 
 cd ${HOMEDIR}
 
@@ -39,7 +39,7 @@ echo -e "Here is the program run dir: `pwd` \n"
 
 echo "Processing....."
 
-./run_gbbTupleAna.exe ${INFILE} ${TMPDIR}/${OUTFILE} ${TREENAME} 
+./run_gbbTupleAna.exe ${INFILE} ${TMPDIR}/${OUTFILE} ${TREENAME} ${CONFIGNAME}
 
 echo "Write Output File to: ${OUTDIR} ....."
 

@@ -11,7 +11,7 @@ void Usage(const string& name)
 {
   cerr << "Usage: "
        << name
-       << " <infile> <outfile> <configfile>\n"
+       << " <infile> <outfile> <treename> <configfile>\n"
        << " If infile ends in .txt it is assumed to be a list\n"
        << " of root files (one per line).\n"
        << endl;
@@ -20,15 +20,16 @@ void Usage(const string& name)
 /*---------------------------------------------------------------------------*/
 int main(int argc,char *argv[]){
 
-  if (argc < 4) {
+  if (argc < 5) {
     std::cerr << "[ERROR] (" << basename(argv[0]);
-    std::cerr << ") missing arguments: <infile> <outfile> <configfile> required." << std::endl;
+    std::cerr << ") missing arguments: <infile> <outfile> <treename> <configfile> required." << std::endl;
     Usage(basename(argv[0]));
     return 1;
   }
   TString infile = argv[1];
   TString outfile = argv[2];
-  TString config = argv[3];
+  TString treename = argv[3];
+  TString config = argv[4];
   bool useList = infile.EndsWith(".txt");
 
   std::vector<TString> infiles = std::vector<TString>();
@@ -46,7 +47,7 @@ int main(int argc,char *argv[]){
     infiles.push_back(infile);
   }
 
-  GbbTupleAna ana(infiles, outfile, config);
+  GbbTupleAna ana(infiles, outfile, treename, config);
   ana.Loop();
   ana.Finalize();
   return 0;

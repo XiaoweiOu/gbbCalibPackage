@@ -3,3 +3,6 @@ run/*
 source/.asetup.save
 *~
 .*.un~
+*.orig
+.nfs*
+*.pyc

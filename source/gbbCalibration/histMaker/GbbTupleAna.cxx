@@ -112,6 +112,10 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   }
   if (m_Debug) std::cout<<"RunMode flag: "<<m_RunMode<<std::endl;
   
+  
+  m_GeneratorName = config->GetValue("GeneratorName","Pythia");
+  std::cout<<"GeneratorName: "<<m_GeneratorName<<std::endl;
+  
   m_doJetPtReweighting = config->GetValue("doJetPtEtaReweighting",true);
   std::cout<<"doJetPtEtaReweighting: "<<m_doJetPtReweighting<<std::endl;
 
@@ -129,6 +133,9 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
 
   m_doApplyBTaggingSF = config->GetValue("doApplyBTaggingSF",false);
   std::cout<<"doApplyBTaggingSF "<<m_doApplyBTaggingSF<<std::endl;
+
+  m_doSd0Systematics = config->GetValue("doSd0Systematics",false);
+  std::cout<<"doSd0Systematics (will only work if nominal): "<<m_doSd0Systematics<<std::endl;
 
   m_doFlavFracCorrection = config->GetValue("doFlavFracCorrection",false);
   std::cout<<"doFlavFracCorrection: "<<m_doFlavFracCorrection<<std::endl;
@@ -158,7 +165,7 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   std::cout<<"=============================================="<<std::endl;
 }
 
-GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& outfilename, const TString& configname) :
+GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfilename, const TString treename, const TString configname) :
   TupleAna(),
   m_config(nullptr),
   m_HistSvc(nullptr),
@@ -173,6 +180,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
   m_isNominal(false),
   m_SysVarName(""),
   m_GeneratorName(""),
+  m_FilterType(""),
   m_SumWeightTuple(0),
   m_nevtTuple(0),
   //m_reweightHistos(),
@@ -184,6 +192,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
   m_doInclusiveGbb(false),
   m_doApplyBTaggingSF(false),
   m_doMergeDiTrkjetCat(false),
+  m_doSd0Systematics(false),
   //m_ditrkjet_cat(),
   //m_trkjet_cat(),
   //m_muojet_pt_bins(),
@@ -206,11 +215,10 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
   m_HistSvc=new HistogramService();
 
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
-  m_chains.emplace("Nom", new TChain("FlavourTagging_Nominal"));
-  for (TString sys : m_config->GetSystematics()) {
-    m_chains.emplace(sys, new TChain("FlavourTagging_"+sys));
-  }
+  TChain *tree = new TChain(treename);
   //TChain* friendCh = nullptr;
+  
+  bool file1 = true;
   for (TString filename : infiles) {
     TFile* f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename.Data());
     if (!f || !f->IsOpen()) f = new TFile(filename.Data(),"READ");
@@ -227,9 +235,14 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
     }  
 
     //if (!treename.EqualTo("FlavourTagging_Nominal")) friendCh = new TChain("FlavourTagging_Nominal");
-    //GetGeneratorName(filename.Data());
-    for (auto iter : m_chains) {
-      iter.second->Add(filename.Data());
+    tree->Add(filename.Data());
+    
+    // getting filter type
+    if (file1)
+    {
+      if (m_Debug) std::cout<<"Getting Filter Type.."<<std::endl;
+      GetFilterType(filename.Data());
+      file1 = false;
     }
     //if (friendCh != nullptr) friendCh->Add(filename.Data());
   }
@@ -255,21 +268,19 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
 
   m_Outputname = outfilename;
   
-  //FIXME
-  m_GeneratorName="Pythia";
-  std::cout<<"Generator is:"<<m_GeneratorName<<std::endl;
 
   //running on the nominal sample?
-  //if (treename.Contains("Nominal")) {
-  //  m_isNominal = true;
-  //  m_SysVarName = "Nom";
-  //} else {
-  //  m_isNominal = false;
-  //  m_SysVarName = treename(15,treename.Length());
-  //}
+  if (treename.Contains("Nominal")) {
+    m_isNominal = true;
+    m_SysVarName = "Nom";
+  } else {
+    m_isNominal = false;
+    m_SysVarName = treename(15,treename.Length());
+    m_doSd0Systematics = false;
+  }
 
-  //if (m_isNominal) std::cout<<"Running on Nominal sample!"<<std::endl;
-  //else std::cout<<"Running on Systematics sample!"<<std::endl;
+  if (m_isNominal) std::cout<<"Running on Nominal sample!"<<std::endl;
+  else std::cout<<"Running on Systematics sample!"<<std::endl;
 
 
   //=========================================
@@ -289,15 +300,15 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
   std::vector<TString> trig_slices={"HLT_j380"};  
 
   if(m_doJetPtReweighting){
-    if(m_GeneratorName.EqualTo("Pythia")){
+    
+    std::cout << "Filter Type: " << m_FilterType <<std::endl; 
+    
+    if(m_FilterType.EqualTo("Inclusive")){
       for(auto& elem : trig_slices) this->setReweightHisto(m_JetPtReweightFileInclusive,elem);
-      std::cout<<"Do Pythia reweighting" << m_JetPtReweightFileInclusive << std::endl;
-    }else if(m_GeneratorName.EqualTo("Herwig")){ //Herwig Reweighting
+      std::cout<<"Do Inclusive Reweighting" << m_JetPtReweightFileInclusive << std::endl;
+    }else if(m_FilterType.EqualTo("MuFiltered")){
       for(auto& elem : trig_slices) this->setReweightHisto(m_JetPtReweightFile,elem);
-      std::cout<<"Do Herwig reweighting"<<m_JetPtReweightFile<<std::endl;
-    }
-    else{
-      std::cout<<"Unknown Generator: Do no reweighting"<<m_JetPtReweightFile<<std::endl;
+      std::cout<<"Do mu-Filtered Reweighting"<<m_JetPtReweightFile<<std::endl;
     }
   }
 
@@ -319,7 +330,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString>& infiles, const TString& out
   m_random = std::shared_ptr<TRandom3>(new TRandom3());
   m_random.get()->SetSeed(0);
    
-  //Init(tree);
+  Init(tree);
 }
 
 
@@ -333,19 +344,6 @@ void GbbTupleAna::Finalize() {
 
 
 void GbbTupleAna::Loop() {
-  Loop("Nom");
-  if (m_isMC) {
-    for (TString sys : m_config->GetSystematics()) {
-      Loop(sys);
-    }
-  }
-}
-
-void GbbTupleAna::Loop(const TString& sys) {
-
-  Init(m_chains[sys.Data()]);
-  m_isNominal = sys.EqualTo("Nom");
-  m_SysVarName = sys;
 
   if (fChain == 0) return;
 
@@ -360,9 +358,9 @@ void GbbTupleAna::Loop(const TString& sys) {
 
     if(!(jentry%1000)) std::cout<<"Processing event: "<<jentry<<" of "<<nentries<<std::endl;
     // if (Cut(ientry) < 0) continue;
-    if (m_isNominal) m_nevtTuple++;
+    m_nevtTuple++;
 
-    if (jentry == 0 && m_isNominal) m_isMC = this->eve_isMC;
+    if (jentry == 0) m_isMC = this->eve_isMC;
 
     m_doFillMujet=false;
     if(m_random->Uniform()>=0.5) m_doFillMujet=true;
@@ -399,7 +397,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "nEvents total");
 
-  if (m_isNominal) m_SumWeightTuple+=total_evt_weight;
+  m_SumWeightTuple+=total_evt_weight;
   //if (m_isNominal) m_SumWeightTuple+=this->eve_pu_w;
 
   m_HistSvc->FastFillTH1D("PUWeights",this->eve_pu_w,50,0.,5.,1.);
@@ -1007,11 +1005,11 @@ bool GbbTupleAna::Processgbb(int i_evt){
   return true;
 }
 
-//FIXME: find better way to do this
-void GbbTupleAna::GetGeneratorName(TString url){
-  if(url.Contains("3610") || url.Contains("42700") || url.Contains("42710")) m_GeneratorName="Pythia";
-  else if (url.Contains("4260") || url.Contains("42711") ) m_GeneratorName="Herwig";
-  else m_GeneratorName="Unknown";
+void GbbTupleAna::GetFilterType(TString url){
+  if(m_Debug) std::cout<<"url: " <<url<<std::endl;
+  if(url.Contains("3610")) m_FilterType="Inclusive";
+  if(url.Contains("42700")||url.Contains("42710")) m_FilterType="MuFiltered";
+  else m_FilterType="Unknown";
 }
 
 void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
