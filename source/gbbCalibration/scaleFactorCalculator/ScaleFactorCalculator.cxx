@@ -101,19 +101,19 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_nPseudoExps=config->GetValue("NPseudoExperiments",1000);
   std::cout<<"NPseudoExperiments: "<<m_nPseudoExps<<std::endl;
 
-  m_xlabel   = config->GetValue("XAxisLabel",         "Large-R Jet p_{T} [GeV]");
+  m_xlabel = config->GetValue("XAxisLabel","Large-R Jet p_{T} [GeV]");
   std::cout<<"XAxisLabel: "<<m_xlabel<<std::endl;
 
-  m_ylabel   = config->GetValue("YAxisLabel",         "Scale Factor");
+  m_ylabel = config->GetValue("YAxisLabel","Scale Factor");
   std::cout<<"XAxisLabel: "<<m_ylabel<<std::endl;
   
-  m_plot_label   = config->GetValue("PlotLabel",         "Internal");
+  m_plot_label = config->GetValue("PlotLabel","Internal");
   std::cout<<"PlotLabel: "<<m_plot_label<<std::endl;
  
-  m_sub_label   = config->GetValue("SubLabel",         "#sqrt{s}=13 TeV, 36.1 fb^{-1}");
+  m_sub_label = config->GetValue("SubLabel","#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
   std::cout<<"SubLabel: "<<m_sub_label<<std::endl;
    
-  m_subsub_label   = config->GetValue("SubSubLabel",         "#bf{g #rightarrow bb calibration}");
+  m_subsub_label = config->GetValue("SubSubLabel","#bf{g #rightarrow bb calibration}");
   std::cout<<"SubSubLabel: "<<m_subsub_label<<std::endl;
 
   m_rebinStatThr = config->GetValue("RebinStatThreshold",0.5);
@@ -340,7 +340,12 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
     variables_posttag.push_back(TString(el)+"_PREFITPOSTTAG");
   }
   for(auto& el : variables_posttag){
-    if(el.Contains("mjmaxSd0")) continue;
+    //TODO: not really sure why we skip mjmaxSd0 here
+    bool isTemplate = false;
+    for (TString var : tmpl_vars) {
+      if(el.Contains(var)) { isTemplate = true; break; }
+    }
+    if (isTemplate) continue;
     for (TString sys : btag_sys) variables_posttag_btagsys.push_back(TString(el)+"_"+sys);
   }
   variables_posttag_btagsys.push_back("mjpt_PREFITUNTAG");
@@ -523,6 +528,8 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  // The variable used here doesn't matter since we only care about nEvents in the histograms
+  TString var = m_config->GetTemplateVariables()[0];
   
   //subtract backgrounds and calculate scale factor (or data stat error)
   
@@ -551,26 +558,26 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
     //TString mc_name_posttag=regions[i_reg]+"_mjmaxSd0_PREFITPOSTTAG_"+sys;
     //TString mc_name_untag=regions[i_reg]+"_mjpt_PREFITUNTAG_"+sys;
     
-    std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 0);
-    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 0);
+    std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC(var, sys, region, 0);
+    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 0);
     std::vector<TH1D*> hist_pretag_mc;
     std::vector<TH1D*> hist_posttag_mc;
     std::vector<TH1D*> hist_untag_mc_unscaled;
     if (doPseudo) {
-      hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 2, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 2, i_pseudo);
+      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 2, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 2, i_pseudo);
     } else if (doPseudoData) {
-      hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 3, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 3, i_pseudo);
+      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 3, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 3, i_pseudo);
     } else {
-      hist_pretag_mc = GetRebinHistsByRegionMC("mjmaxSd0", sys, region, 1);
-      hist_posttag_mc = GetRebinHistsByRegionMC("mjmaxSd0_PREFITPOSTTAG", sys, region, 1);
+      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 1);
+      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 1);
     }
     if (sys.Contains("Nom")) hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_PREFITUNTAG", sys, region, 0);
     unsigned int nBinsX = hist_pretag_mc_unscaled[0]->GetNbinsX(); // All hists have same binning
 
-    TH1D* hist_pretag_data = GetRebinHistByRegionData("mjmaxSd0", region);
-    TH1D* hist_posttag_data = GetRebinHistByRegionData("mjmaxSd0_PREFITPOSTTAG", region);
+    TH1D* hist_pretag_data = GetRebinHistByRegionData(var, region);
+    TH1D* hist_posttag_data = GetRebinHistByRegionData(var+"_PREFITPOSTTAG", region);
 
     N_total_pretag_mc=0.;
     N_total_posttag_mc=0.;

@@ -188,7 +188,7 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     }
   }
     
-  if (m_isNominal && m_isMC) {
+  if (m_isNominal && m_isMC && m_doSd0Systematics) {
 
     auto makeSysNamingFunc = [config=this->m_config,dijet_flav,ptlabel,nametag](TString sys)
      -> std::function<TString (TString)> {
@@ -211,34 +211,33 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
     this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);
 
-    if(hasConversion){
+    if (hasConversion) {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("Conversion__1up"));
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("Conversion__1down"));
-    }else{
+    } else {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("Conversion__1up"));
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("Conversion__1down"));
     }
 
-    if(hasHadMatInt){
+    if (hasHadMatInt) {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("HadMatInt__1up"));
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("HadMatInt__1down"));
-    }else{
+    } else {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("HadMatInt__1up"));
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("HadMatInt__1down"));
     }
 
-    if(hasLightLongLived){
+    if (hasLightLongLived) {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("LightLongLived__1up"));
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("LightLongLived__1down"));
-    }else{
+    } else {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1up"));
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1down"));
     }
 
-    if(hasNoTruthMu){
+    if (hasNoTruthMu) {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*3, makeSysNamingFunc("FakeMuons__1up"));
-    }else{
-      //FIXME: in older code this had same event_weight multiplier as other case. why?
+    } else {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("FakeMuons__1up"));
     }
   } // End of extra systematics

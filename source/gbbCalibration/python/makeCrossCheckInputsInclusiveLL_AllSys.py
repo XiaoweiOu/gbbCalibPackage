@@ -7,21 +7,26 @@ import argparse
 ROOT.gROOT.SetBatch(True)
 from ROOT import TCanvas,TPad,TString
 
+#------------------ setup ---------------------------
+
 #SetupStyle()
 
 Lumi = 36000.0; #in pb^-1
 
+# geting input variables
 parser = argparse.ArgumentParser(description='Make reweight histograms.')
 parser.add_argument('outfile', help="Name of output ROOT file")
 parser.add_argument('infiles', help="JSON file with paths for data and MC files. See README for format")
 args = parser.parse_args()
 
+# setting variables
 outfilename = args.outfile
 pathData, ListOfMCPaths, ListOfInclusiveMCPaths = config.GetPathsFromJSON(args.infiles)
 
 MyConfig = config.LoadGlobalConfig()
 histHelper = config.HistHelper()
 
+# getting config variables
 ListOfSystematics = MyConfig.GetSystematics() 
 ListOfSystematics.push_back(TString("Nom"))
 ListOfSd0Systematics = MyConfig.GetSystematics_Sd0() 
@@ -30,13 +35,14 @@ ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfInclusiveFlavourPairs = [ 'LL' ]
 ListOfTJpt = MyConfig.GetTrkJetRegions()
 
-#TODO: Add paths for Herwig samples?
+# variables 
+#ListOfVariables = [ 'fjpt', 'nmjpt', 'mjpt', 'mjmaxSd0', 'mjmeanSd0', 'nmjmaxSd0', 'nmjmeanSd0' ]
+#ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'mjmeanSd0', 'nmjmaxSd0', 'nmjmeanSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmeanSd0_PREFITPOSTTAG', 'nmjmeanSd0_PREFITPOSTTAG','fjpt_PREFITPOSTTAG_BTAGUP', 'fjm_PREFITPOSTTAG_BTAGUP', 'fjD2_PREFITPOSTTAG_BTAGUP','mjpt_PREFITPOSTTAG_BTAGUP','nmjpt_PREFITPOSTTAG_BTAGUP','mjeta_PREFITPOSTTAG_BTAGUP','nmjeta_PREFITPOSTTAG_BTAGUP','fjptsc_PREFITPOSTTAG_BTAGUP', 'fjpt_PREFITPOSTTAG_BTAGDOWN', 'fjm_PREFITPOSTTAG_BTAGDOWN', 'fjD2_PREFITPOSTTAG_BTAGDOWN','mjpt_PREFITPOSTTAG_BTAGDOWN','nmjpt_PREFITPOSTTAG_BTAGDOWN','mjeta_PREFITPOSTTAG_BTAGDOWN','nmjeta_PREFITPOSTTAG_BTAGDOWN','fjptsc_PREFITPOSTTAG_BTAGDOWN','fjtau21','fjtau21_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG_BTAGUP','fjtau21_PREFITPOSTTAG_BTAGDOWN']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
+ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'mjmeanSd0', 'nmjmaxSd0', 'nmjmeanSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmeanSd0_PREFITPOSTTAG', 'nmjmeanSd0_PREFITPOSTTAG','fjtau21','fjtau21_PREFITPOSTTAG','mjpt_PREFITUNTAG']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
 
-#ListOfVariables = [ 'fjpt', 'nmjpt', 'mjpt', 'mjmaxSd0', 'nmjmaxSd0' ]
-#ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'nmjmaxSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjpt_PREFITPOSTTAG_BTAGUP', 'fjm_PREFITPOSTTAG_BTAGUP', 'fjD2_PREFITPOSTTAG_BTAGUP','mjpt_PREFITPOSTTAG_BTAGUP','nmjpt_PREFITPOSTTAG_BTAGUP','mjeta_PREFITPOSTTAG_BTAGUP','nmjeta_PREFITPOSTTAG_BTAGUP','fjptsc_PREFITPOSTTAG_BTAGUP', 'fjpt_PREFITPOSTTAG_BTAGDOWN', 'fjm_PREFITPOSTTAG_BTAGDOWN', 'fjD2_PREFITPOSTTAG_BTAGDOWN','mjpt_PREFITPOSTTAG_BTAGDOWN','nmjpt_PREFITPOSTTAG_BTAGDOWN','mjeta_PREFITPOSTTAG_BTAGDOWN','nmjeta_PREFITPOSTTAG_BTAGDOWN','fjptsc_PREFITPOSTTAG_BTAGDOWN','fjtau21','fjtau21_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG_BTAGUP','fjtau21_PREFITPOSTTAG_BTAGDOWN']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
-ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'nmjmaxSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjtau21','fjtau21_PREFITPOSTTAG']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
+#----------- listing desired histograms -------------
 
-#make list of histograms in Data
+# make list of data hists
 ListOfDataHists = []
 for tjpt in ListOfTJpt :
     for var in ListOfVariables :
@@ -44,7 +50,7 @@ for tjpt in ListOfTJpt :
 
 ListOfDataHists.append('CutFlow_Nom');
 
-#make list of histograms in MC
+# make list of MC hists
 ListOfHists = []
 ListOfHerwigHists = []
 ListOfHists.append('CutFlow_Nom')
@@ -53,8 +59,8 @@ for flavour in ListOfFlavourPairs :
     for var in ListOfVariables :
       ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var).Data())
       for sys in ListOfSystematics :
-#TODO: don't hard-code these exceptions
-        if "fjeta" in var and "fjphi" in var and "Nom" not in sys.Data():
+        #TODO: don't hard-code these exceptions
+        if ("fjeta" in var or "fjphi" in var or "PREFITUNTAG" in var) and "Nom" not in sys.Data():
           continue
         ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
       if "Sd0" in var :
@@ -62,13 +68,14 @@ for flavour in ListOfFlavourPairs :
           ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
       if "PREFITPOSTTAG" in var :
         for sys in ListOfWeightVariations :
-          ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys).Data())
+          ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys.Data()).Data())
  
+#--------------------- output -----------------------
 
-#open output file
+# open output file
 outfile=ROOT.TFile(outfilename,"RECREATE")
 
-#loop over MC histograms
+# loop over and write MC histograms
 for histname in ListOfHists :
   ListOfPaths = ListOfMCPaths
   for inclFlav in ListOfInclusiveFlavourPairs:
@@ -101,7 +108,7 @@ for histname in ListOfHists :
       else:
         print("Cannot find hist "+help_name+" in file "+path)
 
-#loop over data Histograms
+# loop over and write data histograms
 file_curr = ROOT.TFile(pathData,"READ")
 if not file_curr:
   print("Cannot open file "+pathData)
@@ -117,6 +124,8 @@ for histname in ListOfDataHists :
     histData.Write()    
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
+
+#--------------------- output -----------------------
 
 #TODO
 ##get Herwig histograms
