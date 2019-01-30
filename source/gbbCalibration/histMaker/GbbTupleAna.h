@@ -109,14 +109,14 @@ private:
   FlavourFracCorrector* m_FlavFracCorrector; 
   
   bool m_doTrackSmearing;
-
   bool m_doInclusiveGbb;
-  
   bool m_doApplyBTaggingSF;
   
   bool m_doSd0Systematics;
   
   bool m_doMergeDiTrkjetCat;
+  bool m_useVRTrkJets;
+  
   std::vector<TString> m_ditrkjet_cat;
   std::vector<TString> m_trkjet_cat;
   std::vector<float> m_muojet_pt_bins;

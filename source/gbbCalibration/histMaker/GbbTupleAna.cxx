@@ -161,6 +161,9 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_PostfitPtReweightingFile=config->GetValue("PostfitPtReweightingFile","DEFAULT.root");
   std::cout<<"m_PostfitPtReweightingFile: "<<m_PostfitPtReweightingFile<<std::endl;
 
+  m_useVRTrkJets = config->GetValue("useVRTrkJets",true);
+  std::cout<<"useVRTrkJets: "<<m_useVRTrkJets<<std::endl;
+
   delete config;
   std::cout<<"=============================================="<<std::endl;
 }
@@ -192,6 +195,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_doInclusiveGbb(false),
   m_doApplyBTaggingSF(false),
   m_doMergeDiTrkjetCat(false),
+  m_useVRTrkJets(true),
   m_doSd0Systematics(false),
   //m_ditrkjet_cat(),
   //m_trkjet_cat(),
@@ -532,30 +536,33 @@ bool GbbTupleAna::Processgbb(int i_evt){
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "has gbb candidate");
 
   if(m_Debug) std::cout<<"constructGbbCandidate(): Finish Gbb construction!"<<std::endl;
-  TLorentzVector muojet_vec, nonmuojet_vec;
-  muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
-                           this->trkjet_eta->at(gbbcand.muojet_index),
-                           this->trkjet_phi->at(gbbcand.muojet_index),
-                           0.);
-  nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3,
-                              this->trkjet_eta->at(gbbcand.nonmuojet_index),
-                              this->trkjet_phi->at(gbbcand.nonmuojet_index),
-                              0.);
-  m_HistSvc->FastFillTH1D(
-   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","DRtrkjets"),
-   ";#Delta R(muon-jet,non-muon jet);Events/0.01;",
-   muojet_vec.DeltaR(nonmuojet_vec),100,0.,1.0,total_evt_weight
-  );
-  float muojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.muojet_index)) );
-  float nonmuojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.nonmuojet_index)) );
+  if (m_useVRTrkJets) {
+    TLorentzVector muojet_vec, nonmuojet_vec;
+    muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
+                             this->trkjet_eta->at(gbbcand.muojet_index),
+                             this->trkjet_phi->at(gbbcand.muojet_index),
+                             0.);
+    nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3,
+                                this->trkjet_eta->at(gbbcand.nonmuojet_index),
+                                this->trkjet_phi->at(gbbcand.nonmuojet_index),
+                                0.);
+    m_HistSvc->FastFillTH1D(
+     m_config->GetMCHistName(m_SysVarName,"Incl","Incl","DRtrkjets"),
+     ";#Delta R(muon-jet,non-muon jet);Events/0.01;",
+     muojet_vec.DeltaR(nonmuojet_vec),100,0.,1.0,total_evt_weight
+    );
+    float muojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.muojet_index)) );
+    float nonmuojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.nonmuojet_index)) );
 
-  if ( TMath::Log(muojet_vec.DeltaR(nonmuojet_vec)/std::min(muojet_minVR, nonmuojet_minVR)) < 0 ) {
-    if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
-    return false;
+    if ( TMath::Log(muojet_vec.DeltaR(nonmuojet_vec)/std::min(muojet_minVR, nonmuojet_minVR)) < 0 ) {
+      if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
+      return false;
+    }
+    icut++;
+    m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+    ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trackjet overlap cut");
   }
-  icut++;
-  m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
-  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trackjet overlap cut");
+
   //if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
   //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
   //  return false;
