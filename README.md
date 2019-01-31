@@ -14,28 +14,39 @@ To change AnalysisBase releases, remove the `.asetup.save` file from the `source
 
 
 ## Running the code
-Run the full scale factor calculation chain takes several steps and will depend on your batch submission system. There are a few scripts provided for different systems (not yet working). Generally speaking though, the steps are as follows:
+Run the full scale factor calculation chain takes several steps and will depend on your batch submission system. There are a few scripts provided for different systems. Generally speaking though, the steps are as follows:
 1. Set the configuration files in `source/gbbCalibration/data/configs`
    * The histogram making code uses the `run_GbbTupleAna_*.cfg` files
    * The scale factor calculation code uses the `config_*_SF.cfg` files
-   * Everything uses the `GlobalConfig.cfg` file
+   * Everything uses the `GlobalConfig.cfg` file (has systematics list)
    * Check the `data/xsections.txt` file to be sure your MC channel(s) are listed
    * __Commit your changes and create a tag for future reference__
 2. Making reweighting histograms from FTNtupCalib input
-   * run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; gbbCalibration/configs/run\_GbbTupleAna\_Reweight.cfg
+   * Local Run: run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; &lt;tree\_name&gt; gbbCalibration/configs/run\_GbbTupleAna\_Reweight.cfg
       * If the <input> file ends in .txt it is assumed to be list
       * Some input lists are provided in the `datasets` directory
+      * As reweighting is done for nominal only <tree\_name> should be FlavourTagging\_Nominal
+   * qsub Run: source scripts/NAFScripts/submit\_gbbTupleAna\_array.sh 0 gbbCalibration/configs/run\_GbbTupleAna\_Reweight.cfg <tag>  
+      * 0 -- Nominal Only
+      * Change user variables to ones fitting you in scripts/NAFScripts/submit\_gbbTupleAna\_array.sh 
       * Do separately for data and each MC channel
-      * Will use the systematics list from `GlobalConfig.cfg`
-   * Create a json file with the locations of the &lt;output&gt; files
-   * python makeReweightingHistos.py &lt;root\_output&gt; &lt;json\_input&gt;
+   * Manually hadd your data histograms into a single file (we should fix this at some point)
+   * Create a json file with the locations of the &lt;output&gt; files (examples in `/data/examples/json/`)
+   * python makeReweightingHistos.py &lt;root\_output&gt; &lt;json\_input&gt; &lt;filter\_type&gt;
       * Run from the `source/gbbCalibration/python` directory
+      * <filter_type>: 0 -- mu-filtered, 1 -- inclusive
 3. Making template histograms from FTNtupCalib input
-   * run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; gbbCalibration/configs/run\_GbbTupleAna\_Calib.cfg
-   * Create a json file with the locations of the &lt;output&gt; files
+   * Local Run: run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; <tree\_name> gbbCalibration/configs/run\_GbbTupleAna\_Calib.cfg
+   * qsub Run: source scripts/NAFScripts/submit\_gbbTupleAna\_array.sh <run\_type> gbbCalibration/configs/run\_GbbTupleAna\_Calib.cfg <tag>  
+      * <run\_type>: 0 -- nominal only, 1 -- nominal+systematics, 2 -- systematics only
+      * Change user variables to ones fitting you in scripts/NAFScripts/submit\_gbbTupleAna\_array.sh
+      * Do separately for data and each MC channel
+      * The script creates files for each variation in a separate folder, but the files themselves have the same name. This sturcture is important so that you only need to provide the names of the systematics in the json file. 
+   * Manually hadd your data histograms into a single file (we should fix this at some point)
+   * Create a json file with the locations of the &lt;output&gt; files (examples in `/data/examples/json/`)
    * python makeCrossCheckInputsInclusiveLL\_AllSys.py &lt;root\_output&gt; &lt;json\_input&gt;
       * Run from the `source/gbbCalibration/python` directory
-      * Will use the systematics list from `GlobalConfig.cfg`
+      * Will use the systematics list from `GlobalConfig.cfg` 
 4. Calculate scale factors
    * run\_calculateSF ../source/gbbCalibration/data/configs/config\_Calib\_SF.cfg &lt;output\_Folder\_name&gt;
       * TODO: provide input file as separate argument
