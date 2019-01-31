@@ -1,0 +1,39 @@
+{
+  "BasePath" : "/data/atlas/atlasdata/stankait/QT/Hists/22Jan/R21/reweight/",
+  "Data" : "data_v00-05-01_22Jan/Nominal/full_data_v00-05-01_22Jan.root",
+  "MuBase" : "mu_mc16a_v00-05-01_22Jan/",
+  "IncBase" : "inc_mc16a_v00-05-01_22Jan/",
+  "Sys" : [
+    "Nominal",
+    ],  
+  "MuFilteredMC" : [
+    "/user.mstankai.mc16_13TeV.427003.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.427003.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.427004.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.427004.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.427005.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.427005.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.427106.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5839_e5984_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.427106.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5839_e5984_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.427107.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5839_e5984_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.427107.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5839_e5984_s3126_r9364_r9315_p3596_tuple.root"
+    ],
+  "InclusiveMC" : [
+    "/user.mstankai.mc16_13TeV.361023.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.361023.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.361024.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.361024.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.361025.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.361025.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.361026.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3569_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.361026.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3569_s3126_r9364_r9315_p3596_tuple.root",
+    "/user.mstankai.mc16_13TeV.361027.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.361027.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a-i.e3668_s3126_r9364_r9315_p3596_tuple.root"
+    ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
