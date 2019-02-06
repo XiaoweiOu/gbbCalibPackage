@@ -411,6 +411,78 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
 }
 
+void ScaleFactorCalculator::MakeCorrelationPlots(const TString region) {
+  std::cout<<"INFO: ScaleFactorCalculator::MakeCorrelationPlots(): Making plots of covariance matrix for region "<<region.Data()<<std::endl;
+
+  std::vector<double> params = m_fit_params[ (region+"_Nom") ];
+  std::vector<double> errs = m_fit_errs[ (region+"_Nom") ];
+  std::vector<double> cov_mat = m_nom_cov_mats[region];
+  int npar = params.size();
+
+  TH2D* hpar = new TH2D("h_par","",1,0,1,npar+1,0,npar+1);
+  TH2D* herr = new TH2D("h_err","",1,0,1,npar+1,0,npar+1);
+  TH2D* hist = new TH2D("h_cov_mat","",npar,0,npar,npar+1,0,npar+1);
+  for (int i_par=0; i_par < npar; i_par++) {
+    hpar->SetBinContent(1,npar-i_par, params[i_par]);
+    herr->SetBinContent(1,npar-i_par, errs[i_par]);
+    for (int j_par=0; j_par < npar; j_par++) {
+      hist->SetBinContent(j_par+1,npar-i_par, cov_mat[i_par*npar + j_par] / (errs[j_par]*errs[i_par]) );
+    }
+  }
+  
+  TCanvas *canv=new TCanvas("canv","",1000,600);
+  TPad *pad1=new TPad("pad1","",0,0,0.3,1);
+  pad1->SetLeftMargin(0.3);
+  pad1->SetRightMargin(0);
+  pad1->SetTopMargin(0.05);
+  pad1->SetBottomMargin(0.05);
+  pad1->Draw();
+  canv->cd();
+  TPad *pad2=new TPad("pad2","",0.3,0,1,1);
+  pad2->SetLeftMargin(0.01);
+  pad2->SetRightMargin(0.1);
+  pad2->SetTopMargin(0.05);
+  pad2->SetBottomMargin(0.05);
+  pad2->Draw();
+  canv->cd();
+  const char* txtForm = gStyle->GetPaintTextFormat();
+  gStyle->SetPaintTextFormat(".3g");
+
+  pad1->cd();
+  hpar->Draw("text");
+  hpar->SetMarkerSize(4.2);
+  for (int i=0; i < npar; i++) hpar->GetYaxis()->SetBinLabel(npar-i,m_fitpar_names[i].Data());
+  hpar->GetXaxis()->SetLabelSize(0);
+  hpar->GetXaxis()->SetNdivisions(0);
+  hpar->GetYaxis()->SetLabelSize(0.08);
+  herr->SetBarOffset(-0.25);
+  herr->SetMarkerSize(3.0);
+  herr->Draw("TEXT SAME");
+
+  pad2->cd();
+  hist->Draw("col text");
+  hist->SetMarkerSize(1.8);
+  hist->SetMinimum(hist->GetMinimum());
+  for (int i=1; i < npar+1; i++) {
+    hist->GetXaxis()->SetBinLabel(i,m_fitpar_names[i-1].Data());
+    hist->SetBinContent(i,npar+1, -999.);
+  }
+  hist->GetYaxis()->SetLabelSize(0);
+  hist->GetXaxis()->SetLabelSize(0.04);
+
+  //Add ATLAS label
+  ATLASLabel3(0.6,0.88,m_plot_label.Data());
+  myText(0.6, 0.84, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
+  myText(0.6, 0.81, 1, Form("#scale[0.6]{%s}",m_subsub_label.Data()));
+
+  TString name = Form("%s/ctrl_plots/CorrMat_%s.pdf",m_outdir.Data(),region.Data());
+  canv->SaveAs(name.Data());
+
+  gStyle->SetPaintTextFormat(txtForm);
+  delete canv;
+
+}
+
 
 void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, std::vector<TString>& model_sys, bool doPrintByRegion, TString region){
   

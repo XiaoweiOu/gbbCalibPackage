@@ -100,6 +100,7 @@ private:
   std::map<TString,std::vector<std::shared_ptr<TH1D>>> m_fatjet_histograms_pretag; //key: <ptregion>_<sys>, element: hists all pairs
   std::map<TString,std::vector<std::shared_ptr<TH1D>>> m_fatjet_histograms_posttag;
   std::map<TString,std::vector<double>> m_fit_params;
+  std::map<TString,std::vector<double>> m_fit_errs;
   std::map<TString,std::vector<double>> m_nom_cov_mats; //key: <ptregion>, element: nominal covariance matrix
   
   std::map<TString,std::vector<std::vector<double>>> m_pseudo_fit_params;
@@ -118,6 +119,7 @@ private:
 	void MakeCalibrationPlots(CalibResult cl_result, TString plot_type);
 	void ReadInFatJetHists(const std::vector<TString> vars, const std::vector<TString> systematics);
 
+        void MakeCorrelationPlots(const TString region);
 	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys, int rebin, bool isPosttag=false);
 
 	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, std::vector<TString>& model_sys, bool doPrintByRegion=false, TString region="DEFAULT");
