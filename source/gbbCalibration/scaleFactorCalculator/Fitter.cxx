@@ -465,12 +465,27 @@ std::vector<double> Fitter::FitParameters(){
     if(m_params_names[i_par].Contains("NP")) continue; //Don't print for NP
     m_Minuit->GetParameter(i_par,val,err);
     params.push_back(val);
-    
-    
+
   }
   
   return params;
+}
 
+std::vector<double> Fitter::FitErrors(){
+
+  int n_par=m_Minuit->GetNumPars();
+  double val, err;
+  std::vector<double> errors;
+
+  for(int i_par=0; i_par<n_par; i_par++){
+
+    if(m_params_names[i_par].Contains("NP")) continue; //Don't print for NP
+    m_Minuit->GetParameter(i_par,val,err);
+    errors.push_back(err);
+
+  }
+
+  return errors;
 }
 
 std::vector<double> Fitter::CovarianceMatrix(){

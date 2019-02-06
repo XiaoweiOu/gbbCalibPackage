@@ -84,6 +84,7 @@ class Fitter {
   void MakeOutputHistFile(TFile* outfile,TString histname_stub, TString err_mode="Sampling");
 
   std::vector<double> FitParameters();
+  std::vector<double> FitErrors();
   std::vector<double> CovarianceMatrix();
 
   double getTotalFitError();

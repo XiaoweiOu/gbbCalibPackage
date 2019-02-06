@@ -209,8 +209,11 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
       fitstatus.push_back(m_fitter.getFitStatus()+"_"+sys+"_"+region);
       
       m_fit_params[ (region+"_"+sys) ] = m_fitter.FitParameters();
+      m_fit_errs[ (region+"_"+sys) ] = m_fitter.FitErrors();
 
-      if(sys.EqualTo("Nom")) m_nom_cov_mats[region] = m_fitter.CovarianceMatrix();
+      if(sys.EqualTo("Nom")) m_nom_cov_mats[region] = m_fitter.CorrelationMatrix();
+
+      if (m_doControlPlots) MakeCorrelationPlots(region);
 
       //TODO: why muon_id__1up? region shouldn't be hard-coded
       if(sys.EqualTo("Nom") || sys.EqualTo("MUON_ID__1up") || region.Contains("mjpt_g200_nmjpt_g300")){ //make control plots
