@@ -211,7 +211,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
       m_fit_params[ (region+"_"+sys) ] = m_fitter.FitParameters();
       m_fit_errs[ (region+"_"+sys) ] = m_fitter.FitErrors();
 
-      if(sys.EqualTo("Nom")) m_nom_cov_mats[region] = m_fitter.CorrelationMatrix();
+      if(sys.EqualTo("Nom")) m_nom_cov_mats[region] = m_fitter.CovarianceMatrix();
 
       if (m_doControlPlots) MakeCorrelationPlots(region);
 
