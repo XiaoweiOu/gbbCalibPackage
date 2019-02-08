@@ -228,15 +228,15 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     }
 
     if (hasLightLongLived) {
-      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.1, makeSysNamingFunc("LightLongLived__1up"));
-      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.9, makeSysNamingFunc("LightLongLived__1down"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*1.3, makeSysNamingFunc("LightLongLived__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*0.7, makeSysNamingFunc("LightLongLived__1down"));
     } else {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1up"));
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1down"));
     }
 
     if (hasNoTruthMu) {
-      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*3, makeSysNamingFunc("FakeMuons__1up"));
+      FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*2, makeSysNamingFunc("FakeMuons__1up"));
     } else {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("FakeMuons__1up"));
     }
