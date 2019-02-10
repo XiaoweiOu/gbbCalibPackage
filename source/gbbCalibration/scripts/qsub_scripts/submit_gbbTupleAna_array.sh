@@ -13,15 +13,15 @@ HOMEDIR=/home/stankaityte/QT/AnaFW/GbbCalibrationFW2018/gbbCalibPackage/run/
 SCR_DIR="../source/gbbCalibration/scripts/qsub_scripts"
 
 # qsub job tag
-jtag="hmcai"
+jtag="hmcam"
 
 # --- input ---
 in_path_base="/data/atlas/atlasdata/stankait/gbbTuples/"
 
 #in_type="data/"
-#in_type="MC/mufilter/mc16a/"
+in_type="MC/mufilter/mc16a/"
 #in_type="MC/mufilter/mc16d/"
-in_type="MC/inclusive/mc16a/"
+#in_type="MC/inclusive/mc16a/"
 #in_type="MC/inclusive/mc16d/"
 
 # --- output ---
