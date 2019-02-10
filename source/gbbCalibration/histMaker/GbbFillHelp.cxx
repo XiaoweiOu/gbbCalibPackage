@@ -235,7 +235,7 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("LightLongLived__1down"));
     }
 
-    if (hasNoTruthMu) {
+    if (hasNoTruthMu && m_FilterType.EqualTo("MuFiltered")) {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight*2, makeSysNamingFunc("FakeMuons__1up"));
     } else {
       FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight, makeSysNamingFunc("FakeMuons__1up"));
