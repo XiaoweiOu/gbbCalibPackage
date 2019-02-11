@@ -1,0 +1,6 @@
+Latest n-tuple production tag for all datasets is v00-07-02. A *v* at the end of the tag indicates that it uses VR track-jets, while an *f* indicates R=0.2 track-jets.
+
+Note that data16 is still missing the last 12 good runs of the year (~10% of that dataset).
+The data17 sample was also made with a later AnalysisBase release (21.2.51 as opposed to 21.2.40 for the rest)
+
+The tag v00-07-01 is the same as v00-07-02 except that doesn't set the "useDijetMaps" flag in the TrackSmearingTool.
