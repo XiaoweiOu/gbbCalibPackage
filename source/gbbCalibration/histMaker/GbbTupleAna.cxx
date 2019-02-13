@@ -1552,9 +1552,8 @@ void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_do
 
     }else {
 
-      float bigger_delta=std::max( TMath::Abs(delta_up), TMath::Abs(delta_down));
-      if(delta_up>0) squared_weight_up+= bigger_delta*bigger_delta;
-      else squared_weight_down+=bigger_delta*bigger_delta;
+      if(TMath::Abs(delta_up) > TMath::Abs(delta_down)) squared_weight_up+=delta_up*delta_up;
+      else squared_weight_down+=delta_down*delta_down;
 
     }
 

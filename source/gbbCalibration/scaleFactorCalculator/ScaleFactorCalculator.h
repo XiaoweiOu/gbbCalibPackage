@@ -87,9 +87,10 @@ private:
   std::map<TString, std::vector<double> > m_PseudoFitParamsMapData;
 
   TH1D* GetRebinHistData(const TString var);
-  std::vector<TH1D*> GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType, const unsigned int i_pseudo = 0);
+  TH1D* GetRebinHistMC(const TString var, const TString sys, const TString region, const TString flav, const unsigned int scaleType = 0, const unsigned int i_pseudo = 0);
+  std::vector<TH1D*> GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType = 0, const unsigned int i_pseudo = 0);
   TH1D* GetRebinHistByRegionData(const TString var, const TString region);
-  std::vector<TH1D*> GetRebinHistsByRegionMC(const TString var, const TString sys, const TString region, const unsigned int scaleType, const unsigned int i_pseudo = 0);
+  std::vector<TH1D*> GetRebinHistsByRegionMC(const TString var, const TString sys, const TString region, const unsigned int scaleType = 0, const unsigned int i_pseudo = 0);
   float GetFitScale(const TString sys, const TString region, const TString flav);
   float GetPseudoFitScale(const TString region, const TString flav, const unsigned int i_pseudo);
   float GetPseudoDataFitScale(const TString region, const TString flav, const unsigned int i_pseudo);
@@ -122,9 +123,9 @@ private:
         void MakeCorrelationPlots(const TString region);
 	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys, int rebin, bool isPosttag=false);
 
-	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, std::vector<TString>& model_sys, bool doPrintByRegion=false, TString region="DEFAULT");
+	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, std::vector<TString>& systematics, std::vector<TString>& model_sys, bool doPrintByRegion=false, TString region="DEFAULT");
 
-	void MakeBTaggingRatePlots(std::vector<TString> &sys, std::vector<TString> &model_sys);
+	void MakeBTaggingRatePlots(std::vector<TString> &systematics, std::vector<TString> &model_sys);
 
 	TString MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
 	TString PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists);
@@ -138,12 +139,13 @@ private:
 	TGraphAsymmErrors* getFitUncertBTagRate();
 	TGraphAsymmErrors* getFitUncertBTagRateToys();
 
-	TGraphAsymmErrors* getModellingUncert(TString &var, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff=false);
+	TGraphAsymmErrors* getModellingUncert(TString &var, std::vector<TString> &systematics, bool applyFitCorrection, bool isPosttag, bool isEff=false);
 	
 	TGraphAsymmErrors* getBTagUncert(TString &var, bool applyFitCorrection);
-	TGraphAsymmErrors* getExperimentalUncert(TString &name, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff=false);
+        TGraphAsymmErrors* getExperimentalUncert(TString &var, std::vector<TString> &systematics, bool applyFitCorrection, bool isEff=false);
+        TGraphAsymmErrors* HistStackToTGraph(const TH1* h_nom, const std::vector<std::pair<TH1*,TH1*> > systematics);
 
-	std::vector<TGraphAsymmErrors*> getExperimentalUncertSeparate(TString &var, std::vector<TString> &sys, bool applyFitCorrection, bool isPosttag, bool isEff=false);
+	std::vector<TGraphAsymmErrors*> getExperimentalUncertSeparate(TString &var, std::vector<TString> &systematics, bool applyFitCorrection, bool isPosttag, bool isEff=false);
 	TGraphAsymmErrors* getTotalSys(TGraphAsymmErrors* fitsysgraph, TGraphAsymmErrors* btagsysgraph, TGraphAsymmErrors* jetsysgraph, TGraphAsymmErrors* stat, TGraphAsymmErrors* model_sys=0);
 
 	TGraphAsymmErrors* getMCStat(TH1* full_mc);
