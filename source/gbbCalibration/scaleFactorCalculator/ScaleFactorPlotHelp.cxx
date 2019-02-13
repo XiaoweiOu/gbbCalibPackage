@@ -532,6 +532,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
     hist_mc[i]->SetFillColor(color[i]);
     hist_mc[i]->SetLineColor(kBlack);
     leg->AddEntry(hist_mc[i],m_config->GetFlavourPairs()[i],"f");
+    mystack->Add(hist_mc[i]);
   }
 
   hist_data->SetTitle("");
@@ -603,30 +604,31 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
       pad2->cd();
       fitsys->Draw("2");
       leg->AddEntry(fitsys,"fit uncertainty","f");
-      h_ratio->Draw("EPsame");
+      //h_ratio->Draw("EPsame");
   }
 
   if(isPosttag){
     
     btagsys=this->getBTagUncert(var,applyFitCorrection);
+if (btagsys->GetErrorYhigh(10) == 0) std::cout<<"zero btag uncert!"<<std::endl;
     btagsys->SetLineColor(kRed);
     btagsys->SetFillStyle(0);
     //pad2->cd();
-    btagsys->Draw("5");
-    h_ratio->Draw("EPsame");
+    btagsys->Draw("5same");
+    //h_ratio->Draw("EPsame");
     leg->AddEntry(btagsys,"b-tagging uncertainty","l");
     
   }
 
-  if(sys.size()>0)expsys=this->getExperimentalUncert(var,sys,applyFitCorrection, isPosttag);
+  if(sys.size()>0)expsys=this->getExperimentalUncert(var,sys,applyFitCorrection);
   mcstat=this->getMCStat(full_mc);
   mcstat->SetLineColor(kBlack);
   mcstat->SetFillStyle(0);
-
-  if(model_sys.size()>0)modsys=this->getModellingUncert(var,model_sys,applyFitCorrection,isPosttag);
-  modsys->SetFillStyle(3001);
-  modsys->SetFillColor(kBlue);  
-  //mcstat->Draw("5");
+std::cout<<"finished getting exp unc"<<std::endl;
+  //if(model_sys.size()>0)modsys=this->getModellingUncert(var,model_sys,applyFitCorrection,isPosttag);
+  //modsys->SetFillStyle(3001);
+  //modsys->SetFillColor(kBlue);  
+  ////mcstat->Draw("5");
 
   /*expsys->SetFillColor(kBlue);
   //totsys->SetFillStyle(3005);                                                                                                                                                             
@@ -644,17 +646,18 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
     totsys->SetLineColor(kBlack);
     pad2->cd();
     leg->AddEntry(totsys,"total uncertainty","f");
-    totsys->Draw("5");
+    totsys->Draw("5same");
   }
+std::cout<<"finished expsys plotting"<<std::endl;
   
   /*std::vector<TGraphAsymmErrors*> expsys_separate;
 
   if(sys.size()>0) expsys_separate=this->getExperimentalUncertSeparate(var,sys,applyFitCorrection, isPosttag);
   for(auto &el : expsys_separate) el->Draw("EPsame");
   */
-  if(fitsys) fitsys->Draw("2");
+  //if(fitsys) fitsys->Draw("2");
   //if(modsys) modsys->Draw("2");
-  if(btagsys) btagsys->Draw("5");
+  //if(btagsys) btagsys->Draw("5");
 
   h_ratio->Draw("EPsame");
 
@@ -676,8 +679,8 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
     }
   
     pad1->cd();
-    tot_err->Draw("5");
-    hist_data->Draw("EP SAME");
+    tot_err->Draw("5same");
+    //hist_data->Draw("EP SAME");
   }
 
   //double chi2=hist_data->Chi2Test(full_mc,"UW CHI2/NDF");
@@ -694,7 +697,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
 
   //Add ATLAS label
   pad1->cd();
-  ATLASLabel2(0.55,0.825,m_plot_label.Data());
+  ATLASLabel3(0.55,0.825,m_plot_label.Data());
   myText(0.55, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   pad1->RedrawAxis();
 
@@ -850,11 +853,12 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   h_ratio->Draw("EPsame");
   leg->AddEntry(btagsys,"b-tagging uncertainty","l");
 
-  TGraphAsymmErrors *expsys=this->getExperimentalUncert(fjpt,sys,true,true,true);
-  
-  TGraphAsymmErrors *modsys=this->getModellingUncert(fjpt,model_sys,true,true,true);
-  modsys->SetFillColor(kBlue);
-  modsys->SetFillStyle(3001);
+  TGraphAsymmErrors *expsys=this->getExperimentalUncert(fjpt,sys,true,true);
+
+  TGraphAsymmErrors *modsys = nullptr;
+  //TGraphAsymmErrors *modsys=this->getModellingUncert(fjpt,model_sys,true,true,true);
+  //modsys->SetFillColor(kBlue);
+  //modsys->SetFillStyle(3001);
 
   TGraphAsymmErrors *mcstat=this->getMCStat(full_mc_posttag);
   

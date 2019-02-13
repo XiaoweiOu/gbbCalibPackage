@@ -360,32 +360,22 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
 
   TString ts_pt="fjpt";
 
-  //FIXME: broken when doing 2D fits (per Migle)
-  //if(m_doControlPlots && !m_doCalibSequence){
-  //  for (TString var : variables) {
-  //    //fat jet control plots
-  //    //this->MakeFatJetControlPlots(var,false,false,sys_only,model_sys);
-  //    this->MakeFatJetControlPlots(var,false,true,sys_only,model_sys);
-  //  }
-  //  
-  //  //posttag plots
-  //  for (TString var : variables_posttag) {
-  //    //this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only,model_sys);
-  //    this->MakeFatJetControlPlots(var,true,true,sys_only,model_sys);
-  //  }
-  //}
+  if(m_doControlPlots){
+    for (TString var : variables) {
+      //fat jet control plots
+      //this->MakeFatJetControlPlots(var,false,false,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,false,true,sys_only,model_sys);
+    }
+    
+    //posttag plots
+    for (TString var : variables_posttag) {
+      //this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,true,true,sys_only,model_sys);
+    }
 
-  //fat jet binning control plots
-  //for(auto& reg : regions){
-    //this->MakeFatJetControlPlots(ts_pt,false,false,nominal,true,reg);
-    //this->MakeFatJetControlPlots(ts_pt,false,true,none,true,reg);
-    //this->MakeFatJetControlPlots(ts_pt,true,true,nominal,true,reg);
-  //}
-  
-
-  //FIXME: also broken. maybe needs fatjet bins?
-  ////BTagging Rate Plots
-  //if(m_doControlPlots && !m_doCalibSequence) this->MakeBTaggingRatePlots(sys_only,model_sys);
+    //BTagging Rate Plots
+    this->MakeBTaggingRatePlots(sys_only,model_sys);
+  }
 
   //TString reweight_name="test_reweight_hists.root";
   //this->SaveReweightHists(pt_name, reweight_name);
@@ -1353,52 +1343,46 @@ std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsMC(const TString var, con
   for (TString flav : m_config->GetFlavourPairs()) {
     sum = new TH1D((sys+"_"+flav+"_"+var).Data(),"",(int)bins.size()-1,&(bins[0]));
     for (TString region : regions) {
-      TString name = m_config->GetMCHistName(sys,region,flav,var);
-      help = m_HistMap[name];
-      if (!help) {
-        std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
-        continue;
-      }
-      help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
-      help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
-      if (scaleType == 1) help->Scale(GetFitScale(sys,region,flav));
-      else if (scaleType == 2) help->Scale(GetPseudoFitScale(region,flav,i_pseudo));
-      else if (scaleType == 3) help->Scale(GetPseudoDataFitScale(region,flav,i_pseudo));
-      sum->Add(help);
+      help = GetRebinHistMC(var,sys,region,flav,scaleType,i_pseudo);
+      if (help) sum->Add(help);
+      delete help;
     }
     output.push_back(sum);
   }
-  delete help;
   return output;
 }
 
 std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsByRegionMC(const TString var, const TString sys, const TString region, const unsigned int scaleType, const unsigned int i_pseudo) {
   std::vector<TH1D*> output = std::vector<TH1D*>();
+
+  for (TString flav : m_config->GetFlavourPairs()) {
+    output.push_back(GetRebinHistMC(var,sys,region,flav,scaleType,i_pseudo));
+  }
+  return output;
+}
+
+TH1D* ScaleFactorCalculator::GetRebinHistMC(const TString var, const TString sys, const TString region, const TString flav, const unsigned int scaleType, const unsigned int i_pseudo) {
   std::vector<double> bins = m_config->GetBinning(var);
   if (bins.size() == 0) {
     std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
-    return output;
+    return nullptr;
   }
 
-  TH1D *help(nullptr);
+  TH1D *result(nullptr);
 
-  for (TString flav : m_config->GetFlavourPairs()) {
-    TString name = m_config->GetMCHistName(sys,region,flav,var);
-    help = m_HistMap[name];
-    if (!help) {
-      std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
-      continue;
-    }
-    help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
-    help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
-    if (scaleType == 1) help->Scale(GetFitScale(sys,region,flav));
-    else if (scaleType == 2) help->Scale(GetPseudoFitScale(region,flav,i_pseudo));
-    else if (scaleType == 3) help->Scale(GetPseudoDataFitScale(region,flav,i_pseudo));
-    output.push_back(help);
-    help = nullptr;
+  TString name = m_config->GetMCHistName(sys,region,flav,var);
+  result = m_HistMap[name];
+  if (!result) {
+    std::cerr<<"ERROR: couldn't find histogram "<<name.Data()<<std::endl;
+    return nullptr;
   }
-  delete help;
-  return output;
+  result = (TH1D*) result->Clone(); //Clone to avoid changing the original hist
+  result = (TH1D*) result->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
+  if (scaleType == 1) result->Scale(GetFitScale(sys,region,flav));
+  else if (scaleType == 2) result->Scale(GetPseudoFitScale(region,flav,i_pseudo));
+  else if (scaleType == 3) result->Scale(GetPseudoDataFitScale(region,flav,i_pseudo));
+
+  return result;
 }
 
 float ScaleFactorCalculator::GetFitScale(const TString sys, const TString region, const TString flav) {
