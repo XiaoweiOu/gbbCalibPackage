@@ -21,10 +21,10 @@ args = parser.parse_args()
 
 # setting variables
 outfilename = args.outfile
-pathData, ListOfMCPaths, ListOfInclusiveMCPaths = config.GetPathsFromJSON(args.infiles)
+pathData, ListOfMCPaths, ListOfInclusiveMCPaths, xsecFile = config.GetPathsFromJSON(args.infiles)
 
 MyConfig = config.LoadGlobalConfig()
-histHelper = config.HistHelper()
+histHelper = config.HistHelper(xsecFile)
 
 # getting config variables
 ListOfSystematics = MyConfig.GetSystematics() 

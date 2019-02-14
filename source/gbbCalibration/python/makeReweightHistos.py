@@ -16,12 +16,12 @@ parser.add_argument('inc', help="0 -- mufiltered, 1 -- inclusive")
 args = parser.parse_args()
 
 outfilename = args.outfile
-pathData, ListOfMCPaths, ListOfInclusiveMCPaths = config.GetPathsFromJSON(args.infiles)
+pathData, ListOfMCPaths, ListOfInclusiveMCPaths, xsecFile = config.GetPathsFromJSON(args.infiles)
 inclusive = args.inc
 
 Lumi = 36000.0 #in pb^-1
 
-histHelper = config.HistHelper()
+histHelper = config.HistHelper(xsecFile)
 
 ListOfTriggers = [ 'HLT_j380' ]
 #ListOfTriggers = [ 'HLT_j150', 'HLT_j175', 'HLT_j260', 'HLT_j380' ]

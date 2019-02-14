@@ -19,12 +19,14 @@ def GetPathsFromJSON(infile):
           muFiltMCPaths = muFiltMCPaths+[tbl["BasePath"]+tbl["MuBase"]+syspath+path for path in tbl["MuFilteredMC"]]
         if "InclusiveMC" in tbl:
           inclMCPaths = inclMCPaths+[tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
+    if "xsecFile" in tbl:
+      xsecFile = tbl["xsecFile"]
       #for syspath in tbl["Sys"]:
       #  if "MuFilteredMC" in tbl:
       #    muFiltMCPaths = [tbl["BasePath"]+tbl["MuBase"]+syspath+path for path in tbl["MuFilteredMC"]]
       #  if "InclusiveMC" in tbl:
       #    inclMCPaths = [tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
-  return dataPath, muFiltMCPaths, inclMCPaths
+  return dataPath, muFiltMCPaths, inclMCPaths, xsecFile
 
 def GetDataFile(name):
   if os.path.exists(name):
@@ -43,8 +45,8 @@ def GetDataFile(name):
     print name,"not found"
     return ""
 
-def GetChannelWeights():
-  filepath = GetDataFile("gbbCalibration/xsections.txt")
+def GetChannelWeights(xsecfile):
+  filepath = GetDataFile("gbbCalibration/"+xsecfile)
   if not filepath:
     print "Cross-sections file not found!"
     exit()
@@ -58,8 +60,8 @@ def GetChannelWeights():
   return output
 
 def GetChannelNumber(filename):
-  # Assume filename contains mc16_13TeV.(channel).(other info)
-  channel = int(re.search(r'(?<=mc16_13TeV\.)[0-9]+',filename).group())
+  # Assume filename contains _13TeV.(channel).(other info)
+  channel = int(re.search(r'(?<=mc1(\d)_13TeV\.)[0-9]+',filename).group())
   if not channel:
     print "MC channel number for file",filename,"not found!"
     exit()
@@ -75,8 +77,9 @@ def LoadGlobalConfig():
 
 class HistHelper:
 
-  def __init__(self,):
-    self.MapOfChannelWeights = GetChannelWeights()
+  def __init__(self,xsecfile):
+    self.xsecfile = xsecfile
+    self.MapOfChannelWeights = GetChannelWeights(self.xsecfile)
     self.MapOfFiles = {}
 
   def __exit__(self, *exc):
