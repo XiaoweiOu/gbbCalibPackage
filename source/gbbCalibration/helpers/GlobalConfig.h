@@ -25,7 +25,9 @@ class GlobalConfig {
   GlobalConfig(const TString& config_path);
   virtual ~GlobalConfig();
 
-  std::vector<TString> GetSystematics() { return m_Systematics; }
+  bool GetIsR20p7() { return m_isR20p7; }
+
+  std::vector<TString> GetSystematics() { return m_isR20p7 ? m_Systematics_R20p7 : m_Systematics_R21; }
   std::vector<TString> GetSystematics_Sd0() { return m_Systematics_Sd0; }
   std::vector<TString> GetSystematics_WeightVar() { return m_Systematics_WeightVar; }
   std::vector<TString> GetFlavourPairs() { return m_FlavourPairs; }
@@ -59,7 +61,9 @@ class GlobalConfig {
   std::map<TString,std::vector<TString> > GetMCHistNames(const TString ptLabel, const TString var);
 
  private:
-  std::vector<TString> m_Systematics;
+  bool m_isR20p7;
+  std::vector<TString> m_Systematics_R20p7;
+  std::vector<TString> m_Systematics_R21;
   std::vector<TString> m_Systematics_Sd0;
   std::vector<TString> m_Systematics_WeightVar;
   std::vector<TString> m_FlavourPairs;
