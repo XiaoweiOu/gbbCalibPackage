@@ -19,7 +19,8 @@ Run the full scale factor calculation chain takes several steps and will depend 
    * The histogram making code uses the `run_GbbTupleAna_*.cfg` files
    * The scale factor calculation code uses the `config_*_SF.cfg` files
    * Everything uses the `GlobalConfig.cfg` file (has systematics list)
-   * Check the `data/xsections.txt` file to be sure your MC channel(s) are listed
+   * Check the `data/xsections_*.txt` file to be sure your MC channel(s) are listed
+      * You can get cross-section information for samples using the getMetadata.py script provided in AthAnalysis
    * __Commit your changes and create a tag for future reference__
 2. Making reweighting histograms from FTNtupCalib input
    * Local Run: run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; &lt;tree\_name&gt; gbbCalibration/configs/run\_GbbTupleAna\_Reweight.cfg
@@ -32,6 +33,7 @@ Run the full scale factor calculation chain takes several steps and will depend 
       * Do separately for data and each MC channel
    * Manually hadd your data histograms into a single file (we should fix this at some point)
    * Create a json file with the locations of the &lt;output&gt; files (examples in `/data/examples/json/`)
+      * The json also file also needs to contain the name of the xsections file to use
    * python makeReweightingHistos.py &lt;root\_output&gt; &lt;json\_input&gt; &lt;filter\_type&gt;
       * Run from the `source/gbbCalibration/python` directory
       * <filter_type>: 0 -- mu-filtered, 1 -- inclusive
