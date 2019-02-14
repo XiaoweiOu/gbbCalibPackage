@@ -194,9 +194,9 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_doTrackSmearing(false),
   m_doInclusiveGbb(false),
   m_doApplyBTaggingSF(false),
+  m_doSd0Systematics(false),
   m_doMergeDiTrkjetCat(false),
   m_useVRTrkJets(true),
-  m_doSd0Systematics(false),
   //m_ditrkjet_cat(),
   //m_trkjet_cat(),
   //m_muojet_pt_bins(),
@@ -220,7 +220,6 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
 
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
-  //TChain* friendCh = nullptr;
   
   bool file1 = true;
   for (TString filename : infiles) {
@@ -238,8 +237,11 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
       metahist->Add(metahist_tmp);
     }  
 
-    //if (!treename.EqualTo("FlavourTagging_Nominal")) friendCh = new TChain("FlavourTagging_Nominal");
     tree->Add(filename.Data());
+    if (m_config->GetIsR20p7()) {
+      //if systematics tree: add nominal as friend to retrieve the truth label (temp patch)
+      if (!treename.EqualTo("FlavourTagging_Nominal")) tree->AddFriend("FlavourTagging_Nominal",filename.Data());
+    }
     
     // getting filter type
     if (file1)
@@ -248,9 +250,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
       GetFilterType(filename.Data());
       file1 = false;
     }
-    //if (friendCh != nullptr) friendCh->Add(filename.Data());
   }
-  //if (friendCh != nullptr) fChain->AddFriend(friendCh);
   if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl; 
 
   // Copy metadata
@@ -1423,7 +1423,9 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   trkjetSd0Info ret = {-99.,-99.,-99.,-99.,-99.,-99.,-99.,-99.,n};
 
   for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
-    //if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
+    if (m_config->GetIsR20p7()) {
+      if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
+    }
 
     tracks_passed++;
     track tr;

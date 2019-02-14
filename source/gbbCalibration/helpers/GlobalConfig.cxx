@@ -27,8 +27,14 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
     abort();
   }
 
-  m_Systematics = SplitString(config->GetValue("Systematics",""),',');
-  std::cout<<"Systematics: "<<config->GetValue("Systematics","")<<std::endl;
+  m_isR20p7 = config->GetValue("isR20p7",false);
+  std::cout<<"isR20p7: "<<m_isR20p7<<std::endl;
+
+  m_Systematics_R20p7 = SplitString(config->GetValue("Systematics_R20p7",""),',');
+  std::cout<<"Systematics_R20p7: "<<config->GetValue("Systematics_R20p7","")<<std::endl;
+
+  m_Systematics_R21 = SplitString(config->GetValue("Systematics_R21",""),',');
+  std::cout<<"Systematics_R21: "<<config->GetValue("Systematics_R21","")<<std::endl;
 
   m_Systematics_Sd0 = SplitString(config->GetValue("Systematics_Sd0",""),',');
   std::cout<<"Systematics_Sd0: "<<config->GetValue("Systematics_Sd0","")<<std::endl;
@@ -194,7 +200,11 @@ std::vector<TString> GlobalConfig::GetMCHistNamesBySys(const TString sys, const 
 
 std::map<TString,std::vector<TString> > GlobalConfig::GetMCHistNames(const TString ptLabel, const TString var) {
   std::map<TString,std::vector<TString> > names;
-  for (TString sys : m_Systematics) names.emplace(sys,GetMCHistNamesBySys(sys,ptLabel,var));
+  if (m_isR20p7) {
+    for (TString sys : m_Systematics_R20p7) names.emplace(sys,GetMCHistNamesBySys(sys,ptLabel,var));
+  } else {
+    for (TString sys : m_Systematics_R21) names.emplace(sys,GetMCHistNamesBySys(sys,ptLabel,var));
+  }
   for (TString sys : m_Systematics_Sd0) names.emplace(sys,GetMCHistNamesBySys(sys,ptLabel,var));
   for (TString sys : m_Systematics_WeightVar) names.emplace(sys,GetMCHistNamesBySys("Nom",ptLabel,var+"_"+sys));
   return names;
