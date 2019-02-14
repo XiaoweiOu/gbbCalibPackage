@@ -290,6 +290,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
     //divide bin content by bin width
     for(int i_bin=1; i_bin<=tmp_stacked_mc->GetNbinsX(); i_bin++){
       tmp_stacked_mc->SetBinContent(i_bin, tmp_stacked_mc->GetBinContent(i_bin)/tmp_stacked_mc->GetBinWidth(i_bin));
+      tmp_stacked_mc->SetBinError(i_bin, tmp_stacked_mc->GetBinError(i_bin)/tmp_stacked_mc->GetBinWidth(i_bin));
     }
 
     if(i_p==0) full_mc=(TH1D*)tmp_stacked_mc->Clone();
@@ -306,6 +307,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   //divide by bin width
   for(int i_bin=1; i_bin<=data_hist->GetNbinsX(); i_bin++){
     data_hist->SetBinContent(i_bin, data_hist->GetBinContent(i_bin)/data_hist->GetBinWidth(i_bin));
+    data_hist->SetBinError(i_bin, data_hist->GetBinError(i_bin)/data_hist->GetBinWidth(i_bin));
   }
   
   data_hist->SetTitle("");
