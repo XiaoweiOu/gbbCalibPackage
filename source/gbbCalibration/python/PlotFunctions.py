@@ -99,7 +99,6 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
         can.SetLogy()
         #SetYaxisRanges(can,MinimumForLog(can),10);
     AutoFixAxes(can,ignoreErrors)
-
     return
 
 ##
