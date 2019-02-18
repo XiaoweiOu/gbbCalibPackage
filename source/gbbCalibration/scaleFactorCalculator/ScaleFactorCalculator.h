@@ -73,6 +73,7 @@ private:
   std::vector<float> m_fitpar_low;
   std::vector<float> m_fitpar_high;
   int m_nPseudoExps;
+  TString m_pext;
   TString m_xlabel;
   TString m_ylabel;
   TString m_plot_label;

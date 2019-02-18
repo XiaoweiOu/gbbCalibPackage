@@ -101,6 +101,9 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_nPseudoExps=config->GetValue("NPseudoExperiments",1000);
   std::cout<<"NPseudoExperiments: "<<m_nPseudoExps<<std::endl;
 
+  m_pext = config->GetValue("PlotExtention",".pdf");
+  std::cout<<"PlotExtention: "<<m_pext<<std::endl;
+  
   m_xlabel = config->GetValue("XAxisLabel","Large-R Jet p_{T} [GeV]");
   std::cout<<"XAxisLabel: "<<m_xlabel<<std::endl;
 
@@ -344,11 +347,11 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   }
   for(auto& el : variables_posttag){
     //TODO: not really sure why we skip mjmaxSd0 here
-    bool isTemplate = false;
-    for (TString var : tmpl_vars) {
-      if(el.Contains(var)) { isTemplate = true; break; }
-    }
-    if (isTemplate) continue;
+    //bool isTemplate = false;
+    //for (TString var : tmpl_vars) {
+    //  if(el.Contains(var)) { isTemplate = true; break; }
+    //}
+    //if (isTemplate) continue;
     for (TString sys : btag_sys) variables_posttag_btagsys.push_back(TString(el)+"_"+sys);
   }
   variables_posttag_btagsys.push_back("mjpt_PREFITUNTAG");
