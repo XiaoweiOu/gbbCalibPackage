@@ -21,6 +21,7 @@
 struct track {
 
   float d0;
+  float d0err;
   float sd0;
   float pt;
   float dr; //delta-R with associated track-jet
@@ -625,8 +626,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.muojet_index,m_doTrackSmearing,"nominal",3);
   trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal",3);
-  float muojet_maxsd0 = muojet_sd0Info.meanSd0_ptSort;
-  float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_ptSort;
+  float muojet_maxsd0 = muojet_sd0Info.meanSd0_pt;
+  float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_pt;
 
   if(TMath::Abs(muojet_maxsd0+99.)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99.)<1e-5) return false; //associated tracks do not fulfil selection cuts  
 
@@ -1428,7 +1429,9 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   TLorentzVector jet,trk;
   jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0);
   std::vector<track> tracks;
-  trkjetSd0Info ret = {-99.,-99.,-99.,-99.,-99.,-99.,-99.,-99.,n};
+  trkjetSd0Info ret = {-99.,-99.,-99.,-99.,-99., -99.,-99.,-99.,-99.,
+                       -99.,-99.,-99.,-99., -99.,-99.,-99.,-99.,
+                       -99.,-99.,-99., -99.,-99.,-99., n};
 
   for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
     if (m_config->GetIsR20p7()) {
@@ -1439,6 +1442,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     track tr;
 
     tr.d0 = getd0(i_trk,i_jet,doSmeared,sys);
+    tr.d0err = this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
     tr.sd0 = getSd0(i_trk,i_jet,doSmeared,sys);
     tr.pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
 
@@ -1453,32 +1457,53 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   ret.maxSd0 = tracks.at(0).sd0;
   ret.maxSd0_dR = tracks.at(0).dr;
   ret.subSd0 = tracks.at(1).sd0;
-  ret.subSd0_dR = tracks.at(1).dr;
   ret.thirdSd0 = tracks.at(2).sd0;
-  ret.thirdSd0_dR = tracks.at(2).dr;
+
+  ret.maxd0 = tracks.at(0).d0;
+  ret.subd0 = tracks.at(1).d0;
+  ret.thirdd0 = tracks.at(2).d0;
+
+  ret.maxd0err = tracks.at(0).d0err;
+  ret.subd0err = tracks.at(1).d0err;
+  ret.thirdd0err = tracks.at(2).d0err;
 
   if ((int)tracks.size() < n) return ret;
 
   float sum=0.;
+  float sum_d0=0.;
   for(int i=0; i<n; i++){
     //std::cout<<"track "<<i<<": pT"<<tracks.at(i).pt<<std::endl;
     //float d0=tracks.at(i).d0;
     float sd0=tracks.at(i).sd0;
     //sum+=sd0<0 ? -1.*TMath::Abs(d0) : TMath::Abs(d0);
     sum+=sd0;
+    sum_d0+=tracks.at(i).d0;
   }
-  ret.meanSd0_sd0Sort = sum/n;
+  ret.meanSd0_sd0 = sum/n;
+  ret.meand0_sd0 = sum_d0/n;
 
   std::sort(tracks.begin(),tracks.end(),by_pt());
   sum=0.;
+  sum_d0=0.;
   for(int i=0; i<n; i++){
     //std::cout<<"track "<<i<<": pT"<<tracks.at(i).pt<<std::endl;
     //float d0=tracks.at(i).d0;
     float sd0=tracks.at(i).sd0;
     //sum+=sd0<0 ? -1.*TMath::Abs(d0) : TMath::Abs(d0);
     sum+=sd0;
+    sum_d0+=tracks.at(i).d0;
   }
-  ret.meanSd0_ptSort = sum/n;
+  ret.meanSd0_pt = sum/n;
+  ret.maxSd0_pt = tracks.at(0).sd0;
+  ret.subSd0_pt = tracks.at(1).sd0;
+  ret.thirdSd0_pt = tracks.at(2).sd0;
+  ret.meand0_pt = sum_d0/n;
+  ret.maxd0_pt = tracks.at(0).d0;
+  ret.subd0_pt = tracks.at(1).d0;
+  ret.thirdd0_pt = tracks.at(2).d0;
+  ret.maxd0err_pt = tracks.at(0).d0err;
+  ret.subd0err_pt = tracks.at(1).d0err;
+  ret.thirdd0err_pt = tracks.at(2).d0err;
 
   return ret;
 

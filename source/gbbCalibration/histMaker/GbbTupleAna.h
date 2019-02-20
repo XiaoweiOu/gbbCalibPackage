@@ -31,11 +31,32 @@ struct trkjetSd0Info {
   float maxSd0;
   float maxSd0_dR;
   float subSd0;
-  float subSd0_dR;
   float thirdSd0;
-  float thirdSd0_dR;
-  float meanSd0_ptSort;
-  float meanSd0_sd0Sort;
+  float meanSd0_sd0;
+
+  float maxSd0_pt;
+  float subSd0_pt;
+  float thirdSd0_pt;
+  float meanSd0_pt;
+
+  float maxd0;
+  float subd0;
+  float thirdd0;
+  float meand0_sd0;
+
+  float maxd0_pt;
+  float subd0_pt;
+  float thirdd0_pt;
+  float meand0_pt;
+
+  float maxd0err;
+  float subd0err;
+  float thirdd0err;
+
+  float maxd0err_pt;
+  float subd0err_pt;
+  float thirdd0err_pt;
+
   int nMean;
 };
 

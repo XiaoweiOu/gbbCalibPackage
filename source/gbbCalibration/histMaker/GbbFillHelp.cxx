@@ -102,28 +102,109 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
 
 void GbbTupleAna::FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc) {
   // Using the giving plot naming function to make plots of all the requested s_d0 variables
-  m_HistSvc->FastFillTH1D( namingFunc("mjmaxSd0"),";muon-jet leading |s_{d0}|;Events/2;",
+  m_HistSvc->FastFillTH1D( namingFunc("mjmaxSd0"),";muon-jet leading s_{d0};Events/2;",
    muSd0Info.maxSd0,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("nmjmaxSd0"),";non-muon-jet leading |s_{d0}|;Events/2;",
+  m_HistSvc->FastFillTH1D( namingFunc("nmjmaxSd0"),";non-muon-jet leading s_{d0};Events/2;",
    nonmuSd0Info.maxSd0,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("mjsubSd0"),";muon-jet sub-leading |s_{d0}|;Events/2;",
+  m_HistSvc->FastFillTH1D( namingFunc("mjsubSd0"),";muon-jet sub-leading s_{d0};Events/2;",
    muSd0Info.subSd0,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("nmjsubSd0"),";non-muon-jet sub-leading |s_{d0}|;Events/2;",
+  m_HistSvc->FastFillTH1D( namingFunc("nmjsubSd0"),";non-muon-jet sub-leading s_{d0};Events/2;",
    nonmuSd0Info.subSd0,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("mjthirdSd0"),";muon-jet third-leading |s_{d0}|;Events/2;",
+  m_HistSvc->FastFillTH1D( namingFunc("mjthirdSd0"),";muon-jet third-leading s_{d0};Events/2;",
    muSd0Info.thirdSd0,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("nmjthirdSd0"),";non-muon-jet third-leading |s_{d0}|;Events/2;",
+  m_HistSvc->FastFillTH1D( namingFunc("nmjthirdSd0"),";non-muon-jet third-leading s_{d0};Events/2;",
    nonmuSd0Info.thirdSd0,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("mjmeanSd0"),";muon-jet mean |s_{d0}|;Events/2;",
-   muSd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("nmjmeanSd0"),";non-muon-jet mean |s_{d0}|;Events/2;",
-   nonmuSd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("mjmaxSd0DR"),
-   ";muon-jet #Delta R(jet,track_{max |s_{d0}|});Events/0.02;",
-   muSd0Info.maxSd0_dR,25,0.,0.5,event_weight);
-  m_HistSvc->FastFillTH1D( namingFunc("nmjmaxSd0DR"),
-   ";non-muon-jet #Delta R(jet,track_{max |s_{d0}|});Events/0.02;",
-   nonmuSd0Info.maxSd0_dR,25,0.,0.5,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("mjmeanSd0"),";muon-jet mean s_{d0};Events/2;",
+   muSd0Info.meanSd0_pt,60,-40.,80.,event_weight);
+  m_HistSvc->FastFillTH1D( namingFunc("nmjmeanSd0"),";non-muon-jet mean s_{d0};Events/2;",
+   nonmuSd0Info.meanSd0_pt,60,-40.,80.,event_weight);
+
+  // Using the giving plot naming function to make plots of extra d0 and sd0 variables
+  if(m_RunMode & RunMode::FILL_ADV_PROPERTIES && m_isNominal) {
+    m_HistSvc->FastFillTH1D( namingFunc("mjmaxSd0DR"),
+     ";muon-jet #Delta R(jet,track_{max s_{d0}});Events/0.02;",
+     muSd0Info.maxSd0_dR,25,0.,0.5,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmaxSd0DR"),
+     ";non-muon-jet #Delta R(jet,track_{max s_{d0}});Events/0.02;",
+     nonmuSd0Info.maxSd0_dR,25,0.,0.5,event_weight);
+
+    m_HistSvc->FastFillTH1D( namingFunc("mjmaxSd0_pt"),";muon-jet leading track s_{d0};Events/2;",
+     muSd0Info.maxSd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmaxSd0_pt"),";non-muon-jet leading track s_{d0};Events/2;",
+     nonmuSd0Info.maxSd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjsubSd0_pt"),";muon-jet sub-leading track s_{d0};Events/2;",
+     muSd0Info.subSd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjsubSd0_pt"),";non-muon-jet sub-leading track s_{d0};Events/2;",
+     nonmuSd0Info.subSd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjthirdSd0_pt"),";muon-jet third-leading track s_{d0};Events/2;",
+     muSd0Info.thirdSd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjthirdSd0_pt"),";non-muon-jet third-leading track s_{d0};Events/2;",
+     nonmuSd0Info.thirdSd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjmeanSd0_sd0"),";muon-jet mean s_{d0};Events/2;",
+     muSd0Info.meanSd0_sd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmeanSd0_sd0"),";non-muon-jet mean s_{d0};Events/2;",
+     nonmuSd0Info.meanSd0_sd0,60,-40.,80.,event_weight);
+
+    m_HistSvc->FastFillTH1D( namingFunc("mjmaxd0"),";muon-jet leading d0;Events/2;",
+     muSd0Info.maxd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmaxd0"),";non-muon-jet leading d0;Events/2;",
+     nonmuSd0Info.maxd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjsubd0"),";muon-jet sub-leading d0;Events/2;",
+     muSd0Info.subd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjsubd0"),";non-muon-jet sub-leading d0;Events/2;",
+     nonmuSd0Info.subd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjthirdd0"),";muon-jet third-leading d0;Events/2;",
+     muSd0Info.thirdd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjthirdd0"),";non-muon-jet third-leading d0;Events/2;",
+     nonmuSd0Info.thirdd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjmeand0_sd0"),";muon-jet mean d0;Events/2;",
+     muSd0Info.meand0_sd0,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmeand0_sd0"),";non-muon-jet mean d0;Events/2;",
+     nonmuSd0Info.meand0_sd0,60,-40.,80.,event_weight);
+
+    m_HistSvc->FastFillTH1D( namingFunc("mjmaxd0_pt"),";muon-jet leading track d0;Events/2;",
+     muSd0Info.maxd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmaxd0_pt"),";non-muon-jet leading track d0;Events/2;",
+     nonmuSd0Info.maxd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjsubd0_pt"),";muon-jet sub-leading track d0;Events/2;",
+     muSd0Info.subd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjsubd0_pt"),";non-muon-jet sub-leading track d0;Events/2;",
+     nonmuSd0Info.subd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjthirdd0_pt"),";muon-jet third-leading track d0;Events/2;",
+     muSd0Info.thirdd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjthirdd0_pt"),";non-muon-jet third-leading track d0;Events/2;",
+     nonmuSd0Info.thirdd0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjmeand0_pt"),";muon-jet mean d0;Events/2;",
+     muSd0Info.meand0_pt,60,-40.,80.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmeand0_pt"),";non-muon-jet mean d0;Events/2;",
+     nonmuSd0Info.meand0_pt,60,-40.,80.,event_weight);
+
+    m_HistSvc->FastFillTH1D( namingFunc("mjmaxd0err"),";muon-jet leading #sigma_{d0}Events/2;",
+     muSd0Info.maxd0err,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmaxd0err"),";non-muon-jet leading #sigma_{d0}Events/2;",
+     nonmuSd0Info.maxd0err,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjsubd0err"),";muon-jet sub-leading #sigma_{d0}Events/2;",
+     muSd0Info.subd0err,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjsubd0err"),";non-muon-jet sub-leading #sigma_{d0}Events/2;",
+     nonmuSd0Info.subd0err,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjthirdd0err"),";muon-jet third-leading #sigma_{d0}Events/2;",
+     muSd0Info.thirdd0err,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjthirdd0err"),";non-muon-jet third-leading #sigma_{d0}Events/2;",
+     nonmuSd0Info.thirdd0err,50,0.,5.,event_weight);
+
+    m_HistSvc->FastFillTH1D( namingFunc("mjmaxd0err_pt"),";muon-jet leading track #sigma_{d0}Events/2;",
+     muSd0Info.maxd0err_pt,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmaxd0err_pt"),";non-muon-jet leading track #sigma_{d0}Events/2;",
+     nonmuSd0Info.maxd0err_pt,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjsubd0err_pt"),";muon-jet sub-leading track #sigma_{d0}Events/2;",
+     muSd0Info.subd0err_pt,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjsubd0err_pt"),";non-muon-jet sub-leading track #sigma_{d0}Events/2;",
+     nonmuSd0Info.subd0err_pt,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjthirdd0err_pt"),";muon-jet third-leading track #sigma_{d0}Events/2;",
+     muSd0Info.thirdd0err_pt,50,0.,5.,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjthirdd0err_pt"),";non-muon-jet third-leading track #sigma_{d0}Events/2;",
+     nonmuSd0Info.thirdd0err_pt,50,0.,5.,event_weight);
+  }
 }
 
 void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag){
@@ -140,8 +221,8 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   // Calculate sd0 variables 
   trkjetSd0Info muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal",3);
   trkjetSd0Info nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal",3);
-  float muojet_maxsd0 = muojet_sd0Info.meanSd0_ptSort;
-  float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_ptSort;
+  float muojet_maxsd0 = muojet_sd0Info.meanSd0_pt;
+  float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_pt;
 
   if(TMath::Abs(muojet_maxsd0+99)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99)<1e-5) return;
 
@@ -161,10 +242,10 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     
     if(m_doFillMujet) {
       m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"meanSd0"+nametag),";mean |s_{d0}|;Events/2;",
-       muojet_sd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
+       muojet_sd0Info.meanSd0_pt,60,-40.,80.,event_weight);
     } else {
       m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"meanSd0"+nametag),";mean |s_{d0}|;Events/2;",
-       nonmuojet_sd0Info.meanSd0_ptSort,60,-40.,80.,event_weight);
+       nonmuojet_sd0Info.meanSd0_pt,60,-40.,80.,event_weight);
     }
     
   }
