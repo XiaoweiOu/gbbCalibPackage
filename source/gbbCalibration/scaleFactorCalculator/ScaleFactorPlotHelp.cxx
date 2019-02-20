@@ -265,7 +265,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   //prepare legend
   TLegend *leg=new TLegend(0.63,0.4,0.75,0.725);
   if (applyFitCorrection){
-    leg= new TLegend(0.6,0.35,0.85,0.725);
+    leg= new TLegend(0.6,0.38,0.85,0.755);
  }
 
   leg->SetBorderSize(0);

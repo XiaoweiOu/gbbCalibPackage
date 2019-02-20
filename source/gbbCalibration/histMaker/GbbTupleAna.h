@@ -79,11 +79,8 @@ private:
     FILL_EXTRAP_INCL = 0x200,
     FILL_EXTRAP_MU = 0x400,
   } RunMode;
-  
-  typedef enum {
-    MV2C10_WP70,
-    XBB_WP60,
-  } BTagType;
+
+  TString m_BTagWP;
 
   bool m_Debug;
 
@@ -139,7 +136,13 @@ private:
   bool passR4CaloJetCuts(unsigned int i_jet);
   bool passR10CaloJetCuts(unsigned int i_jet);
   bool passR2TrackJetCuts(unsigned int i_jet);
-  int passBTagCut(const GbbCandidate& gbbcand, const GbbTupleAna::BTagType tagType);
+
+  int passBTagCut(const GbbCandidate& gbbcand);
+  int passMV2c10Cut(const GbbCandidate& gbbcand);
+  int passXbbScoreCut(const GbbCandidate& gbbcand);
+  double XbbTag_antiQCD_flat60eff(double x);
+  double XbbTag_antiQCDtop_flat60eff(double x);
+
   unsigned int getLeadingObjIndex(std::vector<float> *quantity);
   unsigned int getNthLeadingObjIndex(unsigned int n, std::vector<float> *quantity);
   int getAssocObjIndex(std::vector<int>* part_ind, int assoc_index);

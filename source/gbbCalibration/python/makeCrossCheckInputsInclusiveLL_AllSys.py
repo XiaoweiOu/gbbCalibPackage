@@ -7,6 +7,15 @@ import argparse
 ROOT.gROOT.SetBatch(True)
 from ROOT import TCanvas,TPad,TString
 
+
+#----------------- variables ------------------------
+
+ListOfVariables_general = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjtau21','fjtau21_PREFITPOSTTAG','mjpt_PREFITUNTAG','mjMV2c10','nmjMV2c10']
+
+ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2']
+
+ListOfVariables_r20p7 = [] 
+
 #------------------ setup ---------------------------
 
 #SetupStyle()
@@ -34,11 +43,22 @@ ListOfWeightVariations = MyConfig.GetSystematics_WeightVar()
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfInclusiveFlavourPairs = [ 'LL' ]
 ListOfTJpt = MyConfig.GetTrkJetRegions()
+isR20p7 = MyConfig.GetIsR20p7()
 
-# variables 
-#ListOfVariables = [ 'fjpt', 'nmjpt', 'mjpt', 'mjmaxSd0', 'mjmeanSd0', 'nmjmaxSd0', 'nmjmeanSd0' ]
-#ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'mjmeanSd0', 'nmjmaxSd0', 'nmjmeanSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmeanSd0_PREFITPOSTTAG', 'nmjmeanSd0_PREFITPOSTTAG','fjpt_PREFITPOSTTAG_BTAGUP', 'fjm_PREFITPOSTTAG_BTAGUP', 'fjD2_PREFITPOSTTAG_BTAGUP','mjpt_PREFITPOSTTAG_BTAGUP','nmjpt_PREFITPOSTTAG_BTAGUP','mjeta_PREFITPOSTTAG_BTAGUP','nmjeta_PREFITPOSTTAG_BTAGUP','fjptsc_PREFITPOSTTAG_BTAGUP', 'fjpt_PREFITPOSTTAG_BTAGDOWN', 'fjm_PREFITPOSTTAG_BTAGDOWN', 'fjD2_PREFITPOSTTAG_BTAGDOWN','mjpt_PREFITPOSTTAG_BTAGDOWN','nmjpt_PREFITPOSTTAG_BTAGDOWN','mjeta_PREFITPOSTTAG_BTAGDOWN','nmjeta_PREFITPOSTTAG_BTAGDOWN','fjptsc_PREFITPOSTTAG_BTAGDOWN','fjtau21','fjtau21_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG_BTAGUP','fjtau21_PREFITPOSTTAG_BTAGDOWN']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
-ListOfVariables = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'mjmeanSd0', 'nmjmaxSd0', 'nmjmeanSd0', 'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG', 'nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG','fjtau21','fjtau21_PREFITPOSTTAG','mjpt_PREFITUNTAG']#,'trjpt','fjpt_PREFITANTITAG', 'allsrjpt' , 'srjN','evemu','slR4jpt','trjptfjptratio','trjptgbbcandratio' ]
+# setting variables 
+
+ListOfVariables = ListOfVariables_general
+if isR20p7 :
+  print("--- R20p7 Sample ---")
+  ListOfVariables.extend(ListOfVariables_r20p7)
+else:
+  print("--- R21 Sample ---")
+  ListOfVariables.extend(ListOfVariables_r21)
+
+print("List of Variables:")
+for var in ListOfVariables :
+  print(var)
+print("--- end of varlist ---")
 
 #----------- listing desired histograms -------------
 

@@ -12,14 +12,22 @@ HOMEDIR=/home/stankaityte/QT/AnaFW/GbbCalibrationFW2018/gbbCalibPackage/run/
 # qsub script dirrectory
 SCR_DIR="../source/gbbCalibration/scripts/qsub_scripts"
 
+# --- qsub ---
 # qsub job tag
-jtag="hmcam"
+jtag="hmu"
+# queue
+queue="normal"
+# cput
+cput="24:00:00"
 
 # --- input ---
-in_path_base="/data/atlas/atlasdata/stankait/gbbTuples/"
+#in_path_base="/data/atlas/atlasdata/stankait/gbbTuples/"
+in_path_base="/data/atlas/atlasdata/stankait/gbbTuples_R207/"
 
 #in_type="data/"
-in_type="MC/mufilter/mc16a/"
+in_type="MC/mufilter/"
+#in_type="MC/inclusive/"
+#in_type="MC/mufilter/mc16a/"
 #in_type="MC/mufilter/mc16d/"
 #in_type="MC/inclusive/mc16a/"
 #in_type="MC/inclusive/mc16d/"
@@ -29,11 +37,12 @@ in_type="MC/mufilter/mc16a/"
 #out_path_base="/data/atlas/atlasdata/stankait/QT/Hists/22Jan/R21/reweight"
 
 # calibration
-#out_path_base="/data/atlas/atlasdata/stankait/QT/Hists/22Jan/R21/calibration"
-out_path_base="/data/atlas/atlasdata/stankait/QT/Hists/29Jan/R21/calibration_nr"
+out_path_base="/data/atlas/atlasdata/stankait/QT/Hists/7Feb/R20.7/calibration"
+#out_path_base="/data/atlas/atlasdata/stankait/QT/Hists/7Feb/R21/calibration"
 
 # syslist
-syslist=("JET_Comb_Baseline_Kin__1up" "JET_Comb_Baseline_Kin__1down" "JET_Comb_Modelling_Kin__1up" "JET_Comb_Modelling_Kin__1down" "JET_Comb_Tracking_Kin__1up" "JET_Comb_Tracking_Kin__1down" "JET_Comb_TotalStat_Kin__1up" "JET_Comb_TotalStat_Kin__1down" "JET_Rtrk_Baseline_Sub__1up" "JET_Rtrk_Baseline_Sub__1down" "JET_Rtrk_Modelling_Sub__1up" "JET_Rtrk_Modelling_Sub__1down" "JET_Rtrk_Tracking_Sub__1up" "JET_Rtrk_Tracking_Sub__1down" "JET_Rtrk_TotalStat_Sub__1up" "JET_Rtrk_TotalStat_Sub__1down" "FATJET_JER__1up" "JET_MassRes_Hbb__1up")
+#syslist=("JET_Comb_Baseline_Kin__1up" "JET_Comb_Baseline_Kin__1down" "JET_Comb_Modelling_Kin__1up" "JET_Comb_Modelling_Kin__1down" "JET_Comb_Tracking_Kin__1up" "JET_Comb_Tracking_Kin__1down" "JET_Comb_TotalStat_Kin__1up" "JET_Comb_TotalStat_Kin__1down" "JET_Rtrk_Baseline_Sub__1up" "JET_Rtrk_Baseline_Sub__1down" "JET_Rtrk_Modelling_Sub__1up" "JET_Rtrk_Modelling_Sub__1down" "JET_Rtrk_Tracking_Sub__1up" "JET_Rtrk_Tracking_Sub__1down" "JET_Rtrk_TotalStat_Sub__1up" "JET_Rtrk_TotalStat_Sub__1down" "FATJET_JER__1up" "JET_MassRes_Hbb__1up")
+syslist=("JET_Rtrk_Baseline_Kin__1up" "JET_Rtrk_Baseline_Kin__1down" "JET_Rtrk_Modelling_Kin__1up" "JET_Rtrk_Modelling_Kin__1down" "JET_Rtrk_Tracking_Kin__1up" "JET_Rtrk_Tracking_Kin__1down" "JET_Rtrk_TotalStat_Kin__1up" "JET_Rtrk_TotalStat_Kin__1down" "JET_Rtrk_Baseline_Sub__1up" "JET_Rtrk_Baseline_Sub__1down" "JET_Rtrk_Modelling_Sub__1up" "JET_Rtrk_Modelling_Sub__1down" "JET_Rtrk_Tracking_Sub__1up" "JET_Rtrk_Tracking_Sub__1down" "JET_Rtrk_TotalStat_Sub__1up" "JET_Rtrk_TotalStat_Sub__1down" "FATJET_JER__1up" "FATJET_JMR__1up")
 
 #==========================================
 #                 RUNNING
@@ -150,10 +159,10 @@ do
       if [ -z "$(ls -A "${OUTPATH}/${var}/${samp}")" ];
       then
         echo "No output file! -- resubmitting:"
-        qsub -o "${LOG_FOLDER}/${var}/${samp}" -j oe -l cput=12:00:00 -q short -N "${jtag}_${var}" -v LISTDIR="${LIST_FOLDER}",HOMEDIR="${HOMEDIR}",IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${var}/${samp}",TREENAME="FlavourTagging_${var}",CONFIGNAME="${CFG_NAME}",N_FILESPERJOB="${NFILESPERJOB}" $SCR_DIR/run_gbbTupleAna_arrayList.sh
+        qsub -o "${LOG_FOLDER}/${var}/${samp}" -j oe -l cput=${cput} -q ${queue} -N "${jtag}_${var}" -v LISTDIR="${LIST_FOLDER}",HOMEDIR="${HOMEDIR}",IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${var}/${samp}",TREENAME="FlavourTagging_${var}",CONFIGNAME="${CFG_NAME}",N_FILESPERJOB="${NFILESPERJOB}" $SCR_DIR/run_gbbTupleAna_arrayList.sh
       fi
     else
-      qsub -o "${LOG_FOLDER}/${var}/${samp}" -j oe -l cput=12:00:00 -q short -N "${jtag}_${var}" -v LISTDIR="${LIST_FOLDER}",HOMEDIR="${HOMEDIR}",IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${var}/${samp}",TREENAME="FlavourTagging_${var}",CONFIGNAME="${CFG_NAME}",N_FILESPERJOB="${NFILESPERJOB}" $SCR_DIR/run_gbbTupleAna_arrayList.sh
+      qsub -o "${LOG_FOLDER}/${var}/${samp}" -j oe -l cput=${cput} -q ${queue} -N "${jtag}_${var}" -v LISTDIR="${LIST_FOLDER}",HOMEDIR="${HOMEDIR}",IN_PATH="${INPATH}",SAMP="${samp}",OUTDIR="${OUTPATH}/${var}/${samp}",TREENAME="FlavourTagging_${var}",CONFIGNAME="${CFG_NAME}",N_FILESPERJOB="${NFILESPERJOB}" $SCR_DIR/run_gbbTupleAna_arrayList.sh
     fi
 
   done
