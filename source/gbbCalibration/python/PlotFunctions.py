@@ -46,7 +46,7 @@ tobject_collector = []
 ## FullFormatCanvasDefault is a collection of functions for easy "1-step" plotting.
 ##
 def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionaltext2='',additionaltext3='',additionaltext4='',additionaltext5='',preliminary=False,simulation=False,ignoreErrors=False, doLogx=False, doLogy=False) :
-    FormatCanvasAxes(can)
+    FormatCanvasAxes(can,XTitleSize=32,YTitleSize=32,XLabelSize=30,YLabelSize=30)
     SetColors(can)
 
     stat = ''
@@ -81,17 +81,17 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
 #        MakeLegend(can,0.35, 0.5, 0.62, 0.7,totalentries=3)
     if can.GetPrimitive('pad_top') :
         if simulation:
-            DrawText(can,text_lines,.10,.67,.65,.9,totalentries=4)
+            DrawText(can,text_lines,.10,.67,.65,.9,textsize=35,totalentries=4)
         else :
-            DrawText(can,text_lines,.05,.67,.65,.9,totalentries=4)
+            DrawText(can,text_lines,.05,.67,.65,.9,textsize=35,totalentries=4)
 #        MakeLegend(can,0.25, 0.47, 0.65, 0.65,totalentries=4)
         MakeLegend(can,0.55, 0.57, 0.92, 0.9,totalentries=8)
     else :
         if simulation:
-            DrawText(can,text_lines,.1,.7,.50,.92,textsize=22,totalentries=4)
+            DrawText(can,text_lines,.1,.7,.50,.92,textsize=35,totalentries=4)
         else:
-            DrawText(can,text_lines,.2,.7,.50,.92,textsize=22,totalentries=4)
-    MakeLegend(can,0.55, 0.6, 0.92, 0.93,textsize=22,totalentries=4)
+            DrawText(can,text_lines,.2,.7,.50,.92,textsize=35,totalentries=4)
+    MakeLegend(can,0.7, 0.55, 0.92, 0.88,textsize=30,totalentries=4)
     AutoFixAxes(can,ignoreErrors)
 
     if doLogx :

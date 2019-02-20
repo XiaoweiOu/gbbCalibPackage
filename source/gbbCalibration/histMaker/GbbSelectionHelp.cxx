@@ -13,7 +13,86 @@
 #include <TMath.h>
 #include <TLorentzVector.h>
 
-double XbbTag_antiQCD_flat60eff(double x) {
+// Return codes:
+//  1 = double-tagged, -1 = double-anti-tagged, 0 = single-tagged (for MV2c10 case)
+int GbbTupleAna::passBTagCut(const GbbCandidate& gbbcand) {
+  if ( m_BTagWP.Contains("MV2c10") ) {
+    return passMV2c10Cut(gbbcand);
+  } else if ( m_BTagWP.Contains("XbbScore") ) {
+    return passXbbScoreCut(gbbcand);
+  } else return -99;
+}
+
+int GbbTupleAna::passMV2c10Cut(const GbbCandidate& gbbcand) {
+  float taggerCut = -999.;
+  if ( m_BTagWP.Contains("FixedCutBEff_60") ) {
+    if (m_useVRTrkJets) taggerCut = 0.92;
+    else taggerCut = 0.86;
+
+  } else if ( m_BTagWP.Contains("FixedCutBEff_70") ) {
+    if (m_useVRTrkJets) taggerCut = 0.79;
+    else taggerCut = 0.66;
+
+  } else if ( m_BTagWP.Contains("FixedCutBEff_77") ) {
+    if (m_useVRTrkJets) taggerCut = 0.58;
+    else taggerCut = 0.38;
+
+  } else if ( m_BTagWP.Contains("FixedCutBEff_85") ) {
+    if (m_useVRTrkJets) taggerCut = 0.05;
+    else taggerCut = -0.15;
+  
+  } else if ( m_BTagWP.Contains("FixedCutBEff_70_R20p7") ) {
+    taggerCut = 0.6455;
+
+  } else return -99; 
+  // Double-b-tagged
+  if(this->trkjet_MV2c10->at(gbbcand.muojet_index) > taggerCut &&
+     this->trkjet_MV2c10->at(gbbcand.nonmuojet_index) > taggerCut) {
+    return 1;
+  // 1 b-tag
+  } else if(this->trkjet_MV2c10->at(gbbcand.muojet_index) > taggerCut ||
+            this->trkjet_MV2c10->at(gbbcand.nonmuojet_index) > taggerCut) {
+    return 0;
+  // 0 b-tags
+  } else return -1;
+}
+
+int GbbTupleAna::passXbbScoreCut(const GbbCandidate& gbbcand) {
+  float taggerCut = -999.;
+  float taggerVar = -999.;
+  if ( m_BTagWP.Contains("fp2") ) {
+    taggerVar = std::log( this->fat_XbbScoreHiggs->at(gbbcand.fat_index) /
+     (0.8*this->fat_XbbScoreQCD->at(gbbcand.fat_index) + 0.2*this->fat_XbbScoreTop->at(gbbcand.fat_index)) );
+  } else if ( m_BTagWP.Contains("f0") ) {
+    taggerVar = std::log( this->fat_XbbScoreHiggs->at(gbbcand.fat_index) /
+                 this->fat_XbbScoreQCD->at(gbbcand.fat_index) );
+  } else return -99;
+
+  if ( m_BTagWP.Contains("FixedCutBEff_50") ) {
+    if ( m_BTagWP.Contains("fp2") ) taggerCut = 4.5;
+    else if ( m_BTagWP.Contains("f0") ) taggerCut = 5.1;
+
+  } else if ( m_BTagWP.Contains("FixedCutBEff_60") ) {
+    if ( m_BTagWP.Contains("fp2") ) taggerCut = 3.6;
+    else if ( m_BTagWP.Contains("f0") ) taggerCut = 4.5;
+
+  } else if ( m_BTagWP.Contains("FixedCutBEff_70") ) {
+    if ( m_BTagWP.Contains("fp2") ) taggerCut = 3.0;
+    else if ( m_BTagWP.Contains("f0") ) taggerCut = 3.9;
+
+  } else if ( m_BTagWP.Contains("HybBEff_60") ) {
+    if ( m_BTagWP.Contains("fp2") ) taggerCut = XbbTag_antiQCDtop_flat60eff(this->fat_pt->at(gbbcand.fat_index));
+    else if ( m_BTagWP.Contains("f0") ) taggerCut = XbbTag_antiQCD_flat60eff(this->fat_pt->at(gbbcand.fat_index));
+
+  } else return -99; 
+  // Double-b-tagged
+  if(taggerVar > taggerCut) {
+    return 1;
+  // Not double-b-tagged
+  } else return -1;
+}
+
+double GbbTupleAna::XbbTag_antiQCD_flat60eff(double x) {
 
   const int fNp = 12, fKstep = 0;
   const double fDelta = -1, fXmin = 0, fXmax = 2750;
@@ -54,30 +133,83 @@ double XbbTag_antiQCD_flat60eff(double x) {
   return (fY[klow]+dx*(fB[klow]+dx*(fC[klow]+dx*fD[klow])));
 }
 
-// Return codes:
-//  1 = double-tagged, -1 = double-anti-tagged, 0 = single-tagged (for MV2c10 case)
-int GbbTupleAna::passBTagCut(const GbbCandidate& gbbcand, const GbbTupleAna::BTagType tagType) {
-  float taggerCut = -999.;
-  switch (tagType) {
-    case GbbTupleAna::BTagType::MV2C10_WP70:
-      taggerCut = 0.6455;
-      if(this->trkjet_MV2c10->at(gbbcand.muojet_index) > taggerCut &&
-         this->trkjet_MV2c10->at(gbbcand.nonmuojet_index) > taggerCut) {
-        return 1;
-      } else if(this->trkjet_MV2c10->at(gbbcand.muojet_index) > taggerCut ||
-                this->trkjet_MV2c10->at(gbbcand.nonmuojet_index) > taggerCut) {
-        return 0;
-      } else return -1;
-      break;
-    case GbbTupleAna::BTagType::XBB_WP60:
-      taggerCut = XbbTag_antiQCD_flat60eff(gbbcand.fat_pt);
-      if ( this->fat_XbbScoreHiggs->at(gbbcand.fat_index) > taggerCut ) return 1;
-      else return -1;
-      break;
-    default:
-      break;
-  }
-  return -99;
+double GbbTupleAna::XbbTag_antiQCDtop_flat60eff(double x) {
+   // 20% fraction for top
+   const int fNp = 12, fKstep = 0;
+   const double fDelta = -1, fXmin = 0, fXmax = 2750;
+   const double fX[12] = { 0, 250, 500, 750, 1000,
+                        1250, 1500, 1750, 2000, 2250,
+                        2500, 2750 };
+   const double fY[12] = { 0, 4, 4.125, 4.125, 3.625,
+                        2.875, 1.875, 0.5, -1.625, -5,
+                        -10.25, -15.75 };
+   const double fB[12] = { 0.0302896, 0.0049802, -0.000710406, -0.000638579, -0.00273528,
+                        -0.0034203, -0.00458351, -0.00674566, -0.0104339, -0.0175189,
+                        -0.0229906, -0.0195189 };
+   const double fC[12] = { -7.02376e-05, -3.1e-05, 8.23756e-06, -7.95025e-06, -4.36552e-07,
+                        -2.30354e-06, -2.34929e-06, -6.2993e-06, -8.45352e-06, -1.98866e-05,
+                        -2e-06, 250 };
+   const double fD[12] = { 5.23168e-08, 5.23168e-08, -2.15838e-08, 1.00183e-08, -2.48932e-09,
+                        -6.10022e-11, -5.26667e-09, -2.8723e-09, -1.52441e-08, 2.38488e-08,
+                        2.38488e-08, 116.025 };
+   int klow=0;
+   if(x<=fXmin) klow=0;
+   else if(x>=fXmax) klow=fNp-1;
+   else {
+     if(fKstep) {
+       // Equidistant knots, use histogramming
+       klow = int((x-fXmin)/fDelta);
+       if (klow < fNp-1) klow = fNp-1;
+     } else {
+       int khig=fNp-1, khalf;
+       // Non equidistant knots, binary search
+       while(khig-klow>1)
+         if(x>fX[khalf=(klow+khig)/2]) klow=khalf;
+         else khig=khalf;
+     }
+   }
+   // Evaluate now
+   double dx=x-fX[klow];
+   return (fY[klow]+dx*(fB[klow]+dx*(fC[klow]+dx*fD[klow])));
+}
+
+double XbbTag_spline_flatQCDrejection_mH_0(double x) {
+   const int fNp = 11, fKstep = 0;
+   const double fDelta = -1, fXmin = 0, fXmax = 185;
+   const double fX[11] = { 0, 50, 65, 80, 95,
+                        110, 125, 140, 155, 170,
+                        185 };
+   const double fY[11] = { 0, 2.875, 3.625, 4.75, 5.25,
+                        5.5, 5.375, 4.75, 4.5, 3.75,
+                        3.625 };
+   const double fB[11] = { 0.137238, 0.0346611, 0.0704599, 0.0584995, 0.0205421,
+                        0.00933219, -0.0328708, -0.0278489, -0.0307337, -0.0492165,
+                        0.0525997 };
+   const double fC[11] = { -0.00273274, 0.000681202, 0.00170538, -0.00250274, -2.77557e-05,
+                        -0.00071957, -0.00209396, 0.00242876, -0.00262108, 0.00138889,
+                        15 };
+   const double fD[11] = { 2.27596e-05, 2.27596e-05, -9.35139e-05, 5.49997e-05, -1.53737e-05,
+                        -3.05421e-05, 0.000100505, -0.000112219, 8.91104e-05, 8.91104e-05,
+                        6.96152 };
+   int klow=0;
+   if(x<=fXmin) klow=0;
+   else if(x>=fXmax) klow=fNp-1;
+   else {
+     if(fKstep) {
+       // Equidistant knots, use histogramming
+       klow = int((x-fXmin)/fDelta);
+       if (klow < fNp-1) klow = fNp-1;
+     } else {
+       int khig=fNp-1, khalf;
+       // Non equidistant knots, binary search
+       while(khig-klow>1)
+         if(x>fX[khalf=(klow+khig)/2]) klow=khalf;
+         else khig=khalf;
+     }
+   }
+   // Evaluate now
+   double dx=x-fX[klow];
+   return (fY[klow]+dx*(fB[klow]+dx*(fC[klow]+dx*fD[klow])));
 }
 
 bool GbbTupleAna::isCleanEvt(const float total_evt_weight) {

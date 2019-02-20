@@ -4,6 +4,8 @@ import re
 from ROOT import TFile,TTree
 import json
 
+
+#-----------------------------------------------
 def GetPathsFromJSON(infile):
   dataPath = ''
   inclMCPaths = []
@@ -28,6 +30,8 @@ def GetPathsFromJSON(infile):
       #    inclMCPaths = [tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
   return dataPath, muFiltMCPaths, inclMCPaths, xsecFile
 
+
+#-----------------------------------------------
 def GetDataFile(name):
   if os.path.exists(name):
     print "found",name
@@ -45,6 +49,8 @@ def GetDataFile(name):
     print name,"not found"
     return ""
 
+
+#-----------------------------------------------
 def GetChannelWeights(xsecfile):
   filepath = GetDataFile("gbbCalibration/"+xsecfile)
   if not filepath:
@@ -59,6 +65,8 @@ def GetChannelWeights(xsecfile):
   print "Loaded cross-section information"
   return output
 
+
+#-----------------------------------------------
 def GetChannelNumber(filename):
   # Assume filename contains _13TeV.(channel).(other info)
   channel = int(re.search(r'(?<=mc1(\d)_13TeV\.)[0-9]+',filename).group())
@@ -67,6 +75,8 @@ def GetChannelNumber(filename):
     exit()
   return channel
 
+
+#-----------------------------------------------
 def LoadGlobalConfig():
   filepath = GetDataFile("gbbCalibration/configs/GlobalConfig.cfg")
   if not filepath:
@@ -75,18 +85,22 @@ def LoadGlobalConfig():
   from ROOT import GlobalConfig
   return GlobalConfig(filepath)
 
+#===============================================
 class HistHelper:
 
+  #-----------------------------------
   def __init__(self,xsecfile):
     self.xsecfile = xsecfile
     self.MapOfChannelWeights = GetChannelWeights(self.xsecfile)
     self.MapOfFiles = {}
 
+  #-----------------------------------
   def __exit__(self, *exc):
     print "closing files"
     for openFile in self.MapOfFiles.itervalues():
       openFile.Close()
 
+  #-----------------------------------
   def AddMCHists(self,histname, ListOfMCPaths):
     hist=None
     for path in ListOfMCPaths:

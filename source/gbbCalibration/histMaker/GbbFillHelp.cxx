@@ -353,6 +353,33 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
    this->jet_pt->at(i_trig_jet)/1e3,this->fat_pt->at(gbbcand->fat_index)/1e3,
    250,0.,1000.,250,0.,1000.,event_weight
   );
+
+  //b-taggers
+  m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "mjMV2c10"+nametag),";muon-jet MV2c10;Events;",
+   this->trkjet_MV2c10->at(gbbcand->muojet_index),100,-1.,1.,event_weight);
+  m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "nmjMV2c10"+nametag),";non-muon-jet MV2c10;Events;",
+   this->trkjet_MV2c10->at(gbbcand->nonmuojet_index),100,-1.,1.,event_weight);
+  
+  if(!m_config->GetIsR20p7()){
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreHiggs"+nametag),";XbbScoreHiggs;Events;",
+     this->fat_XbbScoreHiggs->at(gbbcand->fat_index),100,-1.,1.,event_weight);
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreQCD"+nametag),";XbbScoreQCD;Events;",
+     this->fat_XbbScoreQCD->at(gbbcand->fat_index),100,-1.,1.,event_weight);
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreTop"+nametag),";XbbScoreTop;Events;",
+     this->fat_XbbScoreTop->at(gbbcand->fat_index),100,-1.,1.,event_weight);
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreRatiof0"+nametag),
+     ";log(XbbScoreHiggs/XbbScoreQCD);Events;",
+     std::log( this->fat_XbbScoreHiggs->at(gbbcand->fat_index) /
+      this->fat_XbbScoreQCD->at(gbbcand->fat_index) ),
+     100,-1.,1.,event_weight
+    );
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreRatiofp2"+nametag),
+     ";log(XbbScoreHiggs/(0.8*XbbScoreQCD+0.2*XbbScoreTop));Events;",
+     std::log( this->fat_XbbScoreHiggs->at(gbbcand->fat_index) /
+      (0.8*this->fat_XbbScoreQCD->at(gbbcand->fat_index) + 0.2*this->fat_XbbScoreTop->at(gbbcand->fat_index)) ),
+     100,-1.,1.,event_weight
+    );
+  }
 }
 
 void GbbTupleAna::FillTriggerTurnOnHistograms(int i_trigjet, float event_weight){

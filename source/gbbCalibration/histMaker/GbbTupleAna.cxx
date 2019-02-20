@@ -110,8 +110,10 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
       std::cout<<"Unrecognized RunMode: "<<mode.Data()<<". Ignoring"<<std::endl;
     }
   }
-  if (m_Debug) std::cout<<"RunMode flag: "<<m_RunMode<<std::endl;
-  
+  if (m_Debug) std::cout<<"RunMode flag: "<<m_RunMode<<std::endl;  
+
+  m_BTagWP = config->GetValue("BTagWP","");
+  std::cout<<"BTagWP: "<<m_BTagWP<<std::endl;
   
   m_GeneratorName = config->GetValue("GeneratorName","Pythia");
   std::cout<<"GeneratorName: "<<m_GeneratorName<<std::endl;
@@ -175,6 +177,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_Outputname(""),
   //m_chains(),
   m_RunMode(0),
+  m_BTagWP(""),
   m_Debug(false),
   m_doJetPtReweighting(false),
   m_JetPtReweightFile(""),
@@ -220,6 +223,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
 
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
+  TChain *fren = new TChain("FlavourTagging_Nominal");
   
   bool file1 = true;
   for (TString filename : infiles) {
@@ -240,7 +244,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
     tree->Add(filename.Data());
     if (m_config->GetIsR20p7()) {
       //if systematics tree: add nominal as friend to retrieve the truth label (temp patch)
-      if (!treename.EqualTo("FlavourTagging_Nominal")) tree->AddFriend("FlavourTagging_Nominal",filename.Data());
+      if (!treename.EqualTo("FlavourTagging_Nominal")) fren->Add(filename.Data());
     }
     
     // getting filter type
@@ -251,6 +255,10 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
       file1 = false;
     }
   }
+  if (m_config->GetIsR20p7()) {
+    tree->AddFriend(fren);
+  }
+
   if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl; 
 
   // Copy metadata
@@ -689,7 +697,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //if(this->trkjet_MV2c20->at(gbbcand.muojet_index)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.nonmuojet_index)<-0.3098) return false;
   //Moved to MV2c10 at 70% efficiency
 
-  int isTagged = passBTagCut(gbbcand, GbbTupleAna::BTagType::MV2C10_WP70);
+  int isTagged = passBTagCut(gbbcand);
   if (isTagged == -99) {
     std::cout<<"processgbb(): Unrecognized b-tag type"<<std::endl;
     return false;
@@ -1554,8 +1562,9 @@ void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_do
 
     }else {
 
-      if(TMath::Abs(delta_up) > TMath::Abs(delta_down)) squared_weight_up+=delta_up*delta_up;
-      else squared_weight_down+=delta_down*delta_down;
+      float bigger_delta=std::max( TMath::Abs(delta_up), TMath::Abs(delta_down));
+      if(delta_up>0) squared_weight_up+= bigger_delta*bigger_delta;
+      else squared_weight_down+=bigger_delta*bigger_delta;
 
     }
 
