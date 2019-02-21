@@ -366,14 +366,14 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   if(m_doControlPlots){
     for (TString var : variables) {
       //fat jet control plots
-      //this->MakeFatJetControlPlots(var,false,false,sys_only,model_sys);
-      this->MakeFatJetControlPlots(var,false,true,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,false,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,true,sys_only,model_sys);
     }
     
     //posttag plots
     for (TString var : variables_posttag) {
-      //this->MakeFatJetControlPlots(variables_posttag[i_var],true,false,sys_only,model_sys);
-      this->MakeFatJetControlPlots(var,true,true,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,false,sys_only,model_sys);
+      this->MakeFatJetControlPlots(var,true,sys_only,model_sys);
     }
 
     //BTagging Rate Plots

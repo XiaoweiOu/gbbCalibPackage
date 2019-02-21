@@ -196,7 +196,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
 }
 
 //FIXME: this function is unused. do we need it?
-TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPosttag){
+TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var){
   
   //Calculate fit errors from covariance matrix for each flavour pair and each fit region, add errors in fit regions in qudrature.
   
@@ -219,7 +219,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
     help_norms.assign(fj_bins.size()-1,0.);
     std::vector<double> flavour_norms(m_config->GetFlavourPairs().size(),0.);
 
-    std::vector<TH1D*> help_vec = GetRebinHistsByRegionMC(var,"Nom",region, isPosttag);
+    std::vector<TH1D*> help_vec = GetRebinHistsByRegionMC(var,"Nom",region);
 
     for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
       flavour_norms[i_p]=help_vec[i_p]->Integral();
@@ -286,7 +286,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var, bool isPost
 
 }
 
-TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var, bool isPosttag){
+TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var){
   
 //Calculate fit errors from covariance matrix for each flavour pair and each fit region, add errors in fit regions in qudrature.
   
