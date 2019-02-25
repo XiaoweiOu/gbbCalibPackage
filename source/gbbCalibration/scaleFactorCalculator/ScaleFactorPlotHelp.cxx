@@ -392,26 +392,20 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   ATLASLabel3(0.50,0.825,m_plot_label.Data());
   myText(0.5, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   pad1->RedrawAxis();
-  
 
-  //TODO: can this go in a separate function?
-  TString name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0" + m_pext) : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0" + m_pext); 
-  
-  if(isPosttag) name=applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag" + m_pext) : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag" + m_pext); 
-  
+  TString name = TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_");
+  name += applyFitCorrection ? "postfit_" : "prefit_";
+  name += isPosttag ? "posttag_" : "pretag_";
+  name += region;
 
-  canv->SaveAs(name.Data());
+  canv->SaveAs((name+m_pext).Data());
 
   data_hist->SetMinimum(1);
   data_hist->SetMaximum(data_hist->GetBinContent(data_hist->GetMaximumBin())*1e2);
   pad1->SetLogy();
   pad1->RedrawAxis();
   
-  TString namelog= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_log" + m_pext) : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_log" + m_pext); 
-
-  if(isPosttag) namelog=applyFitCorrection ? TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_postfit_"+region+"_sd0_posttag_log" + m_pext) : TString(m_outdir+"/ctrl_plots/Template_"+sys+"_"+channel+"_prefit_"+region+"_sd0_posttag_log" + m_pext);
-
-  canv->SaveAs(namelog.Data());
+  canv->SaveAs((name+"_log"+m_pext).Data());
 
   delete mystack;
   delete leg;
@@ -491,7 +485,7 @@ void ScaleFactorCalculator::MakeCorrelationPlots(const TString region) {
 }
 
 
-void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, bool applyFitCorrection, std::vector<TString>& sys, std::vector<TString>& model_sys, bool doPrintByRegion, TString region){
+void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCorrection, std::vector<TString>& sys, std::vector<TString>& model_sys, bool doPrintByRegion, TString region){
   
   std::shared_ptr<TCanvas> canv(new TCanvas("canv","",700,800));
   canv.get()->cd();
@@ -518,7 +512,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   //TODO: is this needed? if so, can it be added to GetRebinHists functions?
   std::vector<double> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta"))  ? m_config->GetBinning(var_fjpt) : m_config->GetBinning(var);
 
-  isPosttag = var.Contains("PREFITPOSTTAG");
+  bool isPosttag = var.Contains("PREFITPOSTTAG");
 
   std::vector<TH1D*> hist_mc;
   TH1D* hist_data(nullptr);
@@ -604,7 +598,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var,bool isPosttag, 
   
   if(applyFitCorrection){
     
-      fitsys=this->getFitUncertToys(var,isPosttag);
+      fitsys=this->getFitUncertToys(var);
       fitsys->SetFillColor(kGreen+1);
       fitsys->SetFillStyle(3001);
       
@@ -708,19 +702,13 @@ std::cout<<"finished expsys plotting"<<std::endl;
   myText(0.55, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   pad1->RedrawAxis();
 
-  TString name;
+  TString name = TString(m_outdir+"/ctrl_plots/FatJet_");
+  name += applyFitCorrection ? "postfit_" : "prefit_";
+  name += isPosttag ? "posttag_" : "pretag_";
+  if (doPrintByRegion) name += TString(region+"_");
+  name += isPosttag ? TString(var(0,var.Index("_PREFITPOSTTAG"))) : var;
+  name += m_pext;
 
-  if(doPrintByRegion){
-
-    if(isPosttag){
-      name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_posttag_")+region+TString("_")+var+TString("" + m_pext) : TString(m_outdir+"/ctrl_plots/FatJet_prefit_posttag_")+region+TString("_")+var+TString("" + m_pext);
-    }else name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_pretag_")+region+TString("_")+var+TString("" + m_pext) : TString(m_outdir+"/ctrl_plots/FatJet_prefit_pretag_")+region+TString("_")+var+TString("" + m_pext);
-    
-  }else{
-    if(isPosttag){
-      name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_posttag_")+var+TString("" + m_pext) : TString(m_outdir+"/ctrl_plots/FatJet_prefit_posttag_")+var+TString("" + m_pext);
-    }else name= applyFitCorrection ? TString(m_outdir+"/ctrl_plots/FatJet_postfit_pretag_")+var+TString("" + m_pext) : TString(m_outdir+"/ctrl_plots/FatJet_prefit_pretag")+var+TString("" + m_pext);
-  }
   canv->SaveAs(name.Data());
 
   delete mystack;

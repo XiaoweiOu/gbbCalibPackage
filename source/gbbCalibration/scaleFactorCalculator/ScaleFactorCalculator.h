@@ -124,15 +124,15 @@ private:
         void MakeCorrelationPlots(const TString region);
 	void MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist,std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys, int rebin, bool isPosttag=false);
 
-	void MakeFatJetControlPlots(TString& var, bool isPosttag, bool applyFitCorrection, std::vector<TString>& systematics, std::vector<TString>& model_sys, bool doPrintByRegion=false, TString region="DEFAULT");
+	void MakeFatJetControlPlots(TString& var, bool applyFitCorrection, std::vector<TString>& systematics, std::vector<TString>& model_sys, bool doPrintByRegion=false, TString region="DEFAULT");
 
 	void MakeBTaggingRatePlots(std::vector<TString> &systematics, std::vector<TString> &model_sys);
 
 	TString MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
 	TString PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists);
   
-	TGraphAsymmErrors* getFitUncert(TString& var, bool isPosttag);
-	TGraphAsymmErrors* getFitUncertToys(TString& var, bool isPosttag);
+	TGraphAsymmErrors* getFitUncert(TString& var);
+	TGraphAsymmErrors* getFitUncertToys(TString& var);
 
 	TGraphAsymmErrors* getTemplateFitUncert(bool applyFitCorrection,std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin);
 	TGraphAsymmErrors* getTemplateFitUncertToys(bool applyFitCorrection,std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin);
