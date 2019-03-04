@@ -101,6 +101,11 @@ private:
     FILL_EXTRAP_MU = 0x400,
   } RunMode;
 
+  // ImproveMe
+  // String stores b-tagging options; Used in BTagCut
+  // format: <bTag type>_FixedCutBEff_<cut efficiency number>_[systematics?]
+  // example: MV2c10_FixedCutBEff_70_R20p7
+  // example: XbbScore_FixedCutBEff_60_[fp2/f0]
   TString m_BTagWP;
 
   bool m_Debug;

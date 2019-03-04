@@ -15,6 +15,7 @@
 
 // Return codes:
 //  1 = double-tagged, -1 = double-anti-tagged, 0 = single-tagged (for MV2c10 case)
+// -99 = unrecognized b-tag
 int GbbTupleAna::passBTagCut(const GbbCandidate& gbbcand) {
   if ( m_BTagWP.Contains("MV2c10") ) {
     return passMV2c10Cut(gbbcand);
@@ -56,6 +57,7 @@ int GbbTupleAna::passMV2c10Cut(const GbbCandidate& gbbcand) {
   // 0 b-tags
   } else return -1;
 }
+
 
 int GbbTupleAna::passXbbScoreCut(const GbbCandidate& gbbcand) {
   float taggerCut = -999.;
