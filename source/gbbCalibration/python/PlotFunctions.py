@@ -402,13 +402,13 @@ def MakeLegend(can,x1=.8,y1=.8,x2=.9,y2=.9,textsize=18,ncolumns=1,totalentries=0
             drawopt = 'l'
         if issubclass(type(i),TH1) or issubclass(type(i),TGraph) :
             leg.AddEntry(i,i.GetName().replace(can.GetName()+'_',''),drawopt) # plef
-            print i.GetName().replace(can.GetName()+'_','')
+            #print i.GetName().replace(can.GetName()+'_','')
             total += 1
         elif issubclass(type(i),THStack) :
             for stackedHists in i.GetHists() :
-                print stackedHists.GetName()
+                #print stackedHists.GetName()
                 leg.AddEntry(stackedHists,stackedHists.GetName().replace(can.GetName()+'_',''),drawopt) # plef
-                print stackedHists.GetName().replace(can.GetName()+'_','')
+                #print stackedHists.GetName().replace(can.GetName()+'_','')
                 total += 1
 
 

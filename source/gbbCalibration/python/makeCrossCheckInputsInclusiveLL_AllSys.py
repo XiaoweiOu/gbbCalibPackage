@@ -193,7 +193,6 @@ for histname in ListOfDataHists :
     if histname is 'CutFlow_Nom':
       histData.SetName('CutFlow_Data')
     histData.Write()
+    print("Wrote "+histname)
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
-
-#--------------------- output -----------------------
