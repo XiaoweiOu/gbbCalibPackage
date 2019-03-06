@@ -16,6 +16,9 @@
 #include "TEnv.h"
 #include "TRandom3.h"
 #include <map>
+// wesley add for xbb score 
+#include "XbbScoreCutter/XbbScoreCutter.h"
+#include <functional>
 
 struct GbbCandidate{
   
@@ -108,6 +111,11 @@ private:
   // example: XbbScore_FixedCutBEff_60_[fp2/f0]
   TString m_BTagWP;
 
+  // wesley:
+  // this for cutting the gbb candidate
+  // in b-tagging step
+  XbbScoreCutter m_xsc;
+  
   bool m_Debug;
 
   bool m_doJetPtReweighting;

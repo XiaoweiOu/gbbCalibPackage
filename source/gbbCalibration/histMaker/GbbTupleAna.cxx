@@ -18,6 +18,7 @@
 #include "PathResolver/PathResolver.h"
 #include "TSystem.h"
 
+
 struct track {
 
   float d0;
@@ -344,6 +345,13 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_random.get()->SetSeed(0);
    
   Init(tree);
+
+
+
+
+  // Wesley: Xbb score
+  XbbScoreCutter m_xsc(0.2,60);
+  
 }
 
 

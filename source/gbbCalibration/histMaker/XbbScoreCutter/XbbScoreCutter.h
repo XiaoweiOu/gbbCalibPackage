@@ -11,15 +11,15 @@
 
 
 // from gbbtupleana <temp>
-struct GbbCandidate{
+//struct GbbCandidate{
   
-  unsigned int fat_index;
-  unsigned int muojet_index;
-  unsigned int nonmuojet_index;
-  float fat_pt;
-  bool hasleading2trackjets;
-  bool hasTruthMuon;
-};
+//  unsigned int fat_index;
+//  unsigned int muojet_index;
+//  unsigned int nonmuojet_index;
+//   float fat_pt;
+//  bool hasleading2trackjets;
+//  bool hasTruthMuon;
+// };
 
 
 class XbbScoreCutter{
