@@ -118,13 +118,14 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     std::vector<TString> mu_labels, nonmu_labels;
     mu_labels.push_back(Form("p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins.front()));
     for (unsigned int i=0; i < mutrackjetbins.size()-1; i++) {
-      mu_labels.push_back(Form("%iGeV < p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins[i],(int)mutrackjetbins[i+1]));
+      //mu_labels.push_back(Form("%iGeV < p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins[i],(int)mutrackjetbins[i+1]));
+      mu_labels.push_back(Form("p_{T}(#mu-jet) #splitline{ >%iGeV}{< %iGeV}",(int)mutrackjetbins[i],(int)mutrackjetbins[i+1]));
     }
     mu_labels.push_back(Form("p_{T}(#mu-jet) > %iGeV",(int)mutrackjetbins.back()));
 
     nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) < %iGeV",(int)nonmutrackjetbins.front()));
     for (unsigned int i=0; i < nonmutrackjetbins.size()-1; i++) {
-      nonmu_labels.push_back(Form("%iGeV < p_{T}(non-#mu-jet) < %iGeV",(int)nonmutrackjetbins[i],(int)nonmutrackjetbins[i+1]));
+      nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) #splitline{> %iGeV}{< %iGeV}",(int)nonmutrackjetbins[i],(int)nonmutrackjetbins[i+1]));
     }
     nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) > %iGeV",(int)nonmutrackjetbins.back()));
 
@@ -171,23 +172,36 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     for(unsigned int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mu_labels[i-1]);
     for(unsigned int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nonmu_labels[i-1]);
     hist->LabelsOption("u","Y");
-
-    canv->SetLeftMargin(0.25);
+    
+    hist->SetLabelSize(0.05,"X");
+    hist->SetLabelSize(0.05,"Y");
+    
+    hist->SetMinimum(0);
+    if(plot_type.Contains("SF")) hist->SetMaximum(2.);
+    if(plot_type.Contains("Data")) hist->SetMaximum(1.1);
+    if(plot_type.Contains("MC")){
+      hist->SetMinimum(0.3);
+      hist->SetMaximum(0.7);
+    }
+    canv->SetTopMargin(0.05);
+    canv->SetLeftMargin(0.28);
     canv->SetRightMargin(0.05);
     canv->cd();
 
-    hist->SetMarkerSize(1.8);
+    hist->SetMarkerSize(2);
     gStyle->SetPaintTextFormat("4.2f");
     hist->Draw("COL TEXT");
     //hist->SetAxisRange(nonmutrackjetbins[0], nonmutrackjetbins.back()*1.4,"Y");
-    hist_err_up->SetBarOffset(0.2);
+    hist_err_up->SetBarOffset(0.23);
+    hist_err_up->SetMarkerSize(1.3);
     //hist_err_up->SetMarkerSize(1.8);
     //hist_err_up->SetMarkerColor(kGreen+2);
     //gStyle->SetPaintTextFormat("(+) %4.2f ");
     hist_err_up->Draw("TEXT SAME");
     //hist_err_down->SetMarkerSize(1.8);
     //hist_err_down->SetMarkerColor(kRed);
-    hist_err_down->SetBarOffset(-0.2);
+    hist_err_down->SetBarOffset(-0.23);
+    hist_err_down->SetMarkerSize(1.3);
     //gStyle->SetPaintTextFormat("8-) %4.2f ");
     hist_err_down->Draw("TEXT SAME");
 
@@ -213,9 +227,9 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   leg->Draw();
  
   //Add ATLAS label
-  ATLASLabel2(0.6,0.825,m_plot_label.Data());
-  myText(0.6, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
-  myText(0.6, 0.74, 1, Form("#scale[0.8]{%s}",m_subsub_label.Data()));
+  ATLASLabel2(0.675,0.86,m_plot_label.Data());
+  myText(0.675, 0.815, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
+  myText(0.675, 0.775, 1, Form("#scale[0.8]{%s}",m_subsub_label.Data()));
 
   TLine *line = new TLine((m_config->GetFatJetPtBins())[0],1.,(m_config->GetFatJetPtBins()).back(),1.);
   line->SetLineStyle(2);
@@ -316,12 +330,13 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   
   data_hist->SetTitle("");
   data_hist->SetLabelSize(0,"X");
+  data_hist->SetTitleSize(0,"X");
   //data_hist->SetYTitle(Form("events/%.1f",(data_hist->GetBinWidth(1))));
   data_hist->SetYTitle("dN/dS_{d0}");
   data_hist->SetTitleOffset(1.5,"Y");
   data_hist->SetMarkerStyle(20);
-  data_hist->SetTitleSize(0.04,"Y");
-  data_hist->SetLabelSize(0.04,"Y");
+  data_hist->SetTitleSize(0.05,"Y");
+  data_hist->SetLabelSize(0.05,"Y");
 
   leg->AddEntry(data_hist,"Data","epl");
   
@@ -347,10 +362,10 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   h_ratio->SetYTitle("data/MC");
   //TODO: for a function that ostensibly takes arbitrary hists, this shouldnt be hard-coded
   h_ratio->SetXTitle("transverse IP significance #LT s_{d0} #GT"); 
-  h_ratio->SetLabelSize(0.08,"X");
-  h_ratio->SetLabelSize(0.08,"Y");
-  h_ratio->SetTitleSize(0.08,"X");
-  h_ratio->SetTitleSize(0.08,"Y");
+  h_ratio->SetLabelSize(0.1,"X");
+  h_ratio->SetLabelSize(0.1,"Y");
+  h_ratio->SetTitleSize(0.12,"X");
+  h_ratio->SetTitleSize(0.13,"Y");
   h_ratio->SetTitleOffset(0.9,"X");
   h_ratio->SetTitleOffset(0.6,"Y");
   h_ratio->GetYaxis()->SetRangeUser(0.4,1.6);
@@ -513,6 +528,11 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   std::vector<double> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta"))  ? m_config->GetBinning(var_fjpt) : m_config->GetBinning(var);
 
   bool isPosttag = var.Contains("PREFITPOSTTAG");
+  
+  std::cout << " ***** Integrals **** "<< std::endl;
+  std::cout << "Variable: " << var;
+  if (applyFitCorrection) std::cout << " (postfit)"<< std::endl;
+  else std::cout << " (prefit)"<< std::endl;
 
   std::vector<TH1D*> hist_mc;
   TH1D* hist_data(nullptr);
@@ -524,6 +544,10 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
     hist_data = GetRebinHistData(var);
   }
 
+  std::cout << "Data: " << hist_data->Integral() << std::endl;
+
+  double tot_mcint = 0;
+
   THStack *mystack = new THStack("myStack","stack");
   TH1D* full_mc(nullptr);
   for (unsigned int i=0; i < hist_mc.size(); i++) {
@@ -532,9 +556,22 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
 
     hist_mc[i]->SetFillColor(color[i]);
     hist_mc[i]->SetLineColor(kBlack);
+  
+    std::cout << m_config->GetFlavourPairs()[i] <<": " << hist_mc[i]->Integral()*100/hist_data->Integral() << "%" << std::endl;
+
+    tot_mcint += hist_mc[i]->Integral();
+
     leg->AddEntry(hist_mc[i],m_config->GetFlavourPairs()[i],"f");
     mystack->Add(hist_mc[i]);
   }
+
+  std::cout << "Total MC: " << tot_mcint << std::endl;
+  std::cout << "Total MC norm: " << tot_mcint/hist_data->Integral() << std::endl;
+  std::cout << std::endl << "MC fractions: " << tot_mcint << std::endl;
+  for (unsigned int i=0; i < hist_mc.size(); i++) {
+    std::cout << m_config->GetFlavourPairs()[i] <<": " << hist_mc[i]->Integral()*100/tot_mcint << "%" << std::endl;
+  }
+  std::cout << " ***** end var int **** "<< std::endl;
 
   hist_data->SetTitle("");
   hist_data->SetLabelSize(0,"X");
@@ -543,7 +580,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   hist_data->SetMarkerStyle(20);
   hist_data->SetTitleOffset(1.1,"Y");
   hist_data->SetTitleSize(0.05,"Y");
-  hist_data->SetLabelSize(0.04, "Y");
+  hist_data->SetLabelSize(0.05,"Y");
 
   leg->AddEntry(hist_data,"data","epl");
   
@@ -737,7 +774,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   pad2.get()->Draw();
   pad2.get()->SetTicks();
   //prepare legend
-  TLegend *leg=new TLegend(0.55,0.4,0.88,0.75);
+  TLegend *leg=new TLegend(0.55,0.5,0.88,0.85);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
 
@@ -773,7 +810,8 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   
   pad1->cd();
   hist_posttag_data->Draw("EP");
-  hist_posttag_data->GetYaxis()->SetRangeUser(0.,hist_posttag_data->GetMaximum()*2);
+  //hist_posttag_data->GetYaxis()->SetRangeUser(0.,hist_posttag_data->GetMaximum()*2);
+  hist_posttag_data->GetYaxis()->SetRangeUser(0.,0.06);
 
   hist_posttag_data->Draw("EP SAME");
 
@@ -876,8 +914,8 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   //Add ATLAS label
   pad1->cd();
-  ATLASLabel2(0.25,0.825,m_plot_label.Data());
-  myText(0.25, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
+  ATLASLabel2(0.23,0.825,m_plot_label.Data());
+  myText(0.23, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
   leg->Draw();
 
   TString name;
