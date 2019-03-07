@@ -703,11 +703,21 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //if(this->trkjet_MV2c20->at(gbbcand.muojet_index)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.nonmuojet_index)<-0.3098) return false;
   //Moved to MV2c10 at 70% efficiency
 
+  /* wesley: not used for XbbScore
   int isTagged = passBTagCut(gbbcand);
   if (isTagged == -99) {
     std::cout<<"processgbb(): Unrecognized b-tag type"<<std::endl;
     return false;
   }
+  */
+  /*xbb score ---*/
+  // read xbbscore parameters, then use xbbcutter to determine
+  // if this gbb candidate is b tagged.
+  float p_h = this->fat_XbbScoreHiggs->at(gbbcand.fat_index);
+  float p_qcd = this->fat_XbbScoreQCD->at(gbbcand.fat_index);
+  float p_top = this->fat_XbbScoreTop->at(gbbcand.fat_index);
+  int isTagged = this->m_xbbScoreCutter->cut(p_h,p_qcd,p_top);
+  /*xbb score ---*/
 
   
   //at least 1 b-tag
