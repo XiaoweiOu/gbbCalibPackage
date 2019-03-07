@@ -40,7 +40,7 @@ class XbbScoreCutter{
   // cut value read it directly from map
   float cutValue_;
   
-  XbbScoreCutter();
+  XbbScoreCutter() = delete;
   // the config string is set in config file
   XbbScoreCutter(const TString configString);
   XbbScoreCutter(float f, int eff);

@@ -110,11 +110,6 @@ private:
   // example: MV2c10_FixedCutBEff_70_R20p7
   // example: XbbScore_FixedCutBEff_60_[fp2/f0]
   TString m_BTagWP;
-
-  // wesley:
-  // this for cutting the gbb candidate
-  // in b-tagging step
-  XbbScoreCutter m_xsc;
   
   bool m_Debug;
 
@@ -163,6 +158,12 @@ private:
   TString m_PostfitPtReweightingFile;
   TH1D* m_postfit_reweight_hist;
 
+
+  // wesley:
+  // this for cutting the gbb candidate
+  // in b-tagging step
+  XbbScoreCutter* m_xbbScoreCutter;
+  
   void Loop(const TString& sys);
   bool Processgbb(int i_evt);
   

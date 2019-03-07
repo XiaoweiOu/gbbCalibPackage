@@ -43,7 +43,6 @@ struct by_abs_sd0 {
   
 };
 
-
 GbbTupleAna::GbbTupleAna() : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0) {
   // TODO Auto-generated constructor stub
 
@@ -57,6 +56,9 @@ GbbTupleAna::~GbbTupleAna() {
   if(m_FlavFracCorrector) delete m_FlavFracCorrector;
   if(m_HistSvc) delete m_HistSvc;
   if(m_config) delete m_config;
+
+  // wesley xbb
+  if(m_xbbScoreCutter) delete m_xbbScoreCutter;
 }
 
 
@@ -212,8 +214,9 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   //m_fatjet_pt_bins(),
   m_doPostfitPtReweighting(false),
   m_PostfitPtReweightingFile(""),
-  m_postfit_reweight_hist(nullptr)
-
+  m_postfit_reweight_hist(nullptr),
+  // Wesley: Xbb score
+  m_xbbScoreCutter(new XbbScoreCutter(0.2,60)) // to do: change variable setting(f,eff)
 {
   TH1::AddDirectory(0);
 
@@ -345,12 +348,6 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_random.get()->SetSeed(0);
    
   Init(tree);
-
-
-
-
-  // Wesley: Xbb score
-  XbbScoreCutter m_xsc(0.2,60);
   
 }
 
@@ -711,6 +708,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
     std::cout<<"processgbb(): Unrecognized b-tag type"<<std::endl;
     return false;
   }
+
+  
   //at least 1 b-tag
   if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);   
   //2 b-tags

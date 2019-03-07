@@ -15,7 +15,7 @@ find_package( ROOT COMPONENTS Core MathCore RIO Hist Tree Matrix Gpad Graf Physi
 
 # Build a dictionary for the library:
 atlas_add_root_dictionary( gbbTupleLib _gbbDictSource
-   ROOT_HEADERS histMaker/TupleAna.h histMaker/GbbTupleAna.h histMaker/LinkDef.h
+   ROOT_HEADERS histMaker/TupleAna.h histMaker/GbbTupleAna.h histMaker/XbbScoreCutter/XbbScoreCutter.h histMaker/LinkDef.h
    EXTERNAL_PACKAGES ROOT )
 atlas_add_root_dictionary( configLib _configDictSource
    ROOT_HEADERS helpers/GlobalConfig.h helpers/LinkDef.h
@@ -29,6 +29,7 @@ atlas_add_library( configLib
    )
 atlas_add_library( gbbTupleLib
    histMaker/*.cxx histMaker/*.h
+   histMaker/XbbScoreCutter/*.cxx histMaker/XbbScoreCutter/*.h
    helpers/*.cxx helpers/*.h
    ${_gbbDictSource}
    PUBLIC_HEADERS GbbTupleAna
