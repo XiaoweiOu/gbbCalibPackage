@@ -77,6 +77,9 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_doControlPlots = config->GetValue("doControlPlots",false); 
   std::cout<<"doControlPlots: "<<m_doControlPlots<<std::endl; 
 
+  m_doNFPlots = config->GetValue("doNFPlots",false); 
+  std::cout<<"doNFPlots: "<<m_doNFPlots<<std::endl; 
+
   m_doCalibSequence = config->GetValue("doCalibSequence",false);
   std::cout<<"doCalibSequence: "<<m_doCalibSequence<<std::endl;
 
@@ -403,6 +406,11 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
       for(unsigned int i_p=0; i_p<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ].size(); i_p++) std::cout<<m_fit_params[ (regions[i_reg]+"_"+systematics[i_sys]) ][i_p]<<std::endl;
     }
     }*/
+
+	if(m_doNFPlots){
+		MakeNFPlots();
+	}
+
 }
 
 
@@ -1398,6 +1406,19 @@ float ScaleFactorCalculator::GetFitScale(const TString sys, const TString region
     }
   }
   if (found) return m_fit_params[region+"_"+sys][i_p];
+  else return 0;
+}
+
+float ScaleFactorCalculator::GetFitError(const TString sys, const TString region, const TString flav) {
+  unsigned int i_p=0;
+  bool found=false;
+  for (; i_p < m_config->GetFlavourPairs().size(); i_p++) {
+    if (m_config->GetFlavourPairs()[i_p] == flav) {
+      found = true;
+      break;
+    }
+  }
+  if (found) return m_fit_errs[region+"_"+sys][i_p];
   else return 0;
 }
 
