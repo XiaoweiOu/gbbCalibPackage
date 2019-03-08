@@ -65,6 +65,7 @@ private:
   bool m_doMCStatsNP;
   bool m_doFitInFatJetPtBins;
   bool m_doControlPlots;
+  bool m_doNFPlots;
   bool m_doCalibSequence;
   int m_nSmoothingPasses;
   std::vector<TString> m_chans;
@@ -93,6 +94,7 @@ private:
   TH1D* GetRebinHistByRegionData(const TString var, const TString region);
   std::vector<TH1D*> GetRebinHistsByRegionMC(const TString var, const TString sys, const TString region, const unsigned int scaleType = 0, const unsigned int i_pseudo = 0);
   float GetFitScale(const TString sys, const TString region, const TString flav);
+  float GetFitError(const TString sys, const TString region, const TString flav);
   float GetPseudoFitScale(const TString region, const TString flav, const unsigned int i_pseudo);
   float GetPseudoDataFitScale(const TString region, const TString flav, const unsigned int i_pseudo);
 
@@ -127,6 +129,8 @@ private:
 	void MakeFatJetControlPlots(TString& var, bool applyFitCorrection, std::vector<TString>& systematics, std::vector<TString>& model_sys, bool doPrintByRegion=false, TString region="DEFAULT");
 
 	void MakeBTaggingRatePlots(std::vector<TString> &systematics, std::vector<TString> &model_sys);
+
+	void MakeNFPlots();
 
 	TString MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
 	TString PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists);
