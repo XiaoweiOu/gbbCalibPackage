@@ -1,6 +1,5 @@
 #include <histMaker/GbbTupleAna.h>
 #include <histMaker/TupleAna.h>
-#include <histMaker/XbbScoreCutter/XbbScoreCutter.h>
 
 #ifdef __CINT__
 
