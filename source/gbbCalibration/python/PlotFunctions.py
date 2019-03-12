@@ -92,13 +92,13 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
         else:
             DrawText(can,text_lines,.2,.7,.50,.92,textsize=35,totalentries=4)
     MakeLegend(can,0.7, 0.55, 0.92, 0.88,textsize=30,totalentries=4)
-    AutoFixAxes(can,ignoreErrors)
 
     if doLogx :
         can.SetLogx()
     if doLogy :
-        SetYaxisRanges(can,MinimumForLog(can),10);
         can.SetLogy()
+        #SetYaxisRanges(can,MinimumForLog(can),10);
+    AutoFixAxes(can,ignoreErrors)
     
     return
 
@@ -589,7 +589,7 @@ def SetupStyle() :
 ## To add a histogram to the top pad, and its ratio with a reference histogram to the bottom pad,
 ## do AddRatio(can,hist,ref_hist,'B') (the B is for binomial errors).
 ##
-def RatioCanvas(canvas_name,canvas_title,canw=500,canh=600,ratio_size_as_fraction=0.35,drawopt='pE1') :
+def RatioCanvas(canvas_name,canvas_title,canw=500,canh=600,ratio_size_as_fraction=0.35,drawopt='pE1',doLogy=False) :
     from ROOT import TCanvas,TPad
     c = TCanvas(canvas_name,canvas_title,canw,canh)
     c.cd()
@@ -599,6 +599,8 @@ def RatioCanvas(canvas_name,canvas_title,canw=500,canh=600,ratio_size_as_fractio
     top.SetRightMargin (0.05 )
     top.SetLeftMargin  (0.16 )
     top.SetFillColor(0)
+    if doLogy :
+        top.SetLogy()
     top.Draw(drawopt)
     tobject_collector.append(top)
 
@@ -677,7 +679,7 @@ def AddRatio(can,hist,ref_hist,divide='',drawopt='pE1') :
     ratioplot = hist.Clone()
     ratioplot.SetName(hist.GetName()+'_ratio')
     ratioplot.Divide(hist,ref_hist,1.,1.,divide)
-    AddHistogram(can.GetPrimitive('pad_top'),hist,drawopt)
+    #AddHistogram(can.GetPrimitive('pad_top'),hist,drawopt)
     AddHistogram(can.GetPrimitive('pad_bot'),ratioplot,drawopt)
     return
 
