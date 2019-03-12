@@ -16,6 +16,8 @@ ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRat
 
 ListOfVariables_r20p7 = [] 
 
+ListOfVariables_minimal = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','mjpt_PREFITUNTAG']
+
 #------------------ setup ---------------------------
 
 #SetupStyle()
@@ -26,6 +28,8 @@ Lumi = 36000.0; #in pb^-1
 parser = argparse.ArgumentParser(description='Make reweight histograms.')
 parser.add_argument('outfile', help="Name of output ROOT file")
 parser.add_argument('infiles', help="JSON file with paths for data and MC files. See README for format")
+parser.add_argument('--tiny', help="Store only the histograms needed to run the fit",
+                    action="store_true")
 args = parser.parse_args()
 
 # setting variables
@@ -43,17 +47,22 @@ ListOfWeightVariations = MyConfig.GetSystematics_WeightVar()
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfInclusiveFlavourPairs = [ 'LL' ]
 ListOfTJpt = MyConfig.GetTrkJetRegions()
+ListOfTJpt.push_back(TString("Incl"))
 isR20p7 = MyConfig.GetIsR20p7()
 
 # setting variables 
 
-ListOfVariables = ListOfVariables_general
-if isR20p7 :
-  print("--- R20p7 Sample ---")
-  ListOfVariables.extend(ListOfVariables_r20p7)
+if args.tiny:
+  ListOfVariables = ListOfVariables_minimal
 else:
-  print("--- R21 Sample ---")
-  ListOfVariables.extend(ListOfVariables_r21)
+  ListOfVariables = ListOfVariables_general
+  if isR20p7 :
+    print("--- R20p7 Sample ---")
+    ListOfVariables.extend(ListOfVariables_r20p7)
+  else:
+    print("--- R21 Sample ---")
+    ListOfVariables.extend(ListOfVariables_r21)
+
 
 print("List of Variables:")
 for var in ListOfVariables :
@@ -108,6 +117,7 @@ for histname in ListOfHists :
     if histname is 'CutFlow_Nom':
       histMC.SetName('CutFlow_MC')
     histMC.Write()
+    print("Wrote "+histname)
   else:
     print("Could not find "+histname+" in all input files!")
     if 'PREFITPOSTTAG' in histname:

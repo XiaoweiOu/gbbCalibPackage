@@ -35,6 +35,7 @@ public :
    Float_t         eve_mc_w;
    Float_t         eve_pu_w;
    vector<float>   *eve_pu_w_sys;
+   Float_t         eve_pu_density;
    Bool_t          eve_isMC;
    Int_t           eve_hasPV;
    Int_t           eve_isCleanEvent;
@@ -160,6 +161,7 @@ public :
    vector<float>   *trkjet_MV2c20;
    vector<float>   *trkjet_MVb;
    vector<int>     *trkjet_truth;
+   vector<int>     *trkjet_nTrks;
    vector<vector<float> > *trkjet_assocMuon_dR;
    vector<vector<int> > *trkjet_assocMuon_index;
    vector<int>     *trkjet_assocMuon_n;
@@ -197,6 +199,7 @@ public :
    TBranch        *b_eve_mc_w;   //!
    TBranch        *b_eve_pu_w;   //!
    TBranch        *b_eve_pu_w_sys;   //!
+   TBranch        *b_eve_pu_density;   //!
    TBranch        *b_eve_isMC;   //!
    TBranch        *b_eve_hasPV;   //!
    TBranch        *b_eve_isCleanEvent;   //!
@@ -322,6 +325,7 @@ public :
    TBranch        *b_trkjet_MV2c20;   //!
    TBranch        *b_trkjet_MVb;   //!
    TBranch        *b_trkjet_truth;   //!
+   TBranch        *b_trkjet_nTrks;   //!
    TBranch        *b_trkjet_assocMuon_dR;   //!
    TBranch        *b_trkjet_assocMuon_index;   //!
    TBranch        *b_trkjet_assocMuon_n;   //!
@@ -496,6 +500,7 @@ void TupleAna::Init(TTree *tree)
    trkjet_MV2c20 = 0;
    trkjet_MVb = 0;
    trkjet_truth = 0;
+   trkjet_nTrks = 0;
    trkjet_assocMuon_dR = 0;
    trkjet_assocMuon_index = 0;
    trkjet_assocMuon_n = 0;
@@ -538,6 +543,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_mc_w", &eve_mc_w, &b_eve_mc_w);
    fChain->SetBranchAddress("eve_pu_w", &eve_pu_w, &b_eve_pu_w);
    fChain->SetBranchAddress("eve_pu_w_sys", &eve_pu_w_sys, &b_eve_pu_w_sys);
+   fChain->SetBranchAddress("eve_pu_density", &eve_pu_density, &b_eve_pu_density);
    fChain->SetBranchAddress("eve_isMC", &eve_isMC, &b_eve_isMC);
    fChain->SetBranchAddress("eve_hasPV", &eve_hasPV, &b_eve_hasPV);
    fChain->SetBranchAddress("eve_isCleanEvent", &eve_isCleanEvent, &b_eve_isCleanEvent);
@@ -667,6 +673,7 @@ void TupleAna::Init(TTree *tree)
    if(fChain->GetFriend("FlavourTagging_Nominal")){ //temp fix for systematics: Get trackjet truth label from nominal friend tree
      fChain->GetFriend("FlavourTagging_Nominal")->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
    }else fChain->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
+   fChain->SetBranchAddress("trkjet_nTrks", &trkjet_nTrks, &b_trkjet_nTrks);
    fChain->SetBranchAddress("trkjet_assocMuon_dR", &trkjet_assocMuon_dR, &b_trkjet_assocMuon_dR);
    fChain->SetBranchAddress("trkjet_assocMuon_index", &trkjet_assocMuon_index, &b_trkjet_assocMuon_index);
    fChain->SetBranchAddress("trkjet_assocMuon_n", &trkjet_assocMuon_n, &b_trkjet_assocMuon_n);
