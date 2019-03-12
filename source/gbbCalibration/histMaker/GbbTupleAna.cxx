@@ -420,6 +420,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   m_HistSvc->FastFillTH1D("PUWeights",this->eve_pu_w,50,0.,5.,1.);
   m_HistSvc->FastFillTH1D("EventWeights",total_evt_weight,102,-1.,100.,1.);
+  m_HistSvc->FastFillTH1D("EventMu",this->eve_mu,80,0.,80.,1.);
+  if (!m_config->GetIsR20p7()) {
+    m_HistSvc->FastFillTH1D("PUDensity",this->eve_pu_density,80,0.,80.,1.);
+  }
 
   //double mc_jet_ratio=1.;
 
@@ -1124,11 +1128,12 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
   GbbCandidate gbbcand;
   gbbcand.fat_pt=0.;
   gbbcand.muojet_index=999;
+  gbbcand.muo_index=999;
   gbbcand.nonmuojet_index=999;
   gbbcand.fat_index=999;
 
 
-  unsigned int muonjet_index=999, nonmuonjet_index=999;
+  unsigned int muonjet_index=999, nonmuonjet_index=999, muon_index=999;
 
   for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
     
@@ -1172,6 +1177,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
 
         if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
           n_assoc_selmuon++;
+          if (muon_index==999) muon_index=this->trkjet_assocMuon_index->at(assocTJ_ind).at(j);
           if(this->muo_hasTruth->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))) gbbcand.hasTruthMuon=true;
           //TLorentzVector trkjet(this->trkjet_pt->at(assocTJ_ind),this->trkjet_eta->at(assocTJ_ind),this->trkjet_phi->at(assocTJ_ind),0);
           //TLorentzVector muon(this->muo_pt->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),this->muo_eta->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),this->muo_phi->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),0);
@@ -1221,6 +1227,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
       } else {
 	gbbcand.fat_pt=this->fat_pt->at(i_jet);
 	gbbcand.muojet_index=muonjet_index;
+        gbbcand.muo_index=muon_index;
 	gbbcand.nonmuojet_index=nonmuonjet_index;
 	gbbcand.fat_index=i_jet;
 	gbbcand.hasleading2trackjets=leading_2trackjets;
@@ -1332,7 +1339,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
   gbbcand.fat_index=999;
 
 
-  unsigned int muonjet_index=999, nonmuonjet_index=999;
+  unsigned int muonjet_index=999, nonmuonjet_index=999, muon_index=999;
 
   for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
     
@@ -1370,6 +1377,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
       for(int j=0; j<this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
 	      if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
 		      n_assoc_selmuon++;
+		      if (muon_index==999) muon_index=this->trkjet_assocMuon_index->at(assocTJ_ind).at(j);
 
 	      }
 	      
@@ -1410,6 +1418,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
     if(muonjet_index != 999 && nonmuonjet_index != 999 && this->fat_pt->at(i_jet)>gbbcand.fat_pt){ //get leading pt Gbb candidate
       gbbcand.fat_pt=this->fat_pt->at(i_jet);
       gbbcand.muojet_index=muonjet_index;
+      gbbcand.muo_index=muon_index;
       gbbcand.nonmuojet_index=nonmuonjet_index;
       gbbcand.fat_index=i_jet;
       gbbcand.hasleading2trackjets=leading_2trackjets;

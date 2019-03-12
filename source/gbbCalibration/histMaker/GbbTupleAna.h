@@ -24,6 +24,7 @@ struct GbbCandidate{
   
   unsigned int fat_index;
   unsigned int muojet_index;
+  unsigned int muo_index;
   unsigned int nonmuojet_index;
   float fat_pt;
   bool hasleading2trackjets;
