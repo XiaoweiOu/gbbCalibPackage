@@ -4,10 +4,6 @@
 #include "XbbScoreCutter.h"
 #include <algorithm> // use vector find
 
-XbbScoreCutter::XbbScoreCutter(const TString configString){
-  // read in the constants 
-}
-
 XbbScoreCutter::XbbScoreCutter(float f, int eff): f_(f),eff_(eff){
   // check for valid input
   if(! (std::find(validFs.begin(), validFs.end(), f) != validFs.end())) {

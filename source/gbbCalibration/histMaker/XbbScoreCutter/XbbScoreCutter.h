@@ -41,8 +41,7 @@ class XbbScoreCutter{
   float cutValue_;
   
   XbbScoreCutter() = delete;
-  // the config string is set in config file
-  XbbScoreCutter(const TString configString);
+  // construct cutter with f and eff as parameter
   XbbScoreCutter(float f, int eff);
   ~XbbScoreCutter();
  
