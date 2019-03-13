@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 outfilename = args.outfile
 pathData, ListOfMCPaths, ListOfInclusiveMCPaths, xsecFile = config.GetPathsFromJSON(args.infiles)
-inclusive = args.inc
+inclusive = int(args.inc)
 
 Lumi = 36000.0 #in pb^-1
 
