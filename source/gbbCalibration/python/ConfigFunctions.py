@@ -110,7 +110,7 @@ class HistHelper:
         file_curr = TFile(path,"READ")
         self.MapOfFiles[path] = file_curr
       if file_curr.IsZombie():
-        print("Cannot open file "+path)
+        print("Cannot open MC file "+path)
         return None
 
       channel = GetChannelNumber(path)
