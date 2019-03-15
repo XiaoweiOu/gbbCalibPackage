@@ -19,31 +19,31 @@ int main(int argc, const char* argv[] ){
 
   if(argc==1)
   {
-    
+
     configname="./configs/testconfig.cfg";
-    outputdir="./ScaleFactors_test"; 
+    outputdir="./ScaleFactors_test";
     std::cout<<"No arguments, run on test configuration!"<<std::endl;
-    
+
   }
   else if(argc==2)
   {
-    
+
     configname=argv[1];
-    outputdir="./ScaleFactors"; 
+    outputdir="./ScaleFactors";
 
   }
   else if(argc==3)
   {
-    
+
     configname=argv[1];
-    outputdir=argv[2]; 
+    outputdir=argv[2];
 
   }
 
   std::cout<<"Config File: " << configname << std::endl;
   std::cout<<"Output in: " << outputdir << std::endl << std::endl;
 
-  
+
   // Making output dirrectory
 
   DIR* dir = opendir(outputdir);
@@ -57,19 +57,22 @@ int main(int argc, const char* argv[] ){
   {
         // Directory does not exist.
 
-        TString outputsf = outputdir + "/SF/"; 
-        TString outputctrl = outputdir + "/ctrl_plots/"; 
-        TString outputctrlt = outputdir + "/ctrl_plots/toys/"; 
-        
+        TString outputsf = outputdir + "/SF/";
+        TString outputnf = outputdir + "/NF/";
+        TString outputctrl = outputdir + "/ctrl_plots/";
+        TString outputctrlt = outputdir + "/ctrl_plots/toys/";
+
         bool error = false;
         error = createdir(outputdir);
-        if (error) return 1;    
-        error = createdir(outputsf);     
-        if (error) return 1;    
-        error = createdir(outputctrl);     
-        if (error) return 1;    
-        error = createdir(outputctrlt);     
-        if (error) return 1;    
+        if (error) return 1;
+        error = createdir(outputsf);
+        if (error) return 1;
+        error = createdir(outputnf);
+        if (error) return 1;
+        error = createdir(outputctrl);
+        if (error) return 1;
+        error = createdir(outputctrlt);
+        if (error) return 1;
   }
   else
   {
@@ -77,7 +80,7 @@ int main(int argc, const char* argv[] ){
         std::cout << "Failed to check if dirrectory exists, exiting.." << std::endl;
         return 1;
   }
-  
+
   std::cout << "Starting SF Calculation... " << std::endl << std::endl;
   std::cout << "------------------------------------------------------" << std::endl << std::endl;
 
@@ -89,7 +92,7 @@ int main(int argc, const char* argv[] ){
 bool createdir(TString outputdir)
 {
 
-  std::cout << "Creating Output Dirrectory " << outputdir;  
+  std::cout << "Creating Output Dirrectory " << outputdir;
   const int dir_err = mkdir(outputdir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
   if (-1 == dir_err)
   {
