@@ -56,6 +56,13 @@ atlas_add_executable( run_calculateSF
    LINK_LIBRARIES ${ROOT_LIBRARIES} ScaleFactorCalcLib
    )
 
+ # add a text exe
+ atlas_add_executable( run_GbbTest
+   tests/run_tests.cxx
+   INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
+   LINK_LIBRARIES ${ROOT_LIBRARIES} gbbTupleLib
+   )
+
 atlas_install_python_modules( python/makeReweightHistos.py LINK_LIBRARIES configLib )
 #atlas_install_python_modules( python/*.py )
 atlas_install_data( data/* )

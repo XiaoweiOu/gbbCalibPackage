@@ -1,18 +1,24 @@
 
-#include "XbbScoreCutter.h"
+#include <histMaker/XbbScoreCutter/XbbScoreCutter.h>
 #include <iostream>
 
 #include <memory> // for unique pointer
 
-#include "gbbUtil.h"
+#include <histMaker/XbbScoreCutter/gbbUtil.h>
+#include <histMaker/XbbScoreCutter/gbbUtil.h>
 
-#include "BTagger.h"
+#include <histMaker/XbbScoreCutter/BTagger.h>
+
+
+
+#include "XbbScoreCutterTest.cxx"
 
 int main(){
 
-  BTagger bt("tagger=XbbScore|f=0.2|eff=60", true);
-  std::cout<< bt.xbbScoreCutter_->f_ << std::endl;
-  std::cout<< bt.xbbScoreCutter_->eff_ << std::endl;
+  run_XbbScoreCutterTests();
+  // BTagger bt("tagger=XbbScore|f=0.2|eff=60", true);
+  // std::cout<< bt.xbbScoreCutter_->f_ << std::endl;
+  // std::cout<< bt.xbbScoreCutter_->eff_ << std::endl;
 
   
   // std::unique_ptr<std::map<std::string,std::string>> mp
