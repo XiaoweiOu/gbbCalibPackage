@@ -18,7 +18,7 @@ class BTagger {
  public:
 
   
-  std::string configString_;
+  //std::string configString_;
   bool useVRTrkJets_;
   // tagger=XbbScore|f=0.2|eff=60
   std::map<std::string,std::string>* config_;
@@ -44,8 +44,11 @@ class BTagger {
     delete config_;
   }
 
+  std::string getTaggerType();
+  std::string getEff();
+
  private:
-  void readConfigString(std::string configString);
+  // void readConfigString(std::string configString);
 
   
   

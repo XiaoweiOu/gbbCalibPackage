@@ -6,6 +6,8 @@
 #include <histMaker/XbbScoreCutter/XbbScoreCutter.h>
 #include "TestUtil.h"
 #include <string>
+
+namespace xbbscorecuttertests{
 // list functions here
 void run_XbbScoreCutterTests();
 void TestConstructor();
@@ -14,8 +16,10 @@ void TestCut();
 
 
 void run_XbbScoreCutterTests(){
+  println("run XbbScoreCutterTests");
   TestConstructor();
   TestCut();
+  println("  ");
 }
 
 
@@ -72,3 +76,4 @@ void TestCut(){
 }
 
 
+}

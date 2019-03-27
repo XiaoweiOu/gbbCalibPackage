@@ -12,11 +12,13 @@
 
 
 #include "XbbScoreCutterTest.cxx"
+#include "BTaggerTests.cxx"
 
 int main(){
 
-  run_XbbScoreCutterTests();
+  xbbscorecuttertests::run_XbbScoreCutterTests();
 
+  btaggertests::run_BTaggerTests();
 
   
   // BTagger bt("tagger=XbbScore|f=0.2|eff=60", true);
