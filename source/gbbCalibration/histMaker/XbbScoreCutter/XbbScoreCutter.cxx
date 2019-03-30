@@ -46,13 +46,12 @@ float XbbScoreCutter::getCutValue(float f, int eff){
 // p_h = higgs
 int XbbScoreCutter::cut(float p_h, float p_qcd, float p_top) {
   
-  float taggerVar = -999.; // D in the formula
-
+  // D in the formula
   // calculate from the formula D given in the doc
-  taggerVar = std::log( p_h / ( (1 - f_)*p_qcd + f_ * p_top) );
+  float candidateValue = std::log( p_h / ( (1 - f_)*p_qcd + f_ * p_top) );
 
   // compare with cutValue and decided if it is btagged
-  if(taggerVar > cutValue_) {
+  if(candidateValue > cutValue_) {
     // Double-b-tagged
     return 1;
   } else {

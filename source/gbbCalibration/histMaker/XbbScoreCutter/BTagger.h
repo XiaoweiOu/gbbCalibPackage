@@ -7,6 +7,7 @@
 #define BTAGGER_H_
 
 #include "XbbScoreCutter.h"
+#include "XbbScoreHybridCutter.h"
 #include "MV2c10Cutter.h"
 // #include <memory> // for unique pointer
 #include <map>
@@ -21,11 +22,12 @@ class BTagger {
   //std::string configString_;
   bool useVRTrkJets_;
   // tagger=XbbScore|f=0.2|eff=60
-  std::map<std::string,std::string>* config_;
+  std::map<std::string,std::string> config_;
   
   // possible cutters
   XbbScoreCutter* xbbScoreCutter_;
   MV2c10Cutter* mV2c10Cutter_;
+  XbbScoreHybridCutter* xbbScoreHybridCutter_;
   
   
   BTagger() = delete;
@@ -41,15 +43,16 @@ class BTagger {
   ~BTagger(){
     delete xbbScoreCutter_;
     delete mV2c10Cutter_;
-    delete config_;
+    delete xbbScoreHybridCutter_;
+    // delete config_;
   }
 
   std::string getTaggerType();
   std::string getEff();
 
  private:
-  // void readConfigString(std::string configString);
-
+  void throwException();
+  
   
   
 };

@@ -9,7 +9,7 @@ namespace btaggertests{
   void TestConstructor();
   void TestConstructor2();
   void TestTag();
-
+  void TestSpecialInput();
 
 
 
@@ -19,6 +19,7 @@ namespace btaggertests{
     TestConstructor2();
     //TestCut();
     TestTag();
+    TestSpecialInput();
   }
 
   void TestConstructor(){
@@ -27,7 +28,7 @@ namespace btaggertests{
     // println(x.getTaggerType()); 
     assertTrue(x.getTaggerType() == "XbbScore");
     assertTrue(x.getEff() == "60");
-    assertTrue((*(x.config_))["f"] == "0.2");
+    assertTrue(x.config_["f"] == "0.2");
 
 
     // test invalid input
@@ -70,14 +71,12 @@ namespace btaggertests{
     assertTrue(y.getTaggerType() == "MV2c10");
     assertTrue(y.getEff() == "60");
 
-    // try{
-    //   BTagger("tagger=XbbScore|f=0.15|eff=60",false);//should fail
-    //   assertTrue(false); // the test fail print stack trace
-    // }catch( const std::invalid_argument& e ) {
-    //   println(e.what());
-    // }
+    BTagger z("  tagger = MV2c10 | eff = 60 ",false);
+    assertTrue(z.getTaggerType() == "MV2c10");
+    assertTrue(z.getEff() == "60");
 
-
+    
+    
     try{
       BTagger("tagger=badvalue|f=0.2|eff=60",false);//should fail
       assertTrue(false); // the test fail print stack trace
@@ -93,10 +92,21 @@ namespace btaggertests{
     }
 
     //to do test more mv2c10
+
     
-    println("text Constructor2 pass");
+    println("test Constructor2 pass");
   }
 
+
+  void TestSpecialInput(){
+    
+    BTagger z("tagger=MV2c10R20.7|eff=70",false);
+
+    assertTrue(z.getTaggerType() == "MV2c10R20.7");
+    assertTrue(z.mV2c10Cutter_->cutValue_ == float(0.6455));
+    
+    println("test special input pass");
+  }
 
   void TestTag(){
     BTagger x("tagger=XbbScore|f=0.2|eff=60",false);
