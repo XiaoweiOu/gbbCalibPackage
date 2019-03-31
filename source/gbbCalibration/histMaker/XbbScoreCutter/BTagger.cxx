@@ -11,7 +11,7 @@ BTagger::BTagger(std::string configString, bool useVRTrkJets):
   xbbScoreCutter_(nullptr), mV2c10Cutter_(nullptr),xbbScoreHybridCutter_(nullptr) {
 
   // parse the config string and populate the config_ map with | and =
-  // f=0.2|eff=60
+  // example: f=0.2|eff=60
   this->config_ = GbbUtil::splitWholeThenEach(configString,"|","=");
 
   // select tagger and constructs cutter according to config_ map
@@ -36,8 +36,9 @@ BTagger::BTagger(std::string configString, bool useVRTrkJets):
 
     float f = std::stof(config_["f"]);
     int eff = std::stoi(config_["eff"],nullptr);
-
-    if(eff != 60){
+    // only support these values
+    // std::cout << f << " " << eff << std::endl;
+    if( (f != float(0.2) && f != float(0)) || eff != 60){
       throwException();
     }
     

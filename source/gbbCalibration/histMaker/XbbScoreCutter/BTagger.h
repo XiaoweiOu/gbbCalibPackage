@@ -1,6 +1,25 @@
 
 /* this objects selects the correct tagger from config 
-   and preforms tagging
+   and preforms tagging.
+
+   example:
+   1. For XbbScore Tagger
+   The config string is tagger=XbbScore|f=<0.2>|eff=<60>
+   BTagger("tagger=XbbScore|f=0.2|eff=60", false);
+
+   For hybrid XbbScore ues: "tagger=XbbScoreHybrid|eff=60|f=0.2"
+   only eff=60 and f=0.2 or f=0 is supported
+
+   2. For MV2c10 Tagger
+   config String is : "tagger=MV2c10|eff=60"
+
+   3. For MV2c10R20.7
+   "tagger=MV2c10R20.7|eff=70"
+
+   4. TODO: not yet implemented
+   "tagger=<>|cutValue=<>"
+   
+   
 */
 
 #ifndef BTAGGER_H_

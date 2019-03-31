@@ -16,6 +16,7 @@ class GbbUtil {
 
   // chaining the first 2;
   // split with dilimiter1 of s; then split each element with delimiter2
+  // mainly used to get config settings
   static std::map<std::string,std::string> splitWholeThenEach
     (std::string s, std::string delimiter1, std::string delimiter2);
 

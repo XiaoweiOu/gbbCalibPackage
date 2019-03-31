@@ -8,6 +8,7 @@ namespace btaggertests{
   void run_BTaggerTests();
   void TestConstructor();
   void TestConstructor2();
+  void TestConstructor3();
   void TestTag();
   void TestSpecialInput();
 
@@ -17,6 +18,7 @@ namespace btaggertests{
     println("run BTaggerTests");
     TestConstructor();
     TestConstructor2();
+    TestConstructor3();
     //TestCut();
     TestTag();
     TestSpecialInput();
@@ -97,7 +99,24 @@ namespace btaggertests{
     println("test Constructor2 pass");
   }
 
+  void TestConstructor3(){
+    BTagger y("tagger=XbbScoreHybrid|eff=60|f=0.2",false);
+    assertTrue(y.getTaggerType() == "XbbScoreHybrid");
+    assertTrue(y.getEff() == "60");
 
+    BTagger z("tagger=XbbScoreHybrid|eff=60|f=0",false);
+    assertTrue(z.getTaggerType() == "XbbScoreHybrid");
+    assertTrue(z.getEff() == "60");
+
+
+    try{
+      BTagger("tagger=XbbScoreHybrid|eff=70|f=0.2",false);//should fail
+      assertTrue(false); // the test fail print stack trace
+    }catch( const std::invalid_argument& e ) {
+      //println(e.what());
+    }
+  }
+  
   void TestSpecialInput(){
     
     BTagger z("tagger=MV2c10R20.7|eff=70",false);
