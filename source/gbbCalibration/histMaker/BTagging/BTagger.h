@@ -31,7 +31,8 @@
 // #include <memory> // for unique pointer
 #include <map>
 #include <string>
-#include "../GbbTupleAna.h" // for gbbcandidate
+#include "../TupleAna.h" // for gbbdata, GbbTupleAna has circular definitions.
+#include "../GbbStructures.h"
 
 class BTagger {
 
@@ -57,7 +58,7 @@ class BTagger {
   BTagger(std::string configString, bool useVRTrkJets);
 
   // tag this gbb candidate and return number of b tagged
-  int tag(const GbbTupleAna& gbbtuple, const GbbCandidate& gbbcand);
+  int tag(const TupleAna& gbbtuple, const GbbCandidate& gbbcand);
 
   ~BTagger(){
     delete xbbScoreCutter_;

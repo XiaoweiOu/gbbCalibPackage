@@ -65,7 +65,7 @@ std::string BTagger::getEff(){
 // GbbTupleAna has all the data.
 // return 1 if tagged, 0 if not
 // todo: fix the return value for both taggers.
-int BTagger::tag(const GbbTupleAna& gbbtuple, const GbbCandidate& gbbcand){
+int BTagger::tag(const TupleAna& gbbtuple, const GbbCandidate& gbbcand){
   // match each cutter and cut
   if(this->getTaggerType() == "XbbScore"){
     // read xbbscore parameters, then use xbbcutter to determine

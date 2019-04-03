@@ -16,53 +16,10 @@
 #include "TEnv.h"
 #include "TRandom3.h"
 #include <map>
-// wesley add for xbb score 
-#include "BTagging/XbbScoreCutter.h"
+// wesley add for b tagging module 
+#include "BTagging/BTagger.h"
+#include "GbbStructures.h"
 #include <functional>
-
-struct GbbCandidate{
-  
-  unsigned int fat_index;
-  unsigned int muojet_index;
-  unsigned int muo_index;
-  unsigned int nonmuojet_index;
-  float fat_pt;
-  bool hasleading2trackjets;
-  bool hasTruthMuon;
-};
-
-struct trkjetSd0Info {
-  float maxSd0;
-  float maxSd0_dR;
-  float subSd0;
-  float thirdSd0;
-  float meanSd0_sd0;
-
-  float maxSd0_pt;
-  float subSd0_pt;
-  float thirdSd0_pt;
-  float meanSd0_pt;
-
-  float maxd0;
-  float subd0;
-  float thirdd0;
-  float meand0_sd0;
-
-  float maxd0_pt;
-  float subd0_pt;
-  float thirdd0_pt;
-  float meand0_pt;
-
-  float maxd0err;
-  float subd0err;
-  float thirdd0err;
-
-  float maxd0err_pt;
-  float subd0err_pt;
-  float thirdd0err_pt;
-
-  int nMean;
-};
 
 class GbbTupleAna : public TupleAna {
 
@@ -163,7 +120,7 @@ private:
   // wesley:
   // this for cutting the gbb candidate
   // in b-tagging step
-  XbbScoreCutter* m_xbbScoreCutter;
+  BTagger* m_bTagger;
   
   void Loop(const TString& sys);
   bool Processgbb(int i_evt);

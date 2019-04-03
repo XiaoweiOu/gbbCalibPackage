@@ -58,7 +58,7 @@ GbbTupleAna::~GbbTupleAna() {
   if(m_config) delete m_config;
 
   // wesley xbb
-  if(m_xbbScoreCutter) delete m_xbbScoreCutter;
+  if(m_bTagger) delete m_bTagger;
 }
 
 
@@ -216,7 +216,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_PostfitPtReweightingFile(""),
   m_postfit_reweight_hist(nullptr),
   // Wesley: Xbb score
-  m_xbbScoreCutter(new XbbScoreCutter(0.2,60)) // to do: change variable setting(f,eff)
+  m_bTagger(nullptr) // used to be xbbscore f=0.2 eff =60
 {
   TH1::AddDirectory(0);
 
@@ -226,6 +226,9 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   ReadConfig(configname);
   m_HistSvc=new HistogramService();
 
+  // use configstring for btagging
+  this->m_bTagger = new BTagger(this->m_BTagWP.Data(), this->m_useVRTrkJets);
+  
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
   TChain *fren = new TChain("FlavourTagging_Nominal");
@@ -714,14 +717,11 @@ bool GbbTupleAna::Processgbb(int i_evt){
     return false;
   }
   */
-  /*xbb score ---*/
+  /*bTagger ---*/
   // read xbbscore parameters, then use xbbcutter to determine
   // if this gbb candidate is b tagged.
-  float p_h = this->fat_XbbScoreHiggs->at(gbbcand.fat_index);
-  float p_qcd = this->fat_XbbScoreQCD->at(gbbcand.fat_index);
-  float p_top = this->fat_XbbScoreTop->at(gbbcand.fat_index);
-  int isTagged = this->m_xbbScoreCutter->cut(p_h,p_qcd,p_top);
-  /*xbb score ---*/
+  int isTagged = this->m_bTagger->tag(*this,gbbcand);
+  /*bTagger ---*/
 
   
   //at least 1 b-tag
