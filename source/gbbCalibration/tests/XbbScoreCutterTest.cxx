@@ -3,7 +3,7 @@
 
 
 
-#include <histMaker/XbbScoreCutter/XbbScoreCutter.h>
+#include <histMaker/BTagging/XbbScoreCutter.h>
 #include "TestUtil.h"
 #include <string>
 

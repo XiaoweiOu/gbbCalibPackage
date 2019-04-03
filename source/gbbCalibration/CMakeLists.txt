@@ -36,7 +36,7 @@ atlas_add_library( configLib
    )
 atlas_add_library( gbbTupleLib
    histMaker/*.cxx histMaker/*.h
-   histMaker/XbbScoreCutter/*.cxx histMaker/XbbScoreCutter/*.h
+   histMaker/BTagging/*.cxx histMaker/BTagging/*.h
    helpers/*.cxx helpers/*.h
    ${_gbbDictSource}
    PUBLIC_HEADERS GbbTupleAna

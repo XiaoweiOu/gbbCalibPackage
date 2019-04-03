@@ -1,4 +1,4 @@
-#include <histMaker/XbbScoreCutter/BTagger.h>
+#include <histMaker/BTagging/BTagger.h>
 #include "TestUtil.h"
 #include <string>
 

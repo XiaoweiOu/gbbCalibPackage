@@ -8,6 +8,7 @@
 // try
 #include <boost/stacktrace.hpp>
 #include <string>
+#include <iostream>
 
 void assertTrue(bool b){
 
@@ -20,7 +21,7 @@ void assertTrue(bool b){
   
 }
 
-void println(string s){
+void println(std::string s){
   std::cout<< s << std::endl;
 }
 

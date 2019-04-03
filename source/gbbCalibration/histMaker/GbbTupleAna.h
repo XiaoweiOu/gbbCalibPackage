@@ -17,7 +17,7 @@
 #include "TRandom3.h"
 #include <map>
 // wesley add for xbb score 
-#include "XbbScoreCutter/XbbScoreCutter.h"
+#include "BTagging/XbbScoreCutter.h"
 #include <functional>
 
 struct GbbCandidate{

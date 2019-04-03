@@ -1,18 +1,10 @@
 
-#include <histMaker/XbbScoreCutter/XbbScoreCutter.h>
-#include <iostream>
-
-#include <memory> // for unique pointer
-
-#include <histMaker/XbbScoreCutter/gbbUtil.h>
-#include <histMaker/XbbScoreCutter/gbbUtil.h>
-
-#include <histMaker/XbbScoreCutter/BTagger.h>
-
-
+#include "TestUtil.h"
 
 #include "XbbScoreCutterTest.cxx"
 #include "BTaggerTests.cxx"
+
+
 
 int main(){
 
