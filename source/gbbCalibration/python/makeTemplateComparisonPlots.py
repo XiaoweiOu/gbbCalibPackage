@@ -27,7 +27,7 @@ Lumi = 36000.0 #in pb^-1
 MyConfig = config.LoadGlobalConfig()
 histHelper = config.HistHelper(xsecFile)
 
-ListOfSystematics = [ ROOT.TString("Nom") ] #MyConfig.GetSystematics() 
+ListOfSystematics = [ ROOT.TString("Nom") ] #MyConfig.GetSystematics()
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfInclusiveFlavourPairs = [ 'LL' ]
 
@@ -35,12 +35,12 @@ ListOfVariables = [ 'meanSd0', 'maxSd0', 'subSd0', 'thirdSd0' ]
 #ListOfVariables = [ 'MV2c10' ]
 
 MapOfAxisLabels = { 'meanSd0' :'#LT s_{d0} #GT',
-                    'maxSd0'  :'Leading s_{d0}', 
+                    'maxSd0'  :'Leading s_{d0}',
                     'subSd0'  :'Sub-leading s_{d0}',
                     'thirdSd0':'Third-leading s_{d0}',
-                    #'MV2c10'  :'MV2c10 Score'    
+                    #'MV2c10'  :'MV2c10 Score'
                   }
-                    
+
 
 colors=[ROOT.kBlue+1,ROOT.kAzure-4,ROOT.kCyan+3,ROOT.kGreen-9,ROOT.kOrange]
 #colors = [ROOT.kBlue, ROOT.kBlack]
@@ -49,8 +49,8 @@ colors=[ROOT.kBlue+1,ROOT.kAzure-4,ROOT.kCyan+3,ROOT.kGreen-9,ROOT.kOrange]
 #loop over MC histograms
 for var in ListOfVariables :
   histsMJ = []
-  histsNMJ = [] 
-  
+  histsNMJ = []
+
   for flavour in ListOfFlavourPairs:
     ListOfPaths = ListOfMCPaths
     if flavour in ListOfInclusiveFlavourPairs:
@@ -71,7 +71,7 @@ for var in ListOfVariables :
           histsMJ.append(histMC)
       else:
         print("Could not find "+histname+" in all input files!")
-  
+
   #make Canvas
   canvMJ = ROOT.TCanvas("c_mu"+var,"",800,800);
   canvNMJ = ROOT.TCanvas("c_nonmu"+var,"",800,800);

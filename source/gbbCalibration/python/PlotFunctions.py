@@ -31,7 +31,7 @@ from TAxisFunctions import *
 
 ##
 ## This global list called "tobject_collector" collects TObjects (TH1, TGraph, TLegend, TLatex...)
-## that are created in these functions. It is a way of preventing these objects from going out of 
+## that are created in these functions. It is a way of preventing these objects from going out of
 ## scope (and thus being deleted) while requiring very little from the user.
 ##
 ## IMPORTANT NOTE! If you are using too much memory because of the proliferation of TObjects in this
@@ -58,7 +58,7 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
         stat = 'Preliminary'
     else:
         stat = 'Internal'
-            
+
     text_lines = []
     text_lines += [GetAtlasInternalText(stat)]
 
@@ -99,7 +99,7 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
         can.SetLogy()
         #SetYaxisRanges(can,MinimumForLog(can),10);
     AutoFixAxes(can,ignoreErrors)
-    
+
     return
 
 ##
@@ -142,7 +142,7 @@ def AddHistogram(can,hist,drawopt='pE1',inStack=False,markerSize=1) :
         can.cd()
         tmp.Draw(drawopt)
         return
-    
+
     tobject_collector.append(tmp)
     tmp.SetMarkerStyle(20)
     tmp.SetMarkerSize(markerSize)
@@ -173,7 +173,7 @@ def SetAxisLabels(can,xlabel,ylabel,yratiolabel='ratio') :
 def SetMarkerStyles(can,these_styles=[],these_sizes=[]) :
     if not these_styles :
         these_styles = [20 for i in xrange(30)]
-                        
+
     if not these_sizes :
         these_sizes = [1 for i in xrange(30)]
 
@@ -216,7 +216,7 @@ def SetFillStyles(marker_styles=[],marker_sizes=[]) :
 ##
 ## Set colors. A default color list is provided, though you can provide your own list.
 ## Do this *after all of the histograms* have been added to the canvas.
-## If you give this function a RatioCanvas, it will make histograms and their corresponding 
+## If you give this function a RatioCanvas, it will make histograms and their corresponding
 ## ratio histograms the same color.
 ##
 def SetColors(can,these_colors=[]) :
@@ -230,7 +230,7 @@ def SetColors(can,these_colors=[]) :
                         ,21,22,23,24,25,26,27,28,29,30
                         ,21,22,23,24,25,26,27,28,29,30
                         ]
-        
+
     the_primitives = can.GetListOfPrimitives()
     if can.GetPrimitive('pad_top') :
         the_primitives = can.GetPrimitive('pad_top').GetListOfPrimitives()
@@ -264,14 +264,14 @@ def SetColors(can,these_colors=[]) :
 ##
 ## Set line style when drawing with option hist. A default style list is provided, though you can provide your own list.
 ## Do this *after all of the histograms* have been added to the canvas.
-## If you give this function a RatioCanvas, it will make histograms and their corresponding 
+## If you give this function a RatioCanvas, it will make histograms and their corresponding
 ## ratio histograms the same style.
 ##
 
 def SetLineStyles(can,these_styles=[],width=2) :
     if not these_styles :
         these_styles = [1,9,7,3]
-        
+
     the_primitives = can.GetListOfPrimitives()
     if can.GetPrimitive('pad_top') :
         the_primitives = can.GetPrimitive('pad_top').GetListOfPrimitives()
@@ -316,7 +316,7 @@ def GetSqrtsText(sqrts=13) :
 
 def GetAtlasInternalText(status='Internal') :
     return '#font[72]{ATLAS} #font[42]{%s}'%(status)
-    
+
 ##
 ## Draw some additional text on your plot, in the form of a TLegend (easier to manage)
 ## The x and y coordinates are the fractional distances, with the origin at the bottom left.
@@ -415,7 +415,7 @@ def MakeLegend(can,x1=.8,y1=.8,x2=.9,y2=.9,textsize=18,ncolumns=1,totalentries=0
 
     #
     # Add empty entries to ensure a standard layout
-    #            
+    #
     for i in range(100) :
         if totalentries == 0 : break
         if total >= totalentries : break
@@ -435,7 +435,7 @@ def MakeLegend(can,x1=.8,y1=.8,x2=.9,y2=.9,textsize=18,ncolumns=1,totalentries=0
     return
 
 ##
-## Format the axes of your canvas or RatioCanvas, including axis labels, sizes, offsets. 
+## Format the axes of your canvas or RatioCanvas, including axis labels, sizes, offsets.
 ## Call this *after* one or more histograms have been added to the canvas.
 ##
 def FormatCanvasAxes(can
@@ -445,7 +445,7 @@ def FormatCanvasAxes(can
                      ,XLabelSize   = 22
                      ,XLabelOffset = 0.002
                      ,XLabelFont   = 43
-                     
+
                      ,YTitleSize   = 22
                      ,YTitleOffset = 1.75
                      ,YTitleFont   = 43
@@ -453,7 +453,7 @@ def FormatCanvasAxes(can
                      ,YLabelOffset = 0.006
                      ,YLabelFont   = 43
                      ,YNDiv = [10,5,0]
-                     
+
                      ,ZTitleSize   = 22
                      ,ZTitleOffset = 0.85
                      ,ZTitleFont   = 43
@@ -494,7 +494,7 @@ def FormatCanvasAxes(can
         i.GetXaxis().SetLabelFont  (XLabelFont  )
 
         i.GetXaxis().SetTickLength(0.02/float(can.GetHNDC()))
-        
+
         i.GetYaxis().SetTitleSize  (YTitleSize  )
         i.GetYaxis().SetTitleOffset(YTitleOffset)
         i.GetYaxis().SetTitleFont  (YTitleFont  )
@@ -574,7 +574,7 @@ def SetupStyle() :
     mystyle.SetLabelOffset(0.002,'y')
 
     # printing plots
-    
+
     gROOT.SetStyle("mystyle")
 
     return
@@ -613,7 +613,7 @@ def RatioCanvas(canvas_name,canvas_title,canw=500,canh=600,ratio_size_as_fractio
     bot.SetFillColor(0)
     bot.Draw(drawopt)
     tobject_collector.append(bot)
-    
+
     return c
 
 ##

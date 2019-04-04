@@ -121,9 +121,9 @@ class HistHelper:
       if not bookkeep_hist.GetBinContent(3):
         weight = 0;
         print "Warning: nevt in bookKeeping for tuple = 0, event weight set to 0 --- file: ",path
-      else: 
+      else:
         weight = self.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(3)
-      
+
 
       if not hist:
         hist = file_curr.Get(histname)

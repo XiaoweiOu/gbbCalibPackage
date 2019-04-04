@@ -17,7 +17,7 @@
 class FlavourFracCorrector {
 
 private:
-	
+
 	std::map<TString, std::shared_ptr<TH1D>> m_FitResults;
 	std::vector<float> m_muojet_pt_bins;
 	std::vector<float> m_nonmuojet_pt_bins;
@@ -41,7 +41,7 @@ public:
 
 	float GetCovarianceMatrixElement(int i, int j, TString ptlabel);
 	std::vector<float> GetCovarianceMatrix(TString ptlabel);
-	
+
 
 };
 

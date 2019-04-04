@@ -18,7 +18,7 @@
 #include <map>
 
 struct GbbCandidate{
-  
+
   unsigned int fat_index;
   unsigned int muojet_index;
   unsigned int muo_index;
@@ -77,10 +77,10 @@ public:
   void setDoEvenOddTemplates(bool value){m_doEvenOddTemplates=value; }
   void setReweightHisto(TString filename,TString trigger_passed);
 
-  void setDiTrkJetCategories(std::vector<TString>& vect){ m_ditrkjet_cat=vect; }   
+  void setDiTrkJetCategories(std::vector<TString>& vect){ m_ditrkjet_cat=vect; }
         void setPtBins(std::vector<float>& muojet_vect,std::vector<float>& nonmuojet_vect){ m_muojet_pt_bins=muojet_vect; m_nonmuojet_pt_bins=nonmuojet_vect; }
 
- 
+
 
 private:
   GlobalConfig *m_config;
@@ -109,51 +109,51 @@ private:
   bool m_doJetPtReweighting;
   TString m_JetPtReweightFile;
   TString m_JetPtReweightFileInclusive;
-  
+
   bool m_isMC;
   bool m_isNominal;
   TString m_SysVarName;
   TString m_GeneratorName;
   TString m_FilterType;
-    
+
   float m_SumWeightTuple;
   int m_nevtTuple;
-  
+
   std::map<TString,std::shared_ptr<TH2D>> m_reweightHistos;
   bool m_doEvenOddTemplates;
 
-  bool m_doFlavFracCorrection; 
-  
+  bool m_doFlavFracCorrection;
+
   TString m_FlavFracCorrectorFile;
-  FlavourFracCorrector* m_FlavFracCorrector; 
-  
+  FlavourFracCorrector* m_FlavFracCorrector;
+
   bool m_doTrackSmearing;
   bool m_doInclusiveGbb;
   bool m_doApplyBTaggingSF;
-  
+
   bool m_doSd0Systematics;
-  
+
   bool m_doMergeDiTrkjetCat;
   bool m_useVRTrkJets;
-  
+
   std::vector<TString> m_ditrkjet_cat;
   std::vector<TString> m_trkjet_cat;
   std::vector<float> m_muojet_pt_bins;
   std::vector<float> m_nonmuojet_pt_bins;
-  
+
   std::shared_ptr<TRandom3> m_random;
   bool m_doRandomSplitting;
   bool m_doFillMujet;
 
   std::vector<float> m_fatjet_pt_bins;
-  
+
   bool m_doPostfitPtReweighting;
   TString m_PostfitPtReweightingFile;
   TH1D* m_postfit_reweight_hist;
 
   void Loop(const TString& sys);
   bool Processgbb(int i_evt);
-  
+
   void GetFilterType(TString url);
   bool passR4CaloJetCuts(unsigned int i_jet);
   bool passR10CaloJetCuts(unsigned int i_jet);
@@ -168,7 +168,7 @@ private:
   unsigned int getLeadingObjIndex(std::vector<float> *quantity);
   unsigned int getNthLeadingObjIndex(unsigned int n, std::vector<float> *quantity);
   int getAssocObjIndex(std::vector<int>* part_ind, int assoc_index);
-  
+
   bool isCleanEvt(const float total_evt_weight);
   bool hasBadJet();
   bool passMuonSelection(unsigned int i_muon);
@@ -188,37 +188,37 @@ private:
 
   float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
   float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
-  
+
   void FillReweightInfo(int i_trig_jet, float event_weight,TString nametag="");
   void FillFatReweightInfo(float trigfat_pt,float trigfat_eta, float event_weight,TString nametag="");
 
   void FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag="");
   void FillTriggerTurnOnHistograms(int i_trigjet, float event_weight);
-  
-  
+
+
   void FillTrackJetProperties(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillFatJetProperties(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, float event_weight,TString nametag="");
   // Helper function for FillTemplates
   void FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc);
-  
+
   bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
-  
+
   bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
         trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
-  
+
   float getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
   float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
-  
+
   void getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down);
-  void getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_down);                         
-  
+  void getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_down);
+
   void getSystematicsFlags(GbbCandidate *, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMu);
 
   std::vector<TString> SplitString(TString str, char delim);
   std::vector<float> SplitStringD(TString str, char delim);
-  
+
   //bitstring cutflow (based on CxAODReader_VHbb)
   void updateFlag(unsigned long int &flag, const unsigned int cutPosition, const bool passCut);
   bool passSpecificCuts(const unsigned long int flag, const std::vector<unsigned int> &cuts);
@@ -230,9 +230,9 @@ private:
 };
 
 namespace GbbCuts {
-  
+
   enum Cuts {
-    
+
     AllNtup=0,
     EventCleaning,
     TriggerJet,
@@ -244,7 +244,7 @@ namespace GbbCuts {
     MuNonMuAnti2Btags,
     MuNonMuUntagged
   };
-  
+
 }
 
 

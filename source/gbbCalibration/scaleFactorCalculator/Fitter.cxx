@@ -45,7 +45,7 @@ void Fitter::AddParameter(TString name,double val, double err, double low, doubl
 }
 
 void Fitter::AddMCStatsNuisanceParameters(TString channel,double step_factor,double low_factor, double high_factor){
-  
+
   std::vector<double> par, par_err;
   FitData *fitdata=(FitData*)m_Minuit->GetObjectFit();
 
@@ -60,7 +60,7 @@ void Fitter::AddMCStatsNuisanceParameters(TString channel,double step_factor,dou
 }
 
 void Fitter::ClearParameters(){
-  
+
   m_params_names.clear();
   m_params_in.clear();
   m_params_stepsize.clear();
@@ -74,9 +74,9 @@ void Fitter::ClearParameters(){
 void Fitter::Initialize(bool doRandom, bool doRandomTemplate){
   //m_Minuit->SetPrintLevel(-1); //quiet mode
   m_Minuit->SetErrorDef(0.5); //1-sigma for log-likelihood
-  
+
   m_Minuit->Command("CLEAR");
-  
+
   if(!m_doMCStatsNP){
     if(doRandom)m_Minuit->SetFCN(&fcn_rndm); //use likelihood with sampled data for error estimates
     else if(doRandomTemplate) m_Minuit->SetFCN(&fcn_rndm_template);
@@ -85,14 +85,14 @@ void Fitter::Initialize(bool doRandom, bool doRandomTemplate){
     if(doRandom) m_Minuit->SetFCN(&fcn_rndm_withNP);
     else m_Minuit->SetFCN(&fcn_withNP);
   }
-  
-  
+
+
   //set parameters minuit
   for(unsigned int i=0; i<m_params_names.size(); i++){
     //if(i==0) std::cout<<m_params_names[0]<<" is "<<m_params_in[0]<<std::endl;
     m_Minuit->DefineParameter(i,m_params_names[i].Data(),m_params_in[i],m_params_stepsize[i],m_params_low[i],m_params_high[i]);
     if(m_params_fixed[i])  m_Minuit->FixParameter(i);
-    
+
   }
 }
 
@@ -107,7 +107,7 @@ void Fitter::fit(){
 void Fitter::fitMinos(){
 
   m_Minuit->Migrad();
-  m_Minuit->Command("MINOS");  
+  m_Minuit->Command("MINOS");
 }
 
 void Fitter::fcn(int &npar, double* gin, double &f, double *par, int iflag){
@@ -121,7 +121,7 @@ void Fitter::fcn_rndm(int &npar, double* gin, double &f, double *par, int iflag)
 }
 
 void Fitter::fcn_rndm_withNP(int &npar, double* gin, double &f, double *par, int iflag){
-  
+
   FitData *fitdata=(FitData*)m_Minuit->GetObjectFit();
   f=fitdata->NegLogLikelihoodRndmDataWithNP(par);
 
@@ -140,46 +140,46 @@ void Fitter::fcn_rndm_template(int &npar, double* gin, double &f, double *par, i
 void Fitter::PrintParameters(TString err_mode){
 
   double par_val, par_err, par_err_up, par_err_down, gcc;
-  
+
   std::cout<<"=============================="<<std::endl;
   std::cout<<"| Parameters:"<<std::endl;
   std::cout<<"|"<<std::endl;
-  
+
   for(unsigned int i=0; i<m_params_names.size(); i++){
-    
-    if(m_params_names[i].Contains("NP")) continue; //Don't print for NP                                                                                                                                                               
-    
+
+    if(m_params_names[i].Contains("NP")) continue; //Don't print for NP
+
 
     this->GetParameterSimple(i,par_val,par_err);
-    
+
     if(err_mode.EqualTo("Sampling")){
       this->GetParErrorSampling(i,par_val,par_err);
       std::cout<<"| ["<<i<<"]: "<<m_params_names[i]<<" "<<par_val<<"+-"<<par_err<<std::endl;
     }else if(err_mode.EqualTo("Minos")){
       this->GetParMinosErrors(i,par_err_up,par_err_down,par_err,gcc);
       std::cout<<"| ["<<i<<"]: "<<m_params_names[i]<<" "<<par_val<<" + "<<par_err_up<<" - "<<par_err_down<<" err: "<<par_err<<std::endl;
-      
+
     }else std::cout<<"| ["<<i<<"]: "<<m_params_names[i]<<" "<<par_val<<"+-"<<par_err<<std::endl;
   }
-  
+
   std::cout<<"=============================="<<std::endl;
-  
-  
+
+
 }
 
 void Fitter::PrintFlavourFractions(TString& chan, TString err_mode){
   double par_val, par_err, par_err_up, par_err_down, gcc;
-  
+
   FitData *fitdata=(FitData*)m_Minuit->GetObjectFit();
-  
+
   double flav_frac=0., sum_flav_frac=0., flav_norm, total_mc_norm=0;
-  
+
   std::cout<<"=============================="<<std::endl;
   std::cout<<"| Flavour Fractions:"<<std::endl;
   std::cout<<"|"<<std::endl;
-  
+
   std::cout<<"| before fit :"<<std::endl;
-  
+
   for(unsigned int i=0; i<m_params_names.size(); i++){
 
     if(m_params_names[i].Contains("NP")) continue; //Don't print for NP
@@ -187,7 +187,7 @@ void Fitter::PrintFlavourFractions(TString& chan, TString err_mode){
     if(!err_mode.EqualTo("Sampling")) this->GetParameterSimple(i,par_val,par_err);
     else this->GetParErrorSampling(i,par_val,par_err);
 
-    flav_frac=fitdata->GetFlavourFraction(chan,i);	      
+    flav_frac=fitdata->GetFlavourFraction(chan,i);
     flav_norm=fitdata->GetFlavourNorm(chan,i);
 
     std::cout<<"| [frac "<<i<<"]: "<<m_params_names[i]<<" "<<flav_frac<<std::endl;
@@ -206,7 +206,7 @@ void Fitter::PrintFlavourFractions(TString& chan, TString err_mode){
 
   for(unsigned int i=0; i<m_params_names.size(); i++){
 
-    if(m_params_names[i].Contains("NP")) continue; //Don't print for NP                                                                                                                                                               
+    if(m_params_names[i].Contains("NP")) continue; //Don't print for NP
 
     flav_frac=fitdata->GetFlavourFraction(chan,i);
     flav_norm=fitdata->GetFlavourNorm(chan,i);
@@ -222,7 +222,7 @@ void Fitter::PrintFlavourFractions(TString& chan, TString err_mode){
       this->GetParMinosErrors(i,par_err_up,par_err_down,par_err,gcc);
       std::cout<<"| [ frac "<<i<<"]: "<<m_params_names[i]<<" "<<par_val*flav_frac<<" + "<<par_err_up*flav_frac<<" - "<<par_err_down*flav_frac<<" err: "<<par_err*flav_frac<<std::endl;
 
-    }else if(err_mode.EqualTo("Simple")){ 
+    }else if(err_mode.EqualTo("Simple")){
       this->GetParameterSimple(i,par_val,par_err);
       std::cout<<"| [frac "<<i<<"]: "<<m_params_names[i]<<" "<<par_val*flav_frac<<"+-"<<par_err*flav_frac<<std::endl;
     }
@@ -247,11 +247,11 @@ void Fitter::CalculateResultSampling(int N){
 
 
   std::vector<std::shared_ptr<TH1D>> histos;
-	
+
   for(unsigned int i_par=0; i_par<m_params_names.size(); i_par++) histos.push_back(std::shared_ptr<TH1D>(new TH1D(m_params_names[i_par].Data(),"",1000,0.,10.)));
-	
+
   double par_val=0, par_err=0;
-	
+
   for(int i=0; i<N; i++){
     //std::cout<<"Fit "<<i<<std::endl;
 
@@ -268,8 +268,8 @@ void Fitter::CalculateResultSampling(int N){
     }
   }
 
-  for(unsigned int i_par=0; i_par<m_params_names.size(); i_par++){ 
-		
+  for(unsigned int i_par=0; i_par<m_params_names.size(); i_par++){
+
     TString name="BootStrapHisto_"+m_params_names[i_par]+".root";
     histos[i_par].get()->SaveAs(name.Data());
 
@@ -280,13 +280,13 @@ void Fitter::CalculateResultSampling(int N){
 
 
 void Fitter::GetPseudoTemplateFitResult(std::vector<std::vector<double>>& pseudo_params, int N_fits){
-  m_Minuit->SetPrintLevel(-1); //quiet mode 
+  m_Minuit->SetPrintLevel(-1); //quiet mode
 
   for(int i=0; i<N_fits; i++){
     if(!(i%250)) std::cout<<"Pseudo Templates Fit "<<i<<std::endl;
 
     FitData *fitdata=(FitData*)m_Minuit->GetObjectFit();
-    fitdata->MakeBootStrapTemplates();   
+    fitdata->MakeBootStrapTemplates();
     this->Initialize(false,true);
     this->fit();
 
@@ -297,13 +297,13 @@ void Fitter::GetPseudoTemplateFitResult(std::vector<std::vector<double>>& pseudo
 }
 
 void Fitter::GetPseudoDataFitResult(std::vector<std::vector<double>>& pseudo_params, int N_fits){
-  m_Minuit->SetPrintLevel(-1); //quiet mode 
+  m_Minuit->SetPrintLevel(-1); //quiet mode
 
   for(int i=0; i<N_fits; i++){
     if(!(i%250)) std::cout<<"PseudoData Fit "<<i<<std::endl;
 
     FitData *fitdata=(FitData*)m_Minuit->GetObjectFit();
-    fitdata->MakeBootStrapData();   
+    fitdata->MakeBootStrapData();
     this->Initialize(true,false);
     this->fit();
 
@@ -341,7 +341,7 @@ void Fitter::MakeOutputHistFile(TFile *outfile, TString histname_stub, TString e
 
   for(unsigned int i=0; i<m_params_names.size(); i++){
 
-    if(m_params_names[i].Contains("NP")) continue; //Don't print for NP                                                                                                                                                               
+    if(m_params_names[i].Contains("NP")) continue; //Don't print for NP
 
     if(err_mode.EqualTo("Sampling")){
       this->GetParErrorSampling(i,par_val,par_err);
@@ -401,7 +401,7 @@ void Fitter::MakeOutputHistFile(TFile *outfile, TString histname_stub, TString e
     hist_cov_mat->Fill(i,cov_mat[i]);
 
   }
-	
+
   out->cd();
   hist_cov_mat->Write();
 
@@ -430,7 +430,7 @@ double Fitter::getTotalFitError(){
 
 
   TMatrixD matrix(n_par,n_par,cov_mat);
-  
+
   TMatrixDEigen eigen_matrix(matrix);
 
   TMatrixD diag_matrix=eigen_matrix.GetEigenValues();
@@ -467,7 +467,7 @@ std::vector<double> Fitter::FitParameters(){
     params.push_back(val);
 
   }
-  
+
   return params;
 }
 
