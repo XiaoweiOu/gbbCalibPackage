@@ -216,7 +216,12 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_HistSvc=new HistogramService();
 
   // use configstring for btagging
-  this->m_bTagger = new BTagger(this->m_BTagWP.Data(), this->m_useVRTrkJets);
+  try {
+    this->m_bTagger = new BTagger(this->m_BTagWP.Data(), this->m_useVRTrkJets);
+  } catch (std::exception& e){
+    // if the config string is bad, abort
+    std::cerr << "exception: " << e.what() << std::endl;
+  }
   
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
