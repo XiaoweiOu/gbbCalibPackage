@@ -134,9 +134,7 @@ public :
    vector<float>   *fat_XbbScoreHiggs;
    vector<float>   *fat_XbbScoreQCD;
    vector<float>   *fat_XbbScoreTop;
-   vector<int>     *fat_trkjet_isGbbJet;
    vector<vector<int> > *fat_assocTrkjet_ind;
-   vector<vector<int> > *fat_trkjet_assocTrkjetDR_ind;
    vector<float>   *muo_pt;
    vector<float>   *muo_phi;
    vector<float>   *muo_eta;
@@ -298,9 +296,7 @@ public :
    TBranch        *b_fat_XbbScoreHiggs;   //!
    TBranch        *b_fat_XbbScoreQCD;   //!
    TBranch        *b_fat_XbbScoreTop;   //!
-   TBranch        *b_fat_trkjet_isGbbJet;   //!
    TBranch        *b_fat_assocTrkjet_ind;   //!
-   TBranch        *b_fat_trkjet_assocTrkjetDR_ind;   //!
    TBranch        *b_muo_pt;   //!
    TBranch        *b_muo_phi;   //!
    TBranch        *b_muo_eta;   //!
@@ -473,9 +469,7 @@ void TupleAna::Init(TTree *tree)
    fat_XbbScoreHiggs = 0;
    fat_XbbScoreQCD = 0;
    fat_XbbScoreTop = 0;
-   fat_trkjet_isGbbJet = 0;
    fat_assocTrkjet_ind = 0;
-   fat_trkjet_assocTrkjetDR_ind = 0;
    muo_pt = 0;
    muo_phi = 0;
    muo_eta = 0;
@@ -644,9 +638,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("fat_XbbScoreHiggs", &fat_XbbScoreHiggs, &b_fat_XbbScoreHiggs);
    fChain->SetBranchAddress("fat_XbbScoreQCD", &fat_XbbScoreQCD, &b_fat_XbbScoreQCD);
    fChain->SetBranchAddress("fat_XbbScoreTop", &fat_XbbScoreTop, &b_fat_XbbScoreTop);
-   fChain->SetBranchAddress("fat_trkjet_isGbbJet", &fat_trkjet_isGbbJet, &b_fat_trkjet_isGbbJet);
    fChain->SetBranchAddress("fat_assocTrkjet_ind", &fat_assocTrkjet_ind, &b_fat_assocTrkjet_ind);
-   fChain->SetBranchAddress("fat_trkjet_assocTrkjetDR_ind", &fat_trkjet_assocTrkjetDR_ind, &b_fat_trkjet_assocTrkjetDR_ind);
    fChain->SetBranchAddress("muo_pt", &muo_pt, &b_muo_pt);
    fChain->SetBranchAddress("muo_phi", &muo_phi, &b_muo_phi);
    fChain->SetBranchAddress("muo_eta", &muo_eta, &b_muo_eta);

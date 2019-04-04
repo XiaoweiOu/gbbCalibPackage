@@ -91,7 +91,7 @@ def FixYaxisRanges(can) :
 def SetYaxisRanges(can,ymin,ymax) :
     if can.GetPrimitive('pad_top') :
         SetYaxisRanges(can.GetPrimitive('pad_top'),ymin,ymax)
-    from ROOT import TGraph,TH1
+    from ROOT import TGraph,TH1,THStack
     yaxis = 0
     for i in can.GetListOfPrimitives() :
         if issubclass(type(i),TGraph) :
@@ -99,6 +99,9 @@ def SetYaxisRanges(can,ymin,ymax) :
             break
         if issubclass(type(i),TH1) :
             yaxis = i.GetYaxis()
+            break
+        if issubclass(type(i),THStack) :
+            yaxis = i.GetHistogram().GetYaxis()
             break
     if not yaxis :
         print 'Warning: SetYaxisRange had no effect. Check that your canvas has plots in it.'
@@ -114,7 +117,7 @@ def SetYaxisRanges(can,ymin,ymax) :
 def SetYaxisRangesRatio(can,ymin,ymax) :
     if can.GetPrimitive('pad_bot') :
         SetYaxisRanges(can.GetPrimitive('pad_bot'),ymin,ymax)
-    from ROOT import TGraph,TH1
+    from ROOT import TGraph,TH1,THStack
     yaxis = 0
     for i in can.GetListOfPrimitives() :
         if issubclass(type(i),TGraph) :
@@ -122,6 +125,9 @@ def SetYaxisRangesRatio(can,ymin,ymax) :
             break
         if issubclass(type(i),TH1) :
             yaxis = i.GetYaxis()
+            break
+        if issubclass(type(i),THStack) :
+            yaxis = i.GetHistogram().GetYaxis()
             break
     if not yaxis :
         print 'Warning: SetYaxisRange had no effect. Check that your canvas has plots in it.'
@@ -219,7 +225,7 @@ def FixXaxisRanges(can) :
 ## Set the x-axis ranges of a canvas
 ##
 def SetXaxisRanges(can,xmin,xmax) :
-    from ROOT import TGraph,TH1
+    from ROOT import TGraph,TH1,THStack
     xaxis = 0
     for i in can.GetListOfPrimitives() :
         if issubclass(type(i),TGraph) :
@@ -227,6 +233,9 @@ def SetXaxisRanges(can,xmin,xmax) :
             break
         if issubclass(type(i),TH1) :
             xaxis = i.GetXaxis()
+            break
+        if issubclass(type(i),THStack) :
+            xaxis = i.GetHistogram().GetXaxis()
             break
     if not xaxis :
         print 'Warning: SetXaxisRange had no effect. Check that your canvas has plots in it.'
@@ -241,7 +250,7 @@ def SetXaxisRanges(can,xmin,xmax) :
 ## If you specify "check_all=True", returns the maximal x-range of all the plots in the canvas
 ##
 def GetXaxisRanges(can,check_all=False) :
-    from ROOT import TGraph,TH1
+    from ROOT import TGraph,TH1,THStack
     xmin = 999999999
     xmax = -999999999
     for i in can.GetListOfPrimitives() :
@@ -253,6 +262,12 @@ def GetXaxisRanges(can,check_all=False) :
             xmax = max(xmax,xaxis.GetXmax())
         if issubclass(type(i),TH1) :
             xaxis = i.GetXaxis()
+            if not check_all :
+                return xaxis.GetXmin(),xaxis.GetXmax()
+            xmin = min(xmin,xaxis.GetXmin())
+            xmax = max(xmax,xaxis.GetXmax())
+        if issubclass(type(i),THStack) :
+            xaxis = i.GetHistogram().GetXaxis()
             if not check_all :
                 return xaxis.GetXmin(),xaxis.GetXmax()
             xmin = min(xmin,xaxis.GetXmin())

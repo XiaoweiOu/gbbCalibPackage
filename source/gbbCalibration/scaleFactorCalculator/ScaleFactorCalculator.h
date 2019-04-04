@@ -75,18 +75,12 @@ private:
   std::vector<float> m_fitpar_high;
   int m_nPseudoExps;
   TString m_pext;
-  TString m_xlabel;
-  TString m_ylabel;
   TString m_plot_label;
   TString m_sub_label;
   TString m_subsub_label;
   float m_rebinStatThr;
 
   std::map<TString, TH1D* > m_HistMap;
-  std::map<TString, std::vector<double> > m_FitParamsMap;
-  std::map<TString, std::vector<double> > m_CovMatMap;
-  std::map<TString, std::vector<double> > m_PseudoFitParamsMap;
-  std::map<TString, std::vector<double> > m_PseudoFitParamsMapData;
 
   TH1D* GetRebinHistData(const TString var);
   TH1D* GetRebinHistMC(const TString var, const TString sys, const TString region, const TString flav, const unsigned int scaleType = 0, const unsigned int i_pseudo = 0);

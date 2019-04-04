@@ -522,7 +522,7 @@ def FormatCanvasAxes(can
 ## Setup general style.
 ##
 def SetupStyle() :
-    from ROOT import gROOT,TStyle
+    from ROOT import gROOT,TStyle,TColor
     mystyle = TStyle("mystyle","mystyle")
     mystyle.SetStatColor(0)
     mystyle.SetTitleColor(0)
@@ -548,7 +548,7 @@ def SetupStyle() :
     mystyle.SetPadTickY(1)
 
     mystyle.SetPadTopMargin(0.05)
-    mystyle.SetPadRightMargin(0.05)
+    mystyle.SetPadRightMargin(0.1)
     mystyle.SetPadBottomMargin(0.11)
     mystyle.SetPadLeftMargin(0.16)
 

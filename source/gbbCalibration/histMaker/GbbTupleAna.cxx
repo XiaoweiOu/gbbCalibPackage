@@ -146,14 +146,8 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_FlavFracCorrectorFile = config->GetValue("FlavFracCorrectorFile","./data/160714_FitResults_allsys.root");
   std::cout<<"FlavFracCorrectorFile: "<<m_FlavFracCorrectorFile<<std::endl;
 
-  m_doMergeDiTrkjetCat=config->GetValue("doMergeDiTrkjetCat",true);
-  std::cout<<"m_doMergeDiTrkjetCat: "<< m_doMergeDiTrkjetCat<<std::endl;
-
   m_doEvenOddTemplates=config->GetValue("doEvenOddTemplates",false);
   std::cout<<"m_doEvemOddTemplates: "<< m_doEvenOddTemplates<<std::endl;
-
-  m_trkjet_cat={"B","C","L","other"};
-  m_ditrkjet_cat={"BB","BC","BL","CB","CC","CL","LB","LC","LL","other"};
 
   m_doRandomSplitting=config->GetValue("doRandomSplitting",false);
   std::cout<<"m_doRandomSplitting: "<< m_doRandomSplitting<<std::endl;
@@ -199,12 +193,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_doInclusiveGbb(false),
   m_doApplyBTaggingSF(false),
   m_doSd0Systematics(false),
-  m_doMergeDiTrkjetCat(false),
   m_useVRTrkJets(true),
-  //m_ditrkjet_cat(),
-  //m_trkjet_cat(),
-  //m_muojet_pt_bins(),
-  //m_nonmuojet_pt_bins(),
   //m_random(),
   m_doRandomSplitting(false),
   m_doFillMujet(false),
@@ -962,9 +951,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
     // SF calculation needs mjpt_PREFITUNTAG so fill this even if the rest of the track-jet
     // properties aren't asked for
     if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES)) {
-      m_HistSvc->FastFillTH1D( makeMuJetPlotName(gbbcand,"mjpt_PREFITUNTAG"),
+      m_HistSvc->FastFillTH1D( makeMuJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
        ";muon-jet p_{T} [GeV];Events/2 GeV;",
-       this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
+       this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
     }
 
   }
