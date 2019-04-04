@@ -1,4 +1,4 @@
-// 
+//
 // created October 2006, Eckhard von Toerne
 
 #include <string>
@@ -28,12 +28,12 @@ HistogramService::HistogramService() : fCurrentDir("")
 }
 
 HistogramService::~HistogramService()
-{ 
+{
    map<string, TObject* >::iterator it;
-   for (it = fMegaList.begin();it != fMegaList.end(); it++){ 
+   for (it = fMegaList.begin();it != fMegaList.end(); it++){
       delete it->second;
    }
-   fMegaList.clear(); 
+   fMegaList.clear();
 }
 
 void HistogramService::FastFillTH1D(TString tkey, TString title, double x, int nbin, double xmin, double xmax, double weight)
@@ -58,8 +58,8 @@ void HistogramService::FastFillTH2D(TString tkey, TString title, double x, doubl
    string dir = key.substr(0,key.find_last_of("/")+1);
    key = fCurrentDir + "/" + key;
    if (fMegaList[key]==0){  // book histogram
-      fMegaList[key] = new TH2D(hist.c_str(), title, 
-                                nbinx, xmin, xmax, 
+      fMegaList[key] = new TH2D(hist.c_str(), title,
+                                nbinx, xmin, xmax,
                                 nbiny, ymin, ymax);
       fDirMap[key] = fCurrentDir + "/" + dir;
       ((TH2D*)fMegaList[key])->Sumw2();
@@ -68,15 +68,15 @@ void HistogramService::FastFillTH2D(TString tkey, TString title, double x, doubl
 }
 
 void HistogramService::WriteRootFile(TString fileName)
-{  
-   std::map< string , TDirectory* > mapOfCreatedDirs;    
-   TFile *f = new TFile(fileName,"RECREATE");  
+{
+   std::map< string , TDirectory* > mapOfCreatedDirs;
+   TFile *f = new TFile(fileName,"RECREATE");
    f->cd();
    // using a map::iterator
    map<string, TObject* >::iterator it;
    map<string, TDirectory* >::iterator dirIt;
    map<string, TDirectory* >::iterator subdirIt;
-   for (it = fMegaList.begin();it != fMegaList.end(); it++){ 
+   for (it = fMegaList.begin();it != fMegaList.end(); it++){
       string key = it->first;
       string dirName = fDirMap[key];
       while (dirName[0] == '/') dirName.erase(0,1); //Strip leading "/"
@@ -106,7 +106,7 @@ void HistogramService::WriteRootFile(TString fileName)
            f->cd(dirName.data());
            mapOfCreatedDirs[dirName] = gDirectory->CurrentDirectory();
          }
-      } else dirIt->second->cd(); // cd to dir 
+      } else dirIt->second->cd(); // cd to dir
       //cout << "writing histo "<<it->first<< " to dir "<<dirName<<std::endl;
       it->second->Write();
       f->cd();
@@ -123,7 +123,7 @@ bool HistogramService::BookRootObject(TObject* hist){
       //hist->SetDirectory(fDir);  ToDo is this ok???
       fMegaList[key]=hist;
       return true;
-   } 
+   }
    return false;
 }
 

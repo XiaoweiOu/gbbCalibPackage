@@ -24,7 +24,7 @@
     "JET_Rtrk_Tracking_Sub__1up",
     "FATJET_JER__1up",
     "JET_MassRes_Hbb__1up"
-    ],  
+    ],
   "MuFilteredMC" : [
     "/user.mstankai.mc16_13TeV.427003.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.427003.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root",
     "/user.mstankai.mc16_13TeV.427004.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root/outhist_user.mstankai.mc16_13TeV.427004.DAOD_FTAG1.FTNtupCalib.ana_tag_v00-05-01a.e5660_e5984_s3126_r9364_r9315_p3596_tuple.root",

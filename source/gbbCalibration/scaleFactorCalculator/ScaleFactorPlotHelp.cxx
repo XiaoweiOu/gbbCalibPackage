@@ -62,13 +62,13 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     stat_ymc_err=cl_result.fstat_err_mc_eff;
 
   }
-  
+
   TCanvas *canv=new TCanvas("canv","",800,600);
   canv->cd();
   canv->SetTickx();
   canv->SetTicky();
 
-  
+
   TGraphAsymmErrors *SF_band_sys=0;
   TGraphErrors *SF_data_stat=0;
   TGraphErrors *EFF_mc_stat=0;
@@ -85,29 +85,29 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     SF_band_sys->SetFillColor(kGreen+3);
     SF_band_sys->SetFillStyle(3001);
     SF_band_sys->SetTitle("");
-    
-    SF_band_sys->GetXaxis()->SetTitle(m_xlabel.Data());
-    SF_band_sys->GetYaxis()->SetTitle(m_ylabel.Data());
+
+    SF_band_sys->GetXaxis()->SetTitle("Large-R Jet p_{T} [GeV]");
+    SF_band_sys->GetYaxis()->SetTitle("Scale Factor");
     if(plot_type.EqualTo("Eff"))  SF_band_sys->GetYaxis()->SetTitle("Double-b-tagging Efficiency");
-    
+
     SF_band_sys->GetXaxis()->SetTitleSize(0.04);
     SF_band_sys->GetYaxis()->SetTitleSize(0.04);
-    
+
     SF_band_sys->GetXaxis()->SetRangeUser((m_config->GetFatJetPtBins())[0],m_config->GetFatJetPtBins().back());
-    
+
     if(plot_type.EqualTo("SF")) SF_band_sys->GetYaxis()->SetRangeUser(0.6,1.6);
     if(plot_type.EqualTo("Eff")) SF_band_sys->GetYaxis()->SetRangeUser(0.,1.6);
-    
+
     SF_data_stat=new TGraphErrors(N,&(bin_x[0]),&(val_y[0]),&(bin_xerr[0]),&(stat_y_err[0]));
     SF_data_stat->SetMarkerStyle(20);
     SF_data_stat->SetTitle("");
-    
+
     if(plot_type.EqualTo("Eff")){
       EFF_mc_stat=new TGraphErrors(N,&(bin_x[0]),&(val_ymc[0]),&(bin_xerr[0]),&(stat_ymc_err[0]));
       EFF_mc_stat->SetMarkerStyle(25);
       EFF_mc_stat->SetTitle("");
     }
-    
+
 
     SF_band_sys->Draw("a2");
     SF_data_stat->Draw("p");
@@ -172,10 +172,10 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     for(unsigned int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mu_labels[i-1]);
     for(unsigned int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nonmu_labels[i-1]);
     hist->LabelsOption("u","Y");
-    
+
     hist->SetLabelSize(0.05,"X");
     hist->SetLabelSize(0.05,"Y");
-    
+
     hist->SetMinimum(0);
     if(plot_type.Contains("SF")) hist->SetMaximum(2.);
     if(plot_type.Contains("Data")) hist->SetMaximum(1.1);
@@ -207,11 +207,11 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 
   }
 
-  //prepare Legend                                                                                                  
+  //prepare Legend
   TLegend *leg=new TLegend(0.5,0.5,0.88,0.65);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
-  
+
   if(plot_type.EqualTo("SF")){
     leg->AddEntry(SF_band_sys,"bb-tagging SF (stat.+sys.)","f");
     leg->AddEntry(SF_data_stat,"bb-tagging SF (stat.)","lep");
@@ -225,7 +225,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   leg->SetEntrySeparation(0.15);
 
   leg->Draw();
- 
+
   //Add ATLAS label
   ATLASLabel2(0.675,0.86,m_plot_label.Data());
   myText(0.675, 0.815, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
@@ -238,7 +238,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   if(plot_type.EqualTo("SF")) line->Draw("same");
 
   TDatime today;
-  
+
   TString name;
   if(plot_type.EqualTo("SF")) name = m_outdir + "/SF/ScaleFactors" + m_pext;
   if(plot_type.EqualTo("Eff")) name = m_outdir + "/SF/Efficiencies" + m_pext;
@@ -248,7 +248,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 
   canv->SaveAs(name.Data());
 
-  if(EFF_mc_stat) delete EFF_mc_stat; 
+  if(EFF_mc_stat) delete EFF_mc_stat;
   if(SF_band_sys) delete SF_band_sys;
   if(SF_data_stat) delete SF_data_stat;
   if(hist) delete hist;
@@ -260,7 +260,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 }
 
 void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, std::shared_ptr<TH1D> dataHist, std::vector<std::shared_ptr<TH1D>> templateHists, TString& channel, TString& region, TString &sys,  int rebin, bool isPosttag){
-  
+
   //FIXME: can some of this setup be moved to another function?
   std::shared_ptr<TCanvas> canv(new TCanvas("canv","",600,800));
   canv.get()->cd();
@@ -292,13 +292,13 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   THStack *mystack=new THStack("myStack","");
 
   TH1D* tmp_stacked_mc(nullptr);
-  
+
   TH1D *full_mc(nullptr);
 
   for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
 
     if(!(templateHists[i_p].get())) continue;
-    
+
     tmp_stacked_mc=(TH1D*)templateHists[i_p].get()->Clone();
 
     if(applyFitCorrection) tmp_stacked_mc->Scale(m_fit_params[region+"_"+sys][i_p]);
@@ -327,7 +327,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
     data_hist->SetBinContent(i_bin, data_hist->GetBinContent(i_bin)/data_hist->GetBinWidth(i_bin));
     data_hist->SetBinError(i_bin, data_hist->GetBinError(i_bin)/data_hist->GetBinWidth(i_bin));
   }
-  
+
   data_hist->SetTitle("");
   data_hist->SetLabelSize(0,"X");
   data_hist->SetTitleSize(0,"X");
@@ -339,7 +339,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   data_hist->SetLabelSize(0.05,"Y");
 
   leg->AddEntry(data_hist,"Data","epl");
-  
+
   data_hist->SetMinimum(0);
 
   pad1->cd();
@@ -347,7 +347,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   mystack->Draw("HIST SAME");
   data_hist->Draw("EP SAME");
-  
+
   canv->cd();
 
   //ratio
@@ -361,7 +361,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   h_ratio->SetMarkerStyle(20);
   h_ratio->SetYTitle("data/MC");
   //TODO: for a function that ostensibly takes arbitrary hists, this shouldnt be hard-coded
-  h_ratio->SetXTitle("transverse IP significance #LT s_{d0} #GT"); 
+  h_ratio->SetXTitle("transverse IP significance #LT s_{d0} #GT");
   h_ratio->SetLabelSize(0.1,"X");
   h_ratio->SetLabelSize(0.1,"Y");
   h_ratio->SetTitleSize(0.12,"X");
@@ -376,13 +376,13 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   //get Fit systematics band
   TGraphAsymmErrors* fitsys=0;
-  
+
   if(applyFitCorrection){
-    
+
     fitsys=this->getTemplateFitUncertToys(applyFitCorrection,templateHists,region,sys,rebin);
     fitsys->SetFillColor(kGreen+1);
     fitsys->SetFillStyle(3001);
-    
+
     pad2->cd();
     fitsys->Draw("2");
     leg->AddEntry(fitsys,"Fit Uncertainty","f");
@@ -392,7 +392,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   //double chi2=data_hist->Chi2Test(full_mc,"WW CHI2/NDF");
   //TString text_Chi2=Form("Chi2/NDF = %f",chi2);
-  
+
   pad1->cd();
   leg->Draw();
 
@@ -419,7 +419,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   data_hist->SetMaximum(data_hist->GetBinContent(data_hist->GetMaximumBin())*1e2);
   pad1->SetLogy();
   pad1->RedrawAxis();
-  
+
   canv->SaveAs((name+"_log"+m_pext).Data());
 
   delete mystack;
@@ -445,7 +445,7 @@ void ScaleFactorCalculator::MakeCorrelationPlots(const TString region) {
       hist->SetBinContent(j_par+1,npar-i_par, cov_mat[i_par*npar + j_par] / (errs[j_par]*errs[i_par]) );
     }
   }
-  
+
   TCanvas *canv=new TCanvas("canv","",1000,600);
   TPad *pad1=new TPad("pad1","",0,0,0.3,1);
   pad1->SetLeftMargin(0.3);
@@ -501,7 +501,7 @@ void ScaleFactorCalculator::MakeCorrelationPlots(const TString region) {
 
 
 void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCorrection, std::vector<TString>& sys, std::vector<TString>& model_sys, bool doPrintByRegion, TString region){
-  
+
   std::shared_ptr<TCanvas> canv(new TCanvas("canv","",700,800));
   canv.get()->cd();
   std::shared_ptr<TPad> pad1(new TPad("pad1","pad1",0,0.25,1,1));
@@ -528,7 +528,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   std::vector<double> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta"))  ? m_config->GetBinning(var_fjpt) : m_config->GetBinning(var);
 
   bool isPosttag = var.Contains("PREFITPOSTTAG");
-  
+
   std::cout << " ***** Integrals **** "<< std::endl;
   std::cout << "Variable: " << var;
   if (applyFitCorrection) std::cout << " (postfit)"<< std::endl;
@@ -556,7 +556,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
 
     hist_mc[i]->SetFillColor(color[i]);
     hist_mc[i]->SetLineColor(kBlack);
-  
+
     std::cout << m_config->GetFlavourPairs()[i] <<": " << hist_mc[i]->Integral()*100/hist_data->Integral() << "%" << std::endl;
 
     tot_mcint += hist_mc[i]->Integral();
@@ -583,9 +583,9 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   hist_data->SetLabelSize(0.05,"Y");
 
   leg->AddEntry(hist_data,"data","epl");
-  
+
   hist_data->SetMinimum(0);
-  
+
   pad1->cd();
   hist_data->Draw("EP");
   if(var.Contains("PREFITPOSTTAG") || var.Contains("nmjpt")) hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*1.4);
@@ -593,7 +593,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   else hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*1.2);
   mystack->Draw("HIST SAME");
   hist_data->Draw("EP SAME");
-  
+
   canv->cd();
 
   //ratio
@@ -629,16 +629,16 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   h_ratio->Draw("EP");
   //h_ratio->GetYaxis()->SetRangeUser(0.9,1.1);
   h_ratio->GetYaxis()->SetRangeUser(0.4,1.6);
-  
+
   //get Fit systematics band
   TGraphAsymmErrors* fitsys=0, *btagsys=0, *expsys=0, *mcstat=0, *totsys=0, *modsys=0;
-  
+
   if(applyFitCorrection){
-    
+
       fitsys=this->getFitUncertToys(var);
       fitsys->SetFillColor(kGreen+1);
       fitsys->SetFillStyle(3001);
-      
+
       pad2->cd();
       fitsys->Draw("2");
       leg->AddEntry(fitsys,"fit uncertainty","f");
@@ -646,7 +646,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   }
 
   if(isPosttag){
-    
+
     btagsys=this->getBTagUncert(var,applyFitCorrection);
 if (btagsys->GetErrorYhigh(10) == 0) std::cout<<"zero btag uncert!"<<std::endl;
     btagsys->SetLineColor(kRed);
@@ -655,7 +655,7 @@ if (btagsys->GetErrorYhigh(10) == 0) std::cout<<"zero btag uncert!"<<std::endl;
     btagsys->Draw("5same");
     //h_ratio->Draw("EPsame");
     leg->AddEntry(btagsys,"b-tagging uncertainty","l");
-    
+
   }
 
   if(sys.size()>0)expsys=this->getExperimentalUncert(var,sys,applyFitCorrection);
@@ -665,11 +665,11 @@ if (btagsys->GetErrorYhigh(10) == 0) std::cout<<"zero btag uncert!"<<std::endl;
 std::cout<<"finished getting exp unc"<<std::endl;
   //if(model_sys.size()>0)modsys=this->getModellingUncert(var,model_sys,applyFitCorrection,isPosttag);
   //modsys->SetFillStyle(3001);
-  //modsys->SetFillColor(kBlue);  
+  //modsys->SetFillColor(kBlue);
   ////mcstat->Draw("5");
 
   /*expsys->SetFillColor(kBlue);
-  //totsys->SetFillStyle(3005);                                                                                                                                                             
+  //totsys->SetFillStyle(3005);
   expsys->SetFillStyle(3245);
   gStyle->SetHatchesLineWidth(1.5);
   expsys->SetLineColor(kBlue);
@@ -687,7 +687,7 @@ std::cout<<"finished getting exp unc"<<std::endl;
     totsys->Draw("5same");
   }
 std::cout<<"finished expsys plotting"<<std::endl;
-  
+
   /*std::vector<TGraphAsymmErrors*> expsys_separate;
 
   if(sys.size()>0) expsys_separate=this->getExperimentalUncertSeparate(var,sys,applyFitCorrection, isPosttag);
@@ -699,7 +699,7 @@ std::cout<<"finished expsys plotting"<<std::endl;
 
   h_ratio->Draw("EPsame");
 
-  
+
   //Draw errors in main pad
   TGraphAsymmErrors* tot_err=0;
   if(totsys){
@@ -707,7 +707,7 @@ std::cout<<"finished expsys plotting"<<std::endl;
     for(int point=0; point<tot_err->GetN(); point++){
       double x,y;
       tot_err->GetPoint(point,x,y);
-      
+
       tot_err->SetPoint(point,x,full_mc->GetBinContent(point+1));
       tot_err->SetPointEYhigh(point,tot_err->GetErrorYhigh(point)*full_mc->GetBinContent(point+1));
       tot_err->SetPointEYlow(point,tot_err->GetErrorYlow(point)*full_mc->GetBinContent(point+1));
@@ -715,7 +715,7 @@ std::cout<<"finished expsys plotting"<<std::endl;
       tot_err->SetLineColor(kBlack);
       tot_err->SetFillStyle(3245);
     }
-  
+
     pad1->cd();
     tot_err->Draw("5same");
     //hist_data->Draw("EP SAME");
@@ -723,7 +723,7 @@ std::cout<<"finished expsys plotting"<<std::endl;
 
   //double chi2=hist_data->Chi2Test(full_mc,"UW CHI2/NDF");
   //TString text_Chi2=Form("Chi2/NDF = %f",chi2);
-  
+
   pad1->cd();
   leg->Draw();
 
@@ -789,7 +789,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   for (unsigned int i=1; i < hist_pretag_mc.size(); i++) full_mc_pretag->Add(hist_pretag_mc[i]);
   TH1D* full_mc_posttag = (TH1D*)hist_posttag_mc[0]->Clone();
   for (unsigned int i=1; i < hist_posttag_mc.size(); i++) full_mc_posttag->Add(hist_posttag_mc[i]);
-  
+
   //calculate data rate
   hist_posttag_data->Divide(hist_pretag_data);
   //calculate MC rate
@@ -805,9 +805,9 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   hist_posttag_data->SetLabelSize(0.04, "Y");
 
   leg->AddEntry(hist_posttag_data,"data","epl");
-  
+
   hist_posttag_data->SetMinimum(0);
-  
+
   pad1->cd();
   hist_posttag_data->Draw("EP");
   //hist_posttag_data->GetYaxis()->SetRangeUser(0.,hist_posttag_data->GetMaximum()*2);
@@ -881,7 +881,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   btagsys->SetLineColor(kRed);
   btagsys->SetFillStyle(0);
-  //pad2->cd();                                                                                                                                                                        
+  //pad2->cd();
   btagsys->Draw("5");
   h_ratio->Draw("EPsame");
   leg->AddEntry(btagsys,"b-tagging uncertainty","l");
@@ -894,12 +894,12 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   //modsys->SetFillStyle(3001);
 
   TGraphAsymmErrors *mcstat=this->getMCStat(full_mc_posttag);
-  
+
   TGraphAsymmErrors *totsys=this->getTotalSys(fitsys, btagsys, expsys, mcstat,modsys);
   //TGraphAsymmErrors *totsys=mcstat;
 
   totsys->SetFillColor(kBlack);
-  //totsys->SetFillStMyle(3005);                                                                                                                                                       
+  //totsys->SetFillStMyle(3005);
   totsys->SetFillStyle(3245);
   gStyle->SetHatchesLineWidth(1.5);
   totsys->SetLineColor(kBlack);
@@ -920,7 +920,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   TString name;
   name= TString(m_outdir+"/ctrl_plots/BTaggingRate" + m_pext);
-  
+
   canv->SaveAs(name.Data());
 
   delete leg;
@@ -940,7 +940,7 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
   for (unsigned int i=1; i < hist_prefit_mc.size(); i++) full_mc->Add(hist_prefit_mc[i]);
   TH1D* full_mc_postfit = (TH1D*)hist_postfit_mc[0]->Clone();
   for (unsigned int i=1; i < hist_postfit_mc.size(); i++) full_mc->Add(hist_postfit_mc[i]);
-  
+
   TH1D* scale_factors = (TH1D*) full_mc_postfit->Clone();
   scale_factors->Divide(full_mc);
 
@@ -1024,7 +1024,7 @@ void ScaleFactorCalculator::MakeNFPlots(){
 		  for(unsigned int i=1; i<=3; i++) hist -> GetXaxis() -> SetBinLabel(i,mu_labels[i-1]);
 		  for(unsigned int i=1; i<=4; i++) hist -> GetYaxis() -> SetBinLabel(i,nonmu_labels[i-1]);
 		  hist -> LabelsOption("u","Y");
-		
+
 		  canv -> SetLeftMargin(0.25);
 		  canv -> SetRightMargin(0.05);
 		  canv -> cd();
@@ -1049,7 +1049,7 @@ void ScaleFactorCalculator::MakeNFPlots(){
 			line -> SetLineStyle(2);
 			line -> SetLineWidth(1.5);
 			line -> Draw("SAME");
-		
+
 			TString name = m_outdir + "/NF/2DNF_"+sys+"_"+flav+".pdf";
 			canv -> SaveAs(name.Data());
 
@@ -1059,6 +1059,6 @@ void ScaleFactorCalculator::MakeNFPlots(){
 			delete hist_err_down;
 		}
 	}
-	
+
 }
 

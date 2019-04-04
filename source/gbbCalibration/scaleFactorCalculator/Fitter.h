@@ -67,7 +67,7 @@ class Fitter {
   static void fcn_rndm_template(int &npar, double* gin, double &f, double *par, int iflag);
 
   void PrintParameters(TString err_mode="Sampling"); //other modes: "Simple","Minos"
-  void PrintFlavourFractions(TString& chan, TString err_mode="Sampling"); 
+  void PrintFlavourFractions(TString& chan, TString err_mode="Sampling");
   void GetParameterSimple(int i_par,double &val,double& err){
     m_Minuit->GetParameter(i_par,val,err);
   }
@@ -90,7 +90,7 @@ class Fitter {
   double getTotalFitError();
 
   TString getFitStatus(){
-    
+
     return TString(m_Minuit->fCstatu.Data());
   }
 

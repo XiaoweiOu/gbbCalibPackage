@@ -34,7 +34,7 @@ MyConfig = config.LoadGlobalConfig()
 histHelper1 = config.HistHelper(xsecFile1)
 histHelper2 = config.HistHelper(xsecFile2)
 
-ListOfSystematics = [ ROOT.TString("Nom") ] #MyConfig.GetSystematics() 
+ListOfSystematics = [ ROOT.TString("Nom") ] #MyConfig.GetSystematics()
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfInclusiveFlavourPairs = [ 'LL' ]
 
@@ -42,10 +42,10 @@ ListOfVariables = [ 'meanSd0', 'maxSd0', 'subSd0', 'thirdSd0' ]
 #ListOfVariables = [ 'MV2c10' ]
 
 MapOfAxisLabels = { 'meanSd0' :'#LT s_{d0} #GT',
-                    'maxSd0'  :'Leading s_{d0}', 
+                    'maxSd0'  :'Leading s_{d0}',
                     'subSd0'  :'Sub-leading s_{d0}',
                     'thirdSd0':'Third-leading s_{d0}',
-                    #'MV2c10'  :'MV2c10 Score'    
+                    #'MV2c10'  :'MV2c10 Score'
                   }
 
 
@@ -59,13 +59,13 @@ colors2=[ROOT.kBlue+2,ROOT.kAzure-3,ROOT.kCyan+4,ROOT.kGreen-8,ROOT.kOrange+1]
 for var in ListOfVariables :
   histsMJ1 = []
   histsNMJ1 = []
-  
+
   histsMJ2 = []
   histsNMJ2 = []
 
 
   for flavour in ListOfFlavourPairs:
-    
+
     ListOfPaths1 = ListOfMCPaths1
     ListOfPaths2 = ListOfMCPaths2
     if flavour in ListOfInclusiveFlavourPairs:
@@ -77,7 +77,7 @@ for var in ListOfVariables :
 
       histMC1 = histHelper1.AddMCHists(histname,ListOfPaths1)
       histMC2 = histHelper2.AddMCHists(histname,ListOfPaths2)
-      
+
       if histMC1:
         histMC1.SetName((flavour).Data()+' '+tag1)
         histMC1.SetLineWidth(3);
@@ -89,7 +89,7 @@ for var in ListOfVariables :
           histsMJ1.append(histMC1)
       else:
         print("Could not find "+histname+" in all input1 files!")
-      
+
       if histMC2:
         histMC2.SetName((flavour).Data()+' '+tag2)
         histMC2.SetLineWidth(3);
@@ -103,10 +103,10 @@ for var in ListOfVariables :
         print("Could not find "+histname+" in all input2 files!")
 
   i = 0
-  for flavour in ListOfFlavourPairs: 
-    
+  for flavour in ListOfFlavourPairs:
+
     #colors = [colors1[i], colors2[i]]
-    
+
     canvMJ = ROOT.TCanvas("c_mujet"+var+flavour.Data(),"",800,800);
     AddHistogram(canvMJ,histsMJ1[i],'hist')
     AddHistogram(canvMJ,histsMJ2[i],'hist')
@@ -114,7 +114,7 @@ for var in ListOfVariables :
     #SetColors(canvMJ,colors)
     SetAxisLabels(canvMJ,'Muon-associated Track Jet '+MapOfAxisLabels[var],'Normalised to Unity')
     canvMJ.Print(outfilename+'_'+islice+'_'+var+'_'+flavour.Data()+'.pdf(')
-    
+
     canvNMJ = ROOT.TCanvas("c_nonmujet"+var+flavour.Data(),"",800,800);
     AddHistogram(canvNMJ,histsNMJ1[i],'hist')
     AddHistogram(canvNMJ,histsNMJ2[i],'hist')
@@ -122,7 +122,7 @@ for var in ListOfVariables :
     #SetColors(canvNMJ,colors)
     SetAxisLabels(canvNMJ,'Non-Muon-associated Track Jet '+MapOfAxisLabels[var],'Normalised to Unity')
     canvNMJ.Print(outfilename+'_'+islice+'_'+var+'_'+flavour.Data()+'.pdf)')
-    
+
     i=i+1
-    
+
 print "done"

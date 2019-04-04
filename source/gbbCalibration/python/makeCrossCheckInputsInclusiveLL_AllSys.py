@@ -14,7 +14,7 @@ ListOfVariables_general = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta'
 
 ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_PREFITPOSTTAG','XbbScoreTop_PREFITPOSTTAG','XbbScoreQCD_PREFITPOSTTAG','XbbScoreRatiof0_PREFITPOSTTAG','XbbScoreRatiofp2_PREFITPOSTTAG']
 
-ListOfVariables_r20p7 = [] 
+ListOfVariables_r20p7 = []
 
 ListOfVariables_minimal = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','mjpt_PREFITUNTAG']
 
@@ -30,6 +30,10 @@ parser.add_argument('outfile', help="Name of output ROOT file")
 parser.add_argument('infiles', help="JSON file with paths for data and MC files. See README for format")
 parser.add_argument('--tiny', help="Store only the histograms needed to run the fit",
                     action="store_true")
+parser.add_argument('--nosys', help="Store only nominal histograms",
+                    action="store_true")
+parser.add_argument('--useIncl', type=int, default=1,
+    help="specify which templates should be from the inclusive sample. 0=none, 1=LL only, 2=all [default: 1]")
 args = parser.parse_args()
 
 # setting variables
@@ -40,17 +44,31 @@ MyConfig = config.LoadGlobalConfig()
 histHelper = config.HistHelper(xsecFile)
 
 # getting config variables
-ListOfSystematics = MyConfig.GetSystematics() 
-ListOfSystematics.push_back(TString("Nom"))
-ListOfSd0Systematics = MyConfig.GetSystematics_Sd0() 
-ListOfWeightVariations = MyConfig.GetSystematics_WeightVar() 
+if (args.nosys):
+  ListOfSystematics = [ TString("Nom") ]
+  ListOfSd0Systematics = [ ]
+  ListOfWeightVariations = [ ]
+else:
+  ListOfSystematics = MyConfig.GetSystematics()
+  ListOfSystematics.push_back(TString("Nom"))
+  ListOfSd0Systematics = MyConfig.GetSystematics_Sd0()
+  ListOfWeightVariations = MyConfig.GetSystematics_WeightVar()
+
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
-ListOfInclusiveFlavourPairs = [ 'LL' ]
+if (args.useIncl == 0):
+  ListOfInclusiveFlavourPairs = [ ]
+elif (args.useIncl == 1):
+  ListOfInclusiveFlavourPairs = [ 'LL' ]
+elif (args.useIncl == 2):
+  ListOfInclusiveFlavourPairs = [ ]
+  for flav in ListOfFlavourPairs:
+    ListOfInclusiveFlavourPairs.append(flav.Data())
+
 ListOfTJpt = MyConfig.GetTrkJetRegions()
 ListOfTJpt.push_back(TString("Incl"))
 isR20p7 = MyConfig.GetIsR20p7()
 
-# setting variables 
+# setting variables
 
 if args.tiny:
   ListOfVariables = ListOfVariables_minimal
@@ -98,7 +116,7 @@ for flavour in ListOfFlavourPairs :
       if "PREFITPOSTTAG" in var :
         for sys in ListOfWeightVariations :
           ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys.Data()).Data())
- 
+
 #--------------------- output -----------------------
 
 # open output file
@@ -151,112 +169,8 @@ for histname in ListOfDataHists :
     outfile.cd()
     if histname is 'CutFlow_Nom':
       histData.SetName('CutFlow_Data')
-    histData.Write()    
+    histData.Write()
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
 
 #--------------------- output -----------------------
-
-#TODO
-##get Herwig histograms
-#doHerwig=1
-#if doHerwig>0:
-#    print("Getting Herwig Histograms.")
-#    for histname in ListOfHerwigHists :
-#        hist_index=ListOfHerwigHists.index(histname)
-#        hist_0=None
-#        for path in ListOfHerwigMCPaths :
-#            index=ListOfHerwigMCPaths.index(path)
-#            file_curr=ROOT.TFile(path,"READ")
-#            if not file_curr :
-#                print("Cannot find file: "+path)
-#            bookkeep_hist=file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
-#            if not bookkeep_hist :
-#                print("Cannot find BookKeeping Histogram in path" + path)
-#                break
-#                continue
-#            weight=ListOfHerwigCrossSections[index]*ListOfHerwigFilterEfficiencies[index]/bookkeep_hist.GetBinContent(3)*Lumi
-#            #if hist_index==0:
-#                #print("weight is",weight)
-#            
-#            if not file_curr.GetListOfKeys().Contains(histname):
-#                #print("Cannot find hist "+histname)
-#                if index is 0: 
-#                    hist_0=None
-#                
-#            elif index is 0 or hist_0 is None :
-#                hist_0=file_curr.Get(histname)
-#                hist_0.SetDirectory(0)
-#                hist_0.Scale(weight)
-#            elif index is not 0 :
-#                hist_tmp=file_curr.Get(histname)
-#                hist_0.Add(hist_tmp,weight)
-#
-#            if index==len(ListOfHerwigMCPaths)-1 :
-#                outfile.cd()
-#                if hist_0 is None :
-#                    print("ERROR: Could not find "+histname+" in all input Files!")
-#                    if 'PREFITPOSTTAG' in histname:
-#                        help_name=histname.rsplit('_',1)[0]
-#                        if 'BTAGUP' in histname or 'BTAGDOWN' in histname:
-#                            help_name=histname.rsplit('_',2)[0]
-#
-#                        hist_help=file_curr.Get(help_name)
-#                        print("Writing "+help_name+" with 0 entries instead")
-#                        hist_default=ROOT.TH1D(histname.replace("Nom","Herwig__1up",1),"",hist_help.GetNbinsX(),hist_help.GetXaxis().GetXmin(),hist_help.GetXaxis().GetXmax())
-#                        hist_default.Write()
-#
-#                if hist_0 is not None:
-#                    hist_0.SetName(histname.replace("Nom","Herwig__1up",1))
-#                    hist_0.Write()
-#    
-#    
-#    #loop over inclusive MC for LL histograms
-#    for histname in ListOfLLHerwigHists :
-#        hist_index=ListOfLLHerwigHists.index(histname)
-#        hist_0=None
-#        for path in ListOfHerwigInclusiveMCPaths :
-#            index=ListOfHerwigInclusiveMCPaths.index(path)
-#            file_curr=ROOT.TFile(path,"READ")
-#
-#            bookkeep_hist=file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
-#            if not bookkeep_hist :
-#                print("Cannot find BookKeeping Histogram in path" + path)
-#                break
-#                #continue
-#            weight=ListOfHerwigInclusiveCrossSections[index]*ListOfHerwigInclusiveFilterEfficiencies[index]/bookkeep_hist.GetBinContent(3)*Lumi
-#           # if hist_index==0:
-#                #print("inclusive weight is",weight)
-#        
-#
-#            if not file_curr.GetListOfKeys().Contains(histname):
-#                #print("Cannot find hist "+histname)
-#                if index is 0:
-#                    hist_0=None
-#            elif index is 0 or hist_0 is None :
-#                hist_0=file_curr.Get(histname)
-#                hist_0.SetDirectory(0)
-#                hist_0.Scale(weight)
-#                #print('got '+hist_0.GetName())
-#            elif index is not 0 :
-#                hist_tmp=file_curr.Get(histname)
-#                hist_0.Add(hist_tmp,weight)
-#                #print('adding '+hist_tmp.GetName())
-#
-#            if index==len(ListOfHerwigInclusiveMCPaths)-1 :
-#                outfile.cd()
-#                if hist_0 is None :
-#                    print("ERROR: Could not find "+histname+" in all input Files!")
-#                    if 'PREFITPOSTTAG' in histname:
-#                        help_name=histname.rsplit('_',1)[0]
-#                        if 'BTAGUP' in histname or 'BTAGDOWN' in histname:
-#                            help_name=histname.rsplit('_',2)[0]    
-#                        hist_help=file_curr.Get(help_name)
-#                        
-#                        print("Writing "+help_name+" with 0 entries instead")
-#                        hist_default=ROOT.TH1D(histname.replace("Nom","Herwig__1up",1),"",hist_help.GetNbinsX(),hist_help.GetXaxis().GetXmin(),hist_help.GetXaxis().GetXmax())
-#                        hist_default.Write()
-#
-#                if hist_0 is not None:
-#                    hist_0.SetName(histname.replace("Nom","Herwig__1up",1))
-#                    hist_0.Write()

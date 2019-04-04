@@ -58,6 +58,6 @@ for histname in ListOfHists :
     histData.Divide(histMC)
     histData.SetName('h_'+histname)
     outfile.cd()
-    histData.Write() 
+    histData.Write()
   else:
     print("Could not find "+histname+" in all input files!")

@@ -40,7 +40,7 @@ struct by_abs_sd0 {
   bool operator()(track const &a, track const &b){
     return TMath::Abs(a.sd0)>TMath::Abs(b.sd0);
   }
-  
+
 };
 
 GbbTupleAna::GbbTupleAna() : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0) {
@@ -63,7 +63,7 @@ GbbTupleAna::~GbbTupleAna() {
 
 
 void GbbTupleAna::ReadConfig(const TString &config_path){
- 
+
   std::cout<<"=============================================="<<std::endl;
 
   TString m_config_path = config_path;
@@ -81,7 +81,7 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
     abort();
   }
   //config->Print();
-  
+
   m_Debug = config->GetValue("doDebug",false);
   std::cout<<"doDebug: "<<m_Debug<<std::endl;
 
@@ -114,14 +114,14 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
       std::cout<<"Unrecognized RunMode: "<<mode.Data()<<". Ignoring"<<std::endl;
     }
   }
-  if (m_Debug) std::cout<<"RunMode flag: "<<m_RunMode<<std::endl;  
+  if (m_Debug) std::cout<<"RunMode flag: "<<m_RunMode<<std::endl;
 
   m_BTagWP = config->GetValue("BTagWP","");
   std::cout<<"BTagWP: "<<m_BTagWP<<std::endl;
-  
+
   m_GeneratorName = config->GetValue("GeneratorName","Pythia");
   std::cout<<"GeneratorName: "<<m_GeneratorName<<std::endl;
-  
+
   m_doJetPtReweighting = config->GetValue("doJetPtEtaReweighting",true);
   std::cout<<"doJetPtEtaReweighting: "<<m_doJetPtReweighting<<std::endl;
 
@@ -147,23 +147,17 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   std::cout<<"doFlavFracCorrection: "<<m_doFlavFracCorrection<<std::endl;
 
   m_FlavFracCorrectorFile = config->GetValue("FlavFracCorrectorFile","./data/160714_FitResults_allsys.root");
-  std::cout<<"FlavFracCorrectorFile: "<<m_FlavFracCorrectorFile<<std::endl;  
-
-  m_doMergeDiTrkjetCat=config->GetValue("doMergeDiTrkjetCat",true);
-  std::cout<<"m_doMergeDiTrkjetCat: "<< m_doMergeDiTrkjetCat<<std::endl;
+  std::cout<<"FlavFracCorrectorFile: "<<m_FlavFracCorrectorFile<<std::endl;
 
   m_doEvenOddTemplates=config->GetValue("doEvenOddTemplates",false);
   std::cout<<"m_doEvemOddTemplates: "<< m_doEvenOddTemplates<<std::endl;
 
-  m_trkjet_cat={"B","C","L","other"};
-  m_ditrkjet_cat={"BB","BC","BL","CB","CC","CL","LB","LC","LL","other"};
-  
   m_doRandomSplitting=config->GetValue("doRandomSplitting",false);
   std::cout<<"m_doRandomSplitting: "<< m_doRandomSplitting<<std::endl;
- 
+
   m_doPostfitPtReweighting=config->GetValue("doPostfitPtReweighting",false);
   std::cout<<"m_doPostfitPtReweighting: "<<m_doPostfitPtReweighting<<std::endl;
- 
+
   m_PostfitPtReweightingFile=config->GetValue("PostfitPtReweightingFile","DEFAULT.root");
   std::cout<<"m_PostfitPtReweightingFile: "<<m_PostfitPtReweightingFile<<std::endl;
 
@@ -202,12 +196,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_doInclusiveGbb(false),
   m_doApplyBTaggingSF(false),
   m_doSd0Systematics(false),
-  m_doMergeDiTrkjetCat(false),
   m_useVRTrkJets(true),
-  //m_ditrkjet_cat(),
-  //m_trkjet_cat(),
-  //m_muojet_pt_bins(),
-  //m_nonmuojet_pt_bins(),
   //m_random(),
   m_doRandomSplitting(false),
   m_doFillMujet(false),
@@ -221,7 +210,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   TH1::AddDirectory(0);
 
   //=========================================
-  // Initialize 
+  // Initialize
   //=========================================
   ReadConfig(configname);
   m_HistSvc=new HistogramService();
@@ -232,7 +221,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
   TChain *fren = new TChain("FlavourTagging_Nominal");
-  
+
   bool file1 = true;
   for (TString filename : infiles) {
     TFile* f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename.Data());
@@ -247,14 +236,14 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
     } else {
       f->GetObject("MetaData_EventCount",metahist_tmp);
       metahist->Add(metahist_tmp);
-    }  
+    }
 
     tree->Add(filename.Data());
     if (m_config->GetIsR20p7()) {
       //if systematics tree: add nominal as friend to retrieve the truth label (temp patch)
       if (!treename.EqualTo("FlavourTagging_Nominal")) fren->Add(filename.Data());
     }
-    
+
     // getting filter type
     if (file1)
     {
@@ -267,27 +256,27 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
     tree->AddFriend(fren);
   }
 
-  if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl; 
+  if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl;
 
   // Copy metadata
   m_HistSvc->FastFillTH1D("Hist_BookKeeping",1,6,0.5,6.5,metahist->GetBinContent(1));
   ((TH1D*) m_HistSvc->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(1, "nEvents AOD");
-  
+
   m_HistSvc->FastFillTH1D("Hist_BookKeeping",2,6,0.5,6.5,metahist->GetBinContent(2));
   ((TH1D*) m_HistSvc->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(2, "nEvents DAOD");
-  
+
   ((TH1D*) m_HistSvc->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(3, "nEvents TUPLE");
-  
+
   m_HistSvc->FastFillTH1D("Hist_BookKeeping",4,6,0.5,6.5,metahist->GetBinContent(4));
   ((TH1D*) m_HistSvc->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(4, "sumWeights AOD");
 
   m_HistSvc->FastFillTH1D("Hist_BookKeeping",5,6,0.5,6.5,metahist->GetBinContent(5));
   ((TH1D*) m_HistSvc->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(5, "sumWeights DAOD");
-  
+
   ((TH1D*) m_HistSvc->GetHisto("Hist_BookKeeping")) -> GetXaxis() -> SetBinLabel(6, "sumWeights TUPLE");
 
   m_Outputname = outfilename;
-  
+
 
   //running on the nominal sample?
   if (treename.Contains("Nominal")) {
@@ -306,23 +295,23 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   //=========================================
   //Initialize Correction and Smearing
   //=========================================
-   
+
   //Flavour Fraction correction
-  if(m_doFlavFracCorrection) m_FlavFracCorrector=new FlavourFracCorrector(m_FlavFracCorrectorFile); 
+  if(m_doFlavFracCorrection) m_FlavFracCorrector=new FlavourFracCorrector(m_FlavFracCorrectorFile);
   else m_FlavFracCorrector=0;
-  
+
   //=========================================
   //Initialize Reweighting histograms
   //=========================================
-  
+
   //std::vector<TString> trig_slices={"HLT_j110","HLT_j150","HLT_j175","HLT_j200","HLT_j260","HLT_j300","HLT_j320","HLT_j360"};
   //std::vector<TString> trig_slices={"HLT_j150","HLT_j175","HLT_j260","HLT_j380"};
-  std::vector<TString> trig_slices={"HLT_j380"};  
+  std::vector<TString> trig_slices={"HLT_j380"};
 
   if(m_doJetPtReweighting){
-    
-    std::cout << "Filter Type: " << m_FilterType <<std::endl; 
-    
+
+    std::cout << "Filter Type: " << m_FilterType <<std::endl;
+
     if(m_FilterType.EqualTo("Inclusive")){
       for(auto& elem : trig_slices) this->setReweightHisto(m_JetPtReweightFileInclusive,elem);
       std::cout<<"Do Inclusive Reweighting" << m_JetPtReweightFileInclusive << std::endl;
@@ -349,18 +338,18 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
 
   m_random = std::shared_ptr<TRandom3>(new TRandom3());
   m_random.get()->SetSeed(0);
-   
+
   Init(tree);
   
 }
 
 
 void GbbTupleAna::Finalize() {
-  
+
   m_HistSvc->FastFillTH1D("Hist_BookKeeping",6,6,0.5,6.5,m_SumWeightTuple);
-  m_HistSvc->FastFillTH1D("Hist_BookKeeping",3,6,0.5,6.5,m_nevtTuple);  
+  m_HistSvc->FastFillTH1D("Hist_BookKeeping",3,6,0.5,6.5,m_nevtTuple);
   m_HistSvc->WriteRootFile(m_Outputname);
-  
+
 }
 
 
@@ -399,7 +388,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Start!"<<std::endl;
 
-  // Initialize eventFlag - all cuts are initialized to false by default                                             
+  // Initialize eventFlag - all cuts are initialized to false by default
   unsigned long int eventFlag = 0;
 
   //bool IsLargeWeightEvent=false;
@@ -409,7 +398,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //=========================================
   //1.) Event cleaning & weight calculation
   //=========================================
- 
+
   float total_evt_weight=(this->eve_mc_w*this->eve_pu_w);
   //float original_evt_weight=total_evt_weight;
   //if(original_evt_weight>100) return false;
@@ -445,16 +434,16 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //=========================================
 
   std::vector<float> selected_jets_pt;
-  std::vector<int> selected_jets_ind;  
+  std::vector<int> selected_jets_ind;
 
   for(unsigned int i=0; i<this->jet_pt->size(); i++){
-    
+
     if(this->passR4CaloJetCuts(i)){
       selected_jets_pt.push_back(this->jet_pt->at(i));
       selected_jets_ind.push_back(i);
     }
   }
-  
+
   if(selected_jets_pt.size()==0){
     if(m_Debug) std::cout<<"processgbb(): No reco R=0.4 jets passing selection!"<<std::endl;
     return false;
@@ -471,7 +460,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   updateFlag(eventFlag,GbbCuts::TriggerJet,true);
   if(m_Debug) std::cout<<"processgbb(): Got Trigger Jet!"<<std::endl;
- 
+
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trigger match");
@@ -494,7 +483,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     for(auto &pt : selected_jets_ind) std::cout<<"Sel. Jet ind: "<<pt<<std::endl;
 
   }
-  
+
   float trjet_pt=this->jet_pt->at(i_trigjet);
   float prescale;
   TString trigger_passed;
@@ -539,8 +528,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
    m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "trig-jet reweight");
 
-  //=========================================                                                                                               
-  //3.) Gbb candidate selection & definition                                                                                                              
+  //=========================================
+  //3.) Gbb candidate selection & definition
   //=========================================
 
   if(m_Debug) std::cout<<"processgbb(): Constructing Gbb candidate..."<<std::endl;
@@ -624,7 +613,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   }else if(gbbcandpt>380e3 && gbbcandpt<=500e3 && trigger_passed.EqualTo("HLT_j260")){
   }else if(gbbcandpt>500e3 && trigger_passed.EqualTo("HLT_j380")){
   }else{
-    std::cout<<"Event discarded: pt(R=0.4): "<<trjet_pt<<" pt(R=1.0): "<<gbbcandpt<<std::endl;  
+    std::cout<<"Event discarded: pt(R=0.4): "<<trjet_pt<<" pt(R=1.0): "<<gbbcandpt<<std::endl;
     return false;
     }*/
 
@@ -632,16 +621,16 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //if(m_isNominal && m_RunMode & RunMode::FILL_REWEIGHT) this->FillReweightInfo(i_trigjet,total_evt_weight,trigger_passed);
 
 
-  //=========================================                                                                                               
-  //4.) Tracks passing requirements for templates                                                                                                                
-  //=========================================    
+  //=========================================
+  //4.) Tracks passing requirements for templates
+  //=========================================
 
   trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.muojet_index,m_doTrackSmearing,"nominal",3);
   trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal",3);
   float muojet_maxsd0 = muojet_sd0Info.meanSd0_pt;
   float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_pt;
 
-  if(TMath::Abs(muojet_maxsd0+99.)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99.)<1e-5) return false; //associated tracks do not fulfil selection cuts  
+  if(TMath::Abs(muojet_maxsd0+99.)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99.)<1e-5) return false; //associated tracks do not fulfil selection cuts
 
   updateFlag(eventFlag,GbbCuts::GoodSd0Tracks,true);
   if(m_Debug) std::cout<<"processgbb(): Good sd0."<<std::endl;
@@ -650,9 +639,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "got Sd0 variables");
 
-  //=========================================                                                                                               
-  //5.) Topo cut                                                                                                                
-  //=========================================    
+  //=========================================
+  //5.) Topo cut
+  //=========================================
 
   TLorentzVector mujet,trigjet;
 
@@ -664,7 +653,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   updateFlag(eventFlag,GbbCuts::DRTrigJetMuJet,true);
 
-  //DR 2-Track jets 
+  //DR 2-Track jets
   TLorentzVector ditrkjet,nonmujet, fatjet;
   nonmujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.nonmuojet_index),this->trkjet_eta->at(gbbcand.nonmuojet_index),this->trkjet_phi->at(gbbcand.nonmuojet_index),this->trkjet_E->at(gbbcand.nonmuojet_index));
 
@@ -680,7 +669,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   //=========================================
   //6.) Trigjet reweighting
-  //=========================================  
+  //=========================================
 
 
   //  //If mode is: FillReweightHists Fill possible new reweighting histogram before event_weight is changed
@@ -695,14 +684,14 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
      total_evt_weight*= weight;
      }*/
-    
+
 
   //}
 
 
   //=========================================
   //7.) B-Tagging
-  //=========================================  
+  //=========================================
 
   //Benchmark Numbers Flavour Tagging Group (AntiKt2PV0TrackJets @ 70% eff)
   //https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt2PV0TrackJet
@@ -725,15 +714,15 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   
   //at least 1 b-tag
-  if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);   
+  if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);
   //2 b-tags
   if(isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu2Btags,true);
   //0 b-tags
   if(isTagged == -1) updateFlag(eventFlag,GbbCuts::MuNonMuAnti2Btags,true);
   //at most 1 b-tag
   if(isTagged == 0 || isTagged == -1) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
-  
-  //========================================= 
+
+  //=========================================
   //7b.) Bhadron reweighting (temporary)
   //=========================================
 
@@ -753,12 +742,12 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   //=========================================
   //8.) Fill histograms
-  //=========================================  
+  //=========================================
   //DEFINE cuts
 
 
   std::vector<unsigned int> CutsNoBtag={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet};
-  std::vector<unsigned int> CutsWith1Btag={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMu1Btag};  
+  std::vector<unsigned int> CutsWith1Btag={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMu1Btag};
   std::vector<unsigned int> CutsWith2Btags={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMu2Btags};
   std::vector<unsigned int> CutsWithAnti2Btags={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMuAnti2Btags};
   std::vector<unsigned int> CutsWithUntag={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMuUntagged};
@@ -766,9 +755,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   //1.) Before Fit and b-tagging
   if(passSpecificCuts(eventFlag, CutsNoBtag)){
-    
+
     m_HistSvc->FastFillTH1D("Hist_MCStatsUnc",1,1,0.5,1.5,total_evt_weight);
-    
+
     if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight);
     if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight);
     if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight);
@@ -779,9 +768,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
     //for crosscheck: Fill Even and Odd Templates
     if(this->eve_isMC && m_doEvenOddTemplates && m_RunMode & RunMode::FILL_TEMPLATES){
       if(!(i_evt%2)) this->FillTemplates(&gbbcand,total_evt_weight,"EVEN");
-      else this->FillTemplates(&gbbcand,total_evt_weight,"ODD");      
+      else this->FillTemplates(&gbbcand,total_evt_weight,"ODD");
     }
-    
+
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"DRditrkjetfatjet"),
      ";#Delta R(fatjet, inv. sum of track-jets);Events/0.002",
      DRditrkjetfatjet,250,0.,0.5,total_evt_weight
@@ -803,7 +792,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5132)ID_transform=5; //Cascade_B-
 	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5232)ID_transform=6; //Cascade_B0
 
-	
+
 	if(ID_transform) {
           m_HistSvc->FastFillTH1D(
            m_config->GetMCHistName(m_SysVarName,"Incl","BX","mjBHadPdgID"),
@@ -813,7 +802,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
         }
       }
 
-      //If mode specifies, fill extrapolation-specific histograms      
+      //If mode specifies, fill extrapolation-specific histograms
       double Had_weight_incl=1., Had_weight_Mu=1.;
       if(dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")){
 
@@ -823,7 +812,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 	  Had_weight_Mu=0.97;
 	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521){//B+-
 	  Had_weight_incl=0.95;
-	  Had_weight_Mu=0.95;	  
+	  Had_weight_Mu=0.95;
 	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531){ //B_s
 	  Had_weight_incl=1.06;
 	  Had_weight_Mu=1.07;
@@ -831,7 +820,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 	  Had_weight_incl=1.81;
 	  Had_weight_Mu=2.16;
 	}
-	
+
 	/*if(dijet_flav.EqualTo("BB")){
 	  FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl);
 	 }*/
@@ -866,7 +855,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
         ";muon-jet b-hadron p_{T} (scaled down) [GeV];Events/5 GeV;",
         this->trkjet_BHad_pt->at(gbbcand.muojet_index)*0.9/1e3,100,0.,500.,total_evt_weight
       );
-      
+
       this->FillTemplates(&gbbcand,total_evt_weight*Bhadupweight,"BHADPTUP");
       this->FillTemplates(&gbbcand,total_evt_weight*Bhaddownweight,"BHADPTDOWN");
     }
@@ -880,7 +869,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
          trjet_pt/1e3,250,0.,1000.,total_evt_weight);
       }
     }
-    
+
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"srjN"),";No. of R=0.4 jets;Events",
      this->jet_pt->size(),10,0.,10.,total_evt_weight);
 
@@ -890,15 +879,15 @@ bool GbbTupleAna::Processgbb(int i_evt){
     }
 
   }
-  
-  //2.) Before Fit and after b-tagging  
-  float btag_SF_nom=1., btag_SF_up=1., btag_SF_down=1.; 
+
+  //2.) Before Fit and after b-tagging
+  float btag_SF_nom=1., btag_SF_up=1., btag_SF_down=1.;
   //FIXME: shouldn't the doApplyBTaggingSF flag turn off BTagging SFs?
   if(this->eve_isMC && (m_doApplyBTaggingSF || !dijet_flav.Contains("BB"))) this->getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
 
   if (passSpecificCuts(eventFlag, CutsWith2Btags)) {
     //std::cout<<"Filling post-tag plots for"<<m_SysVarName<<"with btag_SF :"<<btag_SF_nom<<std::endl;
-    
+
     if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
@@ -911,7 +900,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
     );
 
     if(m_isNominal){
-      
+
       if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
       if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
       if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
@@ -922,7 +911,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
       if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
       if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) this->FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
 
-      //If mode specifies, fill extrapolation-specific histograms      
+      //If mode specifies, fill extrapolation-specific histograms
       double Had_weight_incl=1., Had_weight_Mu=1.;
       if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
 
@@ -932,7 +921,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 	  Had_weight_Mu=0.97;
 	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521){//B+-
 	  Had_weight_incl=0.95;
-	  Had_weight_Mu=0.95;	  
+	  Had_weight_Mu=0.95;
 	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531){ //B_s
 	  Had_weight_incl=1.06;
 	  Had_weight_Mu=1.07;
@@ -940,7 +929,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 	  Had_weight_incl=1.81;
 	  Had_weight_Mu=2.16;
 	}
-	
+
 	/*if(dijet_flav.EqualTo("BB")){
 	  FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl);
 	 }*/
@@ -966,8 +955,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
 
   //3a)Fill fat jet info for AntiBtag
-  /*if(passSpecificCuts(eventFlag, CutsWithAnti2Btags)){  
-  
+  /*if(passSpecificCuts(eventFlag, CutsWithAnti2Btags)){
+
     if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITANTITAG");
 
     }*/
@@ -976,13 +965,20 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(m_isNominal && passSpecificCuts(eventFlag, CutsWithUntag)){
     if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
     if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
+    // SF calculation needs mjpt_PREFITUNTAG so fill this even if the rest of the track-jet
+    // properties aren't asked for
+    if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES)) {
+      m_HistSvc->FastFillTH1D( makeMuJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
+       ";muon-jet p_{T} [GeV];Events/2 GeV;",
+       this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
+    }
 
   }
 
   //4.) Histograms for Fit-Error calculation (pre- & post-b-tagging in fit pt-bins, for nominal only)
 
   if(m_doFlavFracCorrection){
-    
+
     if(m_isNominal && this->eve_isMC && passSpecificCuts(eventFlag, CutsNoBtag)){
       this->FillTrackJetProperties(&gbbcand,total_evt_weight,ptlabel+"_FITERR");
       this->FillFatJetProperties(&gbbcand,total_evt_weight,ptlabel+"_FITERR");
@@ -992,16 +988,16 @@ bool GbbTupleAna::Processgbb(int i_evt){
       this->FillTrackJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_"+ptlabel+"_FITERR");
       this->FillFatJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_"+ptlabel+"_FITERR");
     }
-    
+
   }
-  
+
   //3.) After Fit and before/after b-tagging
   double fffit_fact=1.;
-  
+
   if(m_doFlavFracCorrection && this->eve_isMC){
-    
+
     if(m_isNominal) {
-      fffit_fact = m_FlavFracCorrector->GetCorrectionFactorNom(dijet_flav, 
+      fffit_fact = m_FlavFracCorrector->GetCorrectionFactorNom(dijet_flav,
                     this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
                     this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3);
     } else {
@@ -1010,7 +1006,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
                     this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3,
                     m_SysVarName);
     }
-    
+
     if(passSpecificCuts(eventFlag, CutsNoBtag)){
       this->FillTemplates(&gbbcand,total_evt_weight*fffit_fact,"POSTFIT");
       this->FillTrackJetProperties(&gbbcand,total_evt_weight*fffit_fact,"POSTFIT");
@@ -1026,13 +1022,13 @@ bool GbbTupleAna::Processgbb(int i_evt){
         //fill histograms with b-tagging systematics applied
         this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"POSTFITPOSTTAG_BTAGUP");
         this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"POSTFITPOSTTAG_BTAGUP");
-        
+
         this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"POSTFITPOSTTAG_BTAGDOWN");
         this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"POSTFITPOSTTAG_BTAGDOWN");
       }
     }
   }
-  
+
   /*  if(total_evt_weight > 50){
     std::cout<<"original weight: "<<original_evt_weight<<" total_evt_weight: "<<total_evt_weight<<std::endl;
     std::cout<<"mc weight: "<<this->eve_mc_w<<std::endl;
@@ -1050,12 +1046,12 @@ void GbbTupleAna::GetFilterType(TString url){
 }
 
 void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
-  
+
   TH2D *hist;
 
   TString hist_name="h_reweight_trigjet_pt_eta_"+trigger_passed;
   //TString hist_name="reweight_trigfatjet_pt_eta_"+trigger_passed;
-  
+
   std::cout<<"Looking for hist: "<<hist_name<<std::endl;
 
   TFile* file=TFile::Open(PathResolverFindCalibFile(filename.Data()).data(),"READ");
@@ -1065,7 +1061,7 @@ void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
   m_reweightHistos[trigger_passed].get()->SetDirectory(0);
 
   if(m_Debug) std::cout<<"GbbTupleAna::setReweightHisto: Found reweighting histogram "<<m_reweightHistos[trigger_passed].get()->GetName()<<std::endl;
-  
+
   file->Close();
 }
 
@@ -1073,7 +1069,7 @@ void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
 bool GbbTupleAna::isLargeWeightEvent(int DSID, float evt_weight, float max_evt_weight){
 
   float samp_weight=0.;
-  
+
   if(DSID==361020)samp_weight=81651.8; //TODO change this
   else if(DSID==361021)samp_weight=81651.8;
   else if(DSID==361022)samp_weight=1088.42;
@@ -1113,7 +1109,7 @@ unsigned int GbbTupleAna::getNthLeadingObjIndex(unsigned int n, std::vector<floa
 }
 
 int GbbTupleAna::getAssocObjIndex(std::vector<int>* part_ind, int assoc_index){
-  
+
   std::vector<int>::iterator it;
   it=find(part_ind->begin(),part_ind->end(),assoc_index);
 
@@ -1136,31 +1132,31 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
   unsigned int muonjet_index=999, nonmuonjet_index=999, muon_index=999;
 
   for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
-    
+
     if(!passR10CaloJetCuts(i_jet)) continue;
-    
+
     if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
       //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
-      continue; 
+      continue;
     }
 
     int assocTJ_ind=-1;
-    
+
     std::vector<unsigned int> nonmuon_cand_index;
-    
+
     muonjet_index=999;
     nonmuonjet_index=999;
-  
+
     for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
-      
+
       assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
 
       if(assocTJ_ind<0){
         if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
         continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
       }
-     
-    
+
+
       //Track jet selection cuts already applied in CxAODFramework (Tuple Maker)
       if(!(this->passR2TrackJetCuts(assocTJ_ind))) continue;
       // else continue;
@@ -1169,7 +1165,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
       //nonmuonjet_index=assocTJ_ind;
       //  break;
       //}
-  
+
       int n_assoc_selmuon=0;
       gbbcand.hasTruthMuon=false;
 
@@ -1185,24 +1181,24 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
 
 
         }
-        
+
       }
-      
+
       if(n_assoc_selmuon && muonjet_index==999){ //first muon associated track jet (assoc trkjets are sorted by pt)
-        muonjet_index=assocTJ_ind;        
+        muonjet_index=assocTJ_ind;
       }else{
         //if(m_Debug && !(this->trkjet_assocMuon_n->at(assocTJ_ind))) std::cout<<"constructGbbCandidate(): No Muon associated to track jet!"<<std::endl;
         if(m_Debug && this->trkjet_assocMuon_n->at(assocTJ_ind)) std::cout<<"constructGbbCandidate(): Muon associated to track jet did not pass cuts!"<<std::endl;
 
         nonmuon_cand_index.push_back(assocTJ_ind);
       }
-      
+
 
     }
 
     //nonmuon-jet: leading associated track jet that is not the muon jet
     if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
-    
+
     //check if leading two associated track jets are used
     bool leading_2trackjets=false;
     if(nonmuon_cand_index.size() && muonjet_index!=999){
@@ -1237,10 +1233,10 @@ GbbCandidate GbbTupleAna::constructGbbCandidate(){
 
   if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
   else if(nonmuonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find nonmuon jet"<<std::endl;
- 
+
   if(nonmuonjet_index == 999 && muonjet_index == 999 && m_Debug)  std::cout<<"constructGbbCandidate(): Failed to find any subjet or fat jet"<<std::endl;
 
-  return gbbcand; 
+  return gbbcand;
 }
 
 GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
@@ -1255,47 +1251,47 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
   unsigned int muonjet_index=999, nonmuonjet_index=999;
 
   for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
-    
+
     if(!passR10CaloJetCuts(i_jet)) continue;
-    
+
     if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
       //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
-      continue; 
+      continue;
     }
     int assocTJ_ind=-1;
-    
+
     std::vector<unsigned int> nonmuon_cand_index;
-    
+
     muonjet_index=999;
     nonmuonjet_index=999;
-  
+
     for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
-      
+
       assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
 
       if(assocTJ_ind<0){
         if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
         continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
       }
-     
-    
+
+
       //Track jet selection cuts already applied in CxAODFramework (Tuple Maker)
       if(!(this->passR2TrackJetCuts(assocTJ_ind))) continue;
       // else continue;
 
-      
+
       if(muonjet_index==999){ //first muon associated track jet (assoc trkjets are sorted by pt)
-        muonjet_index=assocTJ_ind;        
+        muonjet_index=assocTJ_ind;
       }else{
         nonmuon_cand_index.push_back(assocTJ_ind);
       }
-      
+
 
     }
 
     //nonmuon-jet: leading associated track jet that is not the muon jet
     if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
-  
+
     //check if leading two associated track jets are used
     bool leading_2trackjets=false;
     if(nonmuon_cand_index.size() && muonjet_index!=999){
@@ -1316,21 +1312,21 @@ GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
       gbbcand.hasleading2trackjets=leading_2trackjets;
     }
 
-   
+
 
   }
 
   if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
   else if(nonmuonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find nonmuon jet"<<std::endl;
- 
+
   if(nonmuonjet_index == 999 && muonjet_index == 999 && m_Debug)  std::cout<<"constructGbbCandidate(): Failed to find any subjet or fat jet"<<std::endl;
 
-  return gbbcand; 
+  return gbbcand;
 }
 
 GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
   //function to get Gbb candidate without muon reqirement (inclusive selection
-  
+
 
   GbbCandidate gbbcand;
   gbbcand.fat_pt=0.;
@@ -1342,32 +1338,32 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
   unsigned int muonjet_index=999, nonmuonjet_index=999, muon_index=999;
 
   for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
-    
+
     if(!passR10CaloJetCuts(i_jet)) continue;
-    
+
     if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
 	    //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
-	    continue; 
+	    continue;
     }
     int assocTJ_ind=-1;
-    
+
     std::vector<unsigned int> nonmuon_cand_index;
-    
+
     muonjet_index=999;
     nonmuonjet_index=999;
 
     int n_assoc_selmuon=0;
-  
+
     for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
-      
+
       assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
 
       if(assocTJ_ind<0){
 	if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
 	continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
       }
-     
-    
+
+
       //Track jet selection cuts already applied in CxAODFramework (Tuple Maker)
       if(!(this->passR2TrackJetCuts(assocTJ_ind))) continue;
       // else continue;
@@ -1380,23 +1376,23 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
 		      if (muon_index==999) muon_index=this->trkjet_assocMuon_index->at(assocTJ_ind).at(j);
 
 	      }
-	      
+
       }
 
 
-      
+
       if(muonjet_index==999){ //first associated track jet (assoc trkjets are sorted by pt)
-	      muonjet_index=assocTJ_ind;	      
+	      muonjet_index=assocTJ_ind;
       }else{
 	      nonmuon_cand_index.push_back(assocTJ_ind);
       }
-      
+
 
     }
 
     //nonmuon-jet: leading associated track jet that is not the muon jet
     if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
-  
+
     //check if leading two associated track jets are used
     bool leading_2trackjets=false;
     if(nonmuon_cand_index.size() && muonjet_index!=999){
@@ -1408,7 +1404,7 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
 
 
     }
-    
+
     //This would be to veto muons
     /*if(n_assoc_selmuon){
       muonjet_index = 999;
@@ -1424,16 +1420,16 @@ GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
       gbbcand.hasleading2trackjets=leading_2trackjets;
     }
 
-   
+
 
   }
 
   if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
   else if(nonmuonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find nonmuon jet"<<std::endl;
- 
+
   if(nonmuonjet_index == 999 && muonjet_index == 999 && m_Debug)  std::cout<<"constructGbbCandidate(): Failed to find any subjet or fat jet"<<std::endl;
 
-  return gbbcand; 
+  return gbbcand;
 }
 
 
@@ -1563,14 +1559,14 @@ float GbbTupleAna::getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared
   //std::cout<<"sign variables"<<det_sign<<"  "<< det_sign_other<<std::endl;
 
   float val = det_sign>=0 ? 1. : -1.;
-  
+
   return val*TMath::Abs(sd0);
 }
 
 void GbbTupleAna::getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down){
-  
+
          btag_SF_nom=this->eve_BtagSFWeightNom;
-   
+
    float SF_up=0,SF_down=0;
    this->getBtagSysWeights(SF_up, SF_down);
    btag_SF_tot_up=SF_up;
@@ -1581,7 +1577,7 @@ void GbbTupleAna::getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, fl
 void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_down){
 
   //Code adapted from Simon Viel
-  
+
   float squared_weight_down=0.;
   float squared_weight_up=0.;
   float weight_nominal=this->eve_BtagSFWeightNom;
@@ -1597,19 +1593,19 @@ void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_do
     float delta_down=(this->eve_BtagSFWeightSys->at(s+1)*weight_nominal-weight_nominal);
     /*std::cout<<"BtagSys "<<s<<std::endl;
     std::cout<<"Sys weight down:"<<this->eve_BtagSFWeightSys->at(s)<<std::endl;
-    std::cout<<"Sys weight up:"<<this->eve_BtagSFWeightSys->at(s+1)<<std::endl;    
+    std::cout<<"Sys weight up:"<<this->eve_BtagSFWeightSys->at(s+1)<<std::endl;
     std::cout<<"weight nominal:"<<weight_nominal<<std::endl;
     std::cout<<"delta_up"<<delta_up<<std::endl;
     std::cout<<"delta_down"<<delta_down<<std::endl;*/
     if(delta_up*delta_down<0){
-     
+
       if(delta_up>0){
         squared_weight_down+=delta_down*delta_down;
         squared_weight_up+=delta_up*delta_up;
       }else{
         squared_weight_up+=delta_down*delta_down;
         squared_weight_down+=delta_up*delta_up;
-      }      
+      }
 
     }else {
 
@@ -1630,15 +1626,15 @@ void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_do
 
   //std::cout<<"total delta_up"<<btag_SF_tot_up<<std::endl;
   //std::cout<<"total delta_down"<<btag_SF_tot_down<<std::endl;
-  
-  
+
+
 }
 
 std::vector<TString> GbbTupleAna::SplitString(TString str, char delim){
 
   std::vector<TString> tokens;
   TObjArray *Strings=str.Tokenize(delim);
-  
+
   for(int i=0; i<Strings->GetEntriesFast(); i++){
     tokens.push_back(((TObjString*) (*Strings)[i])->GetString());
   }
@@ -1650,7 +1646,7 @@ std::vector<float> GbbTupleAna::SplitStringD(TString str, char delim){
 
   std::vector<float> tokens;
   TObjArray *Strings=str.Tokenize(delim);
-  
+
   for(int i=0; i<Strings->GetEntriesFast(); i++){
     tokens.push_back((((TObjString*) (*Strings)[i])->GetString()).Atof());
     std::cout<<"Token: "<<((TObjString*) (*Strings)[i])->GetString()<<" vs "<<tokens[i]<<std::endl;
@@ -1664,7 +1660,7 @@ void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion
   if(this->trkjet_hasHadMatInt->at(gbbcand->muojet_index) || this->trkjet_hasHadMatInt->at(gbbcand->nonmuojet_index)) hasHadMatInt=true;
 
   if(this->trkjet_hasConversion->at(gbbcand->muojet_index) || this->trkjet_hasConversion->at(gbbcand->nonmuojet_index)) hasConversion=true;
-  
+
   if(this->trkjet_hasKShort->at(gbbcand->muojet_index) || this->trkjet_hasKShort->at(gbbcand->nonmuojet_index) || this->trkjet_hasLambda->at(gbbcand->muojet_index) || this->trkjet_hasLambda->at(gbbcand->nonmuojet_index)) hasLightLongLived=true;
 
   if(!gbbcand->hasTruthMuon) hasNoTruthMuon=true;
@@ -1672,8 +1668,8 @@ void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion
 }
 
 
-// a function to update the bit flag 
+// a function to update the bit flag
 void GbbTupleAna::updateFlag(unsigned long int &flag, const unsigned int cutPosition, const bool passCut) {
-  // Put bit passCut (true or false) at position cutPosition 
+  // Put bit passCut (true or false) at position cutPosition
   flag = flag | passCut << cutPosition;
 }

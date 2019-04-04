@@ -11,7 +11,7 @@ GlobalConfig::~GlobalConfig() {
 
 GlobalConfig::GlobalConfig(const TString& config_path) {
 
-  std::cout<<"=============================================="<<std::endl;   
+  std::cout<<"=============================================="<<std::endl;
   TString m_config_path = config_path;
   //if ( !(gSystem->AccessPathName(m_config_path.Data())) )
   m_config_path = PathResolverFindCalibFile(m_config_path.Data());
@@ -46,7 +46,7 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   std::cout<<"doMergeFlavours: "<<m_doMergeFlavours<<std::endl;
 
   m_FlavourPairs = SplitString(config->GetValue("FlavourPairs",""),',');
-  std::cout<<"FlavourPairs: "<<config->GetValue("FlavourPairs","")<<std::endl; 
+  std::cout<<"FlavourPairs: "<<config->GetValue("FlavourPairs","")<<std::endl;
 
   m_MuonJetPtBins = SplitStringD(config->GetValue("MuonJetPtBins",""),',');
   std::cout<<"MuonJetPtBins: "<<config->GetValue("MuonJetPtBins","")<<std::endl;
@@ -74,7 +74,7 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
     std::cout <<("PlotBins."+var).Data()<<": "<<config->GetValue(("PlotBins."+var).Data(),"")<<std::endl;
   }
 
-  std::cout<<"=============================================="<<std::endl;   
+  std::cout<<"=============================================="<<std::endl;
   delete config;
 }
 
@@ -83,16 +83,16 @@ std::vector<TString> GlobalConfig::SplitString(TString str, char delim){
   TObjArray *strings = str.Tokenize(delim);
   for(int i=0; i < strings->GetEntriesFast(); i++){
     tokens.push_back(((TObjString*) (*strings)[i])->GetString());
-  } 
+  }
   delete strings;
-  return tokens; 
-} 
+  return tokens;
+}
 
 std::vector<float> GlobalConfig::SplitStringD(TString str, char delim){
   std::vector<float> tokens;
   TObjArray *strings=str.Tokenize(delim);
   for(int i=0; i < strings->GetEntriesFast(); i++){
-    tokens.push_back((((TObjString*) (*strings)[i])->GetString()).Atof()); 
+    tokens.push_back((((TObjString*) (*strings)[i])->GetString()).Atof());
   }
   delete strings;
   return tokens;
