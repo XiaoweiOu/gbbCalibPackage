@@ -107,12 +107,6 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_pext = config->GetValue("PlotExtention",".pdf");
   std::cout<<"PlotExtention: "<<m_pext<<std::endl;
 
-  m_xlabel = config->GetValue("XAxisLabel","Large-R Jet p_{T} [GeV]");
-  std::cout<<"XAxisLabel: "<<m_xlabel<<std::endl;
-
-  m_ylabel = config->GetValue("YAxisLabel","Scale Factor");
-  std::cout<<"XAxisLabel: "<<m_ylabel<<std::endl;
-
   m_plot_label = config->GetValue("PlotLabel","Internal");
   std::cout<<"PlotLabel: "<<m_plot_label<<std::endl;
 
@@ -1089,15 +1083,6 @@ void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, c
   infile->Close();
   return;
 }
-     // //Get Data Hist for region i_reg
-     // if( ! (var[i_var].Contains("BTAGUP") || var[i_var].Contains("BTAGDOWN") ) ){
-     //
-     //     if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
-     //     else m_fatjet_histograms_pretag_data[name_data]=std::shared_ptr<TH1D>((TH1D*)clone_tmp);
-     //     TString name_mc=regions[i_reg]+"_"+var[i_var]+"_"+sys[i_sys];
-     //     if(var[i_var].Contains("POSTTAG")) m_fatjet_histograms_posttag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
-     //     else  m_fatjet_histograms_pretag[name_mc].push_back(std::shared_ptr<TH1D>((TH1D*)clone_tmp));
-     // }
 
 TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region){
 

@@ -77,11 +77,6 @@ public:
   void setDoEvenOddTemplates(bool value){m_doEvenOddTemplates=value; }
   void setReweightHisto(TString filename,TString trigger_passed);
 
-  void setDiTrkJetCategories(std::vector<TString>& vect){ m_ditrkjet_cat=vect; }
-        void setPtBins(std::vector<float>& muojet_vect,std::vector<float>& nonmuojet_vect){ m_muojet_pt_bins=muojet_vect; m_nonmuojet_pt_bins=nonmuojet_vect; }
-
-
-
 private:
   GlobalConfig *m_config;
   HistogramService *m_HistSvc; //!
@@ -133,13 +128,7 @@ private:
 
   bool m_doSd0Systematics;
 
-  bool m_doMergeDiTrkjetCat;
   bool m_useVRTrkJets;
-
-  std::vector<TString> m_ditrkjet_cat;
-  std::vector<TString> m_trkjet_cat;
-  std::vector<float> m_muojet_pt_bins;
-  std::vector<float> m_nonmuojet_pt_bins;
 
   std::shared_ptr<TRandom3> m_random;
   bool m_doRandomSplitting;

@@ -86,8 +86,8 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     SF_band_sys->SetFillStyle(3001);
     SF_band_sys->SetTitle("");
 
-    SF_band_sys->GetXaxis()->SetTitle(m_xlabel.Data());
-    SF_band_sys->GetYaxis()->SetTitle(m_ylabel.Data());
+    SF_band_sys->GetXaxis()->SetTitle("Large-R Jet p_{T} [GeV]");
+    SF_band_sys->GetYaxis()->SetTitle("Scale Factor");
     if(plot_type.EqualTo("Eff"))  SF_band_sys->GetYaxis()->SetTitle("Double-b-tagging Efficiency");
 
     SF_band_sys->GetXaxis()->SetTitleSize(0.04);
