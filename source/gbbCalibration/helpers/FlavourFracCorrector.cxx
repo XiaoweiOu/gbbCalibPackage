@@ -27,7 +27,7 @@ FlavourFracCorrector::FlavourFracCorrector(TString infilename){
 	//m_nonmuojet_pt_bins={20.,50.,80.};
 
 	m_muojet_pt_bins={100.,200.};                                                                                                                                                                                                               m_nonmuojet_pt_bins={20.,50.,80.};
-	
+
 	this->ReadInFitResults(infilename);
 
 }
@@ -52,7 +52,7 @@ void FlavourFracCorrector::ReadInFitResults(TString infilename){
 }
 
 float FlavourFracCorrector::GetCorrectionFactorNom(TString flav_category,float mu_pt, float nonmu_pt){
-	
+
 	TString pt_label=this->getPtLabel(mu_pt,nonmu_pt);
 
 	TString name="hValue_mu_"+flav_category+"_"+pt_label+"_Nom";
@@ -74,7 +74,7 @@ float FlavourFracCorrector::GetCorrectionFactorSys(TString flav_category,float m
 
 	TH1D *tmp;
         tmp=m_FitResults[name].get();
-        
+
 	return tmp->GetBinContent(1);
 }
 
@@ -123,9 +123,9 @@ float FlavourFracCorrector::GetCorrectionFactorTotalError(float mu_pt, float non
 
 float FlavourFracCorrector::GetCovarianceMatrixElement(int i, int j, TString ptlabel){
   TString name_CovMat="hCovMat_"+ptlabel+"_Nom";
-  
+
   TH1D *tmp=m_FitResults[name_CovMat].get();
-  
+
   int nparam_sq=tmp->GetNbinsX();
   int nparam=(int)TMath::Sqrt((float)nparam_sq);
 
@@ -134,7 +134,7 @@ float FlavourFracCorrector::GetCovarianceMatrixElement(int i, int j, TString ptl
 }
 
 std::vector<float> FlavourFracCorrector::GetCovarianceMatrix(TString ptlabel){
-  
+
   TString name_CovMat="hCovMat_"+ptlabel+"_Nom";
 
   TH1D *tmp=m_FitResults[name_CovMat].get();
@@ -142,7 +142,7 @@ std::vector<float> FlavourFracCorrector::GetCovarianceMatrix(TString ptlabel){
   std::vector<float> mat;
 
   for(int i=1; i<=tmp->GetNbinsX(); i++){
-    
+
     mat.push_back(tmp->GetBinContent(i));
 
   }
@@ -182,6 +182,6 @@ TString FlavourFracCorrector::getPtLabel(float muojet_pt,float nonmuojet_pt){
 		}
 
 	}
-	
+
 	return label;
 }

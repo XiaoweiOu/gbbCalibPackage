@@ -51,7 +51,7 @@ class FitData {
     m_BootStrapTemplateMap.clear();
     m_MC_HistNamesMap.clear();
     m_Data_HistNamesMap.clear();
-    
+
   }
 
   void SetHistogramNames(TString &channel,TString& data_name, std::vector<TString>& mc_names){
@@ -101,7 +101,7 @@ class FitData {
   float GetParamStartValue();
 
   void GetMCStatsNPInitVal(TString& channel,std::vector<double> &par, std::vector<double>& par_err);
-    
+
 
 };
 

@@ -108,9 +108,9 @@ def SetYaxisRanges(can,ymin,ymax) :
     can.Update()
     return
 
-##                                                                                                                                                                                                             
-## Set the y-axis ranges of a canvas ratio                                                                                                                                                                          
-##                                                                                                                                                                                                              
+##
+## Set the y-axis ranges of a canvas ratio
+##
 def SetYaxisRangesRatio(can,ymin,ymax) :
     if can.GetPrimitive('pad_bot') :
         SetYaxisRanges(can.GetPrimitive('pad_bot'),ymin,ymax)
@@ -132,7 +132,7 @@ def SetYaxisRangesRatio(can,ymin,ymax) :
     return
 
 
-    
+
 ##
 ## Set the axis label of a canvas
 ##
@@ -184,7 +184,7 @@ def GetYaxisRanges(can,check_all=False,ignorezeros=False,ignoreErrors=False) :
             if not check_all :
                 return ymin,ymax
         elif issubclass(type(i),TH1) :
-            ysum = 0 
+            ysum = 0
             for bin in range(i.GetNbinsX()) :
                 ysum = ysum+i.GetBinContent(bin+1)
             if ysum == 0: ignorezeros = 0

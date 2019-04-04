@@ -368,7 +368,7 @@ public :
 #endif
 
 #ifdef TupleAna_cxx
-TupleAna::TupleAna(TTree *tree) : fChain(0) 
+TupleAna::TupleAna(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.

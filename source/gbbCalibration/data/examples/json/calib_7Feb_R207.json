@@ -24,7 +24,7 @@
     "JET_Rtrk_Tracking_Sub__1up",
     "FATJET_JER__1up",
     "FATJET_JMR__1up"
-    ],  
+    ],
   "MuFilteredMC" : [
     "/user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07.e5660_s2726_r7773_r7676_p3323_tuple.root/outhist_user.ruth.mc15_13TeV.427003.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07.e5660_s2726_r7773_r7676_p3323_tuple.root",
     "/user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5660_s2726_r7773_r7676_p3323_tuple.root/outhist_user.ruth.mc15_13TeV.427004.DAOD_FTAG1.FTNtupCalib.gbb_v00-01-07b.e5660_s2726_r7773_r7676_p3323_tuple.root",

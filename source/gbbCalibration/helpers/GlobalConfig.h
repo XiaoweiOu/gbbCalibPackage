@@ -45,7 +45,7 @@ class GlobalConfig {
     return GetMuJetLabel(muJetPt)+"_"+GetNonMuJetLabel(nonMuJetPt);
   }
   TString GetMuJetLabel(float muJetPt) { return GetPtLabel(muJetPt, m_MuonJetPtBins, m_MuonJetRegions); }
-  TString GetNonMuJetLabel(float nonMuJetPt) { 
+  TString GetNonMuJetLabel(float nonMuJetPt) {
     return GetPtLabel(nonMuJetPt, m_NonMuJetPtBins, m_NonMuJetRegions);
   }
 
@@ -83,7 +83,7 @@ class GlobalConfig {
   std::vector<TString> MakeLabels(const std::vector<float> ptBins, const TString prefix);
   TString GetPtLabel(float pt, std::vector<float> ptBins, std::vector<TString> ptRegions);
   TString FloatToStr(const float val);
-  
+
   std::vector<TString> SplitString(TString str, char delim);
   std::vector<float> SplitStringD(TString str, char delim);
 

@@ -47,7 +47,7 @@ struct SFCalcResult{
   std::vector<float> feff_datastat_err;
   std::vector<float> feff_mc;
   std::vector<float> feff_mc_stat_err;
-  
+
 };
 
 class ScaleFactorCalculator {
@@ -60,7 +60,7 @@ private:
   GlobalConfig* m_config;
 
   TString m_outdir;
-  
+
   bool m_Debug;
   bool m_doMCStatsNP;
   bool m_doFitInFatJetPtBins;
@@ -100,13 +100,13 @@ private:
 
   std::map<TString,std::shared_ptr<TH1D>> m_fatjet_histograms_pretag_data;
   std::map<TString,std::shared_ptr<TH1D>> m_fatjet_histograms_posttag_data;
- 
+
   std::map<TString,std::vector<std::shared_ptr<TH1D>>> m_fatjet_histograms_pretag; //key: <ptregion>_<sys>, element: hists all pairs
   std::map<TString,std::vector<std::shared_ptr<TH1D>>> m_fatjet_histograms_posttag;
   std::map<TString,std::vector<double>> m_fit_params;
   std::map<TString,std::vector<double>> m_fit_errs;
   std::map<TString,std::vector<double>> m_nom_cov_mats; //key: <ptregion>, element: nominal covariance matrix
-  
+
   std::map<TString,std::vector<std::vector<double>>> m_pseudo_fit_params;
   std::map<TString,std::vector<std::vector<double>>> m_pseudo_fit_params_Data;
 
@@ -116,7 +116,7 @@ private:
 	virtual ~ScaleFactorCalculator();
 
 	void ReadConfig(const TString config_path);
-	
+
 	SFCalcResult CalculateScaleFactors(TString &sys, bool doPseudo=false, unsigned int i_pseudo=0,bool doPseudoData=false);
 	SFCalcResult CalculateScaleFactorsByRegion(TString &sys, bool doPseudo=false, unsigned int i_pseudo=0,bool doPseudoData=false);
 	CalibResult CalculateScaleFactorsAndErrors(bool doByRegion=false);
@@ -134,7 +134,7 @@ private:
 
 	TString MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
 	TString PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists);
-  
+
 	TGraphAsymmErrors* getFitUncert(TString& var);
 	TGraphAsymmErrors* getFitUncertToys(TString& var);
 
@@ -145,7 +145,7 @@ private:
 	TGraphAsymmErrors* getFitUncertBTagRateToys();
 
 	TGraphAsymmErrors* getModellingUncert(TString &var, std::vector<TString> &systematics, bool applyFitCorrection, bool isPosttag, bool isEff=false);
-	
+
 	TGraphAsymmErrors* getBTagUncert(TString &var, bool applyFitCorrection);
         TGraphAsymmErrors* getExperimentalUncert(TString &var, std::vector<TString> &systematics, bool applyFitCorrection, bool isEff=false);
         TGraphAsymmErrors* HistStackToTGraph(const TH1* h_nom, const std::vector<std::pair<TH1*,TH1*> > systematics);
@@ -154,7 +154,7 @@ private:
 	TGraphAsymmErrors* getTotalSys(TGraphAsymmErrors* fitsysgraph, TGraphAsymmErrors* btagsysgraph, TGraphAsymmErrors* jetsysgraph, TGraphAsymmErrors* stat, TGraphAsymmErrors* model_sys=0);
 
 	TGraphAsymmErrors* getMCStat(TH1* full_mc);
-  
+
 	void SaveReweightHists(TString &var, TString &outfilename);
 	void SaveFitCorrectionFactorsSys();
 
