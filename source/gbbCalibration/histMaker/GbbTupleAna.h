@@ -17,6 +17,11 @@
 #include "TRandom3.h"
 #include <map>
 
+//
+// Struct storing the defining characteristics of a g->bb jet
+// The indices can be used to access information on the
+// association objects (fatjet, track-jets, muon).
+//
 struct GbbCandidate{
 
   unsigned int fat_index;
@@ -28,6 +33,10 @@ struct GbbCandidate{
   bool hasTruthMuon;
 };
 
+//
+// Struct storing all the various impact parameter variables
+// being considered for the template fit
+//
 struct trkjetSd0Info {
   float maxSd0;
   float maxSd0_dR;
@@ -61,6 +70,11 @@ struct trkjetSd0Info {
   int nMean;
 };
 
+//
+// The core class used to read our ntuple format and produce histogram inputs
+// to the ScaleFactorCalculator. This class inherits from TupleAna, which was
+// made with TTree::MakeClass and left largely untouched
+//
 class GbbTupleAna : public TupleAna {
 
 public:
@@ -68,8 +82,14 @@ public:
   GbbTupleAna(const std::vector<TString> infiles, const TString outfilename, const TString treename, const TString configname);
   virtual ~GbbTupleAna();
 
+  //
+  // Read in the specified config file and GlobalConfig.cfg
+  //
   void ReadConfig(const TString& config_path);
 
+  //
+  // Do the work and save the result
+  //
   void Loop();
   void Finalize();
 
@@ -82,6 +102,10 @@ private:
   HistogramService *m_HistSvc; //!
   TString m_Outputname; //! name of output file
 
+  //
+  // Set of flags to control which histograms to make. Set as a vector
+  // of strings in the config file
+  //
   int m_RunMode;
   typedef enum {
     FILL_TEMPLATES = 0x001,
@@ -144,31 +168,55 @@ private:
   bool Processgbb(int i_evt);
 
   void GetFilterType(TString url);
+
+  //
+  // Functions for kinematic cuts. Defined in GbbSelectionHelp.cxx
+  //
   bool passR4CaloJetCuts(unsigned int i_jet);
   bool passR10CaloJetCuts(unsigned int i_jet);
   bool passR2TrackJetCuts(unsigned int i_jet);
+  bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
+  bool passMuonSelection(unsigned int i_muon);
 
+  //
+  // Functions for b-tagging cuts
+  //
   int passBTagCut(const GbbCandidate& gbbcand);
   int passMV2c10Cut(const GbbCandidate& gbbcand);
   int passXbbScoreCut(const GbbCandidate& gbbcand);
   double XbbTag_antiQCD_flat60eff(double x);
   double XbbTag_antiQCDtop_flat60eff(double x);
 
+  //
+  // Functions to get an objects location in the branch based on
+  // the stored index. Must be used to get the correct index
+  // for associated track-jets and muons
+  //
   unsigned int getLeadingObjIndex(std::vector<float> *quantity);
   unsigned int getNthLeadingObjIndex(unsigned int n, std::vector<float> *quantity);
   int getAssocObjIndex(std::vector<int>* part_ind, int assoc_index);
 
+  //
+  // Functions for basic event cleaning cuts
+  //
   bool isCleanEvt(const float total_evt_weight);
   bool hasBadJet();
-  bool passMuonSelection(unsigned int i_muon);
   int getTrigMatch();
   bool passTrigger(const float trigjet_pt, float& prescale, TString& trigger_passed);
   bool cutTriggerBias(const float gbbcandpt, const TString trigger_passed);
 
+  //
+  // Functions to construct the GbbCandidate struct
+  // TODO: consolidate these into 1 function with flags for options
+  //
   GbbCandidate constructGbbCandidate();
   GbbCandidate constructGbbCandidateAlternative();
   GbbCandidate constructGbbCandidateInclusive();
 
+  //
+  // Wrapper functions for the MakePlotName functions from the
+  // GlobalConfig class. Defined in GbbFillHelp.cxx
+  //
   TString makeMuJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeNonMuJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeDiJetPlotName(GbbCandidate* gbbcand, const TString var);
@@ -178,13 +226,14 @@ private:
   float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
   float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
 
+  //
+  // Functions to fill histograms. Defined in GbbFillHelp.cxx
+  // Call the function FastFillTH1D from the HistogramService class
+  //
   void FillReweightInfo(int i_trig_jet, float event_weight,TString nametag="");
   void FillFatReweightInfo(float trigfat_pt,float trigfat_eta, float event_weight,TString nametag="");
-
   void FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag="");
   void FillTriggerTurnOnHistograms(int i_trigjet, float event_weight);
-
-
   void FillTrackJetProperties(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillFatJetProperties(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag="");
@@ -194,8 +243,10 @@ private:
 
   bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
 
-  bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
-        trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
+  //
+  // Function to construct the trkjetSd0Info struct
+  //
+  trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
 
   float getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
   float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
@@ -205,6 +256,9 @@ private:
 
   void getSystematicsFlags(GbbCandidate *, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMu);
 
+  //
+  // Functions used to parse strings from configuration files as vectors
+  //
   std::vector<TString> SplitString(TString str, char delim);
   std::vector<float> SplitStringD(TString str, char delim);
 

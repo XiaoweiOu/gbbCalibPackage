@@ -21,6 +21,13 @@ class TDirectory;
 class TFile;
 
 
+//
+// Class used to store histograms in memory and write them to file.
+// When FastFillTH{1D/2D} is called it checks if a histogram with that
+// name exists already and creates it if not.
+// Histograms are all stored in a single map and can be retrieved by
+// key for reading/writing
+//
 class HistogramService
 {
    friend class GbbTupleAna;
@@ -33,6 +40,10 @@ private:
 
 public:
 
+   //
+   // Functions to do the work of creating histograms that don't yet
+   // exist and filling histograms that do
+   //
    void FastFillTH1D(TString key, double x, int nbin=100, double xmin=0., double xmax=0., double weight=1.) {
      FastFillTH1D(key, key, x, nbin, xmin, xmax, weight);
    }
@@ -43,8 +54,15 @@ public:
    }
    void FastFillTH2D(TString key, TString title, double x, double y, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, double weight=1.);
 
+   //
+   // Function to write all stored histograms to file
+   //
    void WriteRootFile(TString fileName);
 
+   //
+   // Functions to retrieve histograms and traverse the possible
+   // directory structure used for storage
+   //
    void SetCurrentDir(TString dirname){ fCurrentDir=dirname; }
    string GetCurrentDir(){ return fCurrentDir; }
    bool BookRootObject(TObject* hist);
