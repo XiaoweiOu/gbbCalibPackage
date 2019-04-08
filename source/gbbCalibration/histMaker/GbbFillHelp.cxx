@@ -514,15 +514,28 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
 void GbbTupleAna::FillTriggerTurnOnHistograms(int i_trigjet, float event_weight){
 
   //Fill Histograms for Trigger turn-on curves
-
-  //if((this->eve_HLT_j60))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT60",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j85))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT85",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j110))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT110",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j150))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT150",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j175))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT175",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j260))m_HistSvc->FastFillTH1D("trigjet_pt_passHLT260",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j360)) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT360",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
-  if((this->eve_HLT_j380)) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT380",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  if (eve_HLT_j150) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j150", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j175) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j175", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j200) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j200", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j300) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j300", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j320) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j320", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j360) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j360", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j380) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j380", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j400) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j400", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j420) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j450) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j450", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j300_a10_lcw_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j300_a10_lcw_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j360_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j360_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j400_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j400_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j420_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260_a10_lcw_subjes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10_lcw_subjes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j420_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j440_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j440_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j460_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j460_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260_a10t_lcw_jes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10t_lcw_jes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j440_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j440_a10t_lcw_jes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j460_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j460_a10t_lcw_jes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   m_HistSvc->FastFillTH1D("trigjet_pt_noHLTreq",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
 
 }

@@ -253,7 +253,8 @@ int GbbTupleAna::getTrigMatch() {
   TLorentzVector trigjet_trlvl,jet_reco;
   double DRmin_trigmatch=999.;
   int i_trigjet=-1;
-  trigjet_trlvl.SetPtEtaPhiM(this->trigjet_pt->at(0),this->trigjet_eta->at(0),this->trigjet_phi->at(0),0.);
+  trigjet_trlvl.SetPtEtaPhiM(this->trigjet_a4IS_pt->at(0),this->trigjet_a4IS_eta->at(0),
+      this->trigjet_a4IS_phi->at(0),0.);
   for(unsigned int i=0; i<this->jet_pt->size(); i++){
     jet_reco.SetPtEtaPhiM(this->jet_pt->at(i),this->jet_eta->at(i),this->jet_phi->at(i),0.);
     if(jet_reco.DeltaR(trigjet_trlvl)<0.4 && jet_reco.DeltaR(trigjet_trlvl)<DRmin_trigmatch && this->passR4CaloJetCuts(i)){
@@ -322,6 +323,8 @@ bool GbbTupleAna::passTrigger(const float trigjet_pt, float& prescale, TString& 
 
   if (trigjet_pt > 500e3 && this->eve_HLT_j380) { //demand that full efficiency of turnon curve has been reached
     trigger_passed="HLT_j380";
+  } else if (trigjet_pt > 500e3 && this->eve_HLT_j420) { //demand that full efficiency of turnon curve has been reached
+    trigger_passed="HLT_j420";
   } else {
     return false;
   }

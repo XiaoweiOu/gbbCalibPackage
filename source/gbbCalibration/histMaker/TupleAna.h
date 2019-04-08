@@ -41,6 +41,7 @@ public :
    Int_t           eve_isCleanEvent;
    Int_t           eve_passGRL;
    Float_t         eve_PVz;
+   Float_t         eve_nVtx2Trks;
    Int_t           eve_HLT_j15;
    Int_t           eve_HLT_j25;
    Int_t           eve_HLT_j35;
@@ -60,8 +61,18 @@ public :
    Int_t           eve_HLT_j380;
    Int_t           eve_HLT_j400;
    Int_t           eve_HLT_j420;
-   Int_t           eve_HLT_j440;
-   Int_t           eve_HLT_j460;
+   Int_t           eve_HLT_j450;
+   Int_t           eve_HLT_j300_a10_lcw_L1J75;
+   Int_t           eve_HLT_j360_a10_lcw_L1J100;
+   Int_t           eve_HLT_j400_a10_lcw_L1J100;
+   Int_t           eve_HLT_j420_a10_lcw_L1J100;
+   Int_t           eve_HLT_j260_a10_lcw_subjes_L1J75;
+   Int_t           eve_HLT_j420_a10_lcw_subjes_L1J100;
+   Int_t           eve_HLT_j440_a10_lcw_subjes_L1J100;
+   Int_t           eve_HLT_j460_a10_lcw_subjes_L1J100;
+   Int_t           eve_HLT_j260_a10t_lcw_jes_L1J75;
+   Int_t           eve_HLT_j440_a10t_lcw_jes_L1J100;
+   Int_t           eve_HLT_j460_a10t_lcw_jes_L1J100;
    Float_t         eve_HLT_j15_ps;
    Float_t         eve_HLT_j25_ps;
    Float_t         eve_HLT_j35_ps;
@@ -80,6 +91,17 @@ public :
    Float_t         eve_HLT_j380_ps;
    Float_t         eve_HLT_j400_ps;
    Float_t         eve_HLT_j420_ps;
+   Float_t         eve_HLT_j300_a10_lcw_L1J75_ps;
+   Float_t         eve_HLT_j360_a10_lcw_L1J100_ps;
+   Float_t         eve_HLT_j400_a10_lcw_L1J100_ps;
+   Float_t         eve_HLT_j420_a10_lcw_L1J100_ps;
+   Float_t         eve_HLT_j260_a10_lcw_subjes_L1J75_ps;
+   Float_t         eve_HLT_j420_a10_lcw_subjes_L1J100_ps;
+   Float_t         eve_HLT_j440_a10_lcw_subjes_L1J100_ps;
+   Float_t         eve_HLT_j460_a10_lcw_subjes_L1J100_ps;
+   Float_t         eve_HLT_j260_a10t_lcw_jes_L1J75_ps;
+   Float_t         eve_HLT_j440_a10t_lcw_jes_L1J100_ps;
+   Float_t         eve_HLT_j460_a10t_lcw_jes_L1J100_ps;
    Float_t         eve_BtagSFWeightNom;
    vector<float>   *eve_BtagSFWeightSys;
    vector<float>   *jet_pt;
@@ -184,9 +206,18 @@ public :
    vector<vector<float> > *trkjet_BHadDecays_eta;
    vector<vector<float> > *trkjet_BHadDecays_phi;
    vector<vector<float> > *trkjet_BHadDecays_e;
-   vector<float>   *trigjet_pt;
-   vector<float>   *trigjet_phi;
-   vector<float>   *trigjet_eta;
+   vector<float>   *trigjet_a4_pt;
+   vector<float>   *trigjet_a4_phi;
+   vector<float>   *trigjet_a4_eta;
+   vector<float>   *trigjet_a4IS_pt;
+   vector<float>   *trigjet_a4IS_phi;
+   vector<float>   *trigjet_a4IS_eta;
+   vector<float>   *trigjet_a10_pt;
+   vector<float>   *trigjet_a10_phi;
+   vector<float>   *trigjet_a10_eta;
+   vector<float>   *trigjet_a10t_pt;
+   vector<float>   *trigjet_a10t_phi;
+   vector<float>   *trigjet_a10t_eta;
 
    // List of branches
    TBranch        *b_eve_num;   //!
@@ -203,6 +234,7 @@ public :
    TBranch        *b_eve_isCleanEvent;   //!
    TBranch        *b_eve_passGRL;   //!
    TBranch        *b_eve_PVz;   //!
+   TBranch        *b_eve_nVtx2Trks;   //!
    TBranch        *b_eve_HLT_j15;   //!
    TBranch        *b_eve_HLT_j25;   //!
    TBranch        *b_eve_HLT_j35;   //!
@@ -222,8 +254,18 @@ public :
    TBranch        *b_eve_HLT_j380;   //!
    TBranch        *b_eve_HLT_j400;   //!
    TBranch        *b_eve_HLT_j420;   //!
-   TBranch        *b_eve_HLT_j440;   //!
-   TBranch        *b_eve_HLT_j460;   //!
+   TBranch        *b_eve_HLT_j450;   //!
+   TBranch        *b_eve_HLT_j300_a10_lcw_L1J75;   //!
+   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j400_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j420_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j260_a10_lcw_subjes_L1J75;   //!
+   TBranch        *b_eve_HLT_j420_a10_lcw_subjes_L1J100;   //!
+   TBranch        *b_eve_HLT_j440_a10_lcw_subjes_L1J100;   //!
+   TBranch        *b_eve_HLT_j460_a10_lcw_subjes_L1J100;   //!
+   TBranch        *b_eve_HLT_j260_a10t_lcw_jes_L1J75;   //!
+   TBranch        *b_eve_HLT_j440_a10t_lcw_jes_L1J100;   //!
+   TBranch        *b_eve_HLT_j460_a10t_lcw_jes_L1J100;   //!
    TBranch        *b_eve_HLT_j15_ps;   //!
    TBranch        *b_eve_HLT_j25_ps;   //!
    TBranch        *b_eve_HLT_j35_ps;   //!
@@ -242,6 +284,17 @@ public :
    TBranch        *b_eve_HLT_j380_ps;   //!
    TBranch        *b_eve_HLT_j400_ps;   //!
    TBranch        *b_eve_HLT_j420_ps;   //!
+   TBranch        *b_eve_HLT_j300_a10_lcw_L1J75_ps;   //!
+   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j400_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j420_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j260_a10_lcw_subjes_L1J75_ps;   //!
+   TBranch        *b_eve_HLT_j420_a10_lcw_subjes_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j440_a10_lcw_subjes_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j460_a10_lcw_subjes_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j260_a10t_lcw_jes_L1J75_ps;   //!
+   TBranch        *b_eve_HLT_j440_a10t_lcw_jes_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j460_a10t_lcw_jes_L1J100_ps;   //!
    TBranch        *b_eve_BtagSFWeightNom;   //!
    TBranch        *b_eve_BtagSFWeightSys;   //!
    TBranch        *b_jet_pt;   //!
@@ -346,9 +399,18 @@ public :
    TBranch        *b_trkjet_BHadDecays_eta;   //!
    TBranch        *b_trkjet_BHadDecays_phi;   //!
    TBranch        *b_trkjet_BHadDecays_e;   //!
-   TBranch        *b_trigjet_pt;   //!
-   TBranch        *b_trigjet_phi;   //!
-   TBranch        *b_trigjet_eta;   //!
+   TBranch        *b_trigjet_a4_pt;   //!
+   TBranch        *b_trigjet_a4_phi;   //!
+   TBranch        *b_trigjet_a4_eta;   //!
+   TBranch        *b_trigjet_a4IS_pt;   //!
+   TBranch        *b_trigjet_a4IS_phi;   //!
+   TBranch        *b_trigjet_a4IS_eta;   //!
+   TBranch        *b_trigjet_a10_pt;   //!
+   TBranch        *b_trigjet_a10_phi;   //!
+   TBranch        *b_trigjet_a10_eta;   //!
+   TBranch        *b_trigjet_a10t_pt;   //!
+   TBranch        *b_trigjet_a10t_phi;   //!
+   TBranch        *b_trigjet_a10t_eta;   //!
 
    TupleAna(TTree *tree=0);
    virtual ~TupleAna();
@@ -519,9 +581,18 @@ void TupleAna::Init(TTree *tree)
    trkjet_BHadDecays_eta = 0;
    trkjet_BHadDecays_phi = 0;
    trkjet_BHadDecays_e = 0;
-   trigjet_pt = 0;
-   trigjet_phi = 0;
-   trigjet_eta = 0;
+   trigjet_a4_pt = 0;
+   trigjet_a4_phi = 0;
+   trigjet_a4_eta = 0;
+   trigjet_a4IS_pt = 0;
+   trigjet_a4IS_phi = 0;
+   trigjet_a4IS_eta = 0;
+   trigjet_a10_pt = 0;
+   trigjet_a10_phi = 0;
+   trigjet_a10_eta = 0;
+   trigjet_a10t_pt = 0;
+   trigjet_a10t_phi = 0;
+   trigjet_a10t_eta = 0;
 
    // Set branch addresses and branch pointers
    if (!tree) return;
@@ -543,6 +614,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_isCleanEvent", &eve_isCleanEvent, &b_eve_isCleanEvent);
    fChain->SetBranchAddress("eve_passGRL", &eve_passGRL, &b_eve_passGRL);
    fChain->SetBranchAddress("eve_PVz", &eve_PVz, &b_eve_PVz);
+   fChain->SetBranchAddress("eve_nVtx2Trks", &eve_nVtx2Trks, &b_eve_nVtx2Trks);
    fChain->SetBranchAddress("eve_HLT_j15", &eve_HLT_j15, &b_eve_HLT_j15);
    fChain->SetBranchAddress("eve_HLT_j25", &eve_HLT_j25, &b_eve_HLT_j25);
    fChain->SetBranchAddress("eve_HLT_j35", &eve_HLT_j35, &b_eve_HLT_j35);
@@ -562,8 +634,18 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_HLT_j380", &eve_HLT_j380, &b_eve_HLT_j380);
    fChain->SetBranchAddress("eve_HLT_j400", &eve_HLT_j400, &b_eve_HLT_j400);
    fChain->SetBranchAddress("eve_HLT_j420", &eve_HLT_j420, &b_eve_HLT_j420);
-   fChain->SetBranchAddress("eve_HLT_j440", &eve_HLT_j440, &b_eve_HLT_j440);
-   fChain->SetBranchAddress("eve_HLT_j460", &eve_HLT_j460, &b_eve_HLT_j460);
+   fChain->SetBranchAddress("eve_HLT_j450", &eve_HLT_j450, &b_eve_HLT_j450);
+   fChain->SetBranchAddress("eve_HLT_j300_a10_lcw_L1J75", &eve_HLT_j300_a10_lcw_L1J75, &b_eve_HLT_j300_a10_lcw_L1J75);
+   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100", &eve_HLT_j360_a10_lcw_L1J100, &b_eve_HLT_j360_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100", &eve_HLT_j400_a10_lcw_L1J100, &b_eve_HLT_j400_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100", &eve_HLT_j420_a10_lcw_L1J100, &b_eve_HLT_j420_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j260_a10_lcw_subjes_L1J75", &eve_HLT_j260_a10_lcw_subjes_L1J75, &b_eve_HLT_j260_a10_lcw_subjes_L1J75);
+   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_subjes_L1J100", &eve_HLT_j420_a10_lcw_subjes_L1J100, &b_eve_HLT_j420_a10_lcw_subjes_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j440_a10_lcw_subjes_L1J100", &eve_HLT_j440_a10_lcw_subjes_L1J100, &b_eve_HLT_j440_a10_lcw_subjes_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j460_a10_lcw_subjes_L1J100", &eve_HLT_j460_a10_lcw_subjes_L1J100, &b_eve_HLT_j460_a10_lcw_subjes_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j260_a10t_lcw_jes_L1J75", &eve_HLT_j260_a10t_lcw_jes_L1J75, &b_eve_HLT_j260_a10t_lcw_jes_L1J75);
+   fChain->SetBranchAddress("eve_HLT_j440_a10t_lcw_jes_L1J100", &eve_HLT_j440_a10t_lcw_jes_L1J100, &b_eve_HLT_j440_a10t_lcw_jes_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j460_a10t_lcw_jes_L1J100", &eve_HLT_j460_a10t_lcw_jes_L1J100, &b_eve_HLT_j460_a10t_lcw_jes_L1J100);
    fChain->SetBranchAddress("eve_HLT_j15_ps", &eve_HLT_j15_ps, &b_eve_HLT_j15_ps);
    fChain->SetBranchAddress("eve_HLT_j25_ps", &eve_HLT_j25_ps, &b_eve_HLT_j25_ps);
    fChain->SetBranchAddress("eve_HLT_j35_ps", &eve_HLT_j35_ps, &b_eve_HLT_j35_ps);
@@ -582,6 +664,17 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_HLT_j380_ps", &eve_HLT_j380_ps, &b_eve_HLT_j380_ps);
    fChain->SetBranchAddress("eve_HLT_j400_ps", &eve_HLT_j400_ps, &b_eve_HLT_j400_ps);
    fChain->SetBranchAddress("eve_HLT_j420_ps", &eve_HLT_j420_ps, &b_eve_HLT_j420_ps);
+   fChain->SetBranchAddress("eve_HLT_j300_a10_lcw_L1J75_ps", &eve_HLT_j300_a10_lcw_L1J75_ps, &b_eve_HLT_j300_a10_lcw_L1J75_ps);
+   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100_ps", &eve_HLT_j360_a10_lcw_L1J100_ps, &b_eve_HLT_j360_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100_ps", &eve_HLT_j400_a10_lcw_L1J100_ps, &b_eve_HLT_j400_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100_ps", &eve_HLT_j420_a10_lcw_L1J100_ps, &b_eve_HLT_j420_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j260_a10_lcw_subjes_L1J75_ps", &eve_HLT_j260_a10_lcw_subjes_L1J75_ps, &b_eve_HLT_j260_a10_lcw_subjes_L1J75_ps);
+   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_subjes_L1J100_ps", &eve_HLT_j420_a10_lcw_subjes_L1J100_ps, &b_eve_HLT_j420_a10_lcw_subjes_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j440_a10_lcw_subjes_L1J100_ps", &eve_HLT_j440_a10_lcw_subjes_L1J100_ps, &b_eve_HLT_j440_a10_lcw_subjes_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j460_a10_lcw_subjes_L1J100_ps", &eve_HLT_j460_a10_lcw_subjes_L1J100_ps, &b_eve_HLT_j460_a10_lcw_subjes_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j260_a10t_lcw_jes_L1J75_ps", &eve_HLT_j260_a10t_lcw_jes_L1J75_ps, &b_eve_HLT_j260_a10t_lcw_jes_L1J75_ps);
+   fChain->SetBranchAddress("eve_HLT_j440_a10t_lcw_jes_L1J100_ps", &eve_HLT_j440_a10t_lcw_jes_L1J100_ps, &b_eve_HLT_j440_a10t_lcw_jes_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j460_a10t_lcw_jes_L1J100_ps", &eve_HLT_j460_a10t_lcw_jes_L1J100_ps, &b_eve_HLT_j460_a10t_lcw_jes_L1J100_ps);
    if(fChain->GetFriend("FlavourTagging_Nominal")){ //temp fix for systematics: Get b-tagging SF from nominal friend tree
      fChain->GetFriend("FlavourTagging_Nominal")->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
    }else fChain->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
@@ -690,9 +783,18 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_BHadDecays_eta", &trkjet_BHadDecays_eta, &b_trkjet_BHadDecays_eta);
    fChain->SetBranchAddress("trkjet_BHadDecays_phi", &trkjet_BHadDecays_phi, &b_trkjet_BHadDecays_phi);
    fChain->SetBranchAddress("trkjet_BHadDecays_e", &trkjet_BHadDecays_e, &b_trkjet_BHadDecays_e);
-   fChain->SetBranchAddress("trigjet_pt", &trigjet_pt, &b_trigjet_pt);
-   fChain->SetBranchAddress("trigjet_phi", &trigjet_phi, &b_trigjet_phi);
-   fChain->SetBranchAddress("trigjet_eta", &trigjet_eta, &b_trigjet_eta);
+   fChain->SetBranchAddress("trigjet_a4_pt", &trigjet_a4_pt, &b_trigjet_a4_pt);
+   fChain->SetBranchAddress("trigjet_a4_phi", &trigjet_a4_phi, &b_trigjet_a4_phi);
+   fChain->SetBranchAddress("trigjet_a4_eta", &trigjet_a4_eta, &b_trigjet_a4_eta);
+   fChain->SetBranchAddress("trigjet_a4IS_pt", &trigjet_a4IS_pt, &b_trigjet_a4IS_pt);
+   fChain->SetBranchAddress("trigjet_a4IS_phi", &trigjet_a4IS_phi, &b_trigjet_a4IS_phi);
+   fChain->SetBranchAddress("trigjet_a4IS_eta", &trigjet_a4IS_eta, &b_trigjet_a4IS_eta);
+   fChain->SetBranchAddress("trigjet_a10_pt", &trigjet_a10_pt, &b_trigjet_a10_pt);
+   fChain->SetBranchAddress("trigjet_a10_phi", &trigjet_a10_phi, &b_trigjet_a10_phi);
+   fChain->SetBranchAddress("trigjet_a10_eta", &trigjet_a10_eta, &b_trigjet_a10_eta);
+   fChain->SetBranchAddress("trigjet_a10t_pt", &trigjet_a10t_pt, &b_trigjet_a10t_pt);
+   fChain->SetBranchAddress("trigjet_a10t_phi", &trigjet_a10t_phi, &b_trigjet_a10t_phi);
+   fChain->SetBranchAddress("trigjet_a10t_eta", &trigjet_a10t_eta, &b_trigjet_a10t_eta);
    Notify();
 }
 
