@@ -45,6 +45,7 @@ BTagger::BTagger(std::string configString, bool useVRTrkJets):
     this -> xbbScoreHybridCutter_ = new XbbScoreHybridCutter(f);
     
   }else{
+    std::cerr << "invalid tagger type: " << this->getTaggerType() << std::endl;
     throwException();
   }
   
@@ -89,7 +90,15 @@ int BTagger::tag(const TupleAna& gbbtuple, const GbbCandidate& gbbcand){
     float fat_pt_val = gbbtuple.fat_pt->at(gbbcand.fat_index);
     return this->xbbScoreHybridCutter_->cut(p_h,p_qcd,p_top,fat_pt_val);
   }
+
+  if(this->getTaggerType() == "MV2c10R20.7"){
+    float muvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.muojet_index);
+    float nonmuvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.nonmuojet_index);
+    return this->mV2c10Cutter_ -> cut(muvalue, nonmuvalue);
+  }    
   
+
+  std::cerr << "unrecognized cut/tagger type: " << this->getTaggerType() << std::endl;
   throwException();
   return -99;
 }

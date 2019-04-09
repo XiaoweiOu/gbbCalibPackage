@@ -221,6 +221,8 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   } catch (std::exception& e){
     // if the config string is bad, abort
     std::cerr << "exception: " << e.what() << std::endl;
+    std::cerr << "Invalid configString: " << this->m_BTagWP.Data() << std::endl;
+    exit(1);
   }
   
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
