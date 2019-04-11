@@ -44,6 +44,9 @@ class FitData {
   FitData(TString filename, std::vector<TString> chans);
   virtual ~FitData();
 
+  //
+  // Clear all histogram maps for the next fit
+  //
   void ResetHists(){
     m_dataHistMap.clear();
     m_templateHistsMap.clear();
@@ -54,20 +57,33 @@ class FitData {
 
   }
 
+  //
+  // Define the set of histograms to read into memory
+  //
   void SetHistogramNames(TString &channel,TString& data_name, std::vector<TString>& mc_names){
     m_MC_HistNamesMap[channel]=mc_names;
     m_Data_HistNamesMap[channel]=data_name;
   }
 
+  //
+  // Read histograms into memory
+  //
   void ReadInHistograms(TString &channel, int smooth_Ntimes=0);
   void ReadInHistograms(int smooth_Ntimes=0){
     for(auto chan : m_chans) ReadInHistograms(chan, smooth_Ntimes);
   }
 
+  //
+  // Retrieve histograms stored in memory
+  //
   std::shared_ptr<TH1D> GetDataHist(TString &channel){ return m_dataHistMap[channel]; }
   std::vector<std::shared_ptr<TH1D>> GetMCHists(TString &channel){ return m_templateHistsMap[channel]; }
 
-
+  //
+  // Functions to rebin histograms based on relative statistical error,
+  // and then check that all histograms have the correct binning.
+  // Rebinning is defined by the error of the nominal histograms
+  //
   void CheckHistograms(TString &channel);
   std::vector<double> AutoRebinHistograms(TString &channel, double statThr=0.5,int N_force=1); //N_force number of bins to force merging, 1: no merging
   void FixHistogramBins(TString &channel, std::vector<double>& bins);
@@ -75,6 +91,9 @@ class FitData {
   void MergeTemplates(int tmp1, int tmp2); //replace template tmp1 with tmp1+tmp2, delete tmp2
   void RescaleTemplate(int tmp1, double factor, bool doKeepNorm=false);
 
+  //
+  // Functions to smooth templates. Currently unused
+  //
   void KernelSmoothTemplates(float scale);
   void FitTemplateSlopes(float lowgap, float highgap);
 
@@ -83,9 +102,11 @@ class FitData {
   double GetDataNorm(TString &channel);
   double GetChanCorrelation(TString channel1, TString channel2, int i_flav_pair);
 
+  //
+  // The fit minimizes a provided negative log-likelihood function
+  //
   double NegLogSingleBinPoisson(int i,TString& channel, double *par,bool doRandom=false, bool doRandomMC=false);
   double NegLogSingleBinPoissonWithNP(int i,TString& channel, double *par,bool doRandom=false);
-
 
   double NegLogLikelihood(double *par);
   double NegLogLikelihoodWithNP(double *par);

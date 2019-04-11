@@ -44,6 +44,9 @@ class Fitter {
   Fitter(FitData *fitdata, int n_params, bool m_doMCStatsNP=false);
   virtual ~Fitter();
 
+  //
+  // Functions to add parameters to the TMinuit object used for fitting
+  //
   void AddParameter(TString name,double val, double err, double low, double high, int doFixed=0);
   void AddMCStatsNuisanceParameters(TString channel,double step_factor,double low_factor, double high_factor);
 
@@ -54,18 +57,26 @@ class Fitter {
     m_params_sampling_values.clear();
   }
 
+  //
+  // Initialize the fit
+  //
   void Initialize(bool doRandom=false, bool doRandomTemplate=false);
 
   void fit();
   void fitMinos();
 
-
+  //
+  // Wrapper functions for the negative log-likelihoods defined in FitData.cxx
+  //
   static void fcn(int &npar, double* gin, double &f, double *par, int iflag);
   static void fcn_withNP(int &npar, double* gin, double &f, double *par, int iflag);
   static void fcn_rndm(int &npar, double* gin, double &f, double *par, int iflag);
   static void fcn_rndm_withNP(int &npar, double* gin, double &f, double *par, int iflag);
   static void fcn_rndm_template(int &npar, double* gin, double &f, double *par, int iflag);
 
+  //
+  // Print fit parameters
+  //
   void PrintParameters(TString err_mode="Sampling"); //other modes: "Simple","Minos"
   void PrintFlavourFractions(TString& chan, TString err_mode="Sampling");
   void GetParameterSimple(int i_par,double &val,double& err){
@@ -78,11 +89,13 @@ class Fitter {
   void GetPseudoTemplateFitResult(std::vector<std::vector<double>>& pseudo_params, int N_fits);
   void GetPseudoDataFitResult(std::vector<std::vector<double>>& pseudo_params, int N_fits);
 
-
   void GetParErrorSampling(int i_par,double &par_val, double& par_err, int N=1000);
 
   void MakeOutputHistFile(TFile* outfile,TString histname_stub, TString err_mode="Sampling");
 
+  //
+  // Store the results of the fit
+  //
   std::vector<double> FitParameters();
   std::vector<double> FitErrors();
   std::vector<double> CovarianceMatrix();
@@ -90,10 +103,8 @@ class Fitter {
   double getTotalFitError();
 
   TString getFitStatus(){
-
     return TString(m_Minuit->fCstatu.Data());
   }
-
 
 };
 

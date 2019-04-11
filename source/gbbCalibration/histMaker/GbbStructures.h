@@ -5,8 +5,13 @@
 #ifndef GBBSTRUCTURE_H_
 #define GBBSTRUCTURE_H_
 
+//
+// Struct storing the defining characteristics of a g->bb jet
+// The indices can be used to access information on the
+// association objects (fatjet, track-jets, muon).
+//
 struct GbbCandidate{
-  
+
   unsigned int fat_index;
   unsigned int muojet_index;
   unsigned int muo_index;
@@ -16,6 +21,10 @@ struct GbbCandidate{
   bool hasTruthMuon;
 };
 
+//
+// Struct storing all the various impact parameter variables
+// being considered for the template fit
+//
 struct trkjetSd0Info {
   float maxSd0;
   float maxSd0_dR;
@@ -48,6 +57,5 @@ struct trkjetSd0Info {
 
   int nMean;
 };
-
 
 #endif /*GBBSTRUCTURE_H_*/
