@@ -1,4 +1,4 @@
-source /global/project/projectdirs/atlas/scripts/setupATLAS.sh
+#source /global/project/projectdirs/atlas/scripts/setupATLAS.sh
 export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
 source $ATLAS_LOCAL_ROOT_BASE/user/atlasLocalSetup.sh
 cd source
@@ -8,4 +8,4 @@ else
   asetup AnalysisBase,21.2.35,here
 fi
 cd ..
-source build/x86_64-suse123-gcc62-opt/setup.sh
+source build/${AnalysisBase_PLATFORM}/setup.sh

@@ -166,7 +166,7 @@ for histname in ListOfDataHists :
 #    ROOT.TText.DrawText(.8,.8,"Correlation factor = {0}".format(str(round(corr_factor,2)))
     histData.Draw()
     text.Draw('SAME')
-    c1.SaveAs(outputdir+"/"+outfileprefix+MapHistToVar[histname]+".pdf") 
+    c1.SaveAs(outputdir+"/"+outfileprefix+MapHistToVar[histname]+".png") 
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
 
