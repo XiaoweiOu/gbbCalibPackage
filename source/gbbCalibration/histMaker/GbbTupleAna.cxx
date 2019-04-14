@@ -215,16 +215,18 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   ReadConfig(configname);
   m_HistSvc=new HistogramService();
 
+  // if is not reweight mode; ie in calib mode, construct tagger
   // use configstring for btagging
-  try {
-    this->m_bTagger = new BTagger(this->m_BTagWP.Data(), this->m_useVRTrkJets);
-  } catch (std::exception& e){
-    // if the config string is bad, abort
-    std::cerr << "exception: " << e.what() << std::endl;
-    std::cerr << "Invalid configString: " << this->m_BTagWP.Data() << std::endl;
-    exit(1);
+  if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
+    try {
+      this->m_bTagger = new BTagger(this->m_BTagWP.Data(), this->m_useVRTrkJets);
+    } catch (std::exception& e){
+      // if the config string is bad, abort
+      std::cerr << "exception: " << e.what() << std::endl;
+      std::cerr << "Invalid configString: " << this->m_BTagWP.Data() << std::endl;
+      exit(1);
+    }
   }
-  
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
   TChain *fren = new TChain("FlavourTagging_Nominal");
@@ -716,7 +718,20 @@ bool GbbTupleAna::Processgbb(int i_evt){
   /*bTagger ---*/
   // read xbbscore parameters, then use xbbcutter to determine
   // if this gbb candidate is b tagged.
-  int isTagged = this->m_bTagger->tag(*this,gbbcand);
+  int isTagged = 0;
+  if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
+    isTagged = this->m_bTagger->tag(*this,gbbcand);
+  } else {
+    std::cout << " not tagging mode. done." << std::endl; 
+    return false;
+  }
+
+  // int isTagged = passBTagCut(gbbcand);
+  // if(isTagged == -99){
+  //   std::cout << "bad tagger" <<std::endl;
+  //   return false;
+  // }
+
   /*bTagger ---*/
 
   
