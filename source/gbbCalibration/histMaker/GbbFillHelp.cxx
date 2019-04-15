@@ -93,6 +93,17 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"nmjeta"+nametag),";non-muon-jet #eta;Events/0.2;",
    this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
 
+  // Plot track-jet kinematics with di-flavour label inclusive in pt
+  m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"mjpt"+nametag),";muon-jet p_{T} [GeV];Events/2 GeV;",
+   this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
+  m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"nmjpt"+nametag),";non-muon-jet p_{T} [GeV];Events/2 GeV;",
+   this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,250,0.,500.,event_weight);
+
+  m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"mjeta"+nametag),";muon-jet #eta;Events/0.2;",
+   this->trkjet_eta->at(gbbcand->muojet_index)/1e3,100,-2.5,2.5,event_weight);
+  m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"nmjeta"+nametag),";non-muon-jet #eta;Events/0.2;",
+   this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
+
   m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,"mjptVsnmjpt"+nametag),
     ";muon-jet p_{T} [GeV];non-muon jet p_{T} [GeV];",
     this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,

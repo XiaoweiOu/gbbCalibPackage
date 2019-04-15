@@ -951,7 +951,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
     // SF calculation needs mjpt_PREFITUNTAG so fill this even if the rest of the track-jet
     // properties aren't asked for
     if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES)) {
-      m_HistSvc->FastFillTH1D( makeMuJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
+       ";muon-jet p_{T} [GeV];Events/2 GeV;",
+       this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
+      m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
        ";muon-jet p_{T} [GeV];Events/2 GeV;",
        this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
     }
