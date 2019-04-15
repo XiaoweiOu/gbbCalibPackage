@@ -178,6 +178,9 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_JetPtReweightFile(""),
   m_JetPtReweightFileInclusive(""),
   m_isMC(false),
+  m_2016(false),
+  m_2017(false),
+  m_2018(false),
   m_isNominal(false),
   m_SysVarName(""),
   m_GeneratorName(""),
@@ -362,7 +365,24 @@ void GbbTupleAna::Loop() {
     // if (Cut(ientry) < 0) continue;
     m_nevtTuple++;
 
-    if (jentry == 0) m_isMC = this->eve_isMC;
+    if (jentry == 0) {
+      m_isMC = this->eve_isMC;
+      if (m_isMC) {
+        m_2016 = (this->eve_run == 284500);
+        m_2017 = (this->eve_run == 300000);
+        m_2018 = (this->eve_run == 310000); //Not sure on this one
+        if (!(m_2016 || m_2017 || m_2018)) {
+          std::cout<<"Unknown MC run number: "<<this->eve_run<<std::endl;
+        }
+      } else {
+        if (this->eve_run < 324320) m_2016 = true;
+        else if (this->eve_run < 348197) m_2017 = true;
+        else if (this->eve_run < 364486) m_2018 = true;
+        else {
+          std::cout<<"Unknown data run number: "<<this->eve_run<<std::endl;
+        }
+      }
+    }
 
     m_doFillMujet=false;
     if(m_random->Uniform()>=0.5) m_doFillMujet=true;
