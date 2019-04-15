@@ -1444,6 +1444,16 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     }
 
     tracks_passed++;
+    bool duplicate = false;
+    for (track tr : tracks) {
+      if (fabs(tr.pt - trkjet_assocTrk_pt->at(i_jet).at(i_trk)) < 1e-5) duplicate = true;
+    }
+    if (duplicate) {
+      std::cout<<"Skipping duplicate track! pt: ";
+      std::cout<<trkjet_assocTrk_pt->at(i_jet).at(i_trk)<<std::endl;
+      continue;
+    }
+
     track tr;
 
     tr.d0 = getd0(i_trk,i_jet,doSmeared,sys);
