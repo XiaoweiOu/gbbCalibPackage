@@ -218,6 +218,39 @@ void GbbTupleAna::FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0In
   }
 }
 
+//Tong
+void GbbTupleAna::FillSd02DPlots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc) {
+  m_HistSvc->FastFillTH2D( namingFunc("mjmaxSd0_nmjmaxSd0"),";muon-jet leading track s_{d0};non-muon-jet leading track s_{d0};",
+     muSd0Info.maxSd0,nonmuSd0Info.maxSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("mjmeanSd0_nmjmeanSd0"),";muon-jet mean s_{d0};non-muon-jet mean s_{d0};",
+     muSd0Info.meanSd0_pt,nonmuSd0Info.meanSd0_pt, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("mjsubSd0_nmjsubSd0"),";muon-jet sub leading track s_{d0};non-muon-jet sub leading track s_{d0};",
+     muSd0Info.subSd0,nonmuSd0Info.subSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("mjthirdSd0_nmjthirdSd0"),";muon-jet third leading track s_{d0};non-muon-jet third leading track s_{d0};",
+     muSd0Info.thirdSd0,nonmuSd0Info.thirdSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("mjmaxSd0_mjsubSd0"),";muon-jet leading track s_{d0};muon-jet sub leading track s_{d0};",
+     muSd0Info.maxSd0,muSd0Info.subSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("mjmaxSd0_mjthirdSd0"),";muon-jet leading track s_{d0};muon-jet third leading track s_{d0};",
+     muSd0Info.maxSd0,muSd0Info.thirdSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("mjsubSd0_mjthirdSd0"),";muon-jet sub leading track s_{d0};muon-jet third leading track s_{d0};",
+     muSd0Info.subSd0,muSd0Info.thirdSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("nmjmaxSd0_nmjsubSd0"),";non-muon-jet leading track s_{d0};non-muon-jet sub leading track s_{d0};",
+     nonmuSd0Info.maxSd0,nonmuSd0Info.subSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("nmjmaxSd0_nmjthirdSd0"),";non-muon-jet leading track s_{d0};non-muon-jet third leading track s_{d0};",
+     nonmuSd0Info.maxSd0,nonmuSd0Info.thirdSd0, 80,-40,80, 80,-40,80,event_weight);
+
+  m_HistSvc->FastFillTH2D( namingFunc("nmjsubSd0_nmjthirdSd0"),";non-muon-jet sub leading track s_{d0};non-muon-jet third leading track s_{d0};",
+     nonmuSd0Info.subSd0,nonmuSd0Info.thirdSd0, 80,-40,80, 80,-40,80,event_weight);
+}
+
 void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag){
 
   if (!nametag.IsNull()) nametag.Prepend("_");
@@ -246,6 +279,16 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
   // Make plots in pT bins
   FillSd0Plots(muojet_sd0Info, nonmuojet_sd0Info, event_weight,
    [this,gbbcand,nametag](TString var) { return this->makeDiJetPlotName(gbbcand,var+nametag); }
+  );
+
+  //Tong: Fill TH2D on 2 template variables for checking correlation (inclusive)
+  FillSd02DPlots(muojet_sd0Info, nonmuojet_sd0Info, event_weight,
+   [this,gbbcand,nametag](TString var) {return this->makeInclDiJetPlotName(gbbcand,var+nametag);}
+  );
+
+  // Fill TH2D in pT bins
+  FillSd02DPlots(muojet_sd0Info, nonmuojet_sd0Info, event_weight,
+   [this,gbbcand,nametag](TString var) {return this->makeDiJetPlotName(gbbcand,var+nametag);}
   );
 
   // Make plots with randomized mu/non-mu jet

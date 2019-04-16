@@ -1,4 +1,6 @@
-setupATLAS
+#source /global/project/projectdirs/atlas/scripts/setupATLAS.sh
+export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+source $ATLAS_LOCAL_ROOT_BASE/user/atlasLocalSetup.sh
 cd source
 if [ -f ".asetup.save" ]; then
   asetup --restore
