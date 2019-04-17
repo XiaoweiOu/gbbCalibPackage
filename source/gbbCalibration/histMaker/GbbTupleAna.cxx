@@ -227,6 +227,8 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
       exit(1);
     }
   }
+
+  
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
   TChain *fren = new TChain("FlavourTagging_Nominal");
@@ -725,12 +727,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
     std::cout << " not tagging mode. done." << std::endl; 
     return false;
   }
-
-  // int isTagged = passBTagCut(gbbcand);
-  // if(isTagged == -99){
-  //   std::cout << "bad tagger" <<std::endl;
-  //   return false;
-  // }
 
   /*bTagger ---*/
 
