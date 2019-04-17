@@ -223,11 +223,14 @@ bool GbbTupleAna::isCleanEvt(const float total_evt_weight) {
 
     m_HistSvc->FastFillTH1D("truthjet_pt",";truth jet p_{T} [GeV];Events/50 GeV;",
      this->truthjet_pt->at(0)/1e3,100,0.,5000.,total_evt_weight);
+
+    // MC quality cut necessary for low-pT JZXW samples
+    // see https://twiki.cern.ch/twiki/pub/AtlasProtected/JetStudies2012/JLacey_MC12_JZXW_weights_and_CleaningCuts.pdf
     if(this->jet_pt->size()>=2 && this->truthjet_pt->size()){
 
       double mc_jet_ratio=0.5*(this->jet_pt->at(0)+this->jet_pt->at(1))/this->truthjet_pt->at(0);
 
-      if(mc_jet_ratio>1.4){
+      if(0.6>mc_jet_ratio || mc_jet_ratio>1.4){
         std::cout<<"Have event with funny pt(reco)/pt(truth) ratio!"<<std::endl;
         return false;
       }
