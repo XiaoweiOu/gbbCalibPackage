@@ -18,6 +18,7 @@
 #include "PathResolver/PathResolver.h"
 #include "TSystem.h"
 
+
 struct track {
 
   float d0;
@@ -42,7 +43,6 @@ struct by_abs_sd0 {
 
 };
 
-
 GbbTupleAna::GbbTupleAna() : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nevtTuple(0) {
   // TODO Auto-generated constructor stub
 
@@ -56,6 +56,9 @@ GbbTupleAna::~GbbTupleAna() {
   if(m_FlavFracCorrector) delete m_FlavFracCorrector;
   if(m_HistSvc) delete m_HistSvc;
   if(m_config) delete m_config;
+
+  // wesley xbb
+  if(m_bTagger) delete m_bTagger;
 }
 
 
@@ -200,8 +203,9 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   //m_fatjet_pt_bins(),
   m_doPostfitPtReweighting(false),
   m_PostfitPtReweightingFile(""),
-  m_postfit_reweight_hist(nullptr)
-
+  m_postfit_reweight_hist(nullptr),
+  // Wesley: Xbb score
+  m_bTagger(nullptr) // used to be xbbscore f=0.2 eff =60
 {
   TH1::AddDirectory(0);
 
@@ -211,6 +215,20 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   ReadConfig(configname);
   m_HistSvc=new HistogramService();
 
+  // if is not reweight mode; ie in calib mode, construct tagger
+  // use configstring for btagging
+  if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
+    try {
+      this->m_bTagger = new BTagger(this->m_BTagWP.Data(), this->m_useVRTrkJets);
+    } catch (std::exception& e){
+      // if the config string is bad, abort
+      std::cerr << "exception: " << e.what() << std::endl;
+      std::cerr << "Invalid configString: " << this->m_BTagWP.Data() << std::endl;
+      exit(1);
+    }
+  }
+
+  
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
   TChain *fren = new TChain("FlavourTagging_Nominal");
@@ -333,6 +351,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_random.get()->SetSeed(0);
 
   Init(tree);
+  
 }
 
 
@@ -691,11 +710,27 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //if(this->trkjet_MV2c20->at(gbbcand.muojet_index)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.nonmuojet_index)<-0.3098) return false;
   //Moved to MV2c10 at 70% efficiency
 
+  /* wesley: not used for XbbScore
   int isTagged = passBTagCut(gbbcand);
   if (isTagged == -99) {
     std::cout<<"processgbb(): Unrecognized b-tag type"<<std::endl;
     return false;
   }
+  */
+  /*bTagger ---*/
+  // read xbbscore parameters, then use xbbcutter to determine
+  // if this gbb candidate is b tagged.
+  int isTagged = 0;
+  if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
+    isTagged = this->m_bTagger->tag(*this,gbbcand);
+  } else {
+    std::cout << " not tagging mode. done." << std::endl; 
+    return false;
+  }
+
+  /*bTagger ---*/
+
+  
   //at least 1 b-tag
   if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);
   //2 b-tags

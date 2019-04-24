@@ -29,6 +29,7 @@ atlas_add_library( configLib
    )
 atlas_add_library( gbbTupleLib
    histMaker/*.cxx histMaker/*.h
+   histMaker/BTagging/*.cxx histMaker/BTagging/*.h
    helpers/*.cxx helpers/*.h
    ${_gbbDictSource}
    PUBLIC_HEADERS GbbTupleAna
@@ -53,6 +54,13 @@ atlas_add_executable( run_calculateSF
    util/run_calculateSF.cxx
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} ScaleFactorCalcLib
+   )
+
+ # add a test exe
+ atlas_add_executable( run_GbbTest
+   tests/run_tests.cxx
+   INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
+   LINK_LIBRARIES ${ROOT_LIBRARIES} gbbTupleLib
    )
 
 atlas_install_python_modules( python/makeReweightHistos.py LINK_LIBRARIES configLib )
