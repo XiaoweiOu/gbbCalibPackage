@@ -149,7 +149,10 @@ private:
 
 	void MakeNFPlots();
 
-	TString MakeFlavourFractionTable(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
+	TString MakeFlavourFractionTable(bool applyFitCorrection,
+      std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
+	TString MakeFlavourFractionTableFullCovariance(bool applyFitCorrection,
+      std::vector<std::shared_ptr<TH1D>> templateHists, TString& region);
 	TString PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists);
 
   //
@@ -170,6 +173,7 @@ private:
 
 	TGraphAsymmErrors* getTemplateFitUncert(bool applyFitCorrection,std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin);
 	TGraphAsymmErrors* getTemplateFitUncertToys(bool applyFitCorrection,std::vector<std::shared_ptr<TH1D>> templateHists, TString& region, TString &sys, int rebin);
+  std::vector<double> getFractionFitUncertToys(bool, std::vector<std::shared_ptr<TH1D> >, TString&);
 
 	TGraphAsymmErrors* getFitUncertBTagRate();
 	TGraphAsymmErrors* getFitUncertBTagRateToys();

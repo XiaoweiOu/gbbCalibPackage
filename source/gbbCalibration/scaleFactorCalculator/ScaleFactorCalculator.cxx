@@ -216,7 +216,8 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
       if (m_doControlPlots) MakeCorrelationPlots(region);
 
       //TODO: why muon_id__1up? region shouldn't be hard-coded
-      if(sys.EqualTo("Nom") || sys.EqualTo("MUON_ID__1up") || region.Contains("mjpt_g200_nmjpt_g300")){ //make control plots
+      //if(sys.EqualTo("Nom") || sys.EqualTo("MUON_ID__1up") || region.Contains("mjpt_g200_nmjpt_g300")){ //make control plots
+      if(sys.EqualTo("Nom")) {
 
         if(m_doControlPlots){
           for (TString var : tmpl_vars) {
@@ -226,7 +227,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
         }
 
         //TODO: should this loop over all tmpl_vars?
-        flav_fractions.push_back(this->MakeFlavourFractionTable(true,m_fitdata->GetMCHists(tmpl_vars[1]),region));
+        flav_fractions.push_back(this->MakeFlavourFractionTableFullCovariance(true,m_fitdata->GetMCHists(tmpl_vars[1]),region));
         mu_factors.push_back(this->PrintMuAndError(region,m_fitdata->GetMCHists(tmpl_vars[1])));
       }
 
@@ -356,7 +357,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   this->ReadInFatJetHists(variables,systematics);
   this->ReadInFatJetHists(variables_posttag,systematics);
   this->ReadInFatJetHists(variables_posttag_btagsys,{"Nom"});
-  this->ReadInFatJetHists(tmpl_vars,calib_sys);
+  if(m_doCalibSequence) this->ReadInFatJetHists(tmpl_vars,calib_sys);
 
   TString ts_pt="fjpt";
 
@@ -680,8 +681,8 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
 
 
     //Calculate MC stat uncertainty on MC efficiency
-    float delta_eff_mc_term1=(1./N_BB_pretag_mc_unscaled-N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*(1./N_BB_pretag_mc_unscaled-N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*Err_BB_posttag_mc_unscaled*Err_BB_posttag_mc_unscaled;
-    float delta_eff_mc_term2=(N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*(N_BB_posttag_mc_unscaled/(N_BB_untag_mc_unscaled*N_BB_untag_mc_unscaled))*Err_BB_untag_mc_unscaled*Err_BB_untag_mc_unscaled;
+    float delta_eff_mc_term1=(1./N_BB_pretag_mc_unscaled-N_BB_posttag_mc_unscaled/(N_BB_pretag_mc_unscaled*N_BB_pretag_mc_unscaled))*(1./N_BB_pretag_mc_unscaled-N_BB_posttag_mc_unscaled/(N_BB_pretag_mc_unscaled*N_BB_pretag_mc_unscaled))*Err_BB_posttag_mc_unscaled*Err_BB_posttag_mc_unscaled;
+    float delta_eff_mc_term2=(N_BB_posttag_mc_unscaled/(N_BB_pretag_mc_unscaled*N_BB_pretag_mc_unscaled))*(N_BB_posttag_mc_unscaled/(N_BB_pretag_mc_unscaled*N_BB_pretag_mc_unscaled))*Err_BB_untag_mc_unscaled*Err_BB_untag_mc_unscaled;
     mc_eff_staterr.push_back(TMath::Sqrt(delta_eff_mc_term1+delta_eff_mc_term2));
 
   }
@@ -1134,8 +1135,8 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
     for(unsigned int j=0; j<flavour_fractions.size(); j++){
       if(i==j) continue;
       else{
-	keepRowCol.push_back(j);
-	reduced_flavour_fractions.push_back(flavour_fractions[j]);
+	      keepRowCol.push_back(j);
+	      reduced_flavour_fractions.push_back(flavour_fractions[j]);
       }
     }
 
@@ -1164,7 +1165,8 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
     float err_non_flavour=v2_red*v_red;
     std::cout<<"err_non_flavour "<<err_non_flavour<<std::endl;
 
-    float err_total=(1./N_total-N_flavour/(N_total*N_total))*(1./N_total-N_flavour/(N_total*N_total))*err_flavour*err_flavour+(-N_flavour/(N_total*N_total))*(-N_flavour/(N_total*N_total))*err_non_flavour*err_non_flavour;
+    //float err_total=(1./N_total-N_flavour/(N_total*N_total))*(1./N_total-N_flavour/(N_total*N_total))*err_flavour*err_flavour+(-N_flavour/(N_total*N_total))*(-N_flavour/(N_total*N_total))*err_non_flavour*err_non_flavour;
+    float err_total=(1./N_total-N_flavour/(N_total*N_total))*(1./N_total-N_flavour/(N_total*N_total))*err_flavour*err_flavour+(-N_flavour/(N_total*N_total))*(-N_flavour/(N_total*N_total))*err_non_flavour;
 
     flavour_fraction_err[i]=TMath::Sqrt(err_total);
     std::cout<<"flavour_fraction_err "<<flavour_fraction_err[i]<<std::endl;
@@ -1177,14 +1179,111 @@ TString ScaleFactorCalculator::MakeFlavourFractionTable(bool applyFitCorrection,
   for(unsigned int i=0; i<flavour_fractions.size(); i++){
     //std::cout<<" "<<flavour_fractions[i]/full_mc->Integral()<<"+-"<<TMath::Sqrt(mat[i][i])/full_mc->Integral();
     //std::cout<<std::endl;
-    //help.Form("  %.3f+-%.3f  ",flavour_fractions[i]/full_mc->Integral(),flavour_fraction_err[i]);
-    help.Form("& $ %.3f \\pm %.3f  $",flavour_fractions[i]/full_mc->Integral(),TMath::Sqrt(mat[i][i])*flavour_fractions[i]/full_mc->Integral());
+    //help.Form("& $ %.3f \\pm %.3f  $",flavour_fractions[i]/full_mc->Integral(),TMath::Sqrt(mat[i][i])*flavour_fractions[i]/full_mc->Integral());
+    help.Form("& $ %.3f \\pm %.3f  $",flavour_fractions[i]/full_mc->Integral(),flavour_fraction_err[i]);
     name.Append(help);
   }
 
   return name;
 }
+TString ScaleFactorCalculator::MakeFlavourFractionTableFullCovariance(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region){
 
+  std::cout<<"Flavour fraction region: "<<region<<std::endl;
+
+  TH1D* tmp_stacked_mc(nullptr), *full_mc(nullptr);
+
+  std::vector<double> flavour_fractions, flavour_fractions_prefit;
+
+  TVectorD randomv(m_config->GetFlavourPairs().size()), nomv(m_config->GetFlavourPairs().size()), eigenval(m_config->GetFlavourPairs().size());
+
+  TMatrixD eigenvec(m_config->GetFlavourPairs().size(),m_config->GetFlavourPairs().size());
+
+
+  for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
+
+    if(!(templateHists[i_p].get())) continue;
+
+    tmp_stacked_mc=(TH1D*)templateHists[i_p].get()->Clone();
+    flavour_fractions_prefit.push_back(tmp_stacked_mc->Integral());
+
+    if(applyFitCorrection) tmp_stacked_mc->Scale(m_fit_params[region+"_Nom"][i_p]);
+
+
+    if(i_p==0) full_mc=(TH1D*)tmp_stacked_mc->Clone();
+    else full_mc->Add(tmp_stacked_mc);
+
+    flavour_fractions.push_back(tmp_stacked_mc->Integral());
+
+  }
+
+  std::vector<double> matrix;
+
+  for(unsigned int i_entry=0; i_entry<m_nom_cov_mats[region].size(); i_entry++){
+    matrix.push_back((double)(m_nom_cov_mats[region][i_entry])); //get region covariance matrix
+  }
+
+
+  std::vector<double> flavour_fraction_err(flavour_fractions.size(),0.);
+
+  TVectorD v(flavour_fractions.size(),&flavour_fractions[0]);
+  TVectorD v2=v;
+
+  TMatrixDSym mat(m_config->GetFlavourPairs().size(),&matrix[0]);
+  //mat.UnitMatrix();
+
+  for(unsigned int i=0; i<flavour_fractions.size(); i++){
+    for(unsigned int j=0; j<flavour_fractions.size(); j++){
+      mat[i][j]*=flavour_fractions_prefit[i]*flavour_fractions_prefit[j]; //make into covariance matrix of flavour norms
+    }
+  }
+
+  //TMatrixDSymEigen mat_eigen(mat);
+  //eigenval=mat_eigen.GetEigenValues();
+  //eigenvec=mat_eigen.GetEigenVectors();
+
+  TString name=region+" ";
+  TString help;
+
+  float N_total=full_mc->Integral();
+  float N_flavour, N_non_flavour, err_flavour, err_non_flavour;
+
+  float err_total;
+
+  for(unsigned int i=0; i<flavour_fractions.size(); i++){
+
+    N_flavour=0;
+    N_non_flavour=0;
+    err_non_flavour=0;
+    err_total=0;
+
+    for(unsigned int j=0; j<flavour_fractions.size(); j++){
+      if(i==j){
+        N_flavour=flavour_fractions[j];
+      }else{
+        N_non_flavour+=flavour_fractions[j];
+      }
+    }
+
+    for(unsigned int j=0; j<flavour_fractions.size(); j++){
+      for(unsigned int k=0; k<flavour_fractions.size(); k++){
+        if(i==j && i==k){
+          err_total+=(N_non_flavour/(N_total*N_total))*(N_non_flavour/(N_total*N_total))*mat[j][k];
+        }else if(i==j || i==k){
+          err_total+=(N_non_flavour/(N_total*N_total))*(-N_flavour/(N_total*N_total))*mat[j][k];
+        }else{
+          err_total+=(-N_flavour/(N_total*N_total))*(-N_flavour/(N_total*N_total))*mat[j][k];
+        }
+      }
+    }
+    help.Form("& $ %.3f \\pm %.3f  $",flavour_fractions[i]/full_mc->Integral(),TMath::Sqrt(err_total));
+    //help.Form("& $ %.3f \\pm %.3f  $",flavour_fractions[i]/full_mc->Integral(),TMath::Sqrt(eigenval[i])*flavour_fractions_prefit[i]/full_mc->Integral());
+    name.Append(help);
+
+  }
+
+  return name;
+
+}
 
 TString ScaleFactorCalculator::PrintMuAndError(TString region,std::vector<std::shared_ptr<TH1D>> templateHists){
 
