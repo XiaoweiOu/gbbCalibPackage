@@ -277,10 +277,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
   //prepare legend
-  TLegend *leg=new TLegend(0.63,0.4,0.75,0.725);
-  if (applyFitCorrection){
-    leg= new TLegend(0.6,0.38,0.85,0.755);
- }
+  TLegend *leg=new TLegend(0.68,0.4,0.88,0.75);
 
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
@@ -319,7 +316,18 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
     mystack->Add(tmp_stacked_mc);
 
-    leg->AddEntry(tmp_stacked_mc,m_config->GetFlavourPairs()[i_p],"f");
+    //leg->AddEntry(tmp_stacked_mc,m_config->GetFlavourPairs()[i_p],"f");
+  }
+
+  //add Entry to legend in reverse order
+  TList* histKeys=mystack->GetHists();
+  TIter next(histKeys,kIterBackward);
+  TObject* object=0;
+  int i_pairs=m_config->GetFlavourPairs().size()-1;
+
+  while((object = next())){
+    leg->AddEntry((TH1*)object,m_config->GetFlavourPairs()[i_pairs],"f");
+    i_pairs--;
   }
 
   //divide by bin width
@@ -385,7 +393,7 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
     pad2->cd();
     fitsys->Draw("2");
-    leg->AddEntry(fitsys,"Fit Uncertainty","f");
+    leg->AddEntry(fitsys,"fit uncert.","f");
     h_ratio->Draw("EPsame");
     h_ratio->GetYaxis()->SetRangeUser(0.4,1.6);
   }
@@ -395,12 +403,6 @@ void ScaleFactorCalculator::MakeTemplateControlPlots(bool applyFitCorrection, st
 
   pad1->cd();
   leg->Draw();
-
-  //TLatex latex2;
-  //latex2.SetNDC();
-  //latex2.SetTextAlign(12);
-  //latex2.SetTextSize(0.04);
-  //latex2.DrawLatex(0.5,0.8,text_Chi2.Data());
 
   //Add ATLAS label
   pad1->cd();
@@ -516,7 +518,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   pad2.get()->Draw();
   pad2.get()->SetTicks();
   //prepare Legend
-  TLegend *leg=new TLegend(0.55,0.4,0.88,0.75);
+  TLegend *leg=new TLegend(0.68,0.4,0.88,0.75);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
 
@@ -561,8 +563,19 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
 
     tot_mcint += hist_mc[i]->Integral();
 
-    leg->AddEntry(hist_mc[i],m_config->GetFlavourPairs()[i],"f");
+    //leg->AddEntry(hist_mc[i],m_config->GetFlavourPairs()[i],"f");
     mystack->Add(hist_mc[i]);
+  }
+
+  //add Entry to legend in reverse order
+  TList* histKeys=mystack->GetHists();
+  TIter next(histKeys,kIterBackward);
+  TObject* object=0;
+  int i_pairs=m_config->GetFlavourPairs().size()-1;
+
+  while((object = next())){
+    leg->AddEntry((TH1*)object,m_config->GetFlavourPairs()[i_pairs],"f");
+    i_pairs--;
   }
 
   std::cout << "Total MC: " << tot_mcint << std::endl;
@@ -641,7 +654,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
 
       pad2->cd();
       fitsys->Draw("2");
-      leg->AddEntry(fitsys,"fit uncertainty","f");
+      leg->AddEntry(fitsys,"fit uncert.","f");
       //h_ratio->Draw("EPsame");
   }
 
@@ -654,7 +667,7 @@ if (btagsys->GetErrorYhigh(10) == 0) std::cout<<"zero btag uncert!"<<std::endl;
     //pad2->cd();
     btagsys->Draw("5same");
     //h_ratio->Draw("EPsame");
-    leg->AddEntry(btagsys,"b-tagging uncertainty","l");
+    leg->AddEntry(btagsys,"b-tagging uncert.","l");
 
   }
 
@@ -682,8 +695,8 @@ std::cout<<"finished getting exp unc"<<std::endl;
     totsys->SetFillStyle(3245);
     gStyle->SetHatchesLineWidth(1.5);
     totsys->SetLineColor(kBlack);
+    leg->AddEntry(totsys,"total uncert.","f");
     pad2->cd();
-    leg->AddEntry(totsys,"total uncertainty","f");
     totsys->Draw("5same");
   }
 std::cout<<"finished expsys plotting"<<std::endl;
@@ -774,7 +787,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   pad2.get()->Draw();
   pad2.get()->SetTicks();
   //prepare legend
-  TLegend *leg=new TLegend(0.55,0.5,0.88,0.85);
+  TLegend *leg=new TLegend(0.68,0.4,0.88,0.75);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
 
@@ -864,7 +877,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
 
   pad2->cd();
   fitsys->Draw("2");
-  leg->AddEntry(fitsys,"fit uncertainty","f");
+  leg->AddEntry(fitsys,"fit uncert.","f");
 
   //Btagging uncertainties
   TString fjpt="fjpt",fjpt_posttag="fjpt_PREFITPOSTTAG";
@@ -884,7 +897,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   //pad2->cd();
   btagsys->Draw("5");
   h_ratio->Draw("EPsame");
-  leg->AddEntry(btagsys,"b-tagging uncertainty","l");
+  leg->AddEntry(btagsys,"b-tagging uncert.","l");
 
   TGraphAsymmErrors *expsys=this->getExperimentalUncert(fjpt,sys,true,true);
 
@@ -904,7 +917,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   gStyle->SetHatchesLineWidth(1.5);
   totsys->SetLineColor(kBlack);
   pad2->cd();
-  leg->AddEntry(totsys,"total uncertainty","f");
+  leg->AddEntry(totsys,"total uncert.","f");
   totsys->Draw("5");
   fitsys->Draw("2");
   btagsys->Draw("5");
