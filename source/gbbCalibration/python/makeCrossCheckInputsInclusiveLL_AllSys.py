@@ -22,8 +22,6 @@ ListOfVariables_minimal = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nm
 
 #SetupStyle()
 
-Lumi = 36000.0; #in pb^-1
-
 # geting input variables
 parser = argparse.ArgumentParser(description='Make reweight histograms.')
 parser.add_argument('outfile', help="Name of output ROOT file")
@@ -34,9 +32,25 @@ parser.add_argument('--nosys', help="Store only nominal histograms",
                     action="store_true")
 parser.add_argument('--useIncl', type=int, default=1,
     help="specify which templates should be from the inclusive sample. 0=none, 1=LL only, 2=all [default: 1]")
+parser.add_argument('--year', type=str, default="2015+2016",
+    help="Year determines luminosity to normalize to [default: 2015+2016]")
 args = parser.parse_args()
 
 # setting variables
+# luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
+# values used should match the GRL and lumicalc file used to generate the ntuples
+Lumi = 0
+if args.year == "2015" :
+  Lumi = 3219.56 # in /pb
+elif args.year == "2016" :
+  Lumi = 32988.1 # in /pb
+elif args.year == "2015+2016" :
+  Lumi = 3219.56 + 32988.1 # in /pb
+elif args.year == "2017" :
+  Lumi += 44307.4 # in /pb
+elif args.year == "2018" :
+  Lumi += 58450.1 # in /pb
+
 outfilename = args.outfile
 pathData, ListOfMCPaths, ListOfInclusiveMCPaths, xsecFile = config.GetPathsFromJSON(args.infiles)
 
