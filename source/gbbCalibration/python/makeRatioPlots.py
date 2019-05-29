@@ -21,6 +21,8 @@ parser.add_argument('--pdf', action='store_true',
                     help="Store plots in a single pdf [default: separate files]")
 parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"],
                     help="Tell script how to make MC sample. Options are inclusive-only (incl), mu-filtered only (mufilt) or LL-inclusive (comb) [default: comb]")
+parser.add_argument('--year', type=str, default="2015+2016",
+    help="Year determines luminosity to normalize to [default: 2015+2016]")
 parser.add_argument('--xsec', default="xsections_r21.txt", help="Name of cross-sections file [default: xsections_r21.txt]")
 args = parser.parse_args()
 
@@ -43,7 +45,7 @@ else:
 
 MyConfig = config.LoadGlobalConfig()
 if not dataOnly:
-  ListOfSystematics = [ ROOT.TString("Nominal") ] #MyConfig.GetSystematics() 
+  ListOfSystematics = [ ROOT.TString("Nominal") ] #MyConfig.GetSystematics()
   ListOfFlavourPairs = MyConfig.GetFlavourPairs()
   if args.mcflag == 'incl':
     print("Using inclusive samples for all flavours")
@@ -58,28 +60,31 @@ if not dataOnly:
   print("Using x-sections file: "+args.xsec)
   histHelper = config.HistHelper(args.xsec)
 
+  # luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
+  # values used should match the GRL and lumicalc file used to generate the ntuples
   Lumi = 0
-  if 'data17' in args.data[0]:
-    Lumi = 44307.4 #in pb^-1
-  elif 'data1516' in args.data[0]:
-    Lumi = 32988.1 + 3219.56 #in pb^-1
-  elif 'data16' in args.data[0]:
-    Lumi = 32988.1 #in pb^-1
-  elif 'data15' in args.data[0]:
-    Lumi = 3219.56 #in pb^-1
+  if args.year == "2015" :
+    Lumi = 3219.56 # in /pb
+  elif args.year == "2016" :
+    Lumi = 32988.1 # in /pb
+  elif args.year == "2015+2016" :
+    Lumi = 3219.56 + 32988.1 # in /pb
+  elif args.year == "2017" :
+    Lumi += 44307.4 # in /pb
+  elif args.year == "2018" :
+    Lumi += 58450.1 # in /pb
+  print("Lumi is "+str(Lumi))
 
   ListOfMCPaths = []
   ListOfInclusiveMCPaths = []
   for mcdir in args.mc:
     for subdir, dirs, files in os.walk(mcdir):
       for mcfile in files:
-        if config.GetChannelNumber(mcfile) > 361019 and \
-           config.GetChannelNumber(mcfile) < 361033: 
+        channel = config.GetChannelNumber(mcfile)
+        if channel > 361019 and channel < 361033:
           ListOfInclusiveMCPaths.append(subdir + os.sep + mcfile)
-        elif (config.GetChannelNumber(mcfile) > 427002 and \
-              config.GetChannelNumber(mcfile) < 427006) \
-          or (config.GetChannelNumber(mcfile) > 427105 and \
-              config.GetChannelNumber(mcfile) < 427108):
+        elif (channel > 427002 and channel < 427006) \
+          or (channel > 427105 and channel < 427108):
           ListOfMCPaths.append(subdir + os.sep + mcfile)
         else:
           print("Not sure how to categorize file: "+mcfile)
@@ -192,7 +197,7 @@ for key in fileData1.GetListOfKeys():
     FullFormatCanvasDefault(canv,lumi='',additionaltext1=tagText)
   else:
     SetAxisLabels(canv,histNum.GetXaxis().GetTitle(),histNum.GetYaxis().GetTitle())
-    FullFormatCanvasDefault(canv,lumi=Lumi,additionaltext1=tagText)
+    FullFormatCanvasDefault(canv,lumi=Lumi/1000,additionaltext1=tagText)
   SetColors(canv,colors)
   SetYaxisRangesRatio(canv,0.5,1.5)
   if args.pdf:

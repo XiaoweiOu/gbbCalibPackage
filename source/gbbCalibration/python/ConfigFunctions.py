@@ -69,11 +69,14 @@ def GetChannelWeights(xsecfile):
 #-----------------------------------------------
 def GetChannelNumber(filename):
   # Assume filename contains _13TeV.(channel).(other info)
-  channel = int(re.search(r'(?<=mc1(\d)_13TeV\.)[0-9]+',filename).group())
-  if not channel:
-    print "MC channel number for file",filename,"not found!"
-    exit()
-  return channel
+  result = re.search(r'(?<=mc1(\d)_13TeV\.)[0-9]+',filename)
+  if result:
+    channel = int(result.group())
+    if channel:
+      return channel
+
+  print "MC channel number for file",filename,"not found!"
+  return -1
 
 
 #-----------------------------------------------

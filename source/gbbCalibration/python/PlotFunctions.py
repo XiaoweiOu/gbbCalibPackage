@@ -91,7 +91,7 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
             DrawText(can,text_lines,.1,.7,.50,.92,textsize=35,totalentries=4)
         else:
             DrawText(can,text_lines,.2,.7,.50,.92,textsize=35,totalentries=4)
-    MakeLegend(can,0.7, 0.55, 0.92, 0.88,textsize=30,totalentries=4)
+    MakeLegend(can,0.65, 0.55, 0.92, 0.88,textsize=30,totalentries=4)
 
     if doLogx :
         can.SetLogx()
