@@ -60,7 +60,7 @@ reweighted_nmu_out_path = ReweightedFileDir + "/reweighted_nmu_out.root"
 ConfigDir=SourceDir + "/source/gbbCalibration/data/configs"
 ReweightConfigPath=ConfigDir + "/run_GbbTupleAna_Reweight.cfg"
 CalibConfigPath=ConfigDir +"/run_GbbTupleAna_Calib.cfg"
-SFconfigPath=ConfigDir + "config_Calib_SF.cfg"
+SFconfigPath=ConfigDir + "/config_Calib_SF.cfg"
 
 #--- working directory setting end
 
