@@ -1,15 +1,59 @@
-fullrun.py runs the gbbcalibration entire workflow. The flow can be adjusted in main function. (fullrun.py can run locally or be submitted to SLURM)
+fullrun.py Documentation
 
-You need to have/set a workspace folder that fullrun.py dumps all the output. This set as the BaseDir.
+fullrun.py runs the gbbcalibration entire workflow.
+(fullrun.py can run locally or be submitted to SLURM)
 
-Make sure you set the configPaths to your desired configfiles. Set your reweighted files in run_GbbTupleAna_Calib.cfg to be "reweighted_mu_out.root" and "reweighted_nmu_out.root" (absolute path?)
+The purpose of this script is to achieve gbbCalibration code automation.
+That it takes input txt files for run_GbbtupleAna in one folder, and output scalefactor and histograms in along the way.
 
-It is parallelised, and the number of parallel run_gbbtupleAna can be adjusted at maxnumberofprocess global variable.
+By default, user supply the input txt files(everything for one full run, data and mc ) in `gbbCalibPackage/run/InputTxt`. fullrun.py will output everything that gbbCalibration package outputs in `gbbCalibPackage/run/workspace`
 
-batchfullrun.slr is the SLURM job script that is submitted to run fullrun.py. Make sure the number of core per node matches the parallel setting in fullrun.py. fullrun.py is 1 parallel progam with multi-process.
 
-You need to setup the environment(ROOT, gbbCalibration package) that fullrun.py can run locally. Then SLURM can run in the same environment.
 
-run_submit.sh is the submit command/script that add this job to job queue.
+WorkFlow:
+
+1. Setup the working envirnment as specified in gbbCalibration package.(section Installation and setup)
+
+Make sure `run_gbbTupleAna` can execute in command line.
+
+2.Modify the configs as follows:
+
+2.1 change (in data/config folder) the `run_GbbTupleAna_Calib.cfg` setting of the following:
+`JetPtEtaReweightingFile <path to gbbCalibPackage>/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive <path to gbbCalibPackage>/run/workspace/reweightedFile/reweighted_mu_out.root`
+
+2.2 change (in data/config folder) `config_Calib_SF.cfg` setting of the following
+`InputFile   <path to gbbCalibPackage>/run/workspace/crossChecked/crosschecked-out.root`
+
+3. Put input txt files (all of them for a full run, data and mc) to in `gbbCalibPackage/run/InputTxt`
+
+4. remove directory `gbbCalibPackage/run/workspace` if it exist. it will be created and be filled with outputs.
+
+5. adjust  `MaxProcesses` global variable in fullrun.py
+MaxProcesses is the number of run_gbbTupleAna to run in parallel.
+
+For example:
+`MaxProcesses= 32` means 32 run_gbbTupleAna is running in parallel and each is processing one .txt input.
+
+If fullrun.py runs on local machine, set MaxProcesses less than 5, or the number recommended by your machine admin. If fullrun.py runs on a batch system (like SLURM) MaxProcesses should be set to the number of cpu you set for the batch job.(More on Batch below) 
+
+6. `python fullrun.py` starts the job.
+
+
+Remarks:
+
+1. In the main function, comment out steps that you don't want to run, or add exit(0) after the desired step finish.
+
+2. You can run step 0, setUp() once and then comment it out, then run fullrun.py again will use the same gbbCalibration/run/workspace folder.
+
+3. Systematics is set in global variable Systematics, by default only nominal is used.
+
+4. Json files are produced/dumped in workspace/jsons
+Json with systematics have never been tested, modification is needed in getjson function. (it assumes nominal is always used)
+
+
+
+
+
 
  

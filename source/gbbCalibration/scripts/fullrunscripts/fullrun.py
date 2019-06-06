@@ -1,33 +1,62 @@
 #!/usr/bin/env python
 
+"""
+gbbCalibrationPackage fullrun script
+Author: Youyuan Wu, May 2019
+Discription: 
+This script runs the whole gbbCalibration procedures 
+from begining to end, with multi-process speed up. 
+
+To run this script in default 
+the user must provide/modify the following
+1.provide input txt files to run_gbbtupleAna in folder
+"InDir" which is "gbbCalibPackage/run/InputTxt" by default
+
+2.change the run_GbbTupleAna_Calib.cfg setting of the following:
+JetPtEtaReweightingFile <path to gbbCalibPackage>/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive <path to gbbCalibPackage>/run/workspace/reweightedFile/reweighted_mu_out.root
+
+3. change config_Calib_SF.cfg setting of the following
+InputFile   <path to gbbCalibPackage>/run/workspace/crossChecked/crosschecked-out.root
+
+4. change the MaxProcesses variable below
+"""
+
 import subprocess
-from os.path import expanduser
-
-
 # global variables:
 # --- directory setting:
 
-# User: change to dir of the gbb package location
-SourceDir = "/global/homes/w/wuy45/temp/gbbCalibPackage"
+# User Optional: change to SourceDir of the gbb package location
+import os
+thisPath = os.path.realpath(__file__) # path of this script
+# path of gbbCalibPackage 
+# if fullrun.py is moved around, SoureceDir must be changed accordingly
+SourceDir = os.path.abspath(thisPath+"/../../../../../")
 
-# User: change to dir that this script use to output stuff
-home = expanduser("~")
-BaseDir= SourceDir + "/run"+"/workspace"
-OutDir= BaseDir + "/gbbAnaTupleOutFiles" # do not change
 
-# User: put input txt files here
+# User Required: put input txt files in this folder
 # or change to a folder containing input txt files
 InDir= SourceDir + "/run/InputTxt"
 
+# User Optional: change to dir that this script use to output stuff
+# Currently is set to in /run folder in gbbCalibPackage
+BaseDir= SourceDir + "/run"+"/workspace"
+
+OutDir= BaseDir + "/gbbAnaTupleOutFiles" # do not change
 LogDir=BaseDir+"/logs" # do not change
 JsonDir=BaseDir+"/jsons" # do not change
 CrossCheckDir=BaseDir + "/crossChecked" # do not change
 SfoutputDir=BaseDir +"/sfOutput" # do not change
+ReweightedFileDir = BaseDir+ "/reweightedFile" # do not change
+
+# User required: change calib config to match this.
+# JetPtEtaReweightingFile  JetPtEtaReweightingFileInclusive
+reweighted_mu_out_path = ReweightedFileDir + "/reweighted_mu_out.root"  
+reweighted_nmu_out_path = ReweightedFileDir + "/reweighted_nmu_out.root"
 
 
 
-
-# User: changer config file you want to use for each
+# User Optional: changer config file you want to use for each
 ConfigDir=SourceDir + "/source/gbbCalibration/data/configs"
 ReweightConfigPath=ConfigDir + "/run_GbbTupleAna_Reweight.cfg"
 CalibConfigPath=ConfigDir +"/run_GbbTupleAna_Calib.cfg"
@@ -36,16 +65,16 @@ SFconfigPath=ConfigDir + "config_Calib_SF.cfg"
 #--- working directory setting end
 
 # ------parrellel setting-----
-# User: Change this to set the number 
+# User Required: Change this to set the number 
 # of run_gbbtupleana in parallel
 # set it less than 5 when running locally
 # set it to be the num of cpu when running in 
 # job manager (slurm), (32 cpus recommended)
-MaxProcesses = 3
+MaxProcesses = 34
 Processes = []
 # ------parellel setting end
 
-# systematics
+# User : adjust systematics
 Systematics =["Nominal"]
 
 
@@ -55,7 +84,6 @@ def main():
    # Step 0: setup folders
    # run it if you don't have basedir setup
    setUp()
-   #exit(0);
 
    # Step 1: run gbb reweight
    for sys in Systematics:
@@ -120,6 +148,7 @@ def setUp():
    
    # createDir(InDir)  # optional
    # createDir(ConfigDir) # optional
+   createDir(ReweightedFileDir)
    createDir(LogDir)
    createDir(JsonDir)
    createDir(CrossCheckDir)
@@ -324,7 +353,7 @@ def getjson(runtype):
    jData = "data/mergeall.root",
    jMuBase =  "/nmu/",
    jIncBase = "mu/",
-   jSys = [sys]
+   # jSys = [sys]
 
    import json
    jres= {
@@ -333,9 +362,7 @@ def getjson(runtype):
       "Data" : "/data/mergeall.root",
       "MuBase" : "/nmu/",
       "IncBase" : "/mu/",
-      "Sys" : [
-         "Nominal"
-      ],
+      "Sys" : Systematics,
       "MuFilteredMC" : nmufiles,
       "InclusiveMC" : mufiles
    }
@@ -358,11 +385,6 @@ def reweighthisto():
 
    #python makeReweightingHistos.py <root_output> <json_input> <filter_type>
    
-   outputDir=BaseDir+ "/reweightedFile"
-   
-   # User: change this to match in path in calib config!!! 
-   reweighted_mu_out_path = outputDir+"/reweighted_mu_out.root"  
-   reweighted_nmu_out_path = outputDir + "/reweighted_nmu_out.root"
    import os
    if os.path.exists(reweighted_mu_out_path):
       os.remove(reweighted_mu_out_path)# clean target
