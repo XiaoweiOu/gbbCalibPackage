@@ -986,7 +986,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
     // SF calculation needs mjpt_PREFITUNTAG so fill this even if the rest of the track-jet
     // properties aren't asked for
     if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES)) {
-      m_HistSvc->FastFillTH1D( makeMuJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
+       ";muon-jet p_{T} [GeV];Events/2 GeV;",
+       this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
+      m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
        ";muon-jet p_{T} [GeV];Events/2 GeV;",
        this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
     }
@@ -1479,6 +1482,16 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     }
 
     tracks_passed++;
+    bool duplicate = false;
+    for (track tr : tracks) {
+      if (fabs(tr.pt - trkjet_assocTrk_pt->at(i_jet).at(i_trk)) < 1e-5) duplicate = true;
+    }
+    if (duplicate) {
+      std::cout<<"Skipping duplicate track! pt: ";
+      std::cout<<trkjet_assocTrk_pt->at(i_jet).at(i_trk)<<std::endl;
+      continue;
+    }
+
     track tr;
 
     tr.d0 = getd0(i_trk,i_jet,doSmeared,sys);

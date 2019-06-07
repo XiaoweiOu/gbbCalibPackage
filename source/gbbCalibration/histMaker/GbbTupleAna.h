@@ -203,6 +203,8 @@ private:
   void FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, float event_weight,TString nametag="");
   // Helper function for FillTemplates
   void FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc);
+  //Tong: Fill 2D histogram for correlation check
+  void FillSd02DPlots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc);
 
   bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
 
