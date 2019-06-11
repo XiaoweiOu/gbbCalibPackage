@@ -91,7 +91,7 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
             DrawText(can,text_lines,.1,.7,.50,.92,textsize=35,totalentries=4)
         else:
             DrawText(can,text_lines,.2,.7,.50,.92,textsize=35,totalentries=4)
-    MakeLegend(can,0.7, 0.55, 0.92, 0.88,textsize=30,totalentries=4)
+    MakeLegend(can,0.65, 0.55, 0.92, 0.88,textsize=30,totalentries=4)
 
     if doLogx :
         can.SetLogx()
@@ -99,7 +99,6 @@ def FullFormatCanvasDefault(can,lumi=3.2,sqrts=13,additionaltext1='',additionalt
         can.SetLogy()
         #SetYaxisRanges(can,MinimumForLog(can),10);
     AutoFixAxes(can,ignoreErrors)
-
     return
 
 ##
@@ -403,13 +402,13 @@ def MakeLegend(can,x1=.8,y1=.8,x2=.9,y2=.9,textsize=18,ncolumns=1,totalentries=0
             drawopt = 'l'
         if issubclass(type(i),TH1) or issubclass(type(i),TGraph) :
             leg.AddEntry(i,i.GetName().replace(can.GetName()+'_',''),drawopt) # plef
-            print i.GetName().replace(can.GetName()+'_','')
+            #print i.GetName().replace(can.GetName()+'_','')
             total += 1
         elif issubclass(type(i),THStack) :
             for stackedHists in i.GetHists() :
-                print stackedHists.GetName()
+                #print stackedHists.GetName()
                 leg.AddEntry(stackedHists,stackedHists.GetName().replace(can.GetName()+'_',''),drawopt) # plef
-                print stackedHists.GetName().replace(can.GetName()+'_','')
+                #print stackedHists.GetName().replace(can.GetName()+'_','')
                 total += 1
 
 

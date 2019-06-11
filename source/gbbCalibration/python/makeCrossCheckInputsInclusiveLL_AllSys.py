@@ -33,8 +33,8 @@ parser.add_argument('--tiny', help="Store only the histograms needed to run the 
                     action="store_true")
 parser.add_argument('--nosys', help="Store only nominal histograms",
                     action="store_true")
-parser.add_argument('--useIncl', type=int, default=1,
-    help="specify which templates should be from the inclusive sample. 0=none, 1=LL only, 2=all [default: 1]")
+parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"],
+                    help="Tell script how to make MC sample. Options are inclusive-only (incl), mu-filtered only (mufilt) or LL-inclusive (comb) [default: comb]")
 parser.add_argument('--year', type=str, default="2015+2016",
     help="Year determines luminosity to normalize to [default: 2015+2016]")
 args = parser.parse_args()
@@ -72,14 +72,15 @@ else:
   ListOfWeightVariations = MyConfig.GetSystematics_WeightVar()
 
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
-if (args.useIncl == 0):
-  ListOfInclusiveFlavourPairs = [ ]
-elif (args.useIncl == 1):
+if args.mcflag == 'incl':
+  print("Using inclusive samples for all flavours")
+  ListOfInclusiveFlavourPairs = ListOfFlavourPairs
+elif args.mcflag == 'mufilt':
+  print("Using mu-filtered samples for all flavours")
+  ListOfInclusiveFlavourPairs = []
+else:
+  print("Using inclusive samples for LL template only")
   ListOfInclusiveFlavourPairs = [ 'LL' ]
-elif (args.useIncl == 2):
-  ListOfInclusiveFlavourPairs = [ ]
-  for flav in ListOfFlavourPairs:
-    ListOfInclusiveFlavourPairs.append(flav.Data())
 
 ListOfTJpt = MyConfig.GetTrkJetRegions()
 ListOfTJpt.push_back(TString("Incl"))
@@ -193,7 +194,6 @@ for histname in ListOfDataHists :
     if histname is 'CutFlow_Nom':
       histData.SetName('CutFlow_Data')
     histData.Write()
+    print("Wrote "+histname)
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
-
-#--------------------- output -----------------------
