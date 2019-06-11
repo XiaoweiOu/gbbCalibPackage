@@ -190,6 +190,19 @@ void GbbTupleAna::FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0In
     m_HistSvc->FastFillTH1D( namingFunc("nmjmeand0_pt"),";non-muon-jet mean d0;Events/0.005;",
      nonmuSd0Info.meand0_pt,60,-0.15,0.15,event_weight);
 
+    m_HistSvc->FastFillTH1D( namingFunc("mjmax_z0sintheta_pt"),";muon-jet leading track z0sin#theta;Events/0.01;",
+     muSd0Info.max_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmax_z0sintheta_pt"),";non-muon-jet leading track z0sin#theta;Events/0.01;",
+     nonmuSd0Info.max_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjsub_z0sintheta_pt"),";muon-jet sub-leading track z0sin#theta;Events/0.01;",
+     muSd0Info.sub_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjsub_z0sintheta_pt"),";non-muon-jet sub-leading track z0sin#theta;Events/0.01;",
+     nonmuSd0Info.sub_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjthird_z0sintheta_pt"),";muon-jet third-leading track z0sin#theta;Events/0.01;",
+     muSd0Info.third_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjthird_z0sintheta_pt"),";non-muon-jet third-leading track z0sin#theta;Events/0.01;",
+     nonmuSd0Info.third_z0sintheta_pt,80,-0.4,0.4,event_weight);
+
     m_HistSvc->FastFillTH1D( namingFunc("mjmaxd0err"),";muon-jet leading #sigma_{d0};Events/0.002;",
      muSd0Info.maxd0err,50,0.,0.1,event_weight);
     m_HistSvc->FastFillTH1D( namingFunc("nmjmaxd0err"),";non-muon-jet leading #sigma_{d0};Events/0.002;",

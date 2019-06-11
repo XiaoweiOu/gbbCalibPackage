@@ -47,6 +47,10 @@ struct trkjetSd0Info {
   float thirdd0_pt;
   float meand0_pt;
 
+  float max_z0sintheta_pt;
+  float sub_z0sintheta_pt;
+  float third_z0sintheta_pt;
+
   float maxd0err;
   float subd0err;
   float thirdd0err;
