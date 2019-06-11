@@ -190,6 +190,19 @@ void GbbTupleAna::FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0In
     m_HistSvc->FastFillTH1D( namingFunc("nmjmeand0_pt"),";non-muon-jet mean d0;Events/0.005;",
      nonmuSd0Info.meand0_pt,60,-0.15,0.15,event_weight);
 
+    m_HistSvc->FastFillTH1D( namingFunc("mjmax_z0sintheta_pt"),";muon-jet leading track z0sin#theta;Events/0.01;",
+     muSd0Info.max_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjmax_z0sintheta_pt"),";non-muon-jet leading track z0sin#theta;Events/0.01;",
+     nonmuSd0Info.max_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjsub_z0sintheta_pt"),";muon-jet sub-leading track z0sin#theta;Events/0.01;",
+     muSd0Info.sub_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjsub_z0sintheta_pt"),";non-muon-jet sub-leading track z0sin#theta;Events/0.01;",
+     nonmuSd0Info.sub_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("mjthird_z0sintheta_pt"),";muon-jet third-leading track z0sin#theta;Events/0.01;",
+     muSd0Info.third_z0sintheta_pt,80,-0.4,0.4,event_weight);
+    m_HistSvc->FastFillTH1D( namingFunc("nmjthird_z0sintheta_pt"),";non-muon-jet third-leading track z0sin#theta;Events/0.01;",
+     nonmuSd0Info.third_z0sintheta_pt,80,-0.4,0.4,event_weight);
+
     m_HistSvc->FastFillTH1D( namingFunc("mjmaxd0err"),";muon-jet leading #sigma_{d0};Events/0.002;",
      muSd0Info.maxd0err,50,0.,0.1,event_weight);
     m_HistSvc->FastFillTH1D( namingFunc("nmjmaxd0err"),";non-muon-jet leading #sigma_{d0};Events/0.002;",
@@ -497,9 +510,34 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
    this->muo_pt->at(gbbcand->muo_index)/1e3,100,0.,400.,event_weight
   );
   m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muphi"+nametag),
+   ";muon #phi;Events/0.4;",
+   this->muo_phi->at(gbbcand->muo_index),16,-3.2,3.2,event_weight
+  );
+  m_HistSvc->FastFillTH1D(
    m_config->GetMCHistName(m_SysVarName,"Incl","Incl","mueta"+nametag),
-   ";muon #eta;Events/0.2;",
+   ";muon #eta;Events/0.5;",
    this->muo_eta->at(gbbcand->muo_index),10,-2.5,2.5,event_weight
+  );
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muE"+nametag),
+   ";muon E [GeV];Events/4 GeV;",
+   this->muo_E->at(gbbcand->muo_index)/1e3,100,0.,400.,event_weight
+  );
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","mud0"+nametag),
+   ";muon d0;Events/0.001;",
+   this->muo_d0->at(gbbcand->muo_index),30,-0.015,0.015,event_weight
+  );
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muz0"+nametag),
+   ";muon z0;Events/0.001;",
+   this->muo_z0->at(gbbcand->muo_index),30,-0.015,0.015,event_weight
+  );
+  m_HistSvc->FastFillTH1D(
+   m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muz0sintheta"+nametag),
+   ";muon z0sintheta;Events/0.001;",
+   this->muo_z0sintheta->at(gbbcand->muo_index),30,-0.015,0.015,event_weight
   );
   m_HistSvc->FastFillTH1D(
    makeInclDiJetPlotName(gbbcand, "muptrel"+nametag),

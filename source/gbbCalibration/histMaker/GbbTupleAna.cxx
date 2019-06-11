@@ -24,6 +24,7 @@ struct track {
   float d0;
   float d0err;
   float sd0;
+  float z0sintheta;
   float pt;
   float dr; //delta-R with associated track-jet
 
@@ -228,7 +229,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
     }
   }
 
-  
+
   TH1D* metahist(nullptr), *metahist_tmp(nullptr);
   TChain *tree = new TChain(treename);
   TChain *fren = new TChain("FlavourTagging_Nominal");
@@ -351,7 +352,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_random.get()->SetSeed(0);
 
   Init(tree);
-  
+
 }
 
 
@@ -423,9 +424,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   m_HistSvc->FastFillTH1D("PUWeights",this->eve_pu_w,50,0.,5.,1.);
   m_HistSvc->FastFillTH1D("EventWeights",total_evt_weight,102,-1.,100.,1.);
-  m_HistSvc->FastFillTH1D("EventMu",this->eve_mu,80,0.,80.,1.);
+  m_HistSvc->FastFillTH1D("EventMu",this->eve_mu,80,0.,80.,total_evt_weight);
+  m_HistSvc->FastFillTH1D("EventPVz",this->eve_PVz,80,-150.,150.,total_evt_weight);
   if (!m_config->GetIsR20p7()) {
-    m_HistSvc->FastFillTH1D("PUDensity",this->eve_pu_density,80,0.,80.,1.);
+    m_HistSvc->FastFillTH1D("PUDensity",this->eve_pu_density,80,0.,80.,total_evt_weight);
   }
 
   //double mc_jet_ratio=1.;
@@ -724,13 +726,13 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
     isTagged = this->m_bTagger->tag(*this,gbbcand);
   } else {
-    std::cout << " not tagging mode. done." << std::endl; 
+    std::cout << " not tagging mode. done." << std::endl;
     return false;
   }
 
   /*bTagger ---*/
 
-  
+
   //at least 1 b-tag
   if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);
   //2 b-tags
@@ -1474,6 +1476,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   std::vector<track> tracks;
   trkjetSd0Info ret = {-99.,-99.,-99.,-99.,-99., -99.,-99.,-99.,-99.,
                        -99.,-99.,-99.,-99., -99.,-99.,-99.,-99.,
+                       -99.,-99.,-99.,
                        -99.,-99.,-99., -99.,-99.,-99., n};
 
   for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
@@ -1497,6 +1500,8 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     tr.d0 = getd0(i_trk,i_jet,doSmeared,sys);
     tr.d0err = this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
     tr.sd0 = getSd0(i_trk,i_jet,doSmeared,sys);
+    tr.z0sintheta = (this->trkjet_assocTrk_z0->at(i_jet).at(i_trk)  - this->eve_PVz) *
+                    TMath::Sin(this->trkjet_assocTrk_theta->at(i_jet).at(i_trk));
     tr.pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
 
     trk.SetPtEtaPhiM(this->trkjet_assocTrk_pt->at(i_jet).at(i_trk),this->trkjet_assocTrk_eta->at(i_jet).at(i_trk),this->trkjet_assocTrk_phi->at(i_jet).at(i_trk),0);
@@ -1509,22 +1514,24 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   std::sort(tracks.begin(),tracks.end(),by_abs_sd0());
   ret.maxSd0 = tracks.at(0).sd0;
   ret.maxSd0_dR = tracks.at(0).dr;
-  ret.subSd0 = tracks.at(1).sd0;
-  ret.thirdSd0 = tracks.at(2).sd0;
-
   ret.maxd0 = tracks.at(0).d0;
-  ret.subd0 = tracks.at(1).d0;
-  ret.thirdd0 = tracks.at(2).d0;
-
   ret.maxd0err = tracks.at(0).d0err;
+
+  ret.subSd0 = tracks.at(1).sd0;
+  ret.subd0 = tracks.at(1).d0;
   ret.subd0err = tracks.at(1).d0err;
-  ret.thirdd0err = tracks.at(2).d0err;
 
-  if ((int)tracks.size() < n) return ret;
+  if (tracks.size() > 2) {
+    ret.thirdSd0 = tracks.at(2).sd0;
+    ret.thirdd0 = tracks.at(2).d0;
+    ret.thirdd0err = tracks.at(2).d0err;
+  }
 
+  // Calculate averages over min(n, n_tracks) tracks
+  int N = TMath::Min(n,(int)tracks.size());
   float sum=0.;
   float sum_d0=0.;
-  for(int i=0; i<n; i++){
+  for(int i=0; i<N; i++){
     //std::cout<<"track "<<i<<": pT"<<tracks.at(i).pt<<std::endl;
     //float d0=tracks.at(i).d0;
     float sd0=tracks.at(i).sd0;
@@ -1532,13 +1539,13 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     sum+=sd0;
     sum_d0+=tracks.at(i).d0;
   }
-  ret.meanSd0_sd0 = sum/n;
-  ret.meand0_sd0 = sum_d0/n;
+  ret.meanSd0_sd0 = sum/N;
+  ret.meand0_sd0 = sum_d0/N;
 
   std::sort(tracks.begin(),tracks.end(),by_pt());
   sum=0.;
   sum_d0=0.;
-  for(int i=0; i<n; i++){
+  for(int i=0; i<N; i++){
     //std::cout<<"track "<<i<<": pT"<<tracks.at(i).pt<<std::endl;
     //float d0=tracks.at(i).d0;
     float sd0=tracks.at(i).sd0;
@@ -1546,17 +1553,25 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     sum+=sd0;
     sum_d0+=tracks.at(i).d0;
   }
-  ret.meanSd0_pt = sum/n;
+  ret.meanSd0_pt = sum/N;
+  ret.meand0_pt = sum_d0/N;
+
   ret.maxSd0_pt = tracks.at(0).sd0;
-  ret.subSd0_pt = tracks.at(1).sd0;
-  ret.thirdSd0_pt = tracks.at(2).sd0;
-  ret.meand0_pt = sum_d0/n;
   ret.maxd0_pt = tracks.at(0).d0;
-  ret.subd0_pt = tracks.at(1).d0;
-  ret.thirdd0_pt = tracks.at(2).d0;
+  ret.max_z0sintheta_pt = tracks.at(0).z0sintheta;
   ret.maxd0err_pt = tracks.at(0).d0err;
+
+  ret.subSd0_pt = tracks.at(1).sd0;
+  ret.subd0_pt = tracks.at(1).d0;
+  ret.sub_z0sintheta_pt = tracks.at(1).z0sintheta;
   ret.subd0err_pt = tracks.at(1).d0err;
-  ret.thirdd0err_pt = tracks.at(2).d0err;
+
+  if (tracks.size() > 2) {
+    ret.thirdSd0_pt = tracks.at(2).sd0;
+    ret.thirdd0_pt = tracks.at(2).d0;
+    ret.third_z0sintheta_pt = tracks.at(2).z0sintheta;
+    ret.thirdd0err_pt = tracks.at(2).d0err;
+  }
 
   return ret;
 

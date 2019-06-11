@@ -16,7 +16,7 @@
 #include "TEnv.h"
 #include "TRandom3.h"
 #include <map>
-// wesley add for b tagging module 
+// wesley add for b tagging module
 #include "BTagging/BTagger.h"
 #include "GbbStructures.h"
 #include <functional>
@@ -79,7 +79,7 @@ private:
   // example: MV2c10_FixedCutBEff_70_R20p7
   // example: XbbScore_FixedCutBEff_60_[fp2/f0]
   TString m_BTagWP;
-  
+
   bool m_Debug;
 
   bool m_doJetPtReweighting;
@@ -126,7 +126,7 @@ private:
   // this for cutting the gbb candidate
   // in b-tagging step
   BTagger* m_bTagger;
-  
+
   void Loop(const TString& sys);
   bool Processgbb(int i_evt);
 
