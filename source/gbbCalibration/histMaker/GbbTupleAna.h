@@ -87,6 +87,9 @@ private:
   TString m_JetPtReweightFileInclusive;
 
   bool m_isMC;
+  bool m_2016;
+  bool m_2017;
+  bool m_2018;
   bool m_isNominal;
   TString m_SysVarName;
   TString m_GeneratorName;

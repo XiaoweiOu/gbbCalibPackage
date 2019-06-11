@@ -258,7 +258,13 @@ int GbbTupleAna::getTrigMatch() {
   TLorentzVector trigjet_trlvl,jet_reco;
   double DRmin_trigmatch=999.;
   int i_trigjet=-1;
-  trigjet_trlvl.SetPtEtaPhiM(this->trigjet_pt->at(0),this->trigjet_eta->at(0),this->trigjet_phi->at(0),0.);
+  if (m_2016) {
+    trigjet_trlvl.SetPtEtaPhiM(this->trigjet_a4_pt->at(0),this->trigjet_a4_eta->at(0),
+        this->trigjet_a4_phi->at(0),0.);
+  } else if (m_2017 || m_2018) {
+    trigjet_trlvl.SetPtEtaPhiM(this->trigjet_a4IS_pt->at(0),this->trigjet_a4IS_eta->at(0),
+        this->trigjet_a4IS_phi->at(0),0.);
+  }
   for(unsigned int i=0; i<this->jet_pt->size(); i++){
     jet_reco.SetPtEtaPhiM(this->jet_pt->at(i),this->jet_eta->at(i),this->jet_phi->at(i),0.);
     if(jet_reco.DeltaR(trigjet_trlvl)<0.4 && jet_reco.DeltaR(trigjet_trlvl)<DRmin_trigmatch && this->passR4CaloJetCuts(i)){
@@ -325,8 +331,10 @@ bool GbbTupleAna::passTrigger(const float trigjet_pt, float& prescale, TString& 
     return false;
     }*/
 
-  if (trigjet_pt > 500e3 && this->eve_HLT_j380) { //demand that full efficiency of turnon curve has been reached
+  if (m_2016 && trigjet_pt > 500e3 && this->eve_HLT_j380) { //demand that full efficiency of turnon curve has been reached
     trigger_passed="HLT_j380";
+  } else if (m_2017 && trigjet_pt > 500e3 && this->eve_HLT_j420) { //demand that full efficiency of turnon curve has been reached
+    trigger_passed="HLT_j420";
   } else {
     return false;
   }
@@ -339,9 +347,9 @@ bool GbbTupleAna::cutTriggerBias(const float gbbcandpt, const TString trigger_pa
   if (gbbcandpt < 500e3) {
     return false;
   }
-  if (!trigger_passed.EqualTo("HLT_j380")) {
-    std::cout<<"Event with (R=1.0) pT "<<gbbcandpt<<" that didn't pass j380!"<<std::endl;
-  }
+  //if (!trigger_passed.EqualTo("HLT_j380")) {
+  //  std::cout<<"Event with (R=1.0) pT "<<gbbcandpt<<" that didn't pass j380!"<<std::endl;
+  //}
 
   /*  if(gbbcandpt>250e3 && gbbcandpt<=280e3 && trigger_passed.EqualTo("HLT_j150")){
   }else if(gbbcandpt>280e3 && gbbcandpt<=380e3 && trigger_passed.EqualTo("HLT_j175")){
