@@ -18,11 +18,12 @@ ListOfVariables_r20p7 = []
 
 ListOfVariables_minimal = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','mjpt_PREFITUNTAG']
 
+# variables for which only the pt-inclusive plots are desired
+ListOfVariables_inclusive = ['muE','mueta','muphi','mupt','muptrel','mud0','muz0','muz0sintheta','mjthirdSd0himu','mjthirdSd0medmu','mjthirdSd0lowmu','mjsubSd0himu','mjsubSd0medmu','mjsubSd0lowmu','mjmaxSd0himu','mjmaxSd0medmu','mjmaxSd0lowmu','mjmeanSd0himu','mjmeanSd0medmu','mjmeanSd0lowmu','nmjthirdSd0himu','nmjthirdSd0medmu','nmjthirdSd0lowmu','nmjsubSd0himu','nmjsubSd0medmu','nmjsubSd0lowmu','nmjmaxSd0himu','nmjmaxSd0medmu','nmjmaxSd0lowmu','nmjmeanSd0himu','nmjmeanSd0medmu','nmjmeanSd0lowmu']
+
 #------------------ setup ---------------------------
 
 #SetupStyle()
-
-Lumi = 36000.0; #in pb^-1
 
 # geting input variables
 parser = argparse.ArgumentParser(description='Make reweight histograms.')
@@ -32,11 +33,27 @@ parser.add_argument('--tiny', help="Store only the histograms needed to run the 
                     action="store_true")
 parser.add_argument('--nosys', help="Store only nominal histograms",
                     action="store_true")
-parser.add_argument('--useIncl', type=int, default=1,
-    help="specify which templates should be from the inclusive sample. 0=none, 1=LL only, 2=all [default: 1]")
+parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"],
+                    help="Tell script how to make MC sample. Options are inclusive-only (incl), mu-filtered only (mufilt) or LL-inclusive (comb) [default: comb]")
+parser.add_argument('--year', type=str, default="2015+2016",
+    help="Year determines luminosity to normalize to [default: 2015+2016]")
 args = parser.parse_args()
 
 # setting variables
+# luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
+# values used should match the GRL and lumicalc file used to generate the ntuples
+Lumi = 0
+if args.year == "2015" :
+  Lumi = 3219.56 # in /pb
+elif args.year == "2016" :
+  Lumi = 32988.1 # in /pb
+elif args.year == "2015+2016" :
+  Lumi = 3219.56 + 32988.1 # in /pb
+elif args.year == "2017" :
+  Lumi += 44307.4 # in /pb
+elif args.year == "2018" :
+  Lumi += 58450.1 # in /pb
+
 outfilename = args.outfile
 pathData, ListOfMCPaths, ListOfInclusiveMCPaths, xsecFile = config.GetPathsFromJSON(args.infiles)
 
@@ -55,14 +72,15 @@ else:
   ListOfWeightVariations = MyConfig.GetSystematics_WeightVar()
 
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
-if (args.useIncl == 0):
-  ListOfInclusiveFlavourPairs = [ ]
-elif (args.useIncl == 1):
+if args.mcflag == 'incl':
+  print("Using inclusive samples for all flavours")
+  ListOfInclusiveFlavourPairs = ListOfFlavourPairs
+elif args.mcflag == 'mufilt':
+  print("Using mu-filtered samples for all flavours")
+  ListOfInclusiveFlavourPairs = []
+else:
+  print("Using inclusive samples for LL template only")
   ListOfInclusiveFlavourPairs = [ 'LL' ]
-elif (args.useIncl == 2):
-  ListOfInclusiveFlavourPairs = [ ]
-  for flav in ListOfFlavourPairs:
-    ListOfInclusiveFlavourPairs.append(flav.Data())
 
 ListOfTJpt = MyConfig.GetTrkJetRegions()
 ListOfTJpt.push_back(TString("Incl"))
@@ -93,7 +111,10 @@ print("--- end of varlist ---")
 ListOfDataHists = []
 for tjpt in ListOfTJpt :
     for var in ListOfVariables :
-       ListOfDataHists.append( MyConfig.GetDataHistName(tjpt,var).Data() )
+        ListOfDataHists.append( MyConfig.GetDataHistName(tjpt,var).Data() )
+if not args.tiny :
+    for var in ListOfVariables_inclusive :
+        ListOfDataHists.append( MyConfig.GetDataHistName("Incl",var).Data() )
 
 ListOfDataHists.append('CutFlow_Nom');
 
@@ -102,6 +123,9 @@ ListOfHists = []
 ListOfHerwigHists = []
 ListOfHists.append('CutFlow_Nom')
 for flavour in ListOfFlavourPairs :
+  if not args.tiny :
+    for var in ListOfVariables_inclusive :
+      ListOfHists.append( MyConfig.GetMCHistName("Nom","Incl",flavour,var).Data() )
   for tjpt in ListOfTJpt :
     for var in ListOfVariables :
       ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var).Data())
@@ -170,7 +194,6 @@ for histname in ListOfDataHists :
     if histname is 'CutFlow_Nom':
       histData.SetName('CutFlow_Data')
     histData.Write()
+    print("Wrote "+histname)
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
-
-#--------------------- output -----------------------

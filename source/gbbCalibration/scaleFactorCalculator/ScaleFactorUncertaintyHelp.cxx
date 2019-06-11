@@ -194,6 +194,104 @@ TGraphAsymmErrors* ScaleFactorCalculator::getTemplateFitUncertToys(bool applyFit
   return g_fiterrors;
 
 }
+std::vector<double> ScaleFactorCalculator::getFractionFitUncertToys(bool applyFitCorrection, std::vector<std::shared_ptr<TH1D>> templateHists, TString& region){
+
+  TH1D* tmp_stacked_mc, *hist_total;
+
+  std::vector<TH1D*> toy_bins;
+
+
+  TRandom3 r(0);
+
+  TVectorD randomv(m_config->GetFlavourPairs().size()), nomv(m_config->GetFlavourPairs().size()), eigenval(m_config->GetFlavourPairs().size());
+  for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++) nomv(i_p)=m_fit_params[region+"_Nom"][i_p];
+
+  TMatrixD eigenvec(m_config->GetFlavourPairs().size(),m_config->GetFlavourPairs().size());
+
+  std::vector<double> nominal;
+
+  TMatrixDSym mat(m_config->GetFlavourPairs().size(),&m_nom_cov_mats[region][0]);
+  //mat.UnitMatrix();
+
+  TMatrixDSymEigen mat_eigen(mat);
+  eigenval=mat_eigen.GetEigenValues();
+  eigenvec=mat_eigen.GetEigenVectors();
+
+  int n_toys=2000;
+
+  for(int i_toy=0; i_toy<n_toys; i_toy++){
+
+    if(i_toy==0){ //nominal rate
+      randomv=nomv;
+    }else{
+      for(unsigned int i_p=0; i_p<m_config->GetFlavourPairs().size(); i_p++){
+	      randomv(i_p)=r.Gaus(0.,TMath::Sqrt(eigenval(i_p)));
+      }
+
+      randomv=eigenvec*randomv;
+      randomv+=nomv;
+    }
+
+    std::vector<double> flavour_norms;
+    for(unsigned int i_p=0; i_p<templateHists.size(); i_p++){
+      if(!(templateHists[i_p].get())) continue;
+
+      tmp_stacked_mc=(TH1D*)templateHists[i_p].get()->Clone();
+
+      if(applyFitCorrection) tmp_stacked_mc->Scale(randomv(i_p));
+      //if(rebin>1) tmp_stacked_mc->Rebin(rebin);
+
+      flavour_norms.push_back(tmp_stacked_mc->Integral());
+
+      if(i_p==0) hist_total=(TH1D*)tmp_stacked_mc->Clone();
+      else hist_total->Add(tmp_stacked_mc);
+    }
+
+    for(int i_f=0; i_f<m_config->GetFlavourPairs().size(); i_f++){
+
+      if(i_toy==0){
+        //nominal.push_back(hist_total->GetBinContent(i_bin));
+        toy_bins.push_back(new TH1D("toy_fractions","",50,0,2));
+      }
+      toy_bins[i_f]->Fill(flavour_norms[i_f]/hist_total->Integral());
+    }
+
+  }//toys
+
+
+  double param;
+
+  std::vector<double> params;
+
+  TCanvas* can_toys=new TCanvas("can_toys","",700,600);
+  for(int i_f=0; i_f<m_config->GetFlavourPairs().size(); i_f++){
+    TString name="./ctrl_plots/toys/Fraction_toy_"+region+"_";
+    if(TString(hist_total->GetName()).Contains("posttag")) name+="posttag_";
+    name+=i_f;
+    name+=".pdf";
+    if(toy_bins[i_f]->Integral()){
+      toy_bins[i_f]->Fit("gaus");
+      can_toys->cd();
+      toy_bins[i_f]->Draw("HIST");
+      TF1* fitfunc= toy_bins[i_f]->GetFunction("gaus");
+      fitfunc->SetLineColor(kRed);
+      fitfunc->SetLineWidth(2);
+      fitfunc->Draw("same");
+      param=fitfunc->GetParameter(2);
+      can_toys->SaveAs(name.Data());
+    }else param=0.;
+
+    params.push_back(param);
+
+    delete toy_bins[i_f];
+
+  }
+
+  delete hist_total;
+
+  return params;
+
+}
 
 //FIXME: this function is unused. do we need it?
 TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var){
