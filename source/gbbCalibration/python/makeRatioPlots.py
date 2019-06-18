@@ -17,6 +17,8 @@ parser.add_argument('--data', nargs='*', help="Input data file(s)")
 parser.add_argument('--mc', nargs='*', help="Input mc folder(s)")
 parser.add_argument('--norm1', action='store_true',
                     help="Normalize histograms to 1 (always true for data/data ratios) [default: false]")
+parser.add_argument('--chi2', action='store_true',
+                    help="Print chi^2 on plots [default: false]")
 parser.add_argument('--pdf', action='store_true',
                     help="Store plots in a single pdf [default: separate files]")
 parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"],
@@ -89,7 +91,7 @@ if not dataOnly:
         else:
           print("Not sure how to categorize file: "+mcfile)
 
-colors = [ROOT.kBlack, ROOT.kRed]
+colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue]
 canv = RatioCanvas('c',"",800,800,0.3,'pE1',doLogy=True)
 #SetColors(canvas,colors)
 
@@ -111,19 +113,25 @@ if dataOnly:
 
 # loop over all histograms in first data file
 for key in fileData1.GetListOfKeys():
+  splitByFlav = True
   if 'CutFlow' in key.GetName():
     continue
-  if '_Incl_' not in key.GetName():
-    continue # only plots inclusive in pT for now
-  if 'hDataNom' not in key.GetName(): #FIXME: hardcodes naming convention = bad
-    continue # skip plots inclusive in flavour for now
-  if 'BTAG' in key.GetName():
-    continue # skip btag systemic for now
-  if 'unweighted' in key.GetName():
-    continue # skip unweighted for now
+  #if 'hDataNom' not in key.GetName(): #FIXME: hardcodes naming convention = bad
+  #  continue # skip plots inclusive in flavour for now
+  if any(x in key.GetName() for x  in ['EventMu','EventPVz','PUDensity','hIncl']):
+    splitByFlav = False
+  if splitByFlav:
+    if '_Incl_' not in key.GetName():
+      continue # only plots inclusive in pT for now
+    if 'BTAG' in key.GetName():
+      continue # skip btag systemic for now
+    if 'unweighted' in key.GetName():
+      continue # skip unweighted for now
 
   print("Found histogram "+key.GetName())
   histNum = fileData1.Get(key.GetName())
+  if histNum.InheritsFrom("TH2"):
+    continue # skip 2D histograms for now
   if histNum:
     if 'data17' in args.data[0]:
       histNum.SetName("data17")
@@ -154,35 +162,55 @@ for key in fileData1.GetListOfKeys():
       continue
 
   else: # data/mc ratio
-    for flavour in ListOfFlavourPairs:
-      ListOfPaths = ListOfMCPaths
-      if flavour in ListOfInclusiveFlavourPairs:
-        ListOfPaths = ListOfInclusiveMCPaths
+    if splitByFlav:
+      for flavour in ListOfFlavourPairs:
+        ListOfPaths = ListOfMCPaths
+        if flavour in ListOfInclusiveFlavourPairs:
+          ListOfPaths = ListOfInclusiveMCPaths
 
-      histname = (key.GetName()).replace('Data',flavour.Data())
-      histTemp = histHelper.AddMCHists(histname,ListOfPaths)
-      if histTemp:
-        histTemp.Scale(Lumi)
-        if not histDen:
-          histDen = histTemp
+        histname = (key.GetName()).replace('Data',flavour.Data())
+        histTemp = histHelper.AddMCHists(histname,ListOfPaths)
+        if histTemp:
+          histTemp.Scale(Lumi)
+          if not histDen:
+            histDen = histTemp
+          else:
+            histDen.Add(histTemp)
         else:
-          histDen.Add(histTemp)
+          print("Could not find "+histname+" in all input files!")
+          continue
+      if histDen:
+        histDen.SetLineWidth(3);
+        histDen.SetName("Pythia8 MC")
       else:
-        print("Could not find "+histname+" in all input files!")
+        print("Cannot find hist "+histname+" in MC files")
         continue
-    if histDen:
-      histDen.SetLineWidth(3);
-      #histDen.SetAxisRange(-40,80,'X')
-      #histDen.SetAxisRange(0,2500,'X')
-      histDen.SetName("Pythia8 MC")
-    else:
-      print("Cannot find hist "+histname+" in MC files")
-      continue
+    else: #plots inclusive in flavour
+      histDen = histHelper.AddMCHists(key.GetName(),ListOfInclusiveMCPaths)
+      if histDen:
+        histDen.Scale(Lumi)
+        histDen.SetLineWidth(3);
+        histDen.SetName("Pythia8 Incl MC")
+      else:
+        print("Cannot find hist "+key.GetName()+" in inclusive MC files")
+        continue
 
   # got numerator and denominator, now draw them
   tagText=''
   if 'POSTTAG' in key.GetName():
     tagText='double-b-tagged'
+  histDen.Scale(histNum.Integral()/histDen.Integral())
+  chi2Text=''
+  if args.chi2:
+    if dataOnly:
+      chi2 = histNum.Chi2Test(histDen,"UU CHI2/NDF");
+    else:
+      chi2 = histNum.Chi2Test(histDen,"UW CHI2/NDF");
+      #chi2 = histNum.AndersonDarlingTest(histDen);
+    #print(str(chi2))
+    chi2Text='#scale[0.6]{{#chi^{{2}}/NDF = {:.2f}}}'.format(chi2)
+    #print(chi2Text)
+    #exit()
   if args.norm1 or dataOnly:
     histNum.Scale(1/histNum.Integral())
     histDen.Scale(1/histDen.Integral())
@@ -192,12 +220,13 @@ for key in fileData1.GetListOfKeys():
   else:
     AddHistogram(canv,histDen,'histe')
   AddRatio(canv,histNum,histDen)
+  lumi=Lumi/1000
+  yTitle=histNum.GetYaxis().GetTitle()
   if args.norm1 or dataOnly:
-    SetAxisLabels(canv,histNum.GetXaxis().GetTitle(),'Arbitrary Units')
-    FullFormatCanvasDefault(canv,lumi='',additionaltext1=tagText)
-  else:
-    SetAxisLabels(canv,histNum.GetXaxis().GetTitle(),histNum.GetYaxis().GetTitle())
-    FullFormatCanvasDefault(canv,lumi=Lumi/1000,additionaltext1=tagText)
+    lumi=''
+    yTitle='Arbitrary Units'
+  SetAxisLabels(canv,histNum.GetXaxis().GetTitle(),yTitle)
+  FullFormatCanvasDefault(canv,lumi=lumi,additionaltext1=tagText,additionaltext2=chi2Text)
   SetColors(canv,colors)
   SetYaxisRangesRatio(canv,0.5,1.5)
   if args.pdf:
@@ -210,3 +239,8 @@ for key in fileData1.GetListOfKeys():
 
 if args.pdf:
   canv.Print(outfilename+'.pdf]')
+
+canv.Close()
+fileData1.Close()
+if dataOnly:
+  fileData2.Close()
