@@ -59,9 +59,6 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
     abort();
   }
 
-  m_inputfile   = config->GetValue("InputFile","./data/inputs.root");
-  std::cout<<"InputFile: "<<m_inputfile<<std::endl;
-
   m_Debug = config->GetValue("doDebug",false);
   std::cout<<"doDebug: "<<m_Debug<<std::endl;
 
@@ -123,7 +120,7 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   std::cout<<"=============================================="<<std::endl;
 }
 
-ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_dir){
+ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_file, TString &output_dir){
 
   gStyle->SetOptStat(0);
   TGaxis::SetMaxDigits(4);
@@ -134,6 +131,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   //std::cout<<"| Brumm... "<<std::endl;
   std::cout<<"==================================================="<<std::endl;
 
+  m_inputfile = input_file;
   m_outdir = output_dir;
 
   ReadConfig(cfg_file);

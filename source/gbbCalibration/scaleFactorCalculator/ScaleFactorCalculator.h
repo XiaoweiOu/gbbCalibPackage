@@ -112,7 +112,7 @@ private:
 
  public:
 	ScaleFactorCalculator();
-	ScaleFactorCalculator(TString &cfg_file, TString &output_dir);
+	ScaleFactorCalculator(TString &input_file, TString &cfg_file, TString &output_dir);
 	virtual ~ScaleFactorCalculator();
 
   //
