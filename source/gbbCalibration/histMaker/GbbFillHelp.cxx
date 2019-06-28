@@ -104,7 +104,7 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
   m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"nmjeta"+nametag),";non-muon-jet #eta;Events/0.2;",
    this->trkjet_eta->at(gbbcand->nonmuojet_index)/1e3,100,-2.5,2.5,event_weight);
 
-  m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,"mjptVsnmjpt"+nametag),
+  m_HistSvc->FastFillTH2D( makeInclDiJetPlotName(gbbcand,"mjptVsnmjpt"+nametag),
     ";muon-jet p_{T} [GeV];non-muon jet p_{T} [GeV];",
     this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
     250,0.,500.,250,0.,500.,event_weight
@@ -158,6 +158,10 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
   m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"hasleading2trackjets"+nametag),";hasleading2trackjets;Events;",
    gbbcand->hasleading2trackjets,2,0.,2.,event_weight);
 
+  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"mjpt"+nametag),";muon-jet p_{T} [GeV];Events/2 GeV;",
+   this->trkjet_pt->at(gbbcand->muojet_index)/1e3,250,0.,500.,event_weight);
+  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"nmjpt"+nametag),";non-muon-jet p_{T} [GeV];Events/2 GeV;",
+   this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,250,0.,500.,event_weight);
 }
 
 void GbbTupleAna::FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc) {
@@ -481,6 +485,9 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
     // this->getScaledFatPt(this->fat_pt->at(gbbcand->fat_index)/1e3),250,0.,1000.,event_weight);
     m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjeta"+nametag),";large-R jet #eta;Events/0.2;",
      this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
+
+    m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
+     this->fat_pt->at(gbbcand->fat_index)/1e3,125,500.,1000.,event_weight);
   }
 
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
@@ -519,6 +526,45 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
   mujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand->muojet_index),this->trkjet_eta->at(gbbcand->muojet_index),this->trkjet_phi->at(gbbcand->muojet_index),this->trkjet_E->at(gbbcand->muojet_index));
 
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trig_jet),this->jet_eta->at(i_trig_jet),this->jet_phi->at(i_trig_jet),this->jet_E->at(i_trig_jet));
+
+  if(m_isNominal) {
+    for (unsigned int i_trk=0; i_trk<trkjet_assocTrk_pt->at(gbbcand->muojet_index).size(); i_trk++) {
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trjptVstrkd0"+nametag),
+       ";track |d_{0}|;track-jet p_{T} [GeV];",
+       fabs(getd0(i_trk,gbbcand->muojet_index,m_doTrackSmearing,"nominal")),
+       trkjet_assocTrk_pt->at(gbbcand->muojet_index).at(i_trk)/1e3,
+       14,1,15,100,0.,500.,event_weight
+      );
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trjptVstrkz0sintheta"+nametag),
+       ";track |z_{0}sin#theta|;track-jet p_{T} [GeV];",
+       fabs((this->trkjet_assocTrk_z0->at(gbbcand->muojet_index).at(i_trk) - this->eve_PVz
+          +this->trkjet_assocTrk_vz->at(gbbcand->muojet_index).at(i_trk)) *
+          TMath::Sin(this->trkjet_assocTrk_theta->at(gbbcand->muojet_index).at(i_trk))),
+       trkjet_pt->at(gbbcand->muojet_index)/1e3,
+       14,1,15,100,0.,500.,event_weight
+      );
+    }
+    for (unsigned int i_trk=0; i_trk<trkjet_assocTrk_pt->at(gbbcand->nonmuojet_index).size(); i_trk++) {
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trjptVstrkd0"+nametag),
+       ";track |d_{0}|;track-jet p_{T} [GeV];",
+       fabs(getd0(i_trk,gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal")),
+       trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
+       14,1,15,100,0.,500.,event_weight
+      );
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trjptVstrkz0sintheta"+nametag),
+       ";track |z_{0}sin#theta|;track-jet p_{T} [GeV];",
+       fabs((this->trkjet_assocTrk_z0->at(gbbcand->nonmuojet_index).at(i_trk) - this->eve_PVz
+          +this->trkjet_assocTrk_vz->at(gbbcand->nonmuojet_index).at(i_trk)) *
+          TMath::Sin(this->trkjet_assocTrk_theta->at(gbbcand->nonmuojet_index).at(i_trk))),
+       trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
+       14,1,15,100,0.,500.,event_weight
+      );
+    }
+  }
 
   m_HistSvc->FastFillTH1D(
    m_config->GetMCHistName(m_SysVarName,"Incl","Incl","trjmjDR"+nametag),
@@ -576,17 +622,17 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
   m_HistSvc->FastFillTH1D(
    m_config->GetMCHistName(m_SysVarName,"Incl","Incl","mud0"+nametag),
    ";muon d0;Events/0.001;",
-   this->muo_d0->at(gbbcand->muo_index),30,-0.015,0.015,event_weight
+   this->muo_d0->at(gbbcand->muo_index),30,-0.15,0.15,event_weight
   );
   m_HistSvc->FastFillTH1D(
    m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muz0"+nametag),
    ";muon z0;Events/0.001;",
-   this->muo_z0->at(gbbcand->muo_index),30,-0.015,0.015,event_weight
+   this->muo_z0->at(gbbcand->muo_index),300,150,150,event_weight
   );
   m_HistSvc->FastFillTH1D(
    m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muz0sintheta"+nametag),
    ";muon z0sintheta;Events/0.001;",
-   this->muo_z0sintheta->at(gbbcand->muo_index),30,-0.015,0.015,event_weight
+   this->muo_z0sintheta->at(gbbcand->muo_index),90,-0.4,0.4,event_weight
   );
   m_HistSvc->FastFillTH1D(
    makeInclDiJetPlotName(gbbcand, "muptrel"+nametag),
