@@ -141,6 +141,7 @@ private:
   bool passR4CaloJetCuts(unsigned int i_jet);
   bool passR10CaloJetCuts(unsigned int i_jet);
   bool passR2TrackJetCuts(unsigned int i_jet);
+  bool passR21AssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
   bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
   bool passMuonSelection(unsigned int i_muon);
 

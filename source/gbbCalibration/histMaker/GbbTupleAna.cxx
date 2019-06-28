@@ -1503,6 +1503,8 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
   for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
     if (m_config->GetIsR20p7()) {
       if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
+    } else {
+      if(!this->passR21AssocTrkSelection(i_trk,i_jet)) continue;
     }
 
     tracks_passed++;
@@ -1532,7 +1534,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     tracks.push_back(tr);
   } // End loop over tracks
 
-  if (tracks.size() < 3) return ret;
+  if (tracks.size() < 2) return ret;
   std::sort(tracks.begin(),tracks.end(),by_abs_sd0());
   ret.maxSd0 = tracks.at(0).sd0;
   ret.maxSd0_dR = tracks.at(0).dr;
