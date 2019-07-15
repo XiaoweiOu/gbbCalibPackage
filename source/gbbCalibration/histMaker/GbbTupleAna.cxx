@@ -597,10 +597,23 @@ bool GbbTupleAna::Processgbb(int i_evt){
     );
     float muojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.muojet_index)) );
     float nonmuojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.nonmuojet_index)) );
-
-    if ( TMath::Log(muojet_vec.DeltaR(nonmuojet_vec)/std::min(muojet_minVR, nonmuojet_minVR)) < 0 ) {
-      if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
-      return false;
+    for (unsigned int i_jet=0; i_jet < this->trkjet_pt->size(); i_jet++) {
+      TLorentzVector jet_vec;
+      jet_vec.SetPtEtaPhiM( this->trkjet_pt->at(i_jet)/1e3,
+                            this->trkjet_eta->at(i_jet),
+                            this->trkjet_phi->at(i_jet),
+                            0.);
+      float jet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(i_jet)) );
+      if ( i_jet != gbbcand.muojet_index &&
+           TMath::Log(muojet_vec.DeltaR(jet_vec)/std::min(muojet_minVR, jet_minVR)) < 0 ) {
+        if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
+        return false;
+      }
+      if ( i_jet != gbbcand.nonmuojet_index &&
+           TMath::Log(nonmuojet_vec.DeltaR(jet_vec)/std::min(nonmuojet_minVR, jet_minVR)) < 0 ) {
+        if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
+        return false;
+      }
     }
     icut++;
     m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
