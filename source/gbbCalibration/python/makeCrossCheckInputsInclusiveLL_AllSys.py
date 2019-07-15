@@ -19,7 +19,8 @@ ListOfVariables_r20p7 = []
 ListOfVariables_minimal = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','mjpt_PREFITUNTAG']
 
 # variables for which only the pt-inclusive plots are desired
-ListOfVariables_inclusive = ['muE','mueta','muphi','mupt','muptrel','mud0','muz0','muz0sintheta','mjthirdSd0himu','mjthirdSd0medmu','mjthirdSd0lowmu','mjsubSd0himu','mjsubSd0medmu','mjsubSd0lowmu','mjmaxSd0himu','mjmaxSd0medmu','mjmaxSd0lowmu','mjmeanSd0himu','mjmeanSd0medmu','mjmeanSd0lowmu','nmjthirdSd0himu','nmjthirdSd0medmu','nmjthirdSd0lowmu','nmjsubSd0himu','nmjsubSd0medmu','nmjsubSd0lowmu','nmjmaxSd0himu','nmjmaxSd0medmu','nmjmaxSd0lowmu','nmjmeanSd0himu','nmjmeanSd0medmu','nmjmeanSd0lowmu']
+ListOfVariables_inclusive = ['muE','mueta','muphi','mupt','muptrel','mud0','muz0','muz0sintheta','trkptVstrkd0','trkptVstrkz0sintheta']
+#,'mjthirdSd0himu','mjthirdSd0medmu','mjthirdSd0lowmu','mjsubSd0himu','mjsubSd0medmu','mjsubSd0lowmu','mjmaxSd0himu','mjmaxSd0medmu','mjmaxSd0lowmu','mjmeanSd0himu','mjmeanSd0medmu','mjmeanSd0lowmu','nmjthirdSd0himu','nmjthirdSd0medmu','nmjthirdSd0lowmu','nmjsubSd0himu','nmjsubSd0medmu','nmjsubSd0lowmu','nmjmaxSd0himu','nmjmaxSd0medmu','nmjmaxSd0lowmu','nmjmeanSd0himu','nmjmeanSd0medmu','nmjmeanSd0lowmu']
 
 #------------------ setup ---------------------------
 
@@ -80,9 +81,10 @@ elif args.mcflag == 'mufilt':
   ListOfInclusiveFlavourPairs = []
 else:
   print("Using inclusive samples for LL template only")
-  ListOfInclusiveFlavourPairs = [ 'LL' ]
+  ListOfInclusiveFlavourPairs = [ TString('LL') ]
 
 ListOfTJpt = MyConfig.GetTrkJetRegions()
+ListOfFJpt = MyConfig.GetFatJetRegions()
 ListOfTJpt.push_back(TString("Incl"))
 isR20p7 = MyConfig.GetIsR20p7()
 
@@ -112,6 +114,9 @@ ListOfDataHists = []
 for tjpt in ListOfTJpt :
     for var in ListOfVariables :
         ListOfDataHists.append( MyConfig.GetDataHistName(tjpt,var).Data() )
+for fjpt in ListOfFJpt :
+    for var in ListOfVariables :
+        ListOfDataHists.append( MyConfig.GetDataHistName(fjpt,var).Data() )
 if not args.tiny :
     for var in ListOfVariables_inclusive :
         ListOfDataHists.append( MyConfig.GetDataHistName("Incl",var).Data() )
@@ -140,6 +145,20 @@ for flavour in ListOfFlavourPairs :
       if "PREFITPOSTTAG" in var :
         for sys in ListOfWeightVariations :
           ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys.Data()).Data())
+  for fjpt in ListOfFJpt :
+    for var in ListOfVariables :
+      ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var).Data())
+      for sys in ListOfSystematics :
+        #TODO: don't hard-code these exceptions
+        if ("fjeta" in var or "fjphi" in var or "PREFITUNTAG" in var) and "Nom" not in sys.Data():
+          continue
+        ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
+      if "Sd0" in var :
+        for sys in ListOfSd0Systematics :
+          ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
+      if "PREFITPOSTTAG" in var :
+        for sys in ListOfWeightVariations :
+          ListOfHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var+"_"+sys.Data()).Data())
 
 #--------------------- output -----------------------
 
@@ -150,7 +169,7 @@ outfile=ROOT.TFile(outfilename,"RECREATE")
 for histname in ListOfHists :
   ListOfPaths = ListOfMCPaths
   for inclFlav in ListOfInclusiveFlavourPairs:
-    if inclFlav in histname:
+    if inclFlav.Data() in histname:
       ListOfPaths = ListOfInclusiveMCPaths
   histMC = histHelper.AddMCHists(histname,ListOfPaths)
   outfile.cd()
@@ -179,6 +198,7 @@ for histname in ListOfHists :
         hist_default.Write()
       else:
         print("Cannot find hist "+help_name+" in file "+path)
+      file_curr.Close()
 
 # loop over and write data histograms
 file_curr = ROOT.TFile(pathData,"READ")
@@ -197,3 +217,6 @@ for histname in ListOfDataHists :
     print("Wrote "+histname)
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
+
+file_curr.Close()
+outfile.Close()
