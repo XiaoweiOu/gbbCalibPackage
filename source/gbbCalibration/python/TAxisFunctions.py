@@ -35,7 +35,7 @@ def AutoFixAxes(can, ignoreErrors=False) :
         miny = 0.85*MinimumForLog(can)
         # some orders of magnitude *above* miny, making room for text
         orderofmagnitude_span = math.log(maxy/miny)/math.log(10)
-        orderofmagnitude_span = 1.1*orderofmagnitude_span*tframe_height/maxy_frac
+        orderofmagnitude_span = 0.7*orderofmagnitude_span*tframe_height/maxy_frac
         maxy = miny*math.pow(10,orderofmagnitude_span)
     else :
         # scale to make space for text
