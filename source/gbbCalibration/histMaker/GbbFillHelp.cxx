@@ -109,6 +109,55 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
     this->trkjet_pt->at(gbbcand->muojet_index)/1e3,this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
     250,0.,500.,250,0.,500.,event_weight
   );
+
+  // Plot the pt fraction of the three leading tracks in mj and nmj
+  std::vector<float> muojet_trk_pt = this->trkjet_assocTrk_pt->at(gbbcand->muojet_index);
+  std::sort(muojet_trk_pt.begin(),muojet_trk_pt.end(),std::greater<float>());
+
+  std::vector<float> nonmuojet_trk_pt = this->trkjet_assocTrk_pt->at(gbbcand->nonmuojet_index);
+  std::sort(nonmuojet_trk_pt.begin(),nonmuojet_trk_pt.end(),std::greater<float>());
+
+  float mjfrac = ( muojet_trk_pt.at(0) + muojet_trk_pt.at(1) + muojet_trk_pt.at(2) ) / this->trkjet_pt->at(gbbcand->muojet_index);
+  float nmjfrac = ( nonmuojet_trk_pt.at(0) + nonmuojet_trk_pt.at(1) + nonmuojet_trk_pt.at(2) ) / this->trkjet_pt->at(gbbcand->nonmuojet_index);
+
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"mjptfrac"+nametag),";muon-jet p_{T} fraction (3 lead trks);Events;",
+   mjfrac,100,0.,1.,event_weight);
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"nmjptfrac"+nametag),";non-muon-jet p_{T} fraction (3 lead trks);Events;",
+   nmjfrac,100,0.,1.,event_weight);
+
+  m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"mjptfrac"+nametag),";muon-jet p_{T} fraction (3 lead trks);Events;",
+   mjfrac,100,0.,1.,event_weight);
+  m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"nmjptfrac"+nametag),";non-muon-jet p_{T} fraction (3 lead trks);Events;",
+   nmjfrac,100,0.,1.,event_weight);
+
+  // Plot pt fraction vs. trk multiplicity for mj and nmj
+  m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,"mjptfracVsmjtrkmult"+nametag),
+    ";muon-jet p_{T} fraction (3 lead trks);muon-jet track multiplicity;",
+    mjfrac,this->trkjet_assocTrk_pt->at(gbbcand->muojet_index).size(),
+    20,0.,1.,25,0.,50.,event_weight );
+
+  m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,"nmjptfracVsnmjtrkmult"+nametag),
+    ";non-muon-jet p_{T} fraction (3 lead trks);non-muon-jet track multiplicity;",
+    nmjfrac,this->trkjet_assocTrk_pt->at(gbbcand->nonmuojet_index).size(),
+    20,0.,1.,25,0.,50.,event_weight );
+
+  m_HistSvc->FastFillTH2D( makeInclDiJetPlotName(gbbcand,"mjptfracVsmjtrkmult"+nametag),
+    ";muon-jet p_{T} fraction (3 lead trks);muon-jet track multiplicity;",
+    mjfrac,this->trkjet_assocTrk_pt->at(gbbcand->muojet_index).size(),
+    20,0.,1.,25,0.,50.,event_weight );
+
+  m_HistSvc->FastFillTH2D( makeInclDiJetPlotName(gbbcand,"nmjptfracVsnmjtrkmult"+nametag),
+    ";non-muon-jet p_{T} fraction (3 lead trks);non-muon-jet track multiplicity;",
+    nmjfrac,this->trkjet_assocTrk_pt->at(gbbcand->nonmuojet_index).size(),
+    20,0.,1.,25,0.,50.,event_weight );
+
+  // Plot the amount of times mj and nmj are the two leading jets in the candidate
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"hasleading2trackjets"+nametag),";hasleading2trackjets;Events;",
+   gbbcand->hasleading2trackjets,2,0.,2.,event_weight);
+
+  m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"hasleading2trackjets"+nametag),";hasleading2trackjets;Events;",
+   gbbcand->hasleading2trackjets,2,0.,2.,event_weight);
+
 }
 
 void GbbTupleAna::FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc) {
