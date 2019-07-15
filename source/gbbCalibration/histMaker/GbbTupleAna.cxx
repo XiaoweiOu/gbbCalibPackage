@@ -624,6 +624,13 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
   //  return false;
   //}
+  if(!gbbcand.hasleading2trackjets){
+    if(m_Debug) std::cout<<"constructGbbCandidate(): Require muon and non-muon jets be leading 2 trackjets"<<std::endl;
+    return false;
+  }
+  icut++;
+  m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "trackjets are lj/slj");
 
   if(m_Debug){
     std::cout<<"processgbb(): Finished constructing Gbb candidate!"<<std::endl;
@@ -1514,6 +1521,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
                        -99.,-99.,-99., -99.,-99.,-99., n};
 
   for(unsigned int i_trk=0; i_trk<this->trkjet_assocTrk_pt->at(i_jet).size(); i_trk++){
+
     if (m_config->GetIsR20p7()) {
       if(!this->passAssocTrkSelection(i_trk,i_jet)) continue;
     } else {
