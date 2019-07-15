@@ -978,14 +978,14 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
 
 void ScaleFactorCalculator::MakeNFPlots(){
 
-	std::vector<TString> flavs 				= m_config->GetFlavourPairs();
-  std::vector<TString> systematics 	= m_config->GetSystematics();
-  std::vector<TString> regions 			= m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> flavs = m_config->GetFlavourPairs();
+  std::vector<TString> systematics = m_config->GetSystematics();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
 
-	systematics.push_back("Nom"); //we want to get nominal plots too
+  systematics.push_back("Nom"); //we want to get nominal plots too
 
-  std::vector<float> mutrackjetbins 		= m_config -> GetMuonJetPtBins();
-  std::vector<float> nonmutrackjetbins 	= m_config -> GetNonMuJetPtBins();
+  std::vector<float> mutrackjetbins = m_config->GetMuonJetPtBins();
+  std::vector<float> nonmutrackjetbins = m_config->GetNonMuJetPtBins();
 
   std::vector<TString> mu_labels, nonmu_labels;
   mu_labels.push_back(Form("p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins.front()));
@@ -1008,70 +1008,68 @@ void ScaleFactorCalculator::MakeNFPlots(){
   //NB: adding extra bin to provide blank space for header
   nonmutrackjetbins.push_back(nonmutrackjetbins[nonmutrackjetbins.size()-1]+140.);
 
-	TCanvas * canv 						= 0;
-	TH2D 		* hist	 					= 0;
-	TH2D 		* hist_err_up 		= 0;
-	TH2D 		* hist_err_down 	= 0;
+  TCanvas * canv = 0;
+  TH2D * hist = 0;
+  TH2D * hist_err_up = 0;
+  TH2D * hist_err_down = 0;
 
-	for(TString flav : flavs){ // loop over flavour fractions
-		for(TString sys : systematics){	// loop over systematics + nominal
-			canv	= new TCanvas("canv","",800,600);
-			canv -> cd();
-	 	 	canv -> SetTickx();
-	 	 	canv -> SetTicky();
+  for(TString flav : flavs){ // loop over flavour fractions
+    for(TString sys : systematics){ // loop over systematics + nominal
+      canv = new TCanvas("canv","",800,600);
+      canv->cd();
+      canv->SetTickx();
+      canv->SetTicky();
 
-			hist					= new TH2D("hist","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
-		  hist_err_up		= new TH2D("hist_err_up","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
-		  hist_err_down	= new TH2D("hist_err_down","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
+      hist = new TH2D("hist","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
+      hist_err_up = new TH2D("hist_err_up","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
+      hist_err_down = new TH2D("hist_err_down","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
 
-			for(int i=0; i<(int)mu_labels.size(); ++i){ // loop over mu jet pt bins
-				for(int j=0; j<(int)nonmu_labels.size(); ++j){ // loop over non-mu jet pt bins
-					double par		= GetFitScale(sys,regions.at(j+i*nonmu_labels.size()),flav);
-					double err		= GetFitError(sys,regions.at(j+i*nonmu_labels.size()),flav);
-					hist					-> SetBinContent(i+1,j+1,par);
-					hist_err_up		-> SetBinContent(i+1,j+1,err); 	// errors are symmetric
-			 		hist_err_down	-> SetBinContent(i+1,j+1,err);	//
-				}
-			}
+      for(int i=0; i<(int)mu_labels.size(); ++i){ // loop over mu jet pt bins
+        for(int j=0; j<(int)nonmu_labels.size(); ++j){ // loop over non-mu jet pt bins
+          double par = GetFitScale(sys,regions.at(j+i*nonmu_labels.size()),flav);
+          double err = GetFitError(sys,regions.at(j+i*nonmu_labels.size()),flav);
+          hist->SetBinContent(i+1,j+1,par);
+          hist_err_up->SetBinContent(i+1,j+1,err);   // errors are symmetric
+          hist_err_down->SetBinContent(i+1,j+1,err); //
+        }
+      }
 
-		  for(unsigned int i=1; i<=3; i++) hist -> GetXaxis() -> SetBinLabel(i,mu_labels[i-1]);
-		  for(unsigned int i=1; i<=4; i++) hist -> GetYaxis() -> SetBinLabel(i,nonmu_labels[i-1]);
-		  hist -> LabelsOption("u","Y");
+      for(unsigned int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mu_labels[i-1]);
+      for(unsigned int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nonmu_labels[i-1]);
+      hist->LabelsOption("u","Y");
+      canv->SetLeftMargin(0.25);
+      canv->SetRightMargin(0.05);
+      canv->cd();
 
-		  canv -> SetLeftMargin(0.25);
-		  canv -> SetRightMargin(0.05);
-		  canv -> cd();
+      hist->SetTitle(flav + " " + sys + " NF");
+      hist->SetMarkerSize(1.8);
+      hist->SetMaximum(1.5);
+      hist->SetMinimum(0);
+      gStyle->SetPaintTextFormat("4.2f");
+      hist->Draw("COL TEXT");
+      hist_err_up->SetBarOffset(0.2);
+      hist_err_up->Draw("TEXT SAME");
+      hist_err_down->SetBarOffset(-0.2);
+      hist_err_down->Draw("TEXT SAME");
 
-			hist 		-> SetTitle(flav + " " + sys + " NF");
-		  hist		-> SetMarkerSize(1.8);
-			hist 		-> SetMaximum(1.5);
-			hist 		-> SetMinimum(0);
-		  gStyle	-> SetPaintTextFormat("4.2f");
-		  hist		-> Draw("COL TEXT");
-		  hist_err_up		-> SetBarOffset(0.2);
-		  hist_err_up		-> Draw("TEXT SAME");
-		  hist_err_down	-> SetBarOffset(-0.2);
-		  hist_err_down	-> Draw("TEXT SAME");
+      //Add ATLAS label
+      ATLASLabel2(0.6,0.825,m_plot_label.Data());
+      myText(0.6, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
+      myText(0.6, 0.74, 1, Form("#scale[0.8]{%s}",m_subsub_label.Data()));
 
-	 		//Add ATLAS label
-			ATLASLabel2(0.6,0.825,m_plot_label.Data());
-			myText(0.6, 0.78, 1, Form("#scale[0.8]{%s}",m_sub_label.Data()));
-			myText(0.6, 0.74, 1, Form("#scale[0.8]{%s}",m_subsub_label.Data()));
+      TLine *line = new TLine((m_config->GetFatJetPtBins())[0],1.,(m_config->GetFatJetPtBins()).back(),1.);
+      line -> SetLineStyle(2);
+      line -> SetLineWidth(1.5);
+      line -> Draw("SAME");
 
-			TLine *line = new TLine((m_config->GetFatJetPtBins())[0],1.,(m_config->GetFatJetPtBins()).back(),1.);
-			line -> SetLineStyle(2);
-			line -> SetLineWidth(1.5);
-			line -> Draw("SAME");
+      TString name = m_outdir + "/NF/2DNF_"+sys+"_"+flav+".pdf";
+      canv -> SaveAs(name.Data());
 
-			TString name = m_outdir + "/NF/2DNF_"+sys+"_"+flav+".pdf";
-			canv -> SaveAs(name.Data());
-
-			delete canv;
-			delete hist;
-			delete hist_err_up;
-			delete hist_err_down;
-		}
-	}
-
+      delete canv;
+      delete hist;
+      delete hist_err_up;
+      delete hist_err_down;
+    }
+  }
 }
 
