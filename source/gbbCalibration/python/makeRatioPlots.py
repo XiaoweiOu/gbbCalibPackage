@@ -118,7 +118,7 @@ for key in fileData1.GetListOfKeys():
     continue
   #if 'hDataNom' not in key.GetName(): #FIXME: hardcodes naming convention = bad
   #  continue # skip plots inclusive in flavour for now
-  if any(x in key.GetName() for x  in ['EventMu','EventPVz','PUDensity','hIncl']):
+  if any(x in key.GetName() for x  in ['EventMu','EventAvgMu','EventPVz','PUDensity','hIncl']):
     splitByFlav = False
   if splitByFlav:
     if '_Incl_' not in key.GetName():

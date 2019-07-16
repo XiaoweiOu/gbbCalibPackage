@@ -445,6 +445,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   m_HistSvc->FastFillTH1D("PUWeights",this->eve_pu_w,50,0.,5.,1.);
   m_HistSvc->FastFillTH1D("EventWeights",total_evt_weight,102,-1.,100.,1.);
   m_HistSvc->FastFillTH1D("EventMu",this->eve_mu,80,0.,80.,total_evt_weight);
+  m_HistSvc->FastFillTH1D("EventAvgMu",this->eve_avg_mu,80,0.,80.,total_evt_weight);
   m_HistSvc->FastFillTH1D("EventPVz",this->eve_PVz,80,-150.,150.,total_evt_weight);
   if (!m_config->GetIsR20p7()) {
     m_HistSvc->FastFillTH1D("PUDensity",this->eve_pu_density,80,0.,80.,total_evt_weight);
@@ -1520,7 +1521,8 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     tr.d0 = getd0(i_trk,i_jet,doSmeared,sys);
     tr.d0err = this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
     tr.sd0 = getSd0(i_trk,i_jet,doSmeared,sys);
-    tr.z0sintheta = (this->trkjet_assocTrk_z0->at(i_jet).at(i_trk)  - this->eve_PVz) *
+    tr.z0sintheta = (this->trkjet_assocTrk_z0->at(i_jet).at(i_trk)  - this->eve_PVz
+                     +this->trkjet_assocTrk_vz->at(i_jet).at(i_trk)) *
                     TMath::Sin(this->trkjet_assocTrk_theta->at(i_jet).at(i_trk));
     tr.pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
 

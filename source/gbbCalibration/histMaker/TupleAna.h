@@ -30,6 +30,7 @@ public :
    Int_t           eve_num;
    Int_t           eve_run;
    Float_t         eve_mu;
+   Float_t         eve_avg_mu;
    Int_t           eve_mc_num;
    Int_t           eve_mc_chan;
    Float_t         eve_mc_w;
@@ -120,6 +121,7 @@ public :
    vector<vector<float> > *trkjet_assocTrk_phi;
    vector<vector<float> > *trkjet_assocTrk_eta;
    vector<vector<float> > *trkjet_assocTrk_d0;
+   vector<vector<float> > *trkjet_assocTrk_vz;
    vector<vector<float> > *trkjet_assocTrk_z0;
    vector<vector<float> > *trkjet_assocTrk_d0_smear;
    vector<vector<float> > *trkjet_assocTrk_z0_smear;
@@ -223,6 +225,7 @@ public :
    TBranch        *b_eve_num;   //!
    TBranch        *b_eve_run;   //!
    TBranch        *b_eve_mu;   //!
+   TBranch        *b_eve_avg_mu;   //!
    TBranch        *b_eve_mc_num;   //!
    TBranch        *b_eve_mc_chan;   //!
    TBranch        *b_eve_mc_w;   //!
@@ -313,6 +316,7 @@ public :
    TBranch        *b_trkjet_assocTrk_phi;   //!
    TBranch        *b_trkjet_assocTrk_eta;   //!
    TBranch        *b_trkjet_assocTrk_d0;   //!
+   TBranch        *b_trkjet_assocTrk_vz;   //!
    TBranch        *b_trkjet_assocTrk_z0;   //!
    TBranch        *b_trkjet_assocTrk_d0_smear;   //!
    TBranch        *b_trkjet_assocTrk_z0_smear;   //!
@@ -495,6 +499,7 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocTrk_phi = 0;
    trkjet_assocTrk_eta = 0;
    trkjet_assocTrk_d0 = 0;
+   trkjet_assocTrk_vz = 0;
    trkjet_assocTrk_z0 = 0;
    trkjet_assocTrk_d0_smear = 0;
    trkjet_assocTrk_z0_smear = 0;
@@ -603,6 +608,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_num", &eve_num, &b_eve_num);
    fChain->SetBranchAddress("eve_run", &eve_run, &b_eve_run);
    fChain->SetBranchAddress("eve_mu", &eve_mu, &b_eve_mu);
+   fChain->SetBranchAddress("eve_avg_mu", &eve_avg_mu, &b_eve_avg_mu);
    fChain->SetBranchAddress("eve_mc_num", &eve_mc_num, &b_eve_mc_num);
    fChain->SetBranchAddress("eve_mc_chan", &eve_mc_chan, &b_eve_mc_chan);
    fChain->SetBranchAddress("eve_mc_w", &eve_mc_w, &b_eve_mc_w);
@@ -695,6 +701,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("trkjet_assocTrk_phi", &trkjet_assocTrk_phi, &b_trkjet_assocTrk_phi);
    fChain->SetBranchAddress("trkjet_assocTrk_eta", &trkjet_assocTrk_eta, &b_trkjet_assocTrk_eta);
    fChain->SetBranchAddress("trkjet_assocTrk_d0", &trkjet_assocTrk_d0, &b_trkjet_assocTrk_d0);
+   fChain->SetBranchAddress("trkjet_assocTrk_vz", &trkjet_assocTrk_vz, &b_trkjet_assocTrk_vz);
    fChain->SetBranchAddress("trkjet_assocTrk_z0", &trkjet_assocTrk_z0, &b_trkjet_assocTrk_z0);
    fChain->SetBranchAddress("trkjet_assocTrk_d0_smear", &trkjet_assocTrk_d0_smear, &b_trkjet_assocTrk_d0_smear);
    fChain->SetBranchAddress("trkjet_assocTrk_z0_smear", &trkjet_assocTrk_z0_smear, &b_trkjet_assocTrk_z0_smear);
