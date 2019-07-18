@@ -1555,7 +1555,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     tracks.push_back(tr);
   } // End loop over tracks
 
-  if (tracks.size() < 2) return ret;
+  if (tracks.size() < 3) return ret;
   std::sort(tracks.begin(),tracks.end(),by_abs_sd0());
   ret.maxSd0 = tracks.at(0).sd0;
   ret.maxSd0_dR = tracks.at(0).dr;
