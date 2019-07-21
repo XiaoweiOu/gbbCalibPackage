@@ -69,6 +69,7 @@ void GbbTupleAna::FillFatReweightInfo(float trigfat_pt,float trigfat_eta, float 
 
 void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weight, TString nametag){
 
+  if(m_Debug) std::cout<<"processgbb(): Fill trackjet properties with tag "<<nametag.Data()<<std::endl;
   if (!nametag.IsNull()) nametag.Prepend("_");
 
   // Plot track-jet kinematics with single-flavour label
@@ -319,6 +320,7 @@ void GbbTupleAna::FillSd02DPlots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0
 
 void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag){
 
+  if(m_Debug) std::cout<<"processgbb(): Fill templates with tag "<<nametag.Data()<<std::endl;
   if (!nametag.IsNull()) nametag.Prepend("_");
 
   int muojet_truth=this->trkjet_truth->at(gbbcand->muojet_index);
@@ -399,15 +401,22 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
     };
 
     // Calculate sd0 variables with up variation
-    trkjetSd0Info  muojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"up",3);
-    trkjetSd0Info  nonmuojet_sd0Info_up=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"up",3);
-    FillSd0Plots(muojet_sd0Info_up, nonmuojet_sd0Info_up, event_weight, makeSysNamingFunc("SD0Smear__1up"));
+    trkjetSd0Info  muojet_sd0Info_d0up=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"up","nominal",3);
+    trkjetSd0Info  nonmuojet_sd0Info_d0up=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"up","nominal",3);
+    FillSd0Plots(muojet_sd0Info_d0up, nonmuojet_sd0Info_d0up, event_weight, makeSysNamingFunc("D0Smear__1up"));
+
+    trkjetSd0Info  muojet_sd0Info_z0up=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal","up",3);
+    trkjetSd0Info  nonmuojet_sd0Info_z0up=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal","up",3);
+    FillSd0Plots(muojet_sd0Info_z0up, nonmuojet_sd0Info_z0up, event_weight, makeSysNamingFunc("Z0Smear__1up"));
 
     // Calculate sd0 variables with down variation
-    trkjetSd0Info  muojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down",3);
-    trkjetSd0Info  nonmuojet_sd0Info_down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"down",3);
+    trkjetSd0Info  muojet_sd0Info_d0down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"down","nominal",3);
+    trkjetSd0Info  nonmuojet_sd0Info_d0down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"down","nominal",3);
+    FillSd0Plots(muojet_sd0Info_d0down, nonmuojet_sd0Info_d0down, event_weight, makeSysNamingFunc("D0Smear__1down"));
 
-    FillSd0Plots(muojet_sd0Info_down, nonmuojet_sd0Info_down, event_weight, makeSysNamingFunc("SD0Smear__1down"));
+    trkjetSd0Info  muojet_sd0Info_z0down=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal","down",3);
+    trkjetSd0Info  nonmuojet_sd0Info_z0down=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal","down",3);
+    FillSd0Plots(muojet_sd0Info_z0down, nonmuojet_sd0Info_z0down, event_weight, makeSysNamingFunc("Z0Smear__1down"));
 
     bool hasConversion=false, hasHadMatInt=false, hasLightLongLived=false, hasNoTruthMu=false;
     this->getSystematicsFlags(gbbcand, hasConversion, hasHadMatInt, hasLightLongLived, hasNoTruthMu);
@@ -458,6 +467,7 @@ void GbbTupleAna::FillMCStatsInfo(GbbCandidate* gbbcand, TString nametag){
 
 void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight, TString nametag){
 
+  if(m_Debug) std::cout<<"processgbb(): Fill fatjet properties with tag "<<nametag.Data()<<std::endl;
   if (!nametag.IsNull()) nametag.Prepend("_");
 
   int muojet_truth=this->trkjet_truth->at(gbbcand->muojet_index);
@@ -518,6 +528,7 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
 
 void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, float event_weight,TString nametag){
 
+  if(m_Debug) std::cout<<"processgbb(): Fill advanced properties with tag "<<nametag.Data()<<std::endl;
   TLorentzVector mujet,trigjet, muon;
 
   if (!nametag.IsNull()) nametag.Prepend("_");
@@ -539,11 +550,25 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
       m_HistSvc->FastFillTH2D(
        m_config->GetMCHistName("Nom","Incl","Incl","trjptVstrkz0sintheta"+nametag),
        ";track |z_{0}sin#theta|;track-jet p_{T} [GeV];",
-       fabs((this->trkjet_assocTrk_z0->at(gbbcand->muojet_index).at(i_trk) - this->eve_PVz
+       fabs((getz0(i_trk,gbbcand->muojet_index,m_doTrackSmearing,"nominal") - this->eve_PVz
           +this->trkjet_assocTrk_vz->at(gbbcand->muojet_index).at(i_trk)) *
           TMath::Sin(this->trkjet_assocTrk_theta->at(gbbcand->muojet_index).at(i_trk))),
        trkjet_pt->at(gbbcand->muojet_index)/1e3,
        14,1,15,100,0.,500.,event_weight
+      );
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trkd0errVStrkd0"+nametag),
+       ";track #sigma_{d0};track |d_{0}|;",
+       this->trkjet_assocTrk_d0err->at(gbbcand->muojet_index).at(i_trk),
+       fabs(getd0(i_trk,gbbcand->muojet_index,m_doTrackSmearing,"nominal")),
+       100,0.,0.1,30,-0.15,0.15,event_weight
+      );
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trkd0errVStrkSd0"+nametag),
+       ";track #sigma_{d0};track S_{d0};",
+       this->trkjet_assocTrk_d0err->at(gbbcand->muojet_index).at(i_trk),
+       getSd0(i_trk,gbbcand->muojet_index,m_doTrackSmearing,"nominal"),
+       100,0.,0.1,80,-40,80,event_weight
       );
     }
     for (unsigned int i_trk=0; i_trk<trkjet_assocTrk_pt->at(gbbcand->nonmuojet_index).size(); i_trk++) {
@@ -557,11 +582,25 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
       m_HistSvc->FastFillTH2D(
        m_config->GetMCHistName("Nom","Incl","Incl","trjptVstrkz0sintheta"+nametag),
        ";track |z_{0}sin#theta|;track-jet p_{T} [GeV];",
-       fabs((this->trkjet_assocTrk_z0->at(gbbcand->nonmuojet_index).at(i_trk) - this->eve_PVz
+       fabs((getz0(i_trk,gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal") - this->eve_PVz
           +this->trkjet_assocTrk_vz->at(gbbcand->nonmuojet_index).at(i_trk)) *
           TMath::Sin(this->trkjet_assocTrk_theta->at(gbbcand->nonmuojet_index).at(i_trk))),
        trkjet_pt->at(gbbcand->nonmuojet_index)/1e3,
        14,1,15,100,0.,500.,event_weight
+      );
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trkd0errVStrkd0"+nametag),
+       ";track #sigma_{d0};track |d_{0}|;",
+       this->trkjet_assocTrk_d0err->at(gbbcand->nonmuojet_index).at(i_trk),
+       fabs(getd0(i_trk,gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal")),
+       100,0.,0.1,30,-0.15,0.15,event_weight
+      );
+      m_HistSvc->FastFillTH2D(
+       m_config->GetMCHistName("Nom","Incl","Incl","trkd0errVStrkSd0"+nametag),
+       ";track #sigma_{d0};track S_{d0};",
+       this->trkjet_assocTrk_d0err->at(gbbcand->nonmuojet_index).at(i_trk),
+       getSd0(i_trk,gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal"),
+       100,0.,0.1,80,-40,80,event_weight
       );
     }
   }
@@ -689,6 +728,7 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
 
 void GbbTupleAna::FillTriggerTurnOnHistograms(int i_trigjet, float event_weight){
 
+  if(m_Debug) std::cout<<"processgbb(): Fill trigger turn-on"<<std::endl;
   //Fill Histograms for Trigger turn-on curves
   if (eve_HLT_j150) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j150", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j175) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j175", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);

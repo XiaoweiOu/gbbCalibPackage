@@ -679,8 +679,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //4.) Tracks passing requirements for templates
   //=========================================
 
-  trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.muojet_index,m_doTrackSmearing,"nominal",3);
-  trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal",3);
+  trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.muojet_index,m_doTrackSmearing,"nominal","nominal",3);
+  trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal","nominal",3);
   float muojet_maxsd0 = muojet_sd0Info.meanSd0_pt;
   float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_pt;
 
@@ -764,6 +764,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   // read xbbscore parameters, then use xbbcutter to determine
   // if this gbb candidate is b tagged.
   int isTagged = 0;
+  if(m_Debug) std::cout<<"processgbb(): Getting tags"<<std::endl;
   if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
     isTagged = this->m_bTagger->tag(*this,gbbcand);
   } else {
@@ -787,6 +788,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //7b.) Bhadron reweighting (temporary)
   //=========================================
 
+  if(m_Debug) std::cout<<"processgbb(): Bhad reweighting"<<std::endl;
   double Bhadupweight=1., Bhaddownweight=1.;
   if(dijet_flav.EqualTo("BB")){
     double BhadPt=this->trkjet_BHad_pt->at(gbbcand.muojet_index)/1e3;
@@ -815,6 +817,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
 
   //1.) Before Fit and b-tagging
+  if(m_Debug) std::cout<<"processgbb(): Fill histograms"<<std::endl;
   if(passSpecificCuts(eventFlag, CutsNoBtag)){
 
     m_HistSvc->FastFillTH1D("Hist_MCStatsUnc",1,1,0.5,1.5,total_evt_weight);
@@ -1509,7 +1512,7 @@ float GbbTupleAna::getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString t
 
 }
 
-trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared, TString sys, int n){
+trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared, TString d0sys, TString z0sys, int n){
 
   int tracks_passed=0;
   TLorentzVector jet,trk;
@@ -1541,10 +1544,10 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
 
     track tr;
 
-    tr.d0 = getd0(i_trk,i_jet,doSmeared,sys);
+    tr.d0 = getd0(i_trk,i_jet,doSmeared,d0sys);
     tr.d0err = this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
-    tr.sd0 = getSd0(i_trk,i_jet,doSmeared,sys);
-    tr.z0sintheta = (this->trkjet_assocTrk_z0->at(i_jet).at(i_trk)  - this->eve_PVz
+    tr.sd0 = getSd0(i_trk,i_jet,doSmeared,d0sys);
+    tr.z0sintheta = (getz0(i_trk,i_jet,doSmeared,z0sys)  - this->eve_PVz
                      +this->trkjet_assocTrk_vz->at(i_jet).at(i_trk)) *
                     TMath::Sin(this->trkjet_assocTrk_theta->at(i_jet).at(i_trk));
     tr.pt=this->trkjet_assocTrk_pt->at(i_jet).at(i_trk);
@@ -1555,7 +1558,7 @@ trkjetSd0Info GbbTupleAna::getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmea
     tracks.push_back(tr);
   } // End loop over tracks
 
-  if (tracks.size() < 2) return ret;
+  if (tracks.size() < 3) return ret;
   std::sort(tracks.begin(),tracks.end(),by_abs_sd0());
   ret.maxSd0 = tracks.at(0).sd0;
   ret.maxSd0_dR = tracks.at(0).dr;
@@ -1636,13 +1639,36 @@ float GbbTupleAna::getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared,
   return d0;
 }
 
+float GbbTupleAna::getz0(unsigned int i_trk, unsigned int i_jet, bool doSmeared, TString sys){
+
+  float z0=this->trkjet_assocTrk_z0->at(i_jet).at(i_trk);
+  //std::cout<<"d0 is: "<<d0<<std::endl;
+  if (doSmeared && this->eve_isMC) {
+    if(sys.EqualTo("nominal")) z0=this->trkjet_assocTrk_z0_smear->at(i_jet).at(i_trk);
+    else if(sys.EqualTo("up")) z0=this->trkjet_assocTrk_z0_smear_up->at(i_jet).at(i_trk);
+    else if(sys.EqualTo("down")) z0=this->trkjet_assocTrk_z0_smear_down->at(i_jet).at(i_trk);
+    else std::cout<<"ERROR: You have to specify if you want nominal or sys smeared z0!"<<std::endl;
+  }
+  //std::cout<<"smeared z0 is: "<<z0<<std::endl;
+  return z0;
+}
+
 float GbbTupleAna::getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared, TString sys){
 
   TLorentzVector jet;
   jet.SetPtEtaPhiM(this->trkjet_pt->at(i_jet),this->trkjet_eta->at(i_jet),this->trkjet_phi->at(i_jet),0.);
 
   float d0 = getd0(i_trk,i_jet,doSmeared,sys);
-  //FIXME: does the d0err need to be corrected for smearing or systematics?
+  // Add beamspot uncertainty to d0 error calculation
+  // Beamspot slightly wider in MC than data (makes agreement worse)
+  //float sin_phi = TMath::Sin(trkjet_assocTrk_phi0->at(i_jet).at(i_trk));
+  //float cos_phi = TMath::Cos(trkjet_assocTrk_phi0->at(i_jet).at(i_trk));
+  //float beam_unc2 = sin_phi * ( sin_phi * eve_beam_sigma_x*eve_beam_sigma_x
+  //                             -cos_phi * eve_beam_sigma_xy)
+  //                 +cos_phi * ( cos_phi * eve_beam_sigma_y*eve_beam_sigma_y
+  //                             -sin_phi * eve_beam_sigma_xy);
+  //float sd0=d0 / TMath::Sqrt(trkjet_assocTrk_d0err->at(i_jet).at(i_trk)*
+  //                 trkjet_assocTrk_d0err->at(i_jet).at(i_trk) + beam_unc2);
   float sd0=d0/this->trkjet_assocTrk_d0err->at(i_jet).at(i_trk);
   float det_sign=TMath::Sin(jet.Phi()-this->trkjet_assocTrk_phi->at(i_jet).at(i_trk))*d0;
 

@@ -43,6 +43,9 @@ public :
    Int_t           eve_passGRL;
    Float_t         eve_PVz;
    Float_t         eve_nVtx2Trks;
+   Float_t         eve_beam_sigma_x;
+   Float_t         eve_beam_sigma_y;
+   Float_t         eve_beam_sigma_xy;
    Int_t           eve_HLT_j15;
    Int_t           eve_HLT_j25;
    Int_t           eve_HLT_j35;
@@ -238,6 +241,9 @@ public :
    TBranch        *b_eve_passGRL;   //!
    TBranch        *b_eve_PVz;   //!
    TBranch        *b_eve_nVtx2Trks;   //!
+   TBranch        *b_eve_beam_sigma_x;   //!
+   TBranch        *b_eve_beam_sigma_y;   //!
+   TBranch        *b_eve_beam_sigma_xy;   //!
    TBranch        *b_eve_HLT_j15;   //!
    TBranch        *b_eve_HLT_j25;   //!
    TBranch        *b_eve_HLT_j35;   //!
@@ -621,6 +627,9 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_passGRL", &eve_passGRL, &b_eve_passGRL);
    fChain->SetBranchAddress("eve_PVz", &eve_PVz, &b_eve_PVz);
    fChain->SetBranchAddress("eve_nVtx2Trks", &eve_nVtx2Trks, &b_eve_nVtx2Trks);
+   fChain->SetBranchAddress("eve_beam_sigma_x", &eve_beam_sigma_x, &b_eve_beam_sigma_x);
+   fChain->SetBranchAddress("eve_beam_sigma_y", &eve_beam_sigma_y, &b_eve_beam_sigma_y);
+   fChain->SetBranchAddress("eve_beam_sigma_xy", &eve_beam_sigma_xy, &b_eve_beam_sigma_xy);
    fChain->SetBranchAddress("eve_HLT_j15", &eve_HLT_j15, &b_eve_HLT_j15);
    fChain->SetBranchAddress("eve_HLT_j25", &eve_HLT_j25, &b_eve_HLT_j25);
    fChain->SetBranchAddress("eve_HLT_j35", &eve_HLT_j35, &b_eve_HLT_j35);

@@ -215,9 +215,10 @@ private:
   //
   // Function to construct the trkjetSd0Info struct
   //
-  trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
+  trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString d0sys="nominal", TString z0sys="nominal", int n=3);
 
   float getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
+  float getz0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
   float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
 
   void getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down);
