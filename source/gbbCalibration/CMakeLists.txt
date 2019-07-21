@@ -7,7 +7,7 @@ atlas_subdir( gbbCalibration )
 
 # Declare the package's dependencies:
 atlas_depends_on_subdirs(
-   PUBLIC 
+   PUBLIC
    Tools/PathResolver
    )
 
@@ -32,14 +32,14 @@ atlas_add_library( gbbTupleLib
    histMaker/BTagging/*.cxx histMaker/BTagging/*.h
    helpers/*.cxx helpers/*.h
    ${_gbbDictSource}
-   PUBLIC_HEADERS GbbTupleAna
+   PUBLIC_HEADERS histMaker
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
    )
 atlas_add_library( ScaleFactorCalcLib
    scaleFactorCalculator/*.cxx scaleFactorCalculator/*.h
    helpers/*.cxx helpers/*.h  helpers/atlasstyle/*.C helpers/atlasstyle/*.h
-   PUBLIC_HEADERS ScaleFactorCalc
+   PUBLIC_HEADERS scaleFactorCalculator
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
    )
