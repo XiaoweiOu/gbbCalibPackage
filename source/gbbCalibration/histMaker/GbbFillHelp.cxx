@@ -331,8 +331,8 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
                                                this->trkjet_pt->at(gbbcand->nonmuojet_index)/1e3);
 
   // Calculate sd0 variables
-  trkjetSd0Info muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal",3);
-  trkjetSd0Info nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal",3);
+  trkjetSd0Info muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->muojet_index,m_doTrackSmearing,"nominal","nominal",3);
+  trkjetSd0Info nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand->nonmuojet_index,m_doTrackSmearing,"nominal","nominal",3);
   float muojet_maxsd0 = muojet_sd0Info.meanSd0_pt;
   float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_pt;
 
