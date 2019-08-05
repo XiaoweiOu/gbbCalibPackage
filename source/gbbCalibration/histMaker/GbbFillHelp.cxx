@@ -384,6 +384,8 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
 
   // Fill fatjet histograms for SF calculation if not done in FillFatJetProperties
   if (!(m_RunMode & RunMode::FILL_FATJET_PROPERTIES)) {
+    m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
+     this->fat_pt->at(gbbcand->fat_index)/1e3,125,500.,1000.,event_weight);
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
      this->fat_pt->at(gbbcand->fat_index)/1e3,125,500.,1000.,event_weight);
 
@@ -501,10 +503,10 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
     m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjeta"+nametag),";large-R jet #eta;Events/0.2;",
      this->fat_eta->at(gbbcand->fat_index),10,-2.5,2.5,event_weight);
 
-    m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
-     this->fat_pt->at(gbbcand->fat_index)/1e3,125,500.,1000.,event_weight);
   }
 
+  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
+   this->fat_pt->at(gbbcand->fat_index)/1e3,125,500.,1000.,event_weight);
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
    this->fat_pt->at(gbbcand->fat_index)/1e3,125,500.,1000.,event_weight);
 
@@ -518,6 +520,10 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
      this->fat_pt->at(gbbcand->fat_index)/1e3,125,500.,1000.,event_weight);
   }
 
+  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjD2"+nametag),";large-R jet D2;Events/0.02;",
+   this->fat_D2->at(gbbcand->fat_index),250,0.,5.,event_weight);
+  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjtau21"+nametag),";large-R jet #tau_{21};Events/0.005;",
+   this->fat_tau21->at(gbbcand->fat_index),260,0.,1.3,event_weight);
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjD2"+nametag),";large-R jet D2;Events/0.02;",
    this->fat_D2->at(gbbcand->fat_index),250,0.,5.,event_weight);
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjtau21"+nametag),";large-R jet #tau_{21};Events/0.005;",
@@ -526,6 +532,8 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   TLorentzVector fatjet;
   fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand->fat_index),this->fat_eta->at(gbbcand->fat_index),this->fat_phi->at(gbbcand->fat_index),this->fat_E->at(gbbcand->fat_index));
 
+  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjm"+nametag),";large-R jet mass [GeV];Events/20 GeV;",
+   fatjet.M()/1e3,25,0.,500.,event_weight);
   m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjm"+nametag),";large-R jet mass [GeV];Events/20 GeV;",
    fatjet.M()/1e3,25,0.,500.,event_weight);
 
