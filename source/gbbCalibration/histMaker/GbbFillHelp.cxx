@@ -666,7 +666,7 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
   m_HistSvc->FastFillTH1D(
    m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muz0"+nametag),
    ";muon z0;Events/0.001;",
-   this->muo_z0->at(gbbcand->muo_index),300,150,150,event_weight
+   this->muo_z0->at(gbbcand->muo_index),90,-0.4,0.4,event_weight
   );
   m_HistSvc->FastFillTH1D(
    m_config->GetMCHistName(m_SysVarName,"Incl","Incl","muz0sintheta"+nametag),
