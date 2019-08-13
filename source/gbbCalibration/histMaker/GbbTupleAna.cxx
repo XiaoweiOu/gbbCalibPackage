@@ -565,10 +565,9 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Constructing Gbb candidate..."<<std::endl;
 
-  GbbCandidate gbbcand= m_doInclusiveGbb ? constructGbbCandidateInclusive() : constructGbbCandidate();
-  //GbbCandidate gbbcand=constructGbbCandidate();
+  std::vector<GbbCandidate> gbbcands = constructGbbCandidates(m_doInclusiveGbb);
 
-  if(gbbcand.fat_index==999){
+  if (gbbcands.size() == 0) {
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
     return false;
   }
@@ -576,24 +575,30 @@ bool GbbTupleAna::Processgbb(int i_evt){
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "has gbb candidate");
 
+  // Use highest pt gbbcandidate. //FIXME: why aren't they pt-ordered already?
+  GbbCandidate gbbcand = gbbcands.at(0);
+  for (auto& cand : gbbcands) {
+    if (fat_pt->at(cand.ind_fj) > fat_pt->at(gbbcand.ind_fj)) gbbcand = cand;
+  }
+
   if(m_Debug) std::cout<<"constructGbbCandidate(): Finish Gbb construction!"<<std::endl;
   if (m_useVRTrkJets) {
     TLorentzVector muojet_vec, nonmuojet_vec;
-    muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
-                             this->trkjet_eta->at(gbbcand.muojet_index),
-                             this->trkjet_phi->at(gbbcand.muojet_index),
+    muojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.ind_mj)/1e3,
+                             this->trkjet_eta->at(gbbcand.ind_mj),
+                             this->trkjet_phi->at(gbbcand.ind_mj),
                              0.);
-    nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3,
-                                this->trkjet_eta->at(gbbcand.nonmuojet_index),
-                                this->trkjet_phi->at(gbbcand.nonmuojet_index),
+    nonmuojet_vec.SetPtEtaPhiM( this->trkjet_pt->at(gbbcand.ind_nmj)/1e3,
+                                this->trkjet_eta->at(gbbcand.ind_nmj),
+                                this->trkjet_phi->at(gbbcand.ind_nmj),
                                 0.);
     m_HistSvc->FastFillTH1D(
      m_config->GetMCHistName(m_SysVarName,"Incl","Incl","DRtrkjets"),
      ";#Delta R(muon-jet,non-muon jet);Events/0.01;",
      muojet_vec.DeltaR(nonmuojet_vec),100,0.,1.0,total_evt_weight
     );
-    float muojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.muojet_index)) );
-    float nonmuojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.nonmuojet_index)) );
+    float muojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.ind_mj)) );
+    float nonmuojet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(gbbcand.ind_nmj)) );
     for (unsigned int i_jet=0; i_jet < this->trkjet_pt->size(); i_jet++) {
       TLorentzVector jet_vec;
       jet_vec.SetPtEtaPhiM( this->trkjet_pt->at(i_jet)/1e3,
@@ -601,12 +606,12 @@ bool GbbTupleAna::Processgbb(int i_evt){
                             this->trkjet_phi->at(i_jet),
                             0.);
       float jet_minVR = std::max( 0.02, std::min(0.4, 30.0e3 / this->trkjet_pt->at(i_jet)) );
-      if ( i_jet != gbbcand.muojet_index &&
+      if ( i_jet != gbbcand.ind_mj &&
            TMath::Log(muojet_vec.DeltaR(jet_vec)/std::min(muojet_minVR, jet_minVR)) < 0 ) {
         if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
         return false;
       }
-      if ( i_jet != gbbcand.nonmuojet_index &&
+      if ( i_jet != gbbcand.ind_nmj &&
            TMath::Log(nonmuojet_vec.DeltaR(jet_vec)/std::min(nonmuojet_minVR, jet_minVR)) < 0 ) {
         if(m_Debug) std::cout<<"constructGbbCandidate(): Removed event with  overlapping VR trackjets"<<std::endl;
         return false;
@@ -617,11 +622,11 @@ bool GbbTupleAna::Processgbb(int i_evt){
     ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass trackjet overlap cut");
   }
 
-  //if(gbbcand.muojet_index == gbbcand.nonmuojet_index) {
+  //if(gbbcand.ind_mj == gbbcand.ind_nmj) {
   //  if(m_Debug) std::cout<<"constructGbbCandidate(): Muon and non-muon jet have same index!"<<std::endl;
   //  return false;
   //}
-  if(!gbbcand.hasleading2trackjets){
+  if(!gbbcand.hasLeadTrkJets){
     if(m_Debug) std::cout<<"constructGbbCandidate(): Require muon and non-muon jets be leading 2 trackjets"<<std::endl;
     return false;
   }
@@ -631,24 +636,24 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug){
     std::cout<<"processgbb(): Finished constructing Gbb candidate!"<<std::endl;
-    std::cout<<"processgbb(): gbbcand.fat_index "<<gbbcand.fat_index<<std::endl;
-    std::cout<<"processgbb(): gbbcand.muojet_index "<<gbbcand.nonmuojet_index<<std::endl;
-    std::cout<<"processgbb(): gbbcand.nonmuojet_index "<<gbbcand.nonmuojet_index<<std::endl;
+    std::cout<<"processgbb(): gbbcand.ind_fj "<<gbbcand.ind_fj<<std::endl;
+    std::cout<<"processgbb(): gbbcand.ind_mj "<<gbbcand.ind_mj<<std::endl;
+    std::cout<<"processgbb(): gbbcand.ind_nmj "<<gbbcand.ind_nmj<<std::endl;
   }
 
   updateFlag(eventFlag, GbbCuts::GbbCandidate, true);
 
   //define flavour truth labels & pt labels
-  int muojet_truth=this->trkjet_truth->at(gbbcand.muojet_index);
-  int nonmuojet_truth=this->trkjet_truth->at(gbbcand.nonmuojet_index);
+  int muojet_truth=this->trkjet_truth->at(gbbcand.ind_mj);
+  int nonmuojet_truth=this->trkjet_truth->at(gbbcand.ind_nmj);
   TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(muojet_truth,nonmuojet_truth) : TString("Data");
 
-  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
-                                               this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3);
+  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand.ind_mj)/1e3,
+                                               this->trkjet_pt->at(gbbcand.ind_nmj)/1e3);
 
   if(m_Debug) std::cout<<"processgbb(): Got labels."<<std::endl;
 
-  float gbbcandpt=this->fat_pt->at(gbbcand.fat_index);
+  float gbbcandpt=this->fat_pt->at(gbbcand.ind_fj);
   //  std::cout<<"trigjet pt is: "<<this->jet_pt->at(i_trigjet)<<" "<<gbbcandpt<<std::endl;
 
   //cut away region where jet bias is introduced
@@ -676,8 +681,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //4.) Tracks passing requirements for templates
   //=========================================
 
-  trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.muojet_index,m_doTrackSmearing,"nominal","nominal",3);
-  trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.nonmuojet_index,m_doTrackSmearing,"nominal","nominal",3);
+  trkjetSd0Info  muojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.ind_mj,m_doTrackSmearing,"nominal","nominal",3);
+  trkjetSd0Info  nonmuojet_sd0Info=this->getTrkjetAssocSd0Info(gbbcand.ind_nmj,m_doTrackSmearing,"nominal","nominal",3);
   float muojet_maxsd0 = muojet_sd0Info.meanSd0_pt;
   float nonmuojet_maxsd0 = nonmuojet_sd0Info.meanSd0_pt;
 
@@ -696,7 +701,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   TLorentzVector mujet,trigjet;
 
-  mujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.muojet_index),this->trkjet_eta->at(gbbcand.muojet_index),this->trkjet_phi->at(gbbcand.muojet_index),this->trkjet_E->at(gbbcand.muojet_index));
+  mujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.ind_mj),this->trkjet_eta->at(gbbcand.ind_mj),this->trkjet_phi->at(gbbcand.ind_mj),this->trkjet_E->at(gbbcand.ind_mj));
 
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trigjet),this->jet_eta->at(i_trigjet),this->jet_phi->at(i_trigjet),this->jet_E->at(i_trigjet));
 
@@ -706,10 +711,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   //DR 2-Track jets
   TLorentzVector ditrkjet,nonmujet, fatjet;
-  nonmujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.nonmuojet_index),this->trkjet_eta->at(gbbcand.nonmuojet_index),this->trkjet_phi->at(gbbcand.nonmuojet_index),this->trkjet_E->at(gbbcand.nonmuojet_index));
+  nonmujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.ind_nmj),this->trkjet_eta->at(gbbcand.ind_nmj),this->trkjet_phi->at(gbbcand.ind_nmj),this->trkjet_E->at(gbbcand.ind_nmj));
 
   ditrkjet=mujet+nonmujet;
-  fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand.fat_index),this->fat_eta->at(gbbcand.fat_index),this->fat_phi->at(gbbcand.fat_index),this->fat_E->at(gbbcand.fat_index));
+  fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand.ind_fj),this->fat_eta->at(gbbcand.ind_fj),this->fat_phi->at(gbbcand.ind_fj),this->fat_E->at(gbbcand.ind_fj));
 
   float DRditrkjetfatjet=fatjet.DeltaR(ditrkjet);
 
@@ -729,8 +734,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   /*  if(m_doPostfitPtReweighting && this->eve_isMC){
      double weight=1;
-     if((this->fat_pt->at(gbbcand.fat_index)/1e3 < 250.) || (this->fat_pt->at(gbbcand.fat_index)/1e3 > 1000.)) weight=1.;
-     else weight=m_postfit_reweight_hist->GetBinContent(m_postfit_reweight_hist->FindBin(this->fat_pt->at(gbbcand.fat_index)/1e3));
+     if((this->fat_pt->at(gbbcand.ind_fj)/1e3 < 250.) || (this->fat_pt->at(gbbcand.ind_fj)/1e3 > 1000.)) weight=1.;
+     else weight=m_postfit_reweight_hist->GetBinContent(m_postfit_reweight_hist->FindBin(this->fat_pt->at(gbbcand.ind_fj)/1e3));
      //std::cout<<"postfit weight: "<<weight<<std::endl;
 
      total_evt_weight*= weight;
@@ -747,7 +752,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //Benchmark Numbers Flavour Tagging Group (AntiKt2PV0TrackJets @ 70% eff)
   //https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt2PV0TrackJet
   //  this->FillFtagInfo(&gbbcand,total_evt_weight_corr,ftagtag);
-  //if(this->trkjet_MV2c20->at(gbbcand.muojet_index)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.nonmuojet_index)<-0.3098) return false;
+  //if(this->trkjet_MV2c20->at(gbbcand.ind_mj)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.ind_nmj)<-0.3098) return false;
   //Moved to MV2c10 at 70% efficiency
 
   /* wesley: not used for XbbScore
@@ -788,7 +793,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(m_Debug) std::cout<<"processgbb(): Bhad reweighting"<<std::endl;
   double Bhadupweight=1., Bhaddownweight=1.;
   if(dijet_flav.EqualTo("BB")){
-    double BhadPt=this->trkjet_BHad_pt->at(gbbcand.muojet_index)/1e3;
+    double BhadPt=this->trkjet_BHad_pt->at(gbbcand.ind_mj)/1e3;
 
     //up by 10%
     if(BhadPt<250.) Bhadupweight=0.88;
@@ -846,12 +851,12 @@ bool GbbTupleAna::Processgbb(int i_evt){
       //Fill BHad fragmentation information for extrapolation studies
       if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
 	int ID_transform=0;
-	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==511) ID_transform=1; //B0
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521)ID_transform=2; //B+-
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531)ID_transform=3; //B_s
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5122)ID_transform=4; //Lambda_B
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5132)ID_transform=5; //Cascade_B-
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5232)ID_transform=6; //Cascade_B0
+	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==511) ID_transform=1; //B0
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==521)ID_transform=2; //B+-
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==531)ID_transform=3; //B_s
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5122)ID_transform=4; //Lambda_B
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5132)ID_transform=5; //Cascade_B-
+	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5232)ID_transform=6; //Cascade_B0
 
 
 	if(ID_transform) {
@@ -868,16 +873,16 @@ bool GbbTupleAna::Processgbb(int i_evt){
       if(dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")){
 
         //FIXME: where do these values come from?
-	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==511){//B0
+	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==511){//B0
 	  Had_weight_incl=0.93;
 	  Had_weight_Mu=0.97;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521){//B+-
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==521){//B+-
 	  Had_weight_incl=0.95;
 	  Had_weight_Mu=0.95;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531){ //B_s
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==531){ //B_s
 	  Had_weight_incl=1.06;
 	  Had_weight_Mu=1.07;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5122){//Lambda_B
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5122){//Lambda_B
 	  Had_weight_incl=1.81;
 	  Had_weight_Mu=2.16;
 	}
@@ -903,18 +908,18 @@ bool GbbTupleAna::Processgbb(int i_evt){
       m_HistSvc->FastFillTH1D(
         m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPt"),
         ";muon-jet b-hadron p_{T} [GeV];Events/5 GeV;",
-        this->trkjet_BHad_pt->at(gbbcand.muojet_index)/1e3,100,0.,500.,total_evt_weight
+        this->trkjet_BHad_pt->at(gbbcand.ind_mj)/1e3,100,0.,500.,total_evt_weight
       );
       //FIXME: don't these just shift the plot left/right slightly?
       m_HistSvc->FastFillTH1D(
         m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledUp"),
         ";muon-jet b-hadron p_{T} (scaled up) [GeV];Events/5 GeV;",
-        this->trkjet_BHad_pt->at(gbbcand.muojet_index)*1.1/1e3,100,0.,500.,total_evt_weight
+        this->trkjet_BHad_pt->at(gbbcand.ind_mj)*1.1/1e3,100,0.,500.,total_evt_weight
       );
       m_HistSvc->FastFillTH1D(
         m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledDown"),
         ";muon-jet b-hadron p_{T} (scaled down) [GeV];Events/5 GeV;",
-        this->trkjet_BHad_pt->at(gbbcand.muojet_index)*0.9/1e3,100,0.,500.,total_evt_weight
+        this->trkjet_BHad_pt->at(gbbcand.ind_mj)*0.9/1e3,100,0.,500.,total_evt_weight
       );
 
       this->FillTemplates(&gbbcand,total_evt_weight*Bhadupweight,"BHADPTUP");
@@ -977,16 +982,16 @@ bool GbbTupleAna::Processgbb(int i_evt){
       if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
 
         //FIXME: where do these values come from?
-	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==511){//B0
+	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==511){//B0
 	  Had_weight_incl=0.93;
 	  Had_weight_Mu=0.97;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==521){//B+-
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==521){//B+-
 	  Had_weight_incl=0.95;
 	  Had_weight_Mu=0.95;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==531){ //B_s
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==531){ //B_s
 	  Had_weight_incl=1.06;
 	  Had_weight_Mu=1.07;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.muojet_index))==5122){//Lambda_B
+	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5122){//Lambda_B
 	  Had_weight_incl=1.81;
 	  Had_weight_Mu=2.16;
 	}
@@ -1031,10 +1036,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES)) {
       m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
        ";muon-jet p_{T} [GeV];Events/2 GeV;",
-       this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
+       this->trkjet_pt->at(gbbcand.ind_mj)/1e3,250,0.,500.,total_evt_weight);
       m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
        ";muon-jet p_{T} [GeV];Events/2 GeV;",
-       this->trkjet_pt->at(gbbcand.muojet_index)/1e3,250,0.,500.,total_evt_weight);
+       this->trkjet_pt->at(gbbcand.ind_mj)/1e3,250,0.,500.,total_evt_weight);
     }
 
   }
@@ -1062,12 +1067,12 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
     if(m_isNominal) {
       fffit_fact = m_FlavFracCorrector->GetCorrectionFactorNom(dijet_flav,
-                    this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
-                    this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3);
+                    this->trkjet_pt->at(gbbcand.ind_mj)/1e3,
+                    this->trkjet_pt->at(gbbcand.ind_nmj)/1e3);
     } else {
       fffit_fact = m_FlavFracCorrector->GetCorrectionFactorSys(dijet_flav,
-                    this->trkjet_pt->at(gbbcand.muojet_index)/1e3,
-                    this->trkjet_pt->at(gbbcand.nonmuojet_index)/1e3,
+                    this->trkjet_pt->at(gbbcand.ind_mj)/1e3,
+                    this->trkjet_pt->at(gbbcand.ind_nmj)/1e3,
                     m_SysVarName);
     }
 
@@ -1183,319 +1188,99 @@ int GbbTupleAna::getAssocObjIndex(std::vector<int>* part_ind, int assoc_index){
 
 }
 
-GbbCandidate GbbTupleAna::constructGbbCandidate(){
+std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
 
-  GbbCandidate gbbcand;
-  gbbcand.fat_pt=0.;
-  gbbcand.muojet_index=999;
-  gbbcand.muo_index=999;
-  gbbcand.nonmuojet_index=999;
-  gbbcand.fat_index=999;
+  std::vector<GbbCandidate> cands;
 
+  for (unsigned int i_fj=0; i_fj < this->fat_pt->size(); i_fj++) {
 
-  unsigned int muonjet_index=999, nonmuonjet_index=999, muon_index=999;
+    // fatjet must pass pt-eta cuts and have 2 trackjets
+    if (!passR10CaloJetCuts(i_fj)) continue;
+    if (this->fat_assocTrkjet_ind->at(i_fj).size() < 2) continue;
 
-  for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
+    // pairs contain trackjet index and associated muon index (or 999 if no muon)
+    std::vector<std::pair<unsigned int,unsigned int>> trkjet_info;
 
-    if(!passR10CaloJetCuts(i_jet)) continue;
+    for (unsigned int i_tj=0; i_tj < this->fat_assocTrkjet_ind->at(i_fj).size(); i_tj++) {
+      // find location of associated trackjet in trackjet vector
+      int ind_tj = getAssocObjIndex(this->trkjet_ind,this->fat_assocTrkjet_ind->at(i_fj).at(i_tj));
 
-    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
-      //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
-      continue;
-    }
+      // trackjet didn't pass selection in CxAODFramework (Tuple Maker)
+      if (ind_tj < 0) continue;
+      // trackjet pt-eta cuts
+      if(!(this->passR2TrackJetCuts(ind_tj))) continue;
 
-    int assocTJ_ind=-1;
-
-    std::vector<unsigned int> nonmuon_cand_index;
-
-    muonjet_index=999;
-    nonmuonjet_index=999;
-
-    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
-
-      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
-
-      if(assocTJ_ind<0){
-        if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
-        continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
-      }
-
-
-      //Track jet selection cuts already applied in CxAODFramework (Tuple Maker)
-      if(!(this->passR2TrackJetCuts(assocTJ_ind))) continue;
-      // else continue;
-
-      //if(muonjet_index != 999){ //next leading pt track jet is non-muon jet
-      //nonmuonjet_index=assocTJ_ind;
-      //  break;
-      //}
-
-      int n_assoc_selmuon=0;
-      gbbcand.hasTruthMuon=false;
-
-      for(int j=0; j < this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
-
-        if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
-          n_assoc_selmuon++;
-          if (muon_index==999) muon_index=this->trkjet_assocMuon_index->at(assocTJ_ind).at(j);
-          if(this->muo_hasTruth->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))) gbbcand.hasTruthMuon=true;
-          //TLorentzVector trkjet(this->trkjet_pt->at(assocTJ_ind),this->trkjet_eta->at(assocTJ_ind),this->trkjet_phi->at(assocTJ_ind),0);
-          //TLorentzVector muon(this->muo_pt->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),this->muo_eta->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),this->muo_phi->at(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j)),0);
-          //std::cout<<"Delta R between muon and trackjet is: "<<trkjet.DeltaR(muon)<<std::endl;
-
-
+      int ind_good_mu = 999;
+      for (int i_mu=0; i_mu < this->trkjet_assocMuon_n->at(ind_tj); i_mu++) {
+        int ind_mu = this->trkjet_assocMuon_index->at(ind_tj).at(i_mu);
+        if (passMuonSelection(ind_mu)) {
+          ind_good_mu = ind_mu;
+          break;
         }
-
       }
-
-      if(n_assoc_selmuon && muonjet_index==999){ //first muon associated track jet (assoc trkjets are sorted by pt)
-        muonjet_index=assocTJ_ind;
-      }else{
-        //if(m_Debug && !(this->trkjet_assocMuon_n->at(assocTJ_ind))) std::cout<<"constructGbbCandidate(): No Muon associated to track jet!"<<std::endl;
-        if(m_Debug && this->trkjet_assocMuon_n->at(assocTJ_ind)) std::cout<<"constructGbbCandidate(): Muon associated to track jet did not pass cuts!"<<std::endl;
-
-        nonmuon_cand_index.push_back(assocTJ_ind);
-      }
-
-
+      trkjet_info.push_back(std::make_pair(ind_tj,ind_good_mu));
     }
 
-    //nonmuon-jet: leading associated track jet that is not the muon jet
-    if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
+    // need 2 trackjets that pass selection
+    if (trkjet_info.size() < 2) continue;
 
-    //check if leading two associated track jets are used
-    bool leading_2trackjets=false;
-    if(nonmuon_cand_index.size() && muonjet_index!=999){
+    GbbCandidate gbbcand;
+    gbbcand.ind_fj = i_fj;
+    gbbcand.ind_mj = 999;
+    gbbcand.ind_mj_mu = 999;
+    gbbcand.ind_nmj = 999;
+    gbbcand.ind_nmj_mu = 999;
+    gbbcand.nTruthMuons = 0;
+    gbbcand.hasLeadTrkJets = false;
 
-      if(nonmuon_cand_index.size()>1){
-        leading_2trackjets=(muonjet_index<nonmuonjet_index || muonjet_index<nonmuon_cand_index[1] );
-      } else leading_2trackjets=true;
-
-    }
-
-    if(muonjet_index != 999 && nonmuonjet_index != 999 && this->fat_pt->at(i_jet)>gbbcand.fat_pt){ //get leading pt Gbb candidate
-      TLorentzVector tj1,tj2;
-      tj1.SetPtEtaPhiM(this->trkjet_pt->at(muonjet_index),this->trkjet_eta->at(muonjet_index),this->trkjet_phi->at(muonjet_index),0.);
-      tj2.SetPtEtaPhiM(this->trkjet_pt->at(nonmuonjet_index),this->trkjet_eta->at(nonmuonjet_index),this->trkjet_phi->at(nonmuonjet_index),0.);
-      double deltaR=tj1.DeltaR(tj2);
-
-      //std::cout<<"Delta R is"<<deltaR<<std::endl;
-
-      if (deltaR > 0.5 && false) { //turn off requirement for now, was just for testing
-	muonjet_index = 999;
-	nonmuonjet_index = 999;
-      } else {
-	gbbcand.fat_pt=this->fat_pt->at(i_jet);
-	gbbcand.muojet_index=muonjet_index;
-        gbbcand.muo_index=muon_index;
-	gbbcand.nonmuojet_index=nonmuonjet_index;
-	gbbcand.fat_index=i_jet;
-	gbbcand.hasleading2trackjets=leading_2trackjets;
+    if (useLeading) {
+      gbbcand.ind_mj = trkjet_info[0].first;
+      gbbcand.ind_mj_mu = trkjet_info[0].second;
+      gbbcand.ind_nmj = trkjet_info[1].first;
+      gbbcand.ind_nmj_mu = trkjet_info[1].second;
+      if (trkjet_info[0].second != 999) {
+        if (this->muo_hasTruth->at(trkjet_info[0].second)) gbbcand.nTruthMuons++;
+      }
+      if (trkjet_info[1].second != 999) {
+        if (this->muo_hasTruth->at(trkjet_info[1].second)) gbbcand.nTruthMuons++;
+      }
+    } else {
+      for (std::pair<unsigned int,unsigned int> inds : trkjet_info) {
+        // if trackjet has muon then try to set muon-jet indices
+        if (inds.second != 999) {
+          if (gbbcand.ind_mj == 999) {
+            gbbcand.ind_mj = inds.first;
+            gbbcand.ind_mj_mu = inds.second;
+            if (this->muo_hasTruth->at(inds.second)) gbbcand.nTruthMuons++;
+          // muon-jet already set, so set non-muon-jet instead
+          } else if (gbbcand.ind_nmj == 999) {
+            gbbcand.ind_nmj = inds.first;
+            gbbcand.ind_nmj_mu = inds.second;
+            if (this->muo_hasTruth->at(inds.second)) gbbcand.nTruthMuons++;
+          }
+        } else {
+          if (gbbcand.ind_nmj == 999) {
+            gbbcand.ind_nmj = inds.first;
+          }
+        }
+        // Stop when both muon and non-muon jets are set
+        if (gbbcand.ind_mj != 999 && gbbcand.ind_nmj != 999) break;
       }
     }
+
+    // double-check that both muon and non-muon indices are set
+    if (gbbcand.ind_mj == 999 || gbbcand.ind_nmj == 999) continue;
+
+    // check if muon-jet is among the first two
+    if (gbbcand.ind_mj == trkjet_info[0].first || gbbcand.ind_mj == trkjet_info[1].first) {
+      gbbcand.hasLeadTrkJets = true;
+    }
+
+    cands.push_back(gbbcand);
   }
 
-  if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
-  else if(nonmuonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find nonmuon jet"<<std::endl;
-
-  if(nonmuonjet_index == 999 && muonjet_index == 999 && m_Debug)  std::cout<<"constructGbbCandidate(): Failed to find any subjet or fat jet"<<std::endl;
-
-  return gbbcand;
+  return cands;
 }
-
-GbbCandidate GbbTupleAna::constructGbbCandidateAlternative(){
-
-  GbbCandidate gbbcand;
-  gbbcand.fat_pt=0.;
-  gbbcand.muojet_index=999;
-  gbbcand.nonmuojet_index=999;
-  gbbcand.fat_index=999;
-
-
-  unsigned int muonjet_index=999, nonmuonjet_index=999;
-
-  for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
-
-    if(!passR10CaloJetCuts(i_jet)) continue;
-
-    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
-      //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
-      continue;
-    }
-    int assocTJ_ind=-1;
-
-    std::vector<unsigned int> nonmuon_cand_index;
-
-    muonjet_index=999;
-    nonmuonjet_index=999;
-
-    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
-
-      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
-
-      if(assocTJ_ind<0){
-        if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
-        continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
-      }
-
-
-      //Track jet selection cuts already applied in CxAODFramework (Tuple Maker)
-      if(!(this->passR2TrackJetCuts(assocTJ_ind))) continue;
-      // else continue;
-
-
-      if(muonjet_index==999){ //first muon associated track jet (assoc trkjets are sorted by pt)
-        muonjet_index=assocTJ_ind;
-      }else{
-        nonmuon_cand_index.push_back(assocTJ_ind);
-      }
-
-
-    }
-
-    //nonmuon-jet: leading associated track jet that is not the muon jet
-    if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
-
-    //check if leading two associated track jets are used
-    bool leading_2trackjets=false;
-    if(nonmuon_cand_index.size() && muonjet_index!=999){
-
-      if(nonmuon_cand_index.size()>1){
-  leading_2trackjets=(muonjet_index<nonmuonjet_index || muonjet_index<nonmuon_cand_index[1] );
-
-      }else leading_2trackjets=true;
-
-
-    }
-
-    if(muonjet_index != 999 && nonmuonjet_index != 999 && this->fat_pt->at(i_jet)>gbbcand.fat_pt){ //get leading pt Gbb candidate
-      gbbcand.fat_pt=this->fat_pt->at(i_jet);
-      gbbcand.muojet_index=muonjet_index;
-      gbbcand.nonmuojet_index=nonmuonjet_index;
-      gbbcand.fat_index=i_jet;
-      gbbcand.hasleading2trackjets=leading_2trackjets;
-    }
-
-
-
-  }
-
-  if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
-  else if(nonmuonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find nonmuon jet"<<std::endl;
-
-  if(nonmuonjet_index == 999 && muonjet_index == 999 && m_Debug)  std::cout<<"constructGbbCandidate(): Failed to find any subjet or fat jet"<<std::endl;
-
-  return gbbcand;
-}
-
-GbbCandidate GbbTupleAna::constructGbbCandidateInclusive(){
-  //function to get Gbb candidate without muon reqirement (inclusive selection
-
-
-  GbbCandidate gbbcand;
-  gbbcand.fat_pt=0.;
-  gbbcand.muojet_index=999;
-  gbbcand.nonmuojet_index=999;
-  gbbcand.fat_index=999;
-
-
-  unsigned int muonjet_index=999, nonmuonjet_index=999, muon_index=999;
-
-  for(unsigned int i_jet=0; i_jet<this->fat_pt->size(); i_jet++){
-
-    if(!passR10CaloJetCuts(i_jet)) continue;
-
-    if(this->fat_assocTrkjet_ind->at(i_jet).size()<2){
-	    //if(m_Debug) std::cout<<"constructGbbCandidate(): Fat Jet has less than 2 associated track jets"<<std::endl;
-	    continue;
-    }
-    int assocTJ_ind=-1;
-
-    std::vector<unsigned int> nonmuon_cand_index;
-
-    muonjet_index=999;
-    nonmuonjet_index=999;
-
-    int n_assoc_selmuon=0;
-
-    for(unsigned int i=0; i<this->fat_assocTrkjet_ind->at(i_jet).size(); i++){
-
-      assocTJ_ind=this->getAssocObjIndex(this->trkjet_ind,fat_assocTrkjet_ind->at(i_jet).at(i)); //find position of associated track jet in ntup vector (add. selection applied after association)
-
-      if(assocTJ_ind<0){
-	if(m_Debug) std::cout<<"constructGbbCandidate(): Track Jet did not pass cuts!"<<std::endl;
-	continue; //track jet didn't pass selection in CxAODFramework (Tuple Maker)
-      }
-
-
-      //Track jet selection cuts already applied in CxAODFramework (Tuple Maker)
-      if(!(this->passR2TrackJetCuts(assocTJ_ind))) continue;
-      // else continue;
-
-
-      //count all muons in all associated track jets, if one of them has one, continue
-      for(int j=0; j<this->trkjet_assocMuon_n->at(assocTJ_ind); j++){
-	      if(this->passMuonSelection(this->trkjet_assocMuon_index->at(assocTJ_ind).at(j))){
-		      n_assoc_selmuon++;
-		      if (muon_index==999) muon_index=this->trkjet_assocMuon_index->at(assocTJ_ind).at(j);
-
-	      }
-
-      }
-
-
-
-      if(muonjet_index==999){ //first associated track jet (assoc trkjets are sorted by pt)
-	      muonjet_index=assocTJ_ind;
-      }else{
-	      nonmuon_cand_index.push_back(assocTJ_ind);
-      }
-
-
-    }
-
-    //nonmuon-jet: leading associated track jet that is not the muon jet
-    if(nonmuon_cand_index.size()) nonmuonjet_index=nonmuon_cand_index[0];
-
-    //check if leading two associated track jets are used
-    bool leading_2trackjets=false;
-    if(nonmuon_cand_index.size() && muonjet_index!=999){
-
-      if(nonmuon_cand_index.size()>1){
-	leading_2trackjets=(muonjet_index<nonmuonjet_index || muonjet_index<nonmuon_cand_index[1] );
-
-      }else leading_2trackjets=true;
-
-
-    }
-
-    //This would be to veto muons
-    /*if(n_assoc_selmuon){
-      muonjet_index = 999;
-      nonmuonjet_index = 999;
-      }*/
-
-    if(muonjet_index != 999 && nonmuonjet_index != 999 && this->fat_pt->at(i_jet)>gbbcand.fat_pt){ //get leading pt Gbb candidate
-      gbbcand.fat_pt=this->fat_pt->at(i_jet);
-      gbbcand.muojet_index=muonjet_index;
-      gbbcand.muo_index=muon_index;
-      gbbcand.nonmuojet_index=nonmuonjet_index;
-      gbbcand.fat_index=i_jet;
-      gbbcand.hasleading2trackjets=leading_2trackjets;
-    }
-
-
-
-  }
-
-  if(muonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find muon jet"<<std::endl;
-  else if(nonmuonjet_index == 999 && m_Debug) std::cout<<"constructGbbCandidate(): Failed to find nonmuon jet"<<std::endl;
-
-  if(nonmuonjet_index == 999 && muonjet_index == 999 && m_Debug)  std::cout<<"constructGbbCandidate(): Failed to find any subjet or fat jet"<<std::endl;
-
-  return gbbcand;
-}
-
 
 float GbbTupleAna::getTrigJetWeight(int i_trig_jet,TString trigger_passed){
 
@@ -1771,13 +1556,13 @@ std::vector<float> GbbTupleAna::SplitStringD(TString str, char delim){
 
 void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMuon){
 
-  if(this->trkjet_hasHadMatInt->at(gbbcand->muojet_index) || this->trkjet_hasHadMatInt->at(gbbcand->nonmuojet_index)) hasHadMatInt=true;
+  if(this->trkjet_hasHadMatInt->at(gbbcand->ind_mj) || this->trkjet_hasHadMatInt->at(gbbcand->ind_nmj)) hasHadMatInt=true;
 
-  if(this->trkjet_hasConversion->at(gbbcand->muojet_index) || this->trkjet_hasConversion->at(gbbcand->nonmuojet_index)) hasConversion=true;
+  if(this->trkjet_hasConversion->at(gbbcand->ind_mj) || this->trkjet_hasConversion->at(gbbcand->ind_nmj)) hasConversion=true;
 
-  if(this->trkjet_hasKShort->at(gbbcand->muojet_index) || this->trkjet_hasKShort->at(gbbcand->nonmuojet_index) || this->trkjet_hasLambda->at(gbbcand->muojet_index) || this->trkjet_hasLambda->at(gbbcand->nonmuojet_index)) hasLightLongLived=true;
+  if(this->trkjet_hasKShort->at(gbbcand->ind_mj) || this->trkjet_hasKShort->at(gbbcand->ind_nmj) || this->trkjet_hasLambda->at(gbbcand->ind_mj) || this->trkjet_hasLambda->at(gbbcand->ind_nmj)) hasLightLongLived=true;
 
-  if(!gbbcand->hasTruthMuon) hasNoTruthMuon=true;
+  if(gbbcand->nTruthMuons == 0) hasNoTruthMuon=true;
 
 }
 

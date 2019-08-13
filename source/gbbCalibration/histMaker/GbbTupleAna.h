@@ -174,11 +174,8 @@ private:
 
   //
   // Functions to construct the GbbCandidate struct
-  // TODO: consolidate these into 1 function with flags for options
   //
-  GbbCandidate constructGbbCandidate();
-  GbbCandidate constructGbbCandidateAlternative();
-  GbbCandidate constructGbbCandidateInclusive();
+  std::vector<GbbCandidate> constructGbbCandidates(bool useLeading = false);
 
   //
   // Wrapper functions for the MakePlotName functions from the

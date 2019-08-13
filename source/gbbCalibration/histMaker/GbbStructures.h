@@ -11,14 +11,13 @@
 // association objects (fatjet, track-jets, muon).
 //
 struct GbbCandidate{
-
-  unsigned int fat_index;
-  unsigned int muojet_index;
-  unsigned int muo_index;
-  unsigned int nonmuojet_index;
-  float fat_pt;
-  bool hasleading2trackjets;
-  bool hasTruthMuon;
+  unsigned int ind_fj;
+  unsigned int ind_mj;
+  unsigned int ind_mj_mu;
+  unsigned int ind_nmj;
+  unsigned int ind_nmj_mu;
+  bool hasLeadTrkJets;
+  unsigned int nTruthMuons;
 };
 
 //

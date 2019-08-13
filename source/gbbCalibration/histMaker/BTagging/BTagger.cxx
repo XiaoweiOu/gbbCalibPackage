@@ -19,10 +19,10 @@ BTagger::BTagger(std::string configString, bool useVRTrkJets):
     // convert string to numerals (handle exceptions)
     float f = std::stof(config_["f"]);
     int eff = std::stoi(config_["eff"],nullptr);
-    
+
     this -> xbbScoreCutter_ = new XbbScoreCutter(f,eff);
   }else if(this->getTaggerType() == "MV2c10"){
-    
+
     int eff = std::stoi(config_["eff"]);
 
     this -> mV2c10Cutter_ = new MV2c10Cutter(eff,useVRTrkJets);
@@ -31,7 +31,7 @@ BTagger::BTagger(std::string configString, bool useVRTrkJets):
     // todo?? : input cutvalue
     // directly construct with cutvalue
     this -> mV2c10Cutter_ = new MV2c10Cutter(0.6455);
-    
+
   }else if (this->getTaggerType() == "XbbScoreHybrid"){
 
     float f = std::stof(config_["f"]);
@@ -41,14 +41,14 @@ BTagger::BTagger(std::string configString, bool useVRTrkJets):
     if( (f != float(0.2) && f != float(0)) || eff != 60){
       throwException();
     }
-    
+
     this -> xbbScoreHybridCutter_ = new XbbScoreHybridCutter(f);
-    
+
   }else{
     std::cerr << "invalid tagger type: " << this->getTaggerType() << std::endl;
     throwException();
   }
-  
+
 }
 
 
@@ -71,32 +71,32 @@ int BTagger::tag(const TupleAna& gbbtuple, const GbbCandidate& gbbcand){
   if(this->getTaggerType() == "XbbScore"){
     // read xbbscore parameters, then use xbbcutter to determine
     // if this gbb candidate is b tagged.
-    float p_h = gbbtuple.fat_XbbScoreHiggs->at(gbbcand.fat_index);
-    float p_qcd = gbbtuple.fat_XbbScoreQCD->at(gbbcand.fat_index);
-    float p_top = gbbtuple.fat_XbbScoreTop->at(gbbcand.fat_index);
+    float p_h = gbbtuple.fat_XbbScoreHiggs->at(gbbcand.ind_fj);
+    float p_qcd = gbbtuple.fat_XbbScoreQCD->at(gbbcand.ind_fj);
+    float p_top = gbbtuple.fat_XbbScoreTop->at(gbbcand.ind_fj);
     return this->xbbScoreCutter_->cut(p_h,p_qcd,p_top);
   }
 
   if(this->getTaggerType() == "MV2c10"){
-    float muvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.muojet_index);
-    float nonmuvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.nonmuojet_index);
+    float muvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.ind_mj);
+    float nonmuvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.ind_nmj);
     return this->mV2c10Cutter_ -> cut(muvalue, nonmuvalue);
   }
 
   if(this->getTaggerType() == "XbbScoreHybrid"){
-    float p_h = gbbtuple.fat_XbbScoreHiggs->at(gbbcand.fat_index);
-    float p_qcd = gbbtuple.fat_XbbScoreQCD->at(gbbcand.fat_index);
-    float p_top = gbbtuple.fat_XbbScoreTop->at(gbbcand.fat_index);
-    float fat_pt_val = gbbtuple.fat_pt->at(gbbcand.fat_index);
+    float p_h = gbbtuple.fat_XbbScoreHiggs->at(gbbcand.ind_fj);
+    float p_qcd = gbbtuple.fat_XbbScoreQCD->at(gbbcand.ind_fj);
+    float p_top = gbbtuple.fat_XbbScoreTop->at(gbbcand.ind_fj);
+    float fat_pt_val = gbbtuple.fat_pt->at(gbbcand.ind_fj);
     return this->xbbScoreHybridCutter_->cut(p_h,p_qcd,p_top,fat_pt_val);
   }
 
   if(this->getTaggerType() == "MV2c10R20.7"){
-    float muvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.muojet_index);
-    float nonmuvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.nonmuojet_index);
+    float muvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.ind_mj);
+    float nonmuvalue= gbbtuple.trkjet_MV2c10->at(gbbcand.ind_nmj);
     return this->mV2c10Cutter_ -> cut(muvalue, nonmuvalue);
-  }    
-  
+  }
+
 
   std::cerr << "unrecognized cut/tagger type: " << this->getTaggerType() << std::endl;
   throwException();
