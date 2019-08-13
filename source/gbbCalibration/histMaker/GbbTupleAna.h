@@ -189,6 +189,7 @@ private:
   TString makeDiJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeFatJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString var);
+  TString makeFlavInclPlotName(const TString var);
 
   float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
   float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
