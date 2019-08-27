@@ -10,16 +10,44 @@ from ROOT import TCanvas,TPad,TString
 
 #----------------- variables ------------------------
 
-ListOfVariables_general = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0',  'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','fjtau21','fjtau21_PREFITPOSTTAG','mjpt_PREFITUNTAG','mjMV2c10','nmjMV2c10','mjMV2c10_PREFITPOSTTAG','nmjMV2c10_PREFITPOSTTAG','mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets']
+ListOfVariables_general = [
+  'fjpt','fjptsc','fjm',
+  'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG','fjm_PREFITPOSTTAG',
+  'mjpt','nmjpt','mjeta','nmjeta',
+  'mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG',
+  'fjD2','fjtau21','mjMV2c10','nmjMV2c10',
+  'fjD2_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG','mjMV2c10_PREFITPOSTTAG','nmjMV2c10_PREFITPOSTTAG',
+  'mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets',
+
+  'mjmeanSd0','nmjmeanSd0',
+  'mjmaxSd0_pt','nmjmaxSd0_pt','mjmaxd0_pt','nmjmaxd0_pt','mjmaxd0err_pt','nmjmaxd0err_pt',
+  'mjsubSd0_pt','nmjsubSd0_pt','mjsubd0_pt','nmjsubd0_pt','mjsubd0err_pt','nmjsubd0err_pt',
+  'mjthirdSd0_pt','nmjthirdSd0_pt','mjthirdd0_pt','nmjthirdd0_pt','mjthirdd0err_pt','nmjthirdd0err_pt',
+  'mjmeanSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG',
+  'mjmaxSd0_pt_PREFITPOSTTAG','nmjmaxSd0_pt_PREFITPOSTTAG',
+  'mjsubSd0_pt_PREFITPOSTTAG','nmjsubSd0_pt_PREFITPOSTTAG',
+  'mjthirdSd0_pt_PREFITPOSTTAG','nmjthirdSd0_pt_PREFITPOSTTAG',
+  'mjpt_PREFITUNTAG'
+  ]
 
 ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_PREFITPOSTTAG','XbbScoreTop_PREFITPOSTTAG','XbbScoreQCD_PREFITPOSTTAG','XbbScoreRatiof0_PREFITPOSTTAG','XbbScoreRatiofp2_PREFITPOSTTAG']
 
 ListOfVariables_r20p7 = []
 
-ListOfVariables_minimal = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','mjpt_PREFITUNTAG']
+ListOfVariables_minimal = [
+  'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0',
+  'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0',
+  'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG',
+  'nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG',
+  'mjpt_PREFITUNTAG'
+  ]
 
 # variables for which only the pt-inclusive plots are desired
-ListOfVariables_inclusive = ['muE','mueta','muphi','mupt','muptrel','mud0','muz0','muz0sintheta','trkptVstrkd0','trkptVstrkz0sintheta']
+ListOfVariables_inclusive = [
+  'muE','mueta','muphi','mupt',
+  'muptrel','mud0','muz0','muz0sintheta',
+  'trkptVstrkd0','trkptVstrkz0sintheta'
+  ]
 #,'mjthirdSd0himu','mjthirdSd0medmu','mjthirdSd0lowmu','mjsubSd0himu','mjsubSd0medmu','mjsubSd0lowmu','mjmaxSd0himu','mjmaxSd0medmu','mjmaxSd0lowmu','mjmeanSd0himu','mjmeanSd0medmu','mjmeanSd0lowmu','nmjthirdSd0himu','nmjthirdSd0medmu','nmjthirdSd0lowmu','nmjsubSd0himu','nmjsubSd0medmu','nmjsubSd0lowmu','nmjmaxSd0himu','nmjmaxSd0medmu','nmjmaxSd0lowmu','nmjmeanSd0himu','nmjmeanSd0medmu','nmjmeanSd0lowmu']
 
 #------------------ setup ---------------------------

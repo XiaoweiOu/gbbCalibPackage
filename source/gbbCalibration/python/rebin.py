@@ -165,6 +165,7 @@ for var in ListOfTmplVars:
   RebinHist(TString('Incl'),var)
 # Copy plot variables from infile to outfile
 for var in ListOfPlotVars:
+  CopyHists(TString('Incl'),var.Data()+'_PREFITPOSTTAG')
   if var in ListOfTmplVars:
     continue
   CopyHists(TString('Incl'),var)
@@ -176,6 +177,7 @@ for region in ListOfTJpt:
     RebinHist(region,var)
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
+    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
     if var in ListOfTmplVars:
       continue
     CopyHists(region,var)
@@ -189,6 +191,7 @@ for region in ListOfFJpt:
     RebinHist(region,var)
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
+    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
     if var in ListOfTmplVars:
       continue
     CopyHists(region,var)

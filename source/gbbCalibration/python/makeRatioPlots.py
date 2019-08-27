@@ -23,8 +23,8 @@ parser.add_argument('--pdf', action='store_true',
                     help="Store plots in a single pdf [default: separate files]")
 parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"],
                     help="Tell script how to make MC sample. Options are inclusive-only (incl), mu-filtered only (mufilt) or LL-inclusive (comb) [default: comb]")
-parser.add_argument('--year', type=str, default="2015+2016",
-    help="Year determines luminosity to normalize to [default: 2015+2016]")
+parser.add_argument('--year', type=str, default="2017",
+    help="Year determines luminosity to normalize to [default: 2017]")
 parser.add_argument('--xsec', default="xsections_r21.txt", help="Name of cross-sections file [default: xsections_r21.txt]")
 args = parser.parse_args()
 
@@ -72,9 +72,9 @@ if not dataOnly:
   elif args.year == "2015+2016" :
     Lumi = 3219.56 + 32988.1 # in /pb
   elif args.year == "2017" :
-    Lumi += 44307.4 # in /pb
+    Lumi = 44307.4 # in /pb
   elif args.year == "2018" :
-    Lumi += 58450.1 # in /pb
+    Lumi = 58450.1 # in /pb
   print("Lumi is "+str(Lumi))
 
   ListOfMCPaths = []
@@ -114,11 +114,10 @@ if dataOnly:
 # loop over all histograms in first data file
 for key in fileData1.GetListOfKeys():
   splitByFlav = True
-  if 'CutFlow' in key.GetName():
-    continue
   #if 'hDataNom' not in key.GetName(): #FIXME: hardcodes naming convention = bad
   #  continue # skip plots inclusive in flavour for now
-  if any(x in key.GetName() for x  in ['EventMu','EventAvgMu','EventPVz','PUDensity','hIncl']):
+  #if any(x in key.GetName() for x  in ['hIncl']):
+  if any(x in key.GetName() for x  in ['CutFlow','EventMu','EventAvgMu','EventPVz','PUDensity']):
     splitByFlav = False
   if splitByFlav:
     if '_Incl_' not in key.GetName():
@@ -162,6 +161,10 @@ for key in fileData1.GetListOfKeys():
       continue
 
   else: # data/mc ratio
+    histTest = histHelper.AddMCHists((key.GetName()).replace('Data','Incl'),ListOfMCPaths)
+    if histTest:
+      splitByFlav = False
+
     if splitByFlav:
       for flavour in ListOfFlavourPairs:
         ListOfPaths = ListOfMCPaths
@@ -186,6 +189,7 @@ for key in fileData1.GetListOfKeys():
         print("Cannot find hist "+histname+" in MC files")
         continue
     else: #plots inclusive in flavour
+      #histDen = histHelper.AddMCHists(key.GetName(),ListOfMCPaths)
       histDen = histHelper.AddMCHists(key.GetName(),ListOfInclusiveMCPaths)
       if histDen:
         histDen.Scale(Lumi)
@@ -199,7 +203,6 @@ for key in fileData1.GetListOfKeys():
   tagText=''
   if 'POSTTAG' in key.GetName():
     tagText='double-b-tagged'
-  histDen.Scale(histNum.Integral()/histDen.Integral())
   chi2Text=''
   if args.chi2:
     if dataOnly:
@@ -210,7 +213,6 @@ for key in fileData1.GetListOfKeys():
     #print(str(chi2))
     chi2Text='#scale[0.6]{{#chi^{{2}}/NDF = {:.2f}}}'.format(chi2)
     #print(chi2Text)
-    #exit()
   if args.norm1 or dataOnly:
     histNum.Scale(1/histNum.Integral())
     histDen.Scale(1/histDen.Integral())
