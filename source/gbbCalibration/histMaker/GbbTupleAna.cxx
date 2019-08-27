@@ -723,6 +723,13 @@ bool GbbTupleAna::Processgbb(int i_evt){
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass topo cuts");
 
+  icut++;
+  if (gbbcand.nRecoMuons > 1) {
+    if(m_Debug) std::cout<<"processgbb(): Has two reco muons"<<std::endl;
+    m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+    ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "two muons");
+  }
+
   //=========================================
   //6.) Trigjet reweighting
   //=========================================
@@ -786,6 +793,20 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //at most 1 b-tag
   if(isTagged == 0 || isTagged == -1) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
 
+  icut++;
+  if (isTagged == 1) {
+    if(m_Debug) std::cout<<"processgbb(): Has two b-tags"<<std::endl;
+    m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+    ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "2 b-tags");
+  }
+
+  icut++;
+  if (isTagged == 1 && gbbcand.nRecoMuons > 1) {
+    if(m_Debug) std::cout<<"processgbb(): Has two b-tags and two muons"<<std::endl;
+    m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+    ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "2 muons and 2 b-tags");
+  }
+
   //=========================================
   //7b.) Bhadron reweighting (temporary)
   //=========================================
@@ -830,6 +851,13 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight);
     if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand);
 
+    if (gbbcand.nRecoMuons > 1) {
+      if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight,"TWOMUON");
+      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight,"TWOMUON");
+      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight,"TWOMUON");
+      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight,"TWOMUON");
+      if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"TWOMUON");
+    }
 
     //for crosscheck: Fill Even and Odd Templates
     if(this->eve_isMC && m_doEvenOddTemplates && m_RunMode & RunMode::FILL_TEMPLATES){
@@ -959,6 +987,14 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) this->FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG");
+
+    if (gbbcand.nRecoMuons > 1) {
+      if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
+      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
+      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
+      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
+      if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG_TWOMUON");
+    }
 
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"DRditrkjetfatjet_PREFITPOSTTAG"),
      ";#Delta R(fatjet, inv. sum of track-jets);Events/0.002",
@@ -1231,6 +1267,7 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
     gbbcand.ind_nmj = 999;
     gbbcand.ind_nmj_mu = 999;
     gbbcand.nTruthMuons = 0;
+    gbbcand.nRecoMuons = 0;
     gbbcand.hasLeadTrkJets = false;
 
     if (useLeading) {
@@ -1251,11 +1288,13 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
           if (gbbcand.ind_mj == 999) {
             gbbcand.ind_mj = inds.first;
             gbbcand.ind_mj_mu = inds.second;
+            gbbcand.nRecoMuons++;
             if (this->muo_hasTruth->at(inds.second)) gbbcand.nTruthMuons++;
           // muon-jet already set, so set non-muon-jet instead
           } else if (gbbcand.ind_nmj == 999) {
             gbbcand.ind_nmj = inds.first;
             gbbcand.ind_nmj_mu = inds.second;
+            gbbcand.nRecoMuons++;
             if (this->muo_hasTruth->at(inds.second)) gbbcand.nTruthMuons++;
           }
         } else {

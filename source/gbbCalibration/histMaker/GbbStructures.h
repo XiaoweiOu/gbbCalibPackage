@@ -18,6 +18,7 @@ struct GbbCandidate{
   unsigned int ind_nmj_mu;
   bool hasLeadTrkJets;
   unsigned int nTruthMuons;
+  unsigned int nRecoMuons;
 };
 
 //
