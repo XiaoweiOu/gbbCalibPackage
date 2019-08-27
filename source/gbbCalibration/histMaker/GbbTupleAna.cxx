@@ -254,10 +254,9 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
     }
 
     tree->Add(filename.Data());
-    if (m_config->GetIsR20p7()) {
-      //if systematics tree: add nominal as friend to retrieve the truth label (temp patch)
-      if (!treename.EqualTo("FlavourTagging_Nominal")) fren->Add(filename.Data());
-    }
+    // Tracks only stored in nominal and track-systematics trees
+    // from tuple version v00-07-09
+    if (!treename.EqualTo("FlavourTagging_Nominal")) fren->Add(filename.Data());
 
     // getting filter type
     if (file1)
@@ -267,9 +266,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
       file1 = false;
     }
   }
-  if (m_config->GetIsR20p7()) {
-    tree->AddFriend(fren);
-  }
+  tree->AddFriend(fren);
 
   if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl;
 
@@ -354,7 +351,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_random = std::shared_ptr<TRandom3>(new TRandom3());
   m_random.get()->SetSeed(0);
 
-  Init(tree);
+  Init(tree, m_SysVarName);
 
 }
 
