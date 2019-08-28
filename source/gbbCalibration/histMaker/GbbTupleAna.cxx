@@ -266,7 +266,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
       file1 = false;
     }
   }
-  tree->AddFriend(fren);
+  if (!treename.EqualTo("FlavourTagging_Nominal")) tree->AddFriend(fren);
 
   if (!metahist) std::cout<<"FATAL: no metadata found!"<<std::endl;
 
