@@ -158,6 +158,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
   std::vector<float> fitpar_low=m_fitpar_low;
   std::vector<float> fitpar_high=m_fitpar_high;
 
+  m_default_var = tmpl_vars[0];
   m_fitdata=new FitData(m_inputfile,tmpl_vars);
 
   TString tmpl_data;
@@ -415,24 +416,24 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
   //std::vector<TString> regions = m_config->GetAllRegions();
 
 //FIXME: why only Nominal?
-  std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC("fjpt", sys, 0);
+  std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC(m_default_var, sys, 0);
 //NOTE: posttag_unscaled was scaled before
-  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 0);
+  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 0);
   std::vector<TH1D*> hist_pretag_mc;
   std::vector<TH1D*> hist_posttag_mc;
   if (doPseudo) {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 2, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 2, i_pseudo);
+    hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 2, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 2, i_pseudo);
   } else if (doPseudoData) {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 3, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 3, i_pseudo);
+    hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 3, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 3, i_pseudo);
   } else {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 1);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 1);
+    hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 1);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 1);
   }
 
-  TH1D* hist_pretag_data = GetRebinHistData("fjpt");
-  TH1D* hist_posttag_data = GetRebinHistData("fjpt_PREFITPOSTTAG");
+  TH1D* hist_pretag_data = GetRebinHistData(m_default_var);
+  TH1D* hist_posttag_data = GetRebinHistData(m_default_var+"_PREFITPOSTTAG");
 
   //subtract backgrounds and calculate scale factor (or data stat error)
   float N_BB_pretag_mc, N_BB_posttag_mc, N_BB_pretag_data, N_BB_posttag_data, N_total_pretag_mc, N_total_pretag_data, N_total_posttag_data;
@@ -526,8 +527,6 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
-  // The variable used here doesn't matter since we only care about nEvents in the histograms
-  TString var = m_config->GetTemplateVariables()[0];
 
   //subtract backgrounds and calculate scale factor (or data stat error)
 
@@ -544,38 +543,26 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
 
   for (TString region : regions) {
 
-    /* TString mc_name=regions[i_reg]+"_fjpt_Nom";
-    TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
-
-    if(sys.Contains("Rtrk") || sys.Contains("JER") || sys.Contains("JMR")){
-      mc_name=regions[i_reg]+"_fjpt_"+sys;
-      mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_"+sys;
-    }*/
-
-    //TString mc_name=regions[i_reg]+"_mjmaxSd0_"+sys;
-    //TString mc_name_posttag=regions[i_reg]+"_mjmaxSd0_PREFITPOSTTAG_"+sys;
-    //TString mc_name_untag=regions[i_reg]+"_mjpt_PREFITUNTAG_"+sys;
-
-    std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC(var, sys, region, 0);
-    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 0);
+    std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC(m_default_var, sys, region, 0);
+    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 0);
     std::vector<TH1D*> hist_pretag_mc;
     std::vector<TH1D*> hist_posttag_mc;
     std::vector<TH1D*> hist_untag_mc_unscaled;
     if (doPseudo) {
-      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 2, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 2, i_pseudo);
+      hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 2, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 2, i_pseudo);
     } else if (doPseudoData) {
-      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 3, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 3, i_pseudo);
+      hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 3, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 3, i_pseudo);
     } else {
-      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 1);
-      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 1);
+      hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 1);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 1);
     }
     if (sys.Contains("Nom")) hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_PREFITUNTAG", sys, region, 0);
     unsigned int nBinsX = hist_pretag_mc_unscaled[0]->GetNbinsX(); // All hists have same binning
 
-    TH1D* hist_pretag_data = GetRebinHistByRegionData(var, region);
-    TH1D* hist_posttag_data = GetRebinHistByRegionData(var+"_PREFITPOSTTAG", region);
+    TH1D* hist_pretag_data = GetRebinHistByRegionData(m_default_var, region);
+    TH1D* hist_posttag_data = GetRebinHistByRegionData(m_default_var+"_PREFITPOSTTAG", region);
 
     N_total_pretag_mc=0.;
     N_total_posttag_mc=0.;

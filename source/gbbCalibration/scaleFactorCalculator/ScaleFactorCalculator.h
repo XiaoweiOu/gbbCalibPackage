@@ -80,6 +80,9 @@ private:
   TString m_subsub_label;
   float m_rebinStatThr;
 
+  // variable to use when it doesn't matter which
+  TString m_default_var;
+
   //
   // Histograms read from the input are stored in this map
   //
