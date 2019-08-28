@@ -141,6 +141,7 @@ private:
   bool passR4CaloJetCuts(unsigned int i_jet);
   bool passR10CaloJetCuts(unsigned int i_jet);
   bool passR2TrackJetCuts(unsigned int i_jet);
+  bool passR21AssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
   bool passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet);
   bool passMuonSelection(unsigned int i_muon);
 
@@ -188,6 +189,7 @@ private:
   TString makeDiJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeFatJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString var);
+  TString makeFlavInclPlotName(const TString var);
 
   float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
   float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
@@ -214,9 +216,10 @@ private:
   //
   // Function to construct the trkjetSd0Info struct
   //
-  trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString sys="nominal", int n=3);
+  trkjetSd0Info getTrkjetAssocSd0Info(unsigned int i_jet, bool doSmeared=false, TString d0sys="nominal", TString z0sys="nominal", int n=3);
 
   float getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
+  float getz0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
   float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
 
   void getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down);

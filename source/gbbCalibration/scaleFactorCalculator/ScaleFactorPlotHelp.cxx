@@ -27,47 +27,70 @@
 #include "TH2.h"
 #include "helpers/atlasstyle/AtlasLabels.h"
 
+std::vector<TString> ScaleFactorCalculator::makeTrkJetLabels(std::vector<float> bins, TString jetName) {
+  std::vector<TString> labels;
+  labels.push_back(Form("p_{T}(%s) < %iGeV",jetName.Data(),(int)bins.front()));
+  for (unsigned int i=0; i < bins.size()-1; i++) {
+    labels.push_back(Form("p_{T}(%s) #splitline{ >%iGeV}{< %iGeV}",
+                       jetName.Data(),(int)bins[i],(int)bins[i+1]));
+  }
+  labels.push_back(Form("p_{T}(%s) > %iGeV",jetName.Data(),(int)bins.back()));
+
+  return labels;
+}
+
 void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString plot_type){
   std::cout<<"INFO: ScaleFactorCalculator::MakeCalibrationPlots(): Making Calibration Plots of type: "<<plot_type<<std::endl;
 
-  std::vector<float> mutrackjetbins = m_config->GetMuonJetPtBins();
-  std::vector<float> nonmutrackjetbins = m_config->GetNonMuJetPtBins();
+  std::vector<TString> mj_labels = makeTrkJetLabels(m_config->GetMuonJetPtBins(),"#mu-jet");
+  std::vector<TString> nmj_labels = makeTrkJetLabels(m_config->GetNonMuJetPtBins(),"non-#mu-jet");
+  std::vector<float> mj_bins, nmj_bins;
+  for (unsigned int i=0; i < mj_labels.size()+1; i++) mj_bins.push_back(i);
+  for (unsigned int i=0; i < nmj_labels.size()+1; i++) nmj_bins.push_back(i);
+  // NB: adding extra bin to provide blank space for header
+  nmj_bins.push_back(1.1*(nmj_labels.size()+1));
+
   std::vector<float> fj_bins = m_config->GetFatJetPtBins();
   std::vector<float> bin_xerr, bin_x;
 
-  for(unsigned int i_bin=0; i_bin<(fj_bins.size()-1); i_bin++){
+  // FIXME: will need to change this if/when we calibrate lower pT
+  bin_xerr.push_back(0.5*(fj_bins[0]-500));
+  bin_x.push_back(500+bin_xerr[0]);
+  for(unsigned int i_bin = 0; i_bin<fj_bins.size()-1; i_bin++){
     bin_xerr.push_back(0.5*(fj_bins[i_bin+1]-fj_bins[i_bin]));
-    bin_x.push_back(fj_bins[i_bin]+bin_xerr[i_bin]);
+    bin_x.push_back(fj_bins[i_bin]+bin_xerr[i_bin+1]);
   }
 
-  int N=bin_xerr.size();
+  int N = bin_xerr.size();
 
   std::vector<float> val_y,tot_y_err_up,tot_y_err_down,stat_y_err,val_ymc,stat_ymc_err;
 
-  if(plot_type.EqualTo("SF") || plot_type.EqualTo("2DSF")){
+  if (plot_type.Contains("SF")) {
 
-    val_y=cl_result.fnominal_sf;
-    tot_y_err_up=cl_result.ftot_err_up;
-    tot_y_err_down=cl_result.ftot_err_down;
-    stat_y_err=cl_result.fstat_err;
+    val_y = cl_result.fnominal_sf;
+    tot_y_err_up = cl_result.ftot_err_up;
+    tot_y_err_down = cl_result.ftot_err_down;
+    stat_y_err = cl_result.fstat_err;
 
-  }else if(plot_type.EqualTo("Eff") || plot_type.EqualTo("2DEffData") || plot_type.EqualTo("2DEffMC")){
+  } else if (plot_type.Contains("Eff")) {
 
-    val_y=cl_result.fnominal_data_eff;
-    tot_y_err_up=cl_result.ftot_err_data_eff_up;
-    tot_y_err_down=cl_result.ftot_err_data_eff_down;
-    stat_y_err=cl_result.fstat_err_data_eff;
+    val_y = cl_result.fnominal_data_eff;
+    tot_y_err_up = cl_result.ftot_err_data_eff_up;
+    tot_y_err_down = cl_result.ftot_err_data_eff_down;
+    stat_y_err = cl_result.fstat_err_data_eff;
 
-    val_ymc=cl_result.fnominal_mc_eff;
-    stat_ymc_err=cl_result.fstat_err_mc_eff;
+    val_ymc = cl_result.fnominal_mc_eff;
+    stat_ymc_err = cl_result.fstat_err_mc_eff;
 
+  } else {
+    std::cout << "ERROR: unrecognized plot type: " << plot_type.Data() << std::endl;
+    return;
   }
 
   TCanvas *canv=new TCanvas("canv","",800,600);
   canv->cd();
   canv->SetTickx();
   canv->SetTicky();
-
 
   TGraphAsymmErrors *SF_band_sys=0;
   TGraphErrors *SF_data_stat=0;
@@ -77,7 +100,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
   TH2D *hist_err_up=0;
   TH2D *hist_err_down=0;
 
-  if(plot_type.EqualTo("Eff") || plot_type.EqualTo("SF")){
+  if (!plot_type.Contains("2D")) {
 
     //make TGraph with bands
     SF_band_sys=new TGraphAsymmErrors(N,&(bin_x[0]),&(val_y[0]),&(bin_xerr[0]),&(bin_xerr[0]),&(tot_y_err_down[0]),&(tot_y_err_up[0]));
@@ -108,43 +131,15 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
       EFF_mc_stat->SetTitle("");
     }
 
-
     SF_band_sys->Draw("a2");
     SF_data_stat->Draw("p");
     if(plot_type.EqualTo("Eff")) EFF_mc_stat->Draw("ep");
 
-  }else if(plot_type.Contains("2D")){
+  } else if(plot_type.Contains("2D")) {
 
-    std::vector<TString> mu_labels, nonmu_labels;
-    mu_labels.push_back(Form("p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins.front()));
-    for (unsigned int i=0; i < mutrackjetbins.size()-1; i++) {
-      //mu_labels.push_back(Form("%iGeV < p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins[i],(int)mutrackjetbins[i+1]));
-      mu_labels.push_back(Form("p_{T}(#mu-jet) #splitline{ >%iGeV}{< %iGeV}",(int)mutrackjetbins[i],(int)mutrackjetbins[i+1]));
-    }
-    mu_labels.push_back(Form("p_{T}(#mu-jet) > %iGeV",(int)mutrackjetbins.back()));
-
-    nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) < %iGeV",(int)nonmutrackjetbins.front()));
-    for (unsigned int i=0; i < nonmutrackjetbins.size()-1; i++) {
-      nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) #splitline{> %iGeV}{< %iGeV}",(int)nonmutrackjetbins[i],(int)nonmutrackjetbins[i+1]));
-    }
-    nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) > %iGeV",(int)nonmutrackjetbins.back()));
-
-    mutrackjetbins.insert(mutrackjetbins.begin(),0.);
-    mutrackjetbins.push_back(2*mutrackjetbins[mutrackjetbins.size()-1]-mutrackjetbins[mutrackjetbins.size()-2]);
-
-    nonmutrackjetbins.insert(nonmutrackjetbins.begin(),0.);
-    nonmutrackjetbins.push_back(2*nonmutrackjetbins[nonmutrackjetbins.size()-1]-nonmutrackjetbins[nonmutrackjetbins.size()-2]);
-    //NB: adding extra bin to provide blank space for header
-    nonmutrackjetbins.push_back(nonmutrackjetbins[nonmutrackjetbins.size()-1]+140.);
-
-
-    for(auto &el : mutrackjetbins) std::cout<<"Muon track jet bins: "<<el<<std::endl;
-    for(auto &el : nonmutrackjetbins) std::cout<<"Non Muon track jet bins: "<<el<<std::endl;
-
-
-    hist=new TH2D("hist","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
-    hist_err_up=new TH2D("hist_err_up","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
-    hist_err_down=new TH2D("hist_err_down","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
+    hist=new TH2D("hist","",mj_bins.size()-1,&mj_bins[0],nmj_bins.size()-1,&nmj_bins[0]);
+    hist_err_up=new TH2D("hist_err_up","",mj_bins.size()-1,&mj_bins[0],nmj_bins.size()-1,&nmj_bins[0]);
+    hist_err_down=new TH2D("hist_err_down","",mj_bins.size()-1,&mj_bins[0],nmj_bins.size()-1,&nmj_bins[0]);
 
     //std::cout<<"After histogram creation"<<std::endl;
 
@@ -155,22 +150,23 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
 
     //for(auto &el : val_ymc) std::cout<<"val_ymc: "<<el<<std::endl;
 
-    for(int i=1; i<=hist->GetNbinsX(); i++){
-      for(int j=1; j<=hist->GetNbinsY()-1; j++){
-	if(plot_type.EqualTo("2DSF") || plot_type.EqualTo("2DEffData")){
-	  hist->SetBinContent(i,j,val_y[4*(i-1)+(j-1)]);
-	  hist_err_up->SetBinContent(i,j,tot_y_err_up[4*(i-1)+(j-1)]);
-	  hist_err_down->SetBinContent(i,j,tot_y_err_down[4*(i-1)+(j-1)]);
-	}else if(plot_type.EqualTo("2DEffMC")){
-	  hist->SetBinContent(i,j,val_ymc[4*(i-1)+(j-1)]);
-	  hist_err_up->SetBinContent(i,j,stat_ymc_err[4*(i-1)+(j-1)]);
-          hist_err_down->SetBinContent(i,j,stat_ymc_err[4*(i-1)+(j-1)]);
-	}
+    for(unsigned int i=0; i<mj_labels.size(); ++i){ // loop over mu jet pt bins
+      for(unsigned int j=0; j<nmj_labels.size(); ++j){ // loop over non-mu jet pt bins
+        int n_region = j+i*nmj_labels.size();
+	      if(plot_type.EqualTo("2DSF") || plot_type.EqualTo("2DEffData")){
+	        hist->SetBinContent(i+1,j+1,val_y[n_region]);
+	        hist_err_up->SetBinContent(i+1,j+1,tot_y_err_up[n_region]);
+	        hist_err_down->SetBinContent(i+1,j+1,tot_y_err_down[n_region]);
+	      }else if(plot_type.EqualTo("2DEffMC")){
+	        hist->SetBinContent(i+1,j+1,val_ymc[n_region]);
+	        hist_err_up->SetBinContent(i+1,j+1,stat_ymc_err[n_region]);
+          hist_err_down->SetBinContent(i+1,j+1,stat_ymc_err[n_region]);
+	      }
       }
     }
 
-    for(unsigned int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mu_labels[i-1]);
-    for(unsigned int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nonmu_labels[i-1]);
+    for(unsigned int i=1; i<=mj_labels.size(); i++) hist->GetXaxis()->SetBinLabel(i,mj_labels[i-1]);
+    for(unsigned int i=1; i<=nmj_labels.size(); i++) hist->GetYaxis()->SetBinLabel(i,nmj_labels[i-1]);
     hist->LabelsOption("u","Y");
 
     hist->SetLabelSize(0.05,"X");
@@ -191,7 +187,7 @@ void ScaleFactorCalculator::MakeCalibrationPlots(CalibResult cl_result,TString p
     hist->SetMarkerSize(2);
     gStyle->SetPaintTextFormat("4.2f");
     hist->Draw("COL TEXT");
-    //hist->SetAxisRange(nonmutrackjetbins[0], nonmutrackjetbins.back()*1.4,"Y");
+    //hist->SetAxisRange(nmj_bins[0], nmj_bins.back()*1.4,"Y");
     hist_err_up->SetBarOffset(0.23);
     hist_err_up->SetMarkerSize(1.3);
     //hist_err_up->SetMarkerSize(1.8);
@@ -984,29 +980,13 @@ void ScaleFactorCalculator::MakeNFPlots(){
 
   systematics.push_back("Nom"); //we want to get nominal plots too
 
-  std::vector<float> mutrackjetbins = m_config->GetMuonJetPtBins();
-  std::vector<float> nonmutrackjetbins = m_config->GetNonMuJetPtBins();
-
-  std::vector<TString> mu_labels, nonmu_labels;
-  mu_labels.push_back(Form("p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins.front()));
-  for (unsigned int i=0; i < mutrackjetbins.size()-1; i++) {
-    mu_labels.push_back(Form("%iGeV < p_{T}(#mu-jet) < %iGeV",(int)mutrackjetbins[i],(int)mutrackjetbins[i+1]));
-  }
-  mu_labels.push_back(Form("p_{T}(#mu-jet) > %iGeV",(int)mutrackjetbins.back()));
-
-  nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) < %iGeV",(int)nonmutrackjetbins.front()));
-  for (unsigned int i=0; i < nonmutrackjetbins.size()-1; i++) {
-    nonmu_labels.push_back(Form("%iGeV < p_{T}(non-#mu-jet) < %iGeV",(int)nonmutrackjetbins[i],(int)nonmutrackjetbins[i+1]));
-  }
-  nonmu_labels.push_back(Form("p_{T}(non-#mu-jet) > %iGeV",(int)nonmutrackjetbins.back()));
-
-  mutrackjetbins.insert(mutrackjetbins.begin(),0.);
-  mutrackjetbins.push_back(2*mutrackjetbins[mutrackjetbins.size()-1]-mutrackjetbins[mutrackjetbins.size()-2]);
-
-  nonmutrackjetbins.insert(nonmutrackjetbins.begin(),0.);
-  nonmutrackjetbins.push_back(2*nonmutrackjetbins[nonmutrackjetbins.size()-1]-nonmutrackjetbins[nonmutrackjetbins.size()-2]);
-  //NB: adding extra bin to provide blank space for header
-  nonmutrackjetbins.push_back(nonmutrackjetbins[nonmutrackjetbins.size()-1]+140.);
+  std::vector<TString> mj_labels = makeTrkJetLabels(m_config->GetMuonJetPtBins(),"#mu-jet");
+  std::vector<TString> nmj_labels = makeTrkJetLabels(m_config->GetNonMuJetPtBins(),"non-#mu-jet");
+  std::vector<float> mj_bins, nmj_bins;
+  for (unsigned int i=0; i < mj_labels.size()+1; i++) mj_bins.push_back(i);
+  for (unsigned int i=0; i < nmj_labels.size()+1; i++) nmj_bins.push_back(i);
+  // NB: adding extra bin to provide blank space for header
+  nmj_bins.push_back(1.1*(nmj_labels.size()+1));
 
   TCanvas * canv = 0;
   TH2D * hist = 0;
@@ -1020,22 +1000,22 @@ void ScaleFactorCalculator::MakeNFPlots(){
       canv->SetTickx();
       canv->SetTicky();
 
-      hist = new TH2D("hist","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
-      hist_err_up = new TH2D("hist_err_up","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
-      hist_err_down = new TH2D("hist_err_down","",mutrackjetbins.size()-1,&mutrackjetbins[0],nonmutrackjetbins.size()-1,&nonmutrackjetbins[0]);
+      hist = new TH2D("hist","",mj_bins.size()-1,&mj_bins[0],nmj_bins.size()-1,&nmj_bins[0]);
+      hist_err_up = new TH2D("hist_err_up","",mj_bins.size()-1,&mj_bins[0],nmj_bins.size()-1,&nmj_bins[0]);
+      hist_err_down = new TH2D("hist_err_down","",mj_bins.size()-1,&mj_bins[0],nmj_bins.size()-1,&nmj_bins[0]);
 
-      for(int i=0; i<(int)mu_labels.size(); ++i){ // loop over mu jet pt bins
-        for(int j=0; j<(int)nonmu_labels.size(); ++j){ // loop over non-mu jet pt bins
-          double par = GetFitScale(sys,regions.at(j+i*nonmu_labels.size()),flav);
-          double err = GetFitError(sys,regions.at(j+i*nonmu_labels.size()),flav);
+      for(int i=0; i<(int)mj_labels.size(); ++i){ // loop over mu jet pt bins
+        for(int j=0; j<(int)nmj_labels.size(); ++j){ // loop over non-mu jet pt bins
+          double par = GetFitScale(sys,regions.at(j+i*nmj_labels.size()),flav);
+          double err = GetFitError(sys,regions.at(j+i*nmj_labels.size()),flav);
           hist->SetBinContent(i+1,j+1,par);
           hist_err_up->SetBinContent(i+1,j+1,err);   // errors are symmetric
           hist_err_down->SetBinContent(i+1,j+1,err); //
         }
       }
 
-      for(unsigned int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mu_labels[i-1]);
-      for(unsigned int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nonmu_labels[i-1]);
+      for(unsigned int i=1; i<=3; i++) hist->GetXaxis()->SetBinLabel(i,mj_labels[i-1]);
+      for(unsigned int i=1; i<=4; i++) hist->GetYaxis()->SetBinLabel(i,nmj_labels[i-1]);
       hist->LabelsOption("u","Y");
       canv->SetLeftMargin(0.25);
       canv->SetRightMargin(0.05);

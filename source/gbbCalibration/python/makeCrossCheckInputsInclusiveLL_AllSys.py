@@ -10,16 +10,45 @@ from ROOT import TCanvas,TPad,TString
 
 #----------------- variables ------------------------
 
-ListOfVariables_general = [ 'fjpt','fjptsc','fjm', 'fjD2','mjpt','nmjpt','mjeta','nmjeta', 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0',  'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG', 'fjm_PREFITPOSTTAG', 'fjD2_PREFITPOSTTAG','mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','fjtau21','fjtau21_PREFITPOSTTAG','mjpt_PREFITUNTAG','mjMV2c10','nmjMV2c10','mjMV2c10_PREFITPOSTTAG','nmjMV2c10_PREFITPOSTTAG','mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets']
+ListOfVariables_general = [
+  'fjpt','fjptsc','fjm',
+  'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG','fjm_PREFITPOSTTAG',
+  'mjpt','nmjpt','mjeta','nmjeta',
+  'mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG',
+  'fjD2','fjtau21','mjMV2c10','nmjMV2c10',
+  'fjD2_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG','mjMV2c10_PREFITPOSTTAG','nmjMV2c10_PREFITPOSTTAG',
+  'mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets',
+
+  'mjmeanSd0','nmjmeanSd0',
+  'mjmaxSd0_pt','nmjmaxSd0_pt','mjmaxd0_pt','nmjmaxd0_pt','mjmaxd0err_pt','nmjmaxd0err_pt',
+  'mjsubSd0_pt','nmjsubSd0_pt','mjsubd0_pt','nmjsubd0_pt','mjsubd0err_pt','nmjsubd0err_pt',
+  'mjthirdSd0_pt','nmjthirdSd0_pt','mjthirdd0_pt','nmjthirdd0_pt','mjthirdd0err_pt','nmjthirdd0err_pt',
+  'mjmeanSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG',
+  'mjmaxSd0_pt_PREFITPOSTTAG','nmjmaxSd0_pt_PREFITPOSTTAG',
+  'mjsubSd0_pt_PREFITPOSTTAG','nmjsubSd0_pt_PREFITPOSTTAG',
+  'mjthirdSd0_pt_PREFITPOSTTAG','nmjthirdSd0_pt_PREFITPOSTTAG',
+  'mjpt_PREFITUNTAG'
+  ]
 
 ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_PREFITPOSTTAG','XbbScoreTop_PREFITPOSTTAG','XbbScoreQCD_PREFITPOSTTAG','XbbScoreRatiof0_PREFITPOSTTAG','XbbScoreRatiofp2_PREFITPOSTTAG']
 
 ListOfVariables_r20p7 = []
 
-ListOfVariables_minimal = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG','mjpt_PREFITUNTAG']
+ListOfVariables_minimal = [
+  'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0',
+  'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0',
+  'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG',
+  'nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG',
+  'mjpt_PREFITUNTAG'
+  ]
 
 # variables for which only the pt-inclusive plots are desired
-ListOfVariables_inclusive = ['muE','mueta','muphi','mupt','muptrel','mud0','muz0','muz0sintheta','mjthirdSd0himu','mjthirdSd0medmu','mjthirdSd0lowmu','mjsubSd0himu','mjsubSd0medmu','mjsubSd0lowmu','mjmaxSd0himu','mjmaxSd0medmu','mjmaxSd0lowmu','mjmeanSd0himu','mjmeanSd0medmu','mjmeanSd0lowmu','nmjthirdSd0himu','nmjthirdSd0medmu','nmjthirdSd0lowmu','nmjsubSd0himu','nmjsubSd0medmu','nmjsubSd0lowmu','nmjmaxSd0himu','nmjmaxSd0medmu','nmjmaxSd0lowmu','nmjmeanSd0himu','nmjmeanSd0medmu','nmjmeanSd0lowmu']
+ListOfVariables_inclusive = [
+  'muE','mueta','muphi','mupt',
+  'muptrel','mud0','muz0','muz0sintheta',
+  'trkptVstrkd0','trkptVstrkz0sintheta'
+  ]
+#,'mjthirdSd0himu','mjthirdSd0medmu','mjthirdSd0lowmu','mjsubSd0himu','mjsubSd0medmu','mjsubSd0lowmu','mjmaxSd0himu','mjmaxSd0medmu','mjmaxSd0lowmu','mjmeanSd0himu','mjmeanSd0medmu','mjmeanSd0lowmu','nmjthirdSd0himu','nmjthirdSd0medmu','nmjthirdSd0lowmu','nmjsubSd0himu','nmjsubSd0medmu','nmjsubSd0lowmu','nmjmaxSd0himu','nmjmaxSd0medmu','nmjmaxSd0lowmu','nmjmeanSd0himu','nmjmeanSd0medmu','nmjmeanSd0lowmu']
 
 #------------------ setup ---------------------------
 
@@ -80,9 +109,10 @@ elif args.mcflag == 'mufilt':
   ListOfInclusiveFlavourPairs = []
 else:
   print("Using inclusive samples for LL template only")
-  ListOfInclusiveFlavourPairs = [ 'LL' ]
+  ListOfInclusiveFlavourPairs = [ TString('LL') ]
 
 ListOfTJpt = MyConfig.GetTrkJetRegions()
+ListOfFJpt = MyConfig.GetFatJetRegions()
 ListOfTJpt.push_back(TString("Incl"))
 isR20p7 = MyConfig.GetIsR20p7()
 
@@ -112,6 +142,9 @@ ListOfDataHists = []
 for tjpt in ListOfTJpt :
     for var in ListOfVariables :
         ListOfDataHists.append( MyConfig.GetDataHistName(tjpt,var).Data() )
+for fjpt in ListOfFJpt :
+    for var in ListOfVariables :
+        ListOfDataHists.append( MyConfig.GetDataHistName(fjpt,var).Data() )
 if not args.tiny :
     for var in ListOfVariables_inclusive :
         ListOfDataHists.append( MyConfig.GetDataHistName("Incl",var).Data() )
@@ -140,6 +173,20 @@ for flavour in ListOfFlavourPairs :
       if "PREFITPOSTTAG" in var :
         for sys in ListOfWeightVariations :
           ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys.Data()).Data())
+  for fjpt in ListOfFJpt :
+    for var in ListOfVariables :
+      ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var).Data())
+      for sys in ListOfSystematics :
+        #TODO: don't hard-code these exceptions
+        if ("fjeta" in var or "fjphi" in var or "PREFITUNTAG" in var) and "Nom" not in sys.Data():
+          continue
+        ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
+      if "Sd0" in var :
+        for sys in ListOfSd0Systematics :
+          ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
+      if "PREFITPOSTTAG" in var :
+        for sys in ListOfWeightVariations :
+          ListOfHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var+"_"+sys.Data()).Data())
 
 #--------------------- output -----------------------
 
@@ -150,7 +197,7 @@ outfile=ROOT.TFile(outfilename,"RECREATE")
 for histname in ListOfHists :
   ListOfPaths = ListOfMCPaths
   for inclFlav in ListOfInclusiveFlavourPairs:
-    if inclFlav in histname:
+    if inclFlav.Data() in histname:
       ListOfPaths = ListOfInclusiveMCPaths
   histMC = histHelper.AddMCHists(histname,ListOfPaths)
   outfile.cd()
@@ -179,6 +226,7 @@ for histname in ListOfHists :
         hist_default.Write()
       else:
         print("Cannot find hist "+help_name+" in file "+path)
+      file_curr.Close()
 
 # loop over and write data histograms
 file_curr = ROOT.TFile(pathData,"READ")
@@ -197,3 +245,6 @@ for histname in ListOfDataHists :
     print("Wrote "+histname)
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
+
+file_curr.Close()
+outfile.Close()

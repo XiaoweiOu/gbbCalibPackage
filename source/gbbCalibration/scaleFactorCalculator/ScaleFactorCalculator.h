@@ -80,6 +80,9 @@ private:
   TString m_subsub_label;
   float m_rebinStatThr;
 
+  // variable to use when it doesn't matter which
+  TString m_default_var;
+
   //
   // Histograms read from the input are stored in this map
   //
@@ -112,7 +115,7 @@ private:
 
  public:
 	ScaleFactorCalculator();
-	ScaleFactorCalculator(TString &cfg_file, TString &output_dir);
+	ScaleFactorCalculator(TString &input_file, TString &cfg_file, TString &output_dir);
 	virtual ~ScaleFactorCalculator();
 
   //
@@ -191,6 +194,8 @@ private:
 
 	void SaveReweightHists(TString &var, TString &outfilename);
 	void SaveFitCorrectionFactorsSys();
+
+  std::vector<TString> makeTrkJetLabels(std::vector<float> bins, TString jetName);
 
   //
   // Functions used to parse strings from configuration files as vectors

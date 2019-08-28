@@ -23,7 +23,9 @@ ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 # All the normalization should have been done already
 # just loop over the flavours and check the ratios
 FlavFracs = {}
+FlavFracsWgt = {}
 total = 0
+totalWgt = 0
 for flav in ListOfFlavourPairs:
   histname = MyConfig.GetMCHistName(args.sys,args.bin,flav,args.var).Data()
 
@@ -34,12 +36,29 @@ for flav in ListOfFlavourPairs:
 
   FlavFracs[flav.Data()] = hist.GetEntries()
   total += hist.GetEntries()
+  FlavFracsWgt[flav.Data()] = hist.GetSumOfWeights()
+  totalWgt += hist.GetSumOfWeights()
 
-print('')
-print('{}'.format('Pre-fit Fracs'))
-print('*************')
-for flav in FlavFracs.keys():
-  print('{:2} * {:>8.3f}'.format(flav,100*FlavFracs[flav]/total))
-print('')
+histname = MyConfig.GetDataHistName(args.bin,args.var).Data()
+hist = infile.Get(histname)
+if not hist:
+  print("Hist "+histname+" not found!")
+  exit()
+data = hist.GetEntries()
+
 print('pT bin = {}'.format(args.bin))
 print('syst = {}'.format(args.sys))
+print('')
+print('{}'.format('Pre-fit Fracs'))
+print('-------------')
+for flav in FlavFracs.keys():
+  print('{:2} | {:>8.3f}'.format(flav,100*FlavFracsWgt[flav]/totalWgt))
+print('')
+print('Data/MC ratio = {}'.format(data/totalWgt))
+print('{}'.format('NEntries'))
+print('----------------')
+for flav in FlavFracs.keys():
+  print('{:2}    | {:>8.2f}'.format(flav,FlavFracs[flav]))
+print('Total | {:>8.2f}'.format(total))
+print('Data  | {:>8.0f}'.format(data))
+infile.Close()

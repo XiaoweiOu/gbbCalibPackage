@@ -30,6 +30,7 @@ public :
    Int_t           eve_num;
    Int_t           eve_run;
    Float_t         eve_mu;
+   Float_t         eve_avg_mu;
    Int_t           eve_mc_num;
    Int_t           eve_mc_chan;
    Float_t         eve_mc_w;
@@ -42,6 +43,9 @@ public :
    Int_t           eve_passGRL;
    Float_t         eve_PVz;
    Float_t         eve_nVtx2Trks;
+   Float_t         eve_beam_sigma_x;
+   Float_t         eve_beam_sigma_y;
+   Float_t         eve_beam_sigma_xy;
    Int_t           eve_HLT_j15;
    Int_t           eve_HLT_j25;
    Int_t           eve_HLT_j35;
@@ -120,6 +124,7 @@ public :
    vector<vector<float> > *trkjet_assocTrk_phi;
    vector<vector<float> > *trkjet_assocTrk_eta;
    vector<vector<float> > *trkjet_assocTrk_d0;
+   vector<vector<float> > *trkjet_assocTrk_vz;
    vector<vector<float> > *trkjet_assocTrk_z0;
    vector<vector<float> > *trkjet_assocTrk_d0_smear;
    vector<vector<float> > *trkjet_assocTrk_z0_smear;
@@ -223,6 +228,7 @@ public :
    TBranch        *b_eve_num;   //!
    TBranch        *b_eve_run;   //!
    TBranch        *b_eve_mu;   //!
+   TBranch        *b_eve_avg_mu;   //!
    TBranch        *b_eve_mc_num;   //!
    TBranch        *b_eve_mc_chan;   //!
    TBranch        *b_eve_mc_w;   //!
@@ -235,6 +241,9 @@ public :
    TBranch        *b_eve_passGRL;   //!
    TBranch        *b_eve_PVz;   //!
    TBranch        *b_eve_nVtx2Trks;   //!
+   TBranch        *b_eve_beam_sigma_x;   //!
+   TBranch        *b_eve_beam_sigma_y;   //!
+   TBranch        *b_eve_beam_sigma_xy;   //!
    TBranch        *b_eve_HLT_j15;   //!
    TBranch        *b_eve_HLT_j25;   //!
    TBranch        *b_eve_HLT_j35;   //!
@@ -313,6 +322,7 @@ public :
    TBranch        *b_trkjet_assocTrk_phi;   //!
    TBranch        *b_trkjet_assocTrk_eta;   //!
    TBranch        *b_trkjet_assocTrk_d0;   //!
+   TBranch        *b_trkjet_assocTrk_vz;   //!
    TBranch        *b_trkjet_assocTrk_z0;   //!
    TBranch        *b_trkjet_assocTrk_d0_smear;   //!
    TBranch        *b_trkjet_assocTrk_z0_smear;   //!
@@ -417,7 +427,7 @@ public :
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(TTree *tree);
+   virtual void     Init(TTree *tree, TString sysName = "Nom");
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
@@ -466,7 +476,7 @@ Long64_t TupleAna::LoadTree(Long64_t entry)
    return centry;
 }
 
-void TupleAna::Init(TTree *tree)
+void TupleAna::Init(TTree *tree, TString sysName)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -495,6 +505,7 @@ void TupleAna::Init(TTree *tree)
    trkjet_assocTrk_phi = 0;
    trkjet_assocTrk_eta = 0;
    trkjet_assocTrk_d0 = 0;
+   trkjet_assocTrk_vz = 0;
    trkjet_assocTrk_z0 = 0;
    trkjet_assocTrk_d0_smear = 0;
    trkjet_assocTrk_z0_smear = 0;
@@ -603,6 +614,7 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_num", &eve_num, &b_eve_num);
    fChain->SetBranchAddress("eve_run", &eve_run, &b_eve_run);
    fChain->SetBranchAddress("eve_mu", &eve_mu, &b_eve_mu);
+   fChain->SetBranchAddress("eve_avg_mu", &eve_avg_mu, &b_eve_avg_mu);
    fChain->SetBranchAddress("eve_mc_num", &eve_mc_num, &b_eve_mc_num);
    fChain->SetBranchAddress("eve_mc_chan", &eve_mc_chan, &b_eve_mc_chan);
    fChain->SetBranchAddress("eve_mc_w", &eve_mc_w, &b_eve_mc_w);
@@ -615,6 +627,9 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("eve_passGRL", &eve_passGRL, &b_eve_passGRL);
    fChain->SetBranchAddress("eve_PVz", &eve_PVz, &b_eve_PVz);
    fChain->SetBranchAddress("eve_nVtx2Trks", &eve_nVtx2Trks, &b_eve_nVtx2Trks);
+   fChain->SetBranchAddress("eve_beam_sigma_x", &eve_beam_sigma_x, &b_eve_beam_sigma_x);
+   fChain->SetBranchAddress("eve_beam_sigma_y", &eve_beam_sigma_y, &b_eve_beam_sigma_y);
+   fChain->SetBranchAddress("eve_beam_sigma_xy", &eve_beam_sigma_xy, &b_eve_beam_sigma_xy);
    fChain->SetBranchAddress("eve_HLT_j15", &eve_HLT_j15, &b_eve_HLT_j15);
    fChain->SetBranchAddress("eve_HLT_j25", &eve_HLT_j25, &b_eve_HLT_j25);
    fChain->SetBranchAddress("eve_HLT_j35", &eve_HLT_j35, &b_eve_HLT_j35);
@@ -691,32 +706,63 @@ void TupleAna::Init(TTree *tree)
    fChain->SetBranchAddress("truthjet_phi", &truthjet_phi, &b_truthjet_phi);
    fChain->SetBranchAddress("truthjet_eta", &truthjet_eta, &b_truthjet_eta);
    fChain->SetBranchAddress("truthjet_E", &truthjet_E, &b_truthjet_E);
-   fChain->SetBranchAddress("trkjet_assocTrk_pt", &trkjet_assocTrk_pt, &b_trkjet_assocTrk_pt);
-   fChain->SetBranchAddress("trkjet_assocTrk_phi", &trkjet_assocTrk_phi, &b_trkjet_assocTrk_phi);
-   fChain->SetBranchAddress("trkjet_assocTrk_eta", &trkjet_assocTrk_eta, &b_trkjet_assocTrk_eta);
-   fChain->SetBranchAddress("trkjet_assocTrk_d0", &trkjet_assocTrk_d0, &b_trkjet_assocTrk_d0);
-   fChain->SetBranchAddress("trkjet_assocTrk_z0", &trkjet_assocTrk_z0, &b_trkjet_assocTrk_z0);
-   fChain->SetBranchAddress("trkjet_assocTrk_d0_smear", &trkjet_assocTrk_d0_smear, &b_trkjet_assocTrk_d0_smear);
-   fChain->SetBranchAddress("trkjet_assocTrk_z0_smear", &trkjet_assocTrk_z0_smear, &b_trkjet_assocTrk_z0_smear);
-   fChain->SetBranchAddress("trkjet_assocTrk_d0_smear_up", &trkjet_assocTrk_d0_smear_up, &b_trkjet_assocTrk_d0_smear_up);
-   fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_up", &trkjet_assocTrk_z0_smear_up, &b_trkjet_assocTrk_z0_smear_up);
-   fChain->SetBranchAddress("trkjet_assocTrk_d0_smear_down", &trkjet_assocTrk_d0_smear_down, &b_trkjet_assocTrk_d0_smear_down);
-   fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_down", &trkjet_assocTrk_z0_smear_down, &b_trkjet_assocTrk_z0_smear_down);
-   fChain->SetBranchAddress("trkjet_assocTrk_theta", &trkjet_assocTrk_theta, &b_trkjet_assocTrk_theta);
-   fChain->SetBranchAddress("trkjet_assocTrk_phi0", &trkjet_assocTrk_phi0, &b_trkjet_assocTrk_phi0);
-   fChain->SetBranchAddress("trkjet_assocTrk_qoverp", &trkjet_assocTrk_qoverp, &b_trkjet_assocTrk_qoverp);
-   fChain->SetBranchAddress("trkjet_assocTrk_d0err", &trkjet_assocTrk_d0err, &b_trkjet_assocTrk_d0err);
-   fChain->SetBranchAddress("trkjet_assocTrk_z0err", &trkjet_assocTrk_z0err, &b_trkjet_assocTrk_z0err);
-   fChain->SetBranchAddress("trkjet_assocTrk_thetaerr", &trkjet_assocTrk_thetaerr, &b_trkjet_assocTrk_thetaerr);
-   fChain->SetBranchAddress("trkjet_assocTrk_phi0err", &trkjet_assocTrk_phi0err, &b_trkjet_assocTrk_phi0err);
-   fChain->SetBranchAddress("trkjet_assocTrk_nPixelHits", &trkjet_assocTrk_nPixelHits, &b_trkjet_assocTrk_nPixelHits);
-   fChain->SetBranchAddress("trkjet_assocTrk_nSCTHits", &trkjet_assocTrk_nSCTHits, &b_trkjet_assocTrk_nSCTHits);
-   fChain->SetBranchAddress("trkjet_assocTrk_nIBLHits", &trkjet_assocTrk_nIBLHits, &b_trkjet_assocTrk_nIBLHits);
-   fChain->SetBranchAddress("trkjet_assocTrk_expectIBLHit", &trkjet_assocTrk_expectIBLHit, &b_trkjet_assocTrk_expectIBLHit);
-   fChain->SetBranchAddress("trkjet_assocTrk_nBLayerHits", &trkjet_assocTrk_nBLayerHits, &b_trkjet_assocTrk_nBLayerHits);
-   fChain->SetBranchAddress("trkjet_assocTrk_expectBLayerHit", &trkjet_assocTrk_expectBLayerHit, &b_trkjet_assocTrk_expectBLayerHit);
-   fChain->SetBranchAddress("trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
-   fChain->SetBranchAddress("trkjet_assocTrk_isTightPrimary", &trkjet_assocTrk_isTightPrimary, &b_trkjet_assocTrk_isTightPrimary);
+   if (sysName == "Nom" || sysName.Contains("TRK")) {
+     fChain->SetBranchAddress("trkjet_assocTrk_pt", &trkjet_assocTrk_pt, &b_trkjet_assocTrk_pt);
+     fChain->SetBranchAddress("trkjet_assocTrk_phi", &trkjet_assocTrk_phi, &b_trkjet_assocTrk_phi);
+     fChain->SetBranchAddress("trkjet_assocTrk_eta", &trkjet_assocTrk_eta, &b_trkjet_assocTrk_eta);
+     fChain->SetBranchAddress("trkjet_assocTrk_d0", &trkjet_assocTrk_d0, &b_trkjet_assocTrk_d0);
+     fChain->SetBranchAddress("trkjet_assocTrk_vz", &trkjet_assocTrk_vz, &b_trkjet_assocTrk_vz);
+     fChain->SetBranchAddress("trkjet_assocTrk_z0", &trkjet_assocTrk_z0, &b_trkjet_assocTrk_z0);
+     fChain->SetBranchAddress("trkjet_assocTrk_d0_smear", &trkjet_assocTrk_d0_smear, &b_trkjet_assocTrk_d0_smear);
+     fChain->SetBranchAddress("trkjet_assocTrk_z0_smear", &trkjet_assocTrk_z0_smear, &b_trkjet_assocTrk_z0_smear);
+     fChain->SetBranchAddress("trkjet_assocTrk_d0_smear_up", &trkjet_assocTrk_d0_smear_up, &b_trkjet_assocTrk_d0_smear_up);
+     fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_up", &trkjet_assocTrk_z0_smear_up, &b_trkjet_assocTrk_z0_smear_up);
+     fChain->SetBranchAddress("trkjet_assocTrk_d0_smear_down", &trkjet_assocTrk_d0_smear_down, &b_trkjet_assocTrk_d0_smear_down);
+     fChain->SetBranchAddress("trkjet_assocTrk_z0_smear_down", &trkjet_assocTrk_z0_smear_down, &b_trkjet_assocTrk_z0_smear_down);
+     fChain->SetBranchAddress("trkjet_assocTrk_theta", &trkjet_assocTrk_theta, &b_trkjet_assocTrk_theta);
+     fChain->SetBranchAddress("trkjet_assocTrk_phi0", &trkjet_assocTrk_phi0, &b_trkjet_assocTrk_phi0);
+     fChain->SetBranchAddress("trkjet_assocTrk_qoverp", &trkjet_assocTrk_qoverp, &b_trkjet_assocTrk_qoverp);
+     fChain->SetBranchAddress("trkjet_assocTrk_d0err", &trkjet_assocTrk_d0err, &b_trkjet_assocTrk_d0err);
+     fChain->SetBranchAddress("trkjet_assocTrk_z0err", &trkjet_assocTrk_z0err, &b_trkjet_assocTrk_z0err);
+     fChain->SetBranchAddress("trkjet_assocTrk_thetaerr", &trkjet_assocTrk_thetaerr, &b_trkjet_assocTrk_thetaerr);
+     fChain->SetBranchAddress("trkjet_assocTrk_phi0err", &trkjet_assocTrk_phi0err, &b_trkjet_assocTrk_phi0err);
+     fChain->SetBranchAddress("trkjet_assocTrk_nPixelHits", &trkjet_assocTrk_nPixelHits, &b_trkjet_assocTrk_nPixelHits);
+     fChain->SetBranchAddress("trkjet_assocTrk_nSCTHits", &trkjet_assocTrk_nSCTHits, &b_trkjet_assocTrk_nSCTHits);
+     fChain->SetBranchAddress("trkjet_assocTrk_nIBLHits", &trkjet_assocTrk_nIBLHits, &b_trkjet_assocTrk_nIBLHits);
+     fChain->SetBranchAddress("trkjet_assocTrk_expectIBLHit", &trkjet_assocTrk_expectIBLHit, &b_trkjet_assocTrk_expectIBLHit);
+     fChain->SetBranchAddress("trkjet_assocTrk_nBLayerHits", &trkjet_assocTrk_nBLayerHits, &b_trkjet_assocTrk_nBLayerHits);
+     fChain->SetBranchAddress("trkjet_assocTrk_expectBLayerHit", &trkjet_assocTrk_expectBLayerHit, &b_trkjet_assocTrk_expectBLayerHit);
+     fChain->SetBranchAddress("trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
+     fChain->SetBranchAddress("trkjet_assocTrk_isTightPrimary", &trkjet_assocTrk_isTightPrimary, &b_trkjet_assocTrk_isTightPrimary);
+   } else {
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_pt", &trkjet_assocTrk_pt, &b_trkjet_assocTrk_pt);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_phi", &trkjet_assocTrk_phi, &b_trkjet_assocTrk_phi);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_eta", &trkjet_assocTrk_eta, &b_trkjet_assocTrk_eta);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_d0", &trkjet_assocTrk_d0, &b_trkjet_assocTrk_d0);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_vz", &trkjet_assocTrk_vz, &b_trkjet_assocTrk_vz);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_z0", &trkjet_assocTrk_z0, &b_trkjet_assocTrk_z0);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_d0_smear", &trkjet_assocTrk_d0_smear, &b_trkjet_assocTrk_d0_smear);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_z0_smear", &trkjet_assocTrk_z0_smear, &b_trkjet_assocTrk_z0_smear);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_d0_smear_up", &trkjet_assocTrk_d0_smear_up, &b_trkjet_assocTrk_d0_smear_up);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_z0_smear_up", &trkjet_assocTrk_z0_smear_up, &b_trkjet_assocTrk_z0_smear_up);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_d0_smear_down", &trkjet_assocTrk_d0_smear_down, &b_trkjet_assocTrk_d0_smear_down);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_z0_smear_down", &trkjet_assocTrk_z0_smear_down, &b_trkjet_assocTrk_z0_smear_down);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_theta", &trkjet_assocTrk_theta, &b_trkjet_assocTrk_theta);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_phi0", &trkjet_assocTrk_phi0, &b_trkjet_assocTrk_phi0);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_qoverp", &trkjet_assocTrk_qoverp, &b_trkjet_assocTrk_qoverp);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_d0err", &trkjet_assocTrk_d0err, &b_trkjet_assocTrk_d0err);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_z0err", &trkjet_assocTrk_z0err, &b_trkjet_assocTrk_z0err);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_thetaerr", &trkjet_assocTrk_thetaerr, &b_trkjet_assocTrk_thetaerr);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_phi0err", &trkjet_assocTrk_phi0err, &b_trkjet_assocTrk_phi0err);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_nPixelHits", &trkjet_assocTrk_nPixelHits, &b_trkjet_assocTrk_nPixelHits);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_nSCTHits", &trkjet_assocTrk_nSCTHits, &b_trkjet_assocTrk_nSCTHits);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_nIBLHits", &trkjet_assocTrk_nIBLHits, &b_trkjet_assocTrk_nIBLHits);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_expectIBLHit", &trkjet_assocTrk_expectIBLHit, &b_trkjet_assocTrk_expectIBLHit);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_nBLayerHits", &trkjet_assocTrk_nBLayerHits, &b_trkjet_assocTrk_nBLayerHits);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_expectBLayerHit", &trkjet_assocTrk_expectBLayerHit, &b_trkjet_assocTrk_expectBLayerHit);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
+     fChain->SetBranchAddress("FlavourTagging_Nominal.trkjet_assocTrk_isTightPrimary", &trkjet_assocTrk_isTightPrimary, &b_trkjet_assocTrk_isTightPrimary);
+   }
    fChain->SetBranchAddress("fat_E", &fat_E, &b_fat_E);
    fChain->SetBranchAddress("fat_pt", &fat_pt, &b_fat_pt);
    fChain->SetBranchAddress("fat_phi", &fat_phi, &b_fat_phi);

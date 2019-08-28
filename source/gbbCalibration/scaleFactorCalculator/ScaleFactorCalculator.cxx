@@ -59,9 +59,6 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
     abort();
   }
 
-  m_inputfile   = config->GetValue("InputFile","./data/inputs.root");
-  std::cout<<"InputFile: "<<m_inputfile<<std::endl;
-
   m_Debug = config->GetValue("doDebug",false);
   std::cout<<"doDebug: "<<m_Debug<<std::endl;
 
@@ -110,7 +107,8 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_plot_label = config->GetValue("PlotLabel","Internal");
   std::cout<<"PlotLabel: "<<m_plot_label<<std::endl;
 
-  m_sub_label = config->GetValue("SubLabel","#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
+  //TODO: make lumi label easily configurable
+  m_sub_label = config->GetValue("SubLabel","#sqrt{s} = 13 TeV");//, 36.1 fb^{-1}");
   std::cout<<"SubLabel: "<<m_sub_label<<std::endl;
 
   m_subsub_label = config->GetValue("SubSubLabel","#bf{g #rightarrow bb calibration}");
@@ -123,7 +121,7 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   std::cout<<"=============================================="<<std::endl;
 }
 
-ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_dir){
+ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_file, TString &output_dir){
 
   gStyle->SetOptStat(0);
   TGaxis::SetMaxDigits(4);
@@ -134,6 +132,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   //std::cout<<"| Brumm... "<<std::endl;
   std::cout<<"==================================================="<<std::endl;
 
+  m_inputfile = input_file;
   m_outdir = output_dir;
 
   ReadConfig(cfg_file);
@@ -159,6 +158,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
   std::vector<float> fitpar_low=m_fitpar_low;
   std::vector<float> fitpar_high=m_fitpar_high;
 
+  m_default_var = tmpl_vars[0];
   m_fitdata=new FitData(m_inputfile,tmpl_vars);
 
   TString tmpl_data;
@@ -383,16 +383,16 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &cfg_file, TString &output_
 
   if(m_doCalibSequence){
 
-    CalibResult c_res=this->CalculateScaleFactorsAndErrors(true);
-    this->MakeCalibrationPlots(c_res,"2DSF");
-    this->MakeCalibrationPlots(c_res,"2DEffMC");
-    this->MakeCalibrationPlots(c_res,"2DEffData");
-
     this->SaveFitCorrectionFactorsSys();
-    /*CalibResult c_res_1d=this->CalculateScaleFactorsAndErrors(false);
-    this->MakeCalibrationPlots(c_res_1d,"SF");
-    this->MakeCalibrationPlots(c_res_1d,"Eff");
-    */
+    CalibResult c_res=this->CalculateScaleFactorsAndErrors(true);
+    if (m_doFitInFatJetPtBins) {
+      MakeCalibrationPlots(c_res,"SF");
+      MakeCalibrationPlots(c_res,"Eff");
+    } else {
+      MakeCalibrationPlots(c_res,"2DSF");
+      MakeCalibrationPlots(c_res,"2DEffMC");
+      MakeCalibrationPlots(c_res,"2DEffData");
+    }
   }
 
   /*  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
@@ -416,24 +416,24 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
   //std::vector<TString> regions = m_config->GetAllRegions();
 
 //FIXME: why only Nominal?
-  std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC("fjpt", sys, 0);
+  std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC(m_default_var, sys, 0);
 //NOTE: posttag_unscaled was scaled before
-  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 0);
+  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 0);
   std::vector<TH1D*> hist_pretag_mc;
   std::vector<TH1D*> hist_posttag_mc;
   if (doPseudo) {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 2, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 2, i_pseudo);
+    hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 2, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 2, i_pseudo);
   } else if (doPseudoData) {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 3, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 3, i_pseudo);
+    hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 3, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 3, i_pseudo);
   } else {
-    hist_pretag_mc = GetRebinHistsMC("fjpt", sys, 1);
-    hist_posttag_mc = GetRebinHistsMC("fjpt_PREFITPOSTTAG", sys, 1);
+    hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 1);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 1);
   }
 
-  TH1D* hist_pretag_data = GetRebinHistData("fjpt");
-  TH1D* hist_posttag_data = GetRebinHistData("fjpt_PREFITPOSTTAG");
+  TH1D* hist_pretag_data = GetRebinHistData(m_default_var);
+  TH1D* hist_posttag_data = GetRebinHistData(m_default_var+"_PREFITPOSTTAG");
 
   //subtract backgrounds and calculate scale factor (or data stat error)
   float N_BB_pretag_mc, N_BB_posttag_mc, N_BB_pretag_data, N_BB_posttag_data, N_total_pretag_mc, N_total_pretag_data, N_total_posttag_data;
@@ -527,8 +527,6 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
-  // The variable used here doesn't matter since we only care about nEvents in the histograms
-  TString var = m_config->GetTemplateVariables()[0];
 
   //subtract backgrounds and calculate scale factor (or data stat error)
 
@@ -545,38 +543,26 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
 
   for (TString region : regions) {
 
-    /* TString mc_name=regions[i_reg]+"_fjpt_Nom";
-    TString mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_Nom";
-
-    if(sys.Contains("Rtrk") || sys.Contains("JER") || sys.Contains("JMR")){
-      mc_name=regions[i_reg]+"_fjpt_"+sys;
-      mc_name_posttag=regions[i_reg]+"_fjpt_PREFITPOSTTAG_"+sys;
-    }*/
-
-    //TString mc_name=regions[i_reg]+"_mjmaxSd0_"+sys;
-    //TString mc_name_posttag=regions[i_reg]+"_mjmaxSd0_PREFITPOSTTAG_"+sys;
-    //TString mc_name_untag=regions[i_reg]+"_mjpt_PREFITUNTAG_"+sys;
-
-    std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC(var, sys, region, 0);
-    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 0);
+    std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC(m_default_var, sys, region, 0);
+    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 0);
     std::vector<TH1D*> hist_pretag_mc;
     std::vector<TH1D*> hist_posttag_mc;
     std::vector<TH1D*> hist_untag_mc_unscaled;
     if (doPseudo) {
-      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 2, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 2, i_pseudo);
+      hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 2, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 2, i_pseudo);
     } else if (doPseudoData) {
-      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 3, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 3, i_pseudo);
+      hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 3, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 3, i_pseudo);
     } else {
-      hist_pretag_mc = GetRebinHistsByRegionMC(var, sys, region, 1);
-      hist_posttag_mc = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG", sys, region, 1);
+      hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 1);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 1);
     }
     if (sys.Contains("Nom")) hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_PREFITUNTAG", sys, region, 0);
     unsigned int nBinsX = hist_pretag_mc_unscaled[0]->GetNbinsX(); // All hists have same binning
 
-    TH1D* hist_pretag_data = GetRebinHistByRegionData(var, region);
-    TH1D* hist_posttag_data = GetRebinHistByRegionData(var+"_PREFITPOSTTAG", region);
+    TH1D* hist_pretag_data = GetRebinHistByRegionData(m_default_var, region);
+    TH1D* hist_posttag_data = GetRebinHistByRegionData(m_default_var+"_PREFITPOSTTAG", region);
 
     N_total_pretag_mc=0.;
     N_total_posttag_mc=0.;
@@ -710,8 +696,9 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   std::vector<float> mc_eff_nom, mc_eff_stat_err;
 
   std::vector<float> fj_bins;
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   if(doByRegion){
-    int size = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions().size() : m_config->GetTrkJetRegions().size();
+    int size = regions.size();
     for(int i=0; i<size; i++) fj_bins.push_back((float)i);
     fj_bins.push_back(fj_bins.back()+1.);
   }else fj_bins=m_config->GetFatJetPtBins();
@@ -807,8 +794,8 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
       }
 
 //FIXME
-      error_map_up[m_config->GetTrkJetRegions()[i_bin]].push_back(TMath::Sqrt(err_sq_up[i_bin]));
-      error_map_down[m_config->GetTrkJetRegions()[i_bin]].push_back(TMath::Sqrt(err_sq_down[i_bin]));
+      error_map_up[regions[i_bin]].push_back(TMath::Sqrt(err_sq_up[i_bin]));
+      error_map_down[regions[i_bin]].push_back(TMath::Sqrt(err_sq_down[i_bin]));
 
       /*std::cout<<"After: "<<systematics[i_sys]<<std::endl;
       std::cout<<"Up is now "<<TMath::Sqrt(data_eff_err_sq_up[i_bin])<<std::endl;
@@ -878,7 +865,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   //loop over all fits with pseudo-templates
 
 //FIXME
-  for(unsigned int i=0; i<m_pseudo_fit_params[m_config->GetTrkJetRegions()[0]].size(); i++){
+  for(unsigned int i=0; i<m_pseudo_fit_params[regions[0]].size(); i++){
 
     //std::cout<<"Templates Pseudo Experiment"<<i<<std::endl;
 
@@ -901,7 +888,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   }
 
   //loop over all fits with pseudo-data
-  for(unsigned int i=0; i<m_pseudo_fit_params_Data[m_config->GetTrkJetRegions()[0]].size(); i++){
+  for(unsigned int i=0; i<m_pseudo_fit_params_Data[regions[0]].size(); i++){
 
     if(!(i%100)) std::cout<<"Calculate ScaleFactors Data Fit Uncertainty: Fit "<<i<<std::endl;
 
@@ -937,6 +924,13 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
     for(unsigned int i_p=0; i_p<PseudoTemplateEfficiencies_Data[i_bin].size(); i_p++) help_pseudo_eff.Fill(PseudoTemplateEfficiencies_Data[i_bin][i_p]);
     for(unsigned int i_p=0; i_p<PseudoDataScaleFactors[i_bin].size(); i_p++) help_pseudodata.Fill(PseudoDataScaleFactors[i_bin][i_p]);
     for(unsigned int i_p=0; i_p<PseudoDataEfficiencies_Data[i_bin].size(); i_p++) help_pseudodata_eff.Fill(PseudoDataEfficiencies_Data[i_bin][i_p]);
+
+    if (m_Debug) {
+      std::cout << "PRINTING PSEUDODATA FIT HISTS" << std::endl;
+      for (auto bin=0; bin <= help_pseudo.GetNbinsX(); bin++) {
+        std::cout << "bin " << bin << " " << help_pseudo.GetBinContent(bin) << std::endl;
+      }
+    }
 
     help_pseudo.Fit("gaus");
     help_pseudo_eff.Fit("gaus");
