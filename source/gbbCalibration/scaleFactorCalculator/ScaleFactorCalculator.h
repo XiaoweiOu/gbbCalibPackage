@@ -192,6 +192,8 @@ private:
 	void SaveReweightHists(TString &var, TString &outfilename);
 	void SaveFitCorrectionFactorsSys();
 
+  std::vector<TString> makeTrkJetLabels(std::vector<float> bins, TString jetName);
+
   //
   // Functions used to parse strings from configuration files as vectors
   //

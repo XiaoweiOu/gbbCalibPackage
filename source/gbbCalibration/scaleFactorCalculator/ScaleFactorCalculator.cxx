@@ -107,7 +107,8 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_plot_label = config->GetValue("PlotLabel","Internal");
   std::cout<<"PlotLabel: "<<m_plot_label<<std::endl;
 
-  m_sub_label = config->GetValue("SubLabel","#sqrt{s} = 13 TeV, 36.1 fb^{-1}");
+  //TODO: make lumi label easily configurable
+  m_sub_label = config->GetValue("SubLabel","#sqrt{s} = 13 TeV");//, 36.1 fb^{-1}");
   std::cout<<"SubLabel: "<<m_sub_label<<std::endl;
 
   m_subsub_label = config->GetValue("SubSubLabel","#bf{g #rightarrow bb calibration}");
@@ -381,16 +382,16 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
 
   if(m_doCalibSequence){
 
-    CalibResult c_res=this->CalculateScaleFactorsAndErrors(true);
-    this->MakeCalibrationPlots(c_res,"2DSF");
-    this->MakeCalibrationPlots(c_res,"2DEffMC");
-    this->MakeCalibrationPlots(c_res,"2DEffData");
-
     this->SaveFitCorrectionFactorsSys();
-    /*CalibResult c_res_1d=this->CalculateScaleFactorsAndErrors(false);
-    this->MakeCalibrationPlots(c_res_1d,"SF");
-    this->MakeCalibrationPlots(c_res_1d,"Eff");
-    */
+    CalibResult c_res=this->CalculateScaleFactorsAndErrors(true);
+    if (m_doFitInFatJetPtBins) {
+      MakeCalibrationPlots(c_res,"SF");
+      MakeCalibrationPlots(c_res,"Eff");
+    } else {
+      MakeCalibrationPlots(c_res,"2DSF");
+      MakeCalibrationPlots(c_res,"2DEffMC");
+      MakeCalibrationPlots(c_res,"2DEffData");
+    }
   }
 
   /*  for(unsigned int i_reg=0; i_reg<regions.size(); i_reg++){
@@ -708,8 +709,9 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   std::vector<float> mc_eff_nom, mc_eff_stat_err;
 
   std::vector<float> fj_bins;
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   if(doByRegion){
-    int size = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions().size() : m_config->GetTrkJetRegions().size();
+    int size = regions.size();
     for(int i=0; i<size; i++) fj_bins.push_back((float)i);
     fj_bins.push_back(fj_bins.back()+1.);
   }else fj_bins=m_config->GetFatJetPtBins();
@@ -805,8 +807,8 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
       }
 
 //FIXME
-      error_map_up[m_config->GetTrkJetRegions()[i_bin]].push_back(TMath::Sqrt(err_sq_up[i_bin]));
-      error_map_down[m_config->GetTrkJetRegions()[i_bin]].push_back(TMath::Sqrt(err_sq_down[i_bin]));
+      error_map_up[regions[i_bin]].push_back(TMath::Sqrt(err_sq_up[i_bin]));
+      error_map_down[regions[i_bin]].push_back(TMath::Sqrt(err_sq_down[i_bin]));
 
       /*std::cout<<"After: "<<systematics[i_sys]<<std::endl;
       std::cout<<"Up is now "<<TMath::Sqrt(data_eff_err_sq_up[i_bin])<<std::endl;
@@ -876,7 +878,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   //loop over all fits with pseudo-templates
 
 //FIXME
-  for(unsigned int i=0; i<m_pseudo_fit_params[m_config->GetTrkJetRegions()[0]].size(); i++){
+  for(unsigned int i=0; i<m_pseudo_fit_params[regions[0]].size(); i++){
 
     //std::cout<<"Templates Pseudo Experiment"<<i<<std::endl;
 
@@ -899,7 +901,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   }
 
   //loop over all fits with pseudo-data
-  for(unsigned int i=0; i<m_pseudo_fit_params_Data[m_config->GetTrkJetRegions()[0]].size(); i++){
+  for(unsigned int i=0; i<m_pseudo_fit_params_Data[regions[0]].size(); i++){
 
     if(!(i%100)) std::cout<<"Calculate ScaleFactors Data Fit Uncertainty: Fit "<<i<<std::endl;
 
@@ -935,6 +937,13 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
     for(unsigned int i_p=0; i_p<PseudoTemplateEfficiencies_Data[i_bin].size(); i_p++) help_pseudo_eff.Fill(PseudoTemplateEfficiencies_Data[i_bin][i_p]);
     for(unsigned int i_p=0; i_p<PseudoDataScaleFactors[i_bin].size(); i_p++) help_pseudodata.Fill(PseudoDataScaleFactors[i_bin][i_p]);
     for(unsigned int i_p=0; i_p<PseudoDataEfficiencies_Data[i_bin].size(); i_p++) help_pseudodata_eff.Fill(PseudoDataEfficiencies_Data[i_bin][i_p]);
+
+    if (m_Debug) {
+      std::cout << "PRINTING PSEUDODATA FIT HISTS" << std::endl;
+      for (auto bin=0; bin <= help_pseudo.GetNbinsX(); bin++) {
+        std::cout << "bin " << bin << " " << help_pseudo.GetBinContent(bin) << std::endl;
+      }
+    }
 
     help_pseudo.Fit("gaus");
     help_pseudo_eff.Fit("gaus");
