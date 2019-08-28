@@ -1235,7 +1235,7 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
     if (this->fat_assocTrkjet_ind->at(i_fj).size() < 2) continue;
 
     // pairs contain trackjet index and associated muon index (or 999 if no muon)
-    std::vector<std::pair<unsigned int,unsigned int>> trkjet_info;
+    std::vector<std::pair<unsigned int,std::vector<unsigned int>>> trkjet_info;
 
     for (unsigned int i_tj=0; i_tj < this->fat_assocTrkjet_ind->at(i_fj).size(); i_tj++) {
       // find location of associated trackjet in trackjet vector
@@ -1246,15 +1246,14 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
       // trackjet pt-eta cuts
       if(!(this->passR2TrackJetCuts(ind_tj))) continue;
 
-      int ind_good_mu = 999;
+      std::vector<unsigned int> ind_mus;
       for (int i_mu=0; i_mu < this->trkjet_assocMuon_n->at(ind_tj); i_mu++) {
         int ind_mu = this->trkjet_assocMuon_index->at(ind_tj).at(i_mu);
         if (passMuonSelection(ind_mu)) {
-          ind_good_mu = ind_mu;
-          break;
+          ind_mus.push_back(ind_mu);
         }
       }
-      trkjet_info.push_back(std::make_pair(ind_tj,ind_good_mu));
+      trkjet_info.push_back(std::make_pair(ind_tj,ind_mus));
     }
 
     // need 2 trackjets that pass selection
@@ -1272,30 +1271,48 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
 
     if (useLeading) {
       gbbcand.ind_mj = trkjet_info[0].first;
-      gbbcand.ind_mj_mu = trkjet_info[0].second;
-      gbbcand.ind_nmj = trkjet_info[1].first;
-      gbbcand.ind_nmj_mu = trkjet_info[1].second;
-      if (trkjet_info[0].second != 999) {
-        if (this->muo_hasTruth->at(trkjet_info[0].second)) gbbcand.nTruthMuons++;
+      gbbcand.ind_mj_mu = trkjet_info[0].second.size() > 0
+                           ? trkjet_info[0].second.at(0) : 999;
+      for (unsigned int ind_mu : trkjet_info[0].second) {
+        if (this->muo_hasTruth->at(ind_mu)) {
+          gbbcand.nTruthMuons++;
+          break; // only care if there is >1 truth muon per trkjet
+        }
       }
-      if (trkjet_info[1].second != 999) {
-        if (this->muo_hasTruth->at(trkjet_info[1].second)) gbbcand.nTruthMuons++;
+      gbbcand.ind_nmj = trkjet_info[1].first;
+      gbbcand.ind_nmj_mu = trkjet_info[1].second.size() > 0
+                            ? trkjet_info[1].second.at(0) : 999;
+      for (unsigned int ind_mu : trkjet_info[1].second) {
+        if (this->muo_hasTruth->at(ind_mu)) {
+          gbbcand.nTruthMuons++;
+          break; // only care if there is >1 truth muon per trkjet
+        }
       }
     } else {
-      for (std::pair<unsigned int,unsigned int> inds : trkjet_info) {
+      for (std::pair<unsigned int,std::vector<unsigned int>> inds : trkjet_info) {
         // if trackjet has muon then try to set muon-jet indices
-        if (inds.second != 999) {
+        if (inds.second.size() != 0) {
           if (gbbcand.ind_mj == 999) {
             gbbcand.ind_mj = inds.first;
-            gbbcand.ind_mj_mu = inds.second;
+            gbbcand.ind_mj_mu = inds.second.at(0);
             gbbcand.nRecoMuons++;
-            if (this->muo_hasTruth->at(inds.second)) gbbcand.nTruthMuons++;
+            for (unsigned int ind_mu : inds.second) {
+              if (this->muo_hasTruth->at(ind_mu)) {
+                gbbcand.nTruthMuons++;
+                break; // only care if there is >1 truth muon per trkjet
+              }
+            }
           // muon-jet already set, so set non-muon-jet instead
           } else if (gbbcand.ind_nmj == 999) {
             gbbcand.ind_nmj = inds.first;
-            gbbcand.ind_nmj_mu = inds.second;
+            gbbcand.ind_nmj_mu = inds.second.at(0);
             gbbcand.nRecoMuons++;
-            if (this->muo_hasTruth->at(inds.second)) gbbcand.nTruthMuons++;
+            for (unsigned int ind_mu : inds.second) {
+              if (this->muo_hasTruth->at(ind_mu)) {
+                gbbcand.nTruthMuons++;
+                break; // only care if there is >1 truth muon per trkjet
+              }
+            }
           }
         } else {
           if (gbbcand.ind_nmj == 999) {
