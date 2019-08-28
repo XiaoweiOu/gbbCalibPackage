@@ -107,7 +107,8 @@ private:
   FlavourFracCorrector* m_FlavFracCorrector;
 
   bool m_doTrackSmearing;
-  bool m_doInclusiveGbb;
+  bool m_noMuonReq;
+  bool m_useLeadingJets;
   bool m_doApplyBTaggingSF;
 
   bool m_doSd0Systematics;

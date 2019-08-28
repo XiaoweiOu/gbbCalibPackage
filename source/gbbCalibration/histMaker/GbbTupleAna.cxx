@@ -135,8 +135,11 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_doTrackSmearing = config->GetValue("doTrackSmearing",false);
   std::cout<<"doTrackSmearing: "<<m_doTrackSmearing<<std::endl;
 
-  m_doInclusiveGbb = config->GetValue("doInclusiveGbb",false);
-  std::cout<<"doInclusiveGbb: "<<m_doInclusiveGbb<<std::endl;
+  m_noMuonReq = config->GetValue("noMuonReq",false);
+  std::cout<<"noMuonReq: "<<m_noMuonReq<<std::endl;
+
+  m_useLeadingJets = config->GetValue("useLeadingJets",false);
+  std::cout<<"useLeadingJets: "<<m_useLeadingJets<<std::endl;
 
   m_doApplyBTaggingSF = config->GetValue("doApplyBTaggingSF",false);
   std::cout<<"doApplyBTaggingSF "<<m_doApplyBTaggingSF<<std::endl;
@@ -197,7 +200,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_FlavFracCorrectorFile(""),
   m_FlavFracCorrector(nullptr),
   m_doTrackSmearing(false),
-  m_doInclusiveGbb(false),
+  m_noMuonReq(false),
   m_doApplyBTaggingSF(false),
   m_doSd0Systematics(false),
   m_useVRTrkJets(true),
@@ -565,21 +568,30 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Constructing Gbb candidate..."<<std::endl;
 
-  std::vector<GbbCandidate> gbbcands = constructGbbCandidates(m_doInclusiveGbb);
+  std::vector<GbbCandidate> gbbcands = constructGbbCandidates(m_noMuonReq || m_useLeadingJets);
 
   if (gbbcands.size() == 0) {
+    if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
+    return false;
+  }
+  // Use highest pt gbbcandidate that contains a muon. //FIXME: why aren't they pt-ordered already?
+  GbbCandidate gbbcand = gbbcands.at(0);
+  bool gbbInvalid = (gbbcand.nRecoMuons == 0 && !m_noMuonReq);
+  for (auto& cand : gbbcands) {
+    if (cand.nRecoMuons == 0 && !m_noMuonReq) continue;
+    // if the first gbbcand has no muons then take the next regardless of pt
+    if (fat_pt->at(cand.ind_fj) > fat_pt->at(gbbcand.ind_fj) || gbbInvalid) {
+      gbbcand = cand;
+      gbbInvalid = false;
+    }
+  }
+  if (gbbcand.nRecoMuons == 0 && !m_noMuonReq) {
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
     return false;
   }
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
   ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "has gbb candidate");
-
-  // Use highest pt gbbcandidate. //FIXME: why aren't they pt-ordered already?
-  GbbCandidate gbbcand = gbbcands.at(0);
-  for (auto& cand : gbbcands) {
-    if (fat_pt->at(cand.ind_fj) > fat_pt->at(gbbcand.ind_fj)) gbbcand = cand;
-  }
 
   if(m_Debug) std::cout<<"constructGbbCandidate(): Finish Gbb construction!"<<std::endl;
   if (m_useVRTrkJets) {
@@ -1271,21 +1283,27 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
 
     if (useLeading) {
       gbbcand.ind_mj = trkjet_info[0].first;
-      gbbcand.ind_mj_mu = trkjet_info[0].second.size() > 0
-                           ? trkjet_info[0].second.at(0) : 999;
-      for (unsigned int ind_mu : trkjet_info[0].second) {
-        if (this->muo_hasTruth->at(ind_mu)) {
-          gbbcand.nTruthMuons++;
-          break; // only care if there is >1 truth muon per trkjet
+      gbbcand.ind_mj_mu = 999;
+      if (trkjet_info[0].second.size() > 0) {
+        gbbcand.nRecoMuons++;
+        gbbcand.ind_mj_mu = trkjet_info[0].second.at(0);
+        for (unsigned int ind_mu : trkjet_info[0].second) {
+          if (this->muo_hasTruth->at(ind_mu)) {
+            gbbcand.nTruthMuons++;
+            break; // only care if there is >1 truth muon per trkjet
+          }
         }
       }
       gbbcand.ind_nmj = trkjet_info[1].first;
-      gbbcand.ind_nmj_mu = trkjet_info[1].second.size() > 0
-                            ? trkjet_info[1].second.at(0) : 999;
-      for (unsigned int ind_mu : trkjet_info[1].second) {
-        if (this->muo_hasTruth->at(ind_mu)) {
-          gbbcand.nTruthMuons++;
-          break; // only care if there is >1 truth muon per trkjet
+      gbbcand.ind_nmj_mu = 999;
+      if (trkjet_info[1].second.size() > 0) {
+        gbbcand.nRecoMuons++;
+        gbbcand.ind_nmj_mu = trkjet_info[1].second.at(0);
+        for (unsigned int ind_mu : trkjet_info[1].second) {
+          if (this->muo_hasTruth->at(ind_mu)) {
+            gbbcand.nTruthMuons++;
+            break; // only care if there is >1 truth muon per trkjet
+          }
         }
       }
     } else {
