@@ -107,7 +107,8 @@ private:
   FlavourFracCorrector* m_FlavFracCorrector;
 
   bool m_doTrackSmearing;
-  bool m_doInclusiveGbb;
+  bool m_noMuonReq;
+  bool m_useLeadingJets;
   bool m_doApplyBTaggingSF;
 
   bool m_doSd0Systematics;
@@ -174,11 +175,8 @@ private:
 
   //
   // Functions to construct the GbbCandidate struct
-  // TODO: consolidate these into 1 function with flags for options
   //
-  GbbCandidate constructGbbCandidate();
-  GbbCandidate constructGbbCandidateAlternative();
-  GbbCandidate constructGbbCandidateInclusive();
+  std::vector<GbbCandidate> constructGbbCandidates(bool useLeading = false);
 
   //
   // Wrapper functions for the MakePlotName functions from the
