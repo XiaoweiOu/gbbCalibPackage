@@ -221,7 +221,7 @@ def Make2DFitPlot(fitResults, nuisPar):
   text.DrawLatex(0.675, 0.81, '#font[42]{#scale[0.8]{%s}}' % calibText)
 
   canv.SaveAs(outdir+'2D'+nuisPar+'.pdf')
-  delete canv
+  del canv
 
 #-----------------------------------------------
 def Make1DFitPlot(fitResults, nuisPar):
@@ -280,6 +280,11 @@ def Make1DFitPlot(fitResults, nuisPar):
   #SF_data_stat.Draw("p")
   #if(plot_type.EqualTo("Eff")) EFF_mc_stat.Draw("ep")
 
+  gr.GetXaxis().SetRangeUser(fj_low_cut,fj_bins[len(fj_bins)-1])
+  gr.GetYaxis().SetRangeUser(0.,2.)
+  if 'Frac' in name:
+    gr.GetYaxis().SetRangeUser(0.,0.5)
+
   ##prepare Legend
   #leg = ROOT.TLegend(0.5,0.5,0.88,0.65);
   #leg.SetBorderSize(0)
@@ -310,7 +315,7 @@ def Make1DFitPlot(fitResults, nuisPar):
     line.Draw("same")
 
   canv.SaveAs(outdir+nuisPar+'.pdf')
-  delete canv
+  del canv
 
 ##-----------------------------------------------
 #def MakeRatioPlot(dataHist,mcHists,uncertHists=None,doChi2=False,setLogy=False):
