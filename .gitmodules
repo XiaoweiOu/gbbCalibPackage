@@ -1,0 +1,3 @@
+[submodule "source/TRExFitter"]
+	path = source/TRExFitter
+	url = ssh://git@gitlab.cern.ch:7999/TRExStats/TRExFitter.git
