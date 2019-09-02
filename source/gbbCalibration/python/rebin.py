@@ -61,6 +61,30 @@ ListOfTJpt = MyConfig.GetTrkJetRegions()
 #ListOfTJpt = [ TString("Incl") ]
 isR20p7 = MyConfig.GetIsR20p7()
 
+def MakeNEventHist(region):
+  # Read in data histogram
+  histname = MyConfig.GetDataHistName(region,ListOfTmplVars[0].Data()+'_PREFITPOSTTAG').Data()
+  dataHist = infile.Get(histname)
+  if not dataHist:
+    print(histname+' not found. Exiting...')
+    exit()
+  newDataHist = ROOT.TH1F(region+'_NEvts_PREFITPOSTTAG_hDataNom','',1,0,1)
+  newDataHist.SetBinContent(1,dataHist.Integral(0,dataHist.GetNbinsX()+1))
+  outfile.cd()
+  newDataHist.Write()
+
+  # Read in nominal MC histograms
+  for flav in ListOfFlavourPairs:
+    histname = MyConfig.GetMCHistName("Nom",region,flav,ListOfTmplVars[0].Data()+'_PREFITPOSTTAG').Data()
+    mcHist = infile.Get(histname)
+    if not mcHist:
+      print(histname+' not found. Exiting...')
+      exit()
+    newMcHist = ROOT.TH1F(region+'_NEvts_PREFITPOSTTAG_h'+flav.Data()+'Nom','',1,0,1)
+    newMcHist.SetBinContent(1,mcHist.Integral(0,mcHist.GetNbinsX()+1))
+    outfile.cd()
+    newMcHist.Write()
+
 def RebinHist(region,var):
   # Read in data histogram
   histname = MyConfig.GetDataHistName(region,var).Data()
@@ -161,40 +185,46 @@ def CopyHists(region,var):
 
 # pt-inclusive bin first
 # Rebin template variables
+MakeNEventHist('Incl')
 for var in ListOfTmplVars:
   RebinHist(TString('Incl'),var)
+  RebinHist(TString('Incl'),TString(var.Data()+'_PREFITPOSTTAG'))
 # Copy plot variables from infile to outfile
 for var in ListOfPlotVars:
-  CopyHists(TString('Incl'),var.Data()+'_PREFITPOSTTAG')
   if var in ListOfTmplVars:
     continue
   CopyHists(TString('Incl'),var)
+  CopyHists(TString('Incl'),var.Data()+'_PREFITPOSTTAG')
 
 # track-jet bins
 for region in ListOfTJpt:
+  MakeNEventHist(region.Data())
   # Rebin template variables
   for var in ListOfTmplVars:
     RebinHist(region,var)
+    RebinHist(region,TString(var.Data()+'_PREFITPOSTTAG'))
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
-    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
     if var in ListOfTmplVars:
       continue
     CopyHists(region,var)
+    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
 
 # fat-jet bins
 for region in ListOfFJpt:
   if 'l500' in region.Data():
     continue
+  MakeNEventHist(region.Data())
   # Rebin template variables
   for var in ListOfTmplVars:
     RebinHist(region,var)
+    RebinHist(region,TString(var.Data()+'_PREFITPOSTTAG'))
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
-    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
     if var in ListOfTmplVars:
       continue
     CopyHists(region,var)
+    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
 
 infile.Close()
 outfile.Close()
