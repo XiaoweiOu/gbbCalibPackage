@@ -13,19 +13,11 @@ parser.add_argument('outfile', help="Name of output ROOT file")
 parser.add_argument('infile', help="Name of input ROOT file")
 parser.add_argument('--nosys', help="Rebin only nominal histograms",
                     action="store_true")
-parser.add_argument('-r','--rename', help="Rename histograms for TRexFitter",
-                    action="store_true")
 parser.add_argument('--stat', type=float, default=0.25,
                     help="Stat threshold (err/N) for rebinning [default: 0.25]")
 parser.add_argument('--force', type=int, default=1,
                     help="Force rebinning by at least n [default: 1]")
 args = parser.parse_args()
-
-def ReverseName(name):
-  # Rename for TRexFitter
-  tokens = name.split('_',1)
-  newname = tokens[1]+'_'+tokens[0]
-  return newname
 
 # open input file
 infile = ROOT.TFile(args.infile,"READ")
@@ -68,7 +60,7 @@ def MakeNEventHist(region):
   if not dataHist:
     print(histname+' not found. Exiting...')
     exit()
-  newDataHist = ROOT.TH1F(region+'_NEvts_PREFITPOSTTAG_hDataNom','',1,0,1)
+  newDataHist = ROOT.TH1F(MyConfig.GetDataHistName(region,'NEvts_PREFITPOSTTAG').Data(),'',1,0,1)
   newDataHist.SetBinContent(1,dataHist.Integral(0,dataHist.GetNbinsX()+1))
   outfile.cd()
   newDataHist.Write()
@@ -80,7 +72,7 @@ def MakeNEventHist(region):
     if not mcHist:
       print(histname+' not found. Exiting...')
       exit()
-    newMcHist = ROOT.TH1F(region+'_NEvts_PREFITPOSTTAG_h'+flav.Data()+'Nom','',1,0,1)
+    newMcHist = ROOT.TH1F(MyConfig.GetMCHistName("Nom",region,flav,'NEvts_PREFITPOSTTAG').Data(),'',1,0,1)
     newMcHist.SetBinContent(1,mcHist.Integral(0,mcHist.GetNbinsX()+1))
     outfile.cd()
     newMcHist.Write()
@@ -142,9 +134,9 @@ def RebinHist(region,var):
     print("|")
     print("| Binning in channel "+region.Data()+' '+var.Data()+" is ok! Proceed to fit... ")
     outfile.cd()
-    dataHist.Write(ReverseName(dataHist.GetName()) if args.rename else dataHist.GetName())
+    dataHist.Write(dataHist.GetName())
     for hist in mcHists:
-      hist.Write(ReverseName(hist.GetName()) if args.rename else hist.GetName())
+      hist.Write(hist.GetName())
   else:
     if dataHist.GetXaxis().GetBinLowEdge(dataHist.GetNbinsX()+1) not in bins:
       bins.append(dataHist.GetXaxis().GetBinLowEdge(dataHist.GetNbinsX()+1))
@@ -158,10 +150,10 @@ def RebinHist(region,var):
 
     outfile.cd()
     newDataHist = dataHist.Rebin(len(bins)-1,dataHist.GetName()+'_REBIN',np.array(bins))
-    newDataHist.Write(ReverseName(dataHist.GetName()) if args.rename else dataHist.GetName())
+    newDataHist.Write(dataHist.GetName())
     for hist in mcHists:
       newMcHist = hist.Rebin(len(bins)-1,hist.GetName()+'_REBIN',np.array(bins))
-      newMcHist.Write(ReverseName(hist.GetName()) if args.rename else hist.GetName())
+      newMcHist.Write(hist.GetName())
 
 def CopyHists(region,var):
   # Read in data histogram
@@ -171,7 +163,7 @@ def CopyHists(region,var):
     print(histname+' not found. Skipping...')
   else:
     outfile.cd()
-    dataHist.Write(ReverseName(dataHist.GetName()) if args.rename else dataHist.GetName())
+    dataHist.Write(dataHist.GetName())
 
   # Read in nominal MC histograms
   for flav in ListOfFlavourPairs:
@@ -181,7 +173,7 @@ def CopyHists(region,var):
       print(histname+' not found. Skipping...')
     else:
       outfile.cd()
-      mcHist.Write(ReverseName(mcHist.GetName()) if args.rename else mcHist.GetName())
+      mcHist.Write(mcHist.GetName())
 
 # pt-inclusive bin first
 # Rebin template variables

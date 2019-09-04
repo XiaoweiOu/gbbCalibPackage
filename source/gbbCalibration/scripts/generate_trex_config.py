@@ -99,7 +99,7 @@ def WriteRegionBlock(outfile,ptbin,var):
   outfile.write('Region: "'+var+'"\n')
   outfile.write('  Type: SIGNAL\n')
   outfile.write('  LogScale: TRUE\n')
-  outfile.write('  HistoName: "'+ptbin+'_'+var+'"\n') #TODO: use config.GetName() functions
+  outfile.write('  HistoName: "h_'+ptbin+'_'+var+'"\n') #TODO: use config.GetName() functions
   outfile.write('  VariableTitle: "'+varTitles[var]+'"\n')
   outfile.write('\n')
 
@@ -107,7 +107,7 @@ def WriteSampleBlock(outfile,flav):
   outfile.write('Sample: "'+flav+'"\n')
   outfile.write('  Type: BACKGROUND\n')
   outfile.write('  Title: "'+flav+'"\n')
-  outfile.write('  HistoNameSuff: "_h'+flav+'"\n')
+  outfile.write('  HistoNameSuff: "_'+flav+'"\n')
   outfile.write('  FillColorRGB: '+colorStr[flav]+'\n')
   outfile.write('  LineColorRGB: 0,0,0\n')
   outfile.write('  NormFactor: "'+flav+'Fraction",1,0,100\n')
@@ -122,8 +122,8 @@ def WriteSystBlock2Sided(outfile,sys):
   outfile.write('  Type: HISTO\n')
   outfile.write('  Title: "'+sys+'"\n')
   outfile.write('  Samples: all\n')
-  outfile.write('  HistoNameSufUp: "'+sys+'__1up"\n')
-  outfile.write('  HistoNameSufDown: "'+sys+'__1down"\n')
+  outfile.write('  HistoNameSufUp: "_'+sys+'__1up"\n')
+  outfile.write('  HistoNameSufDown: "_'+sys+'__1down"\n')
   outfile.write('\n')
 
 def WriteSystBlock1Sided(outfile,sys):
@@ -131,7 +131,7 @@ def WriteSystBlock1Sided(outfile,sys):
   outfile.write('  Type: HISTO\n')
   outfile.write('  Title: "'+sys+'"\n')
   outfile.write('  Samples: all\n')
-  outfile.write('  HistoNameSufUp: "'+sys+'__1up"\n')
+  outfile.write('  HistoNameSufUp: "_'+sys+'__1up"\n')
   outfile.write('  Symmetrisation: ONESIDED\n')
   outfile.write('\n')
 
@@ -156,7 +156,7 @@ def WriteConfigFile(ptbin,outdir):
     outfile.write('  ReadFrom: HIST\n')
     outfile.write('  HistoPath: "'+outdir+'/"\n')
     outfile.write('  HistoFile: "trex_input"\n')
-    outfile.write('  HistoNameNominal: "Nom"\n')
+    outfile.write('  HistoNameNominal: "_Nom"\n')
     outfile.write('  OutputDir: "'+outdir+'/TRexFit/"\n')
     outfile.write('  DebugLevel: 2\n')
     outfile.write('  SystControlPlots: FALSE\n')
@@ -189,7 +189,7 @@ def WriteConfigFile(ptbin,outdir):
       outfile.write('Sample: "Data"\n')
       outfile.write('  Title: "Data"\n')
       outfile.write('  Type: DATA\n')
-      outfile.write('  HistoNameSuff: "_hData"\n')
+      outfile.write('  HistoNameSuff: "_Data"\n')
       outfile.write('\n')
 
     # write blocks for mc samples
@@ -199,7 +199,7 @@ def WriteConfigFile(ptbin,outdir):
     if args.fitSF:
       outfile.write('Region: "NEvts_PREFITPOSTTAG"\n')
       outfile.write('  Type: SIGNAL\n')
-      outfile.write('  HistoName: "'+ptbin+'_NEvts_PREFITPOSTTAG"\n') #TODO: use config.GetName() functions
+      outfile.write('  HistoName: "h_'+ptbin+'_NEvts_PREFITPOSTTAG"\n') #TODO: use config.GetName() functions
       outfile.write('  VariableTitle: "N_{Events}^{BB-tagged}"\n')
       outfile.write('  Label: "BB-tagged Events"\n')
       outfile.write('\n')
