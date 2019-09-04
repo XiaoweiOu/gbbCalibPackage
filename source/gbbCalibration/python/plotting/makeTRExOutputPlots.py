@@ -24,8 +24,8 @@ parser.add_argument('--year', type=str, default="2015+2016",
 parser.add_argument('--debug', action='store_true',
     help="Add extra printouts")
 #TODO: add flags for which types of plots to make
-parser.add_argument('--plots', nargs='+',
-    help="List of plots to make. Options include 'SF','NF','CorrMat',...")
+#parser.add_argument('--plots', nargs='+',
+#    help="List of plots to make. Options include 'SF','NF','CorrMat',...")
 args = parser.parse_args()
 
 # set variables from args
