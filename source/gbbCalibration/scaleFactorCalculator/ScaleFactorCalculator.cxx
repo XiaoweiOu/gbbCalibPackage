@@ -65,6 +65,9 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_config = new GlobalConfig(PathResolverFindCalibFile("gbbCalibration/configs/GlobalConfig.cfg"));
   std::cout<<"Loaded GlobalConfig"<<std::endl;
 
+  m_doSystematics = config->GetValue("doSystematics",true);
+  std::cout<<"doSystematics: "<<m_doSystematics<<std::endl;
+
   m_doMCStatsNP = config->GetValue("doMCStatsNP",false);
   std::cout<<"doNPStatsMC: "<<m_doMCStatsNP<<std::endl;
 
@@ -137,11 +140,15 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
 
   ReadConfig(cfg_file);
 
-  std::vector<TString> systematics = m_config->GetSystematics();
+  std::vector<TString> systematics;
+  std::vector<TString> calib_sys;
+  std::vector<TString> btag_sys;
+  if (m_doSystematics) {
+    systematics = m_config->GetSystematics();
+    calib_sys = m_config->GetSystematics_Sd0();
+    btag_sys = m_config->GetSystematics_WeightVar();
+  }
   systematics.emplace(systematics.begin(),TString("Nom")); //Run over nominal first
-  //std::vector<TString> systematics = { "Nom" };
-  std::vector<TString> calib_sys = m_config->GetSystematics_Sd0();
-  std::vector<TString> btag_sys = m_config->GetSystematics_WeightVar();
   //std::vector<TString> model_sys={"Herwig"}; //if using herwig in R20.7
   std::vector<TString> model_sys={};
   // Store sys names (without up/down label)
