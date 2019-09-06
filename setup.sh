@@ -2,10 +2,9 @@
 export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
 source $ATLAS_LOCAL_ROOT_BASE/user/atlasLocalSetup.sh
 cd source
-if [ -f ".asetup.save" ]; then
-  asetup --restore
-else
-  asetup AnalysisBase,21.2.35,here
-fi
+asetup AnalysisBase,21.2.35,here
 cd ..
 source build/${AnalysisBase_PLATFORM}/setup.sh
+
+# set paths to find config and executable files
+export GBB_BUILD_DIR=`pwd`/build
