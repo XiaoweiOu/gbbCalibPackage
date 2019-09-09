@@ -304,6 +304,9 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
       }
 
       m_fitdata->ReadInHistograms();
+      for (TString var : tmpl_vars) {
+        m_fitdata->FixHistogramBins(var, binning[var]); //binning[2*i_reg+i_chan]);//why 2*i_reg?
+      }
 
       m_fitter.GetPseudoTemplateFitResult(pseudo_exp_result, m_nPseudoExps);
       m_pseudo_fit_params[region] = pseudo_exp_result;
@@ -323,6 +326,9 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
       }
 
       m_fitdata->ReadInHistograms();
+      for (TString var : tmpl_vars) {
+        m_fitdata->FixHistogramBins(var, binning[var]); //binning[2*i_reg+i_chan]);//why 2*i_reg?
+      }
 
       m_fitter.GetPseudoDataFitResult(pseudo_exp_result, m_nPseudoExps);
       m_pseudo_fit_params_Data[region] = pseudo_exp_result;
@@ -1050,7 +1056,7 @@ void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, c
         infile->GetObject(histName.Data(), temp);
         if (!temp) {
           std::cerr<<"Failed to get histogram "<<histName.Data()<<std::endl;
-          return;
+          continue;
         }
         clone = (TH1D*)temp->Clone();
         clone->SetDirectory(0);
@@ -1064,7 +1070,7 @@ void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, c
           infile->GetObject(histName.Data(), temp);
           if (!temp) {
             std::cerr<<"Failed to get histogram "<<histName.Data()<<std::endl;
-            return;
+            continue;
           }
           clone = (TH1D*)temp->Clone();
           clone->SetDirectory(0);
@@ -1373,8 +1379,6 @@ TH1D* ScaleFactorCalculator::GetRebinHistData(const TString var) {
     std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
     return nullptr;
   }
-  //float* bins = new float[vec_bins.size()]; //Rebin doesn't take vectors, only pointers
-  //for (unsigned int i=0; i < vec_bins.size(); i++) bins[i] = vec_bins[i];
 
   TH1D *help(nullptr), *sum(nullptr);
 
@@ -1387,7 +1391,6 @@ TH1D* ScaleFactorCalculator::GetRebinHistData(const TString var) {
       continue;
     }
     help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
-    //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
     help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
     sum->Add(help);
   }
@@ -1401,8 +1404,6 @@ TH1D* ScaleFactorCalculator::GetRebinHistByRegionData(const TString var, const T
     std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
     return nullptr;
   }
-  //float* bins = new float[vec_bins.size()]; //Rebin doesn't take vectors, only pointers
-  //for (unsigned int i=0; i < vec_bins.size(); i++) bins[i] = vec_bins[i];
 
   TH1D *help(nullptr);
 
@@ -1413,7 +1414,6 @@ TH1D* ScaleFactorCalculator::GetRebinHistByRegionData(const TString var, const T
     return nullptr;
   }
   help = (TH1D*) help->Clone(); //Clone to avoid changing the original hist
-  //help = (TH1D*) help->Rebin((int)vec_bins.size()-1,(name+"_rebin").Data(),bins);
   help = (TH1D*) help->Rebin((int)bins.size()-1,(name+"_rebin").Data(),&(bins[0]));
   return help;
 }
