@@ -60,7 +60,7 @@ run_calculateSF <root_input> config_Calib_SF.cfg <output_folder>
 `run_calculateSF` automatically rebins the template histograms to reduce per-bin errors. A copy of this rebinning algorithm is provided in `rebin.py`. Scripts to produce TRExFitter config files and run them are located in `gbbCalibPackage/source/gbbCalibration/scripts`. To run them do:
 ```
 python gbbCalibration/python/rebin.py <trex_input> <hist_input> [<options>]
-source run_trex.sh -o <output_folder> -i <tex_input> [-e "--fitSF <options>"]
+gbbCalibration/scripts/run_trex.sh -o <output_folder> -i <tex_input> [-e "--fitSF <options>"]
 python gbbCalibration/python/plotting/makeTRExOutputPlots.py <output_folder> [<options>]
 ```
 

@@ -9,7 +9,13 @@ import numpy as np
 import os
 
 #ROOT.gROOT.SetBatch(True)
+<<<<<<< HEAD
 from ROOT import gROOT,gStyle,TCanvas,TH2D,TLatex,TGraphAsymmErrors,TLine
+=======
+from ROOT import gROOT,gStyle,TFile,Double
+from ROOT import TCanvas,TH2D,TLatex,TGraphAsymmErrors,TLine
+from ROOT import kGreen
+>>>>>>> 5e20005... Add flavor fraction plots
 
 #ROOT.gStyle.SetOptStat(0)
 #SetupStyle()
@@ -64,6 +70,10 @@ class FitResult():
   def GetErr(self,name):
     # TRExFitter errors are symmetrized (I think)
     return self.nuisPars[name][1] #- nuisPars[name][2])/2.
+  def GetCorr(self,name1,name2):
+    idx1 = self.nuisPars[name1][3]
+    idx2 = self.nuisPars[name2][3]
+    return self.corrMat[idx1][idx2]
 
 #-----------------------------------------------
 def ReadFitResults():
@@ -90,6 +100,7 @@ def ReadFitResults():
             print("Reading Nuisance Parameters...")
             print("--------------------")
           readingNP = True
+          row = 0
           continue
         elif 'CORRELATION_MATRIX' in line:
           if args.debug:
@@ -120,6 +131,9 @@ def ReadFitResults():
           nuisPars[name] = [ float(x) for x in tokens[1:4] ]
           if args.debug:
             print('  '+name+': '+str(tokens[1:4]))
+          # index to look for in correlation matrix
+          nuisPars[name].append(row)
+          row += 1
         elif readingCM:
           # first line of correlation matrix block has N rows/columns
           if Nsyst == 0:
@@ -154,14 +168,7 @@ def makeTrkJetLabels(bins,jetName):
   return labels
 
 #-----------------------------------------------
-def Make2DFitPlot(fitResults, nuisPar):
-  bin_vals = np.zeros(len(regions))
-  bin_errs = np.zeros(len(regions))
-  for i,region in enumerate(regions):
-    result = fitResults[region.Data()]
-    bin_vals[i] = result.GetPar(nuisPar)
-    bin_errs[i] = result.GetErr(nuisPar)
-
+def Make2DPlot(bin_vals, bin_errs, name):
   # Set up bins and labels for 2D plots
   mj_labels = makeTrkJetLabels(MyConfig.GetMuonJetPtBins(),"#mu-jet")
   nmj_labels = makeTrkJetLabels(MyConfig.GetNonMuJetPtBins(),"non-#mu-jet")
@@ -220,17 +227,11 @@ def Make2DFitPlot(fitResults, nuisPar):
   text.DrawLatex(0.675, 0.86, '#font[42]{#scale[0.8]{%s}}' % sqrtText)
   text.DrawLatex(0.675, 0.81, '#font[42]{#scale[0.8]{%s}}' % calibText)
 
-  canv.SaveAs(outdir+'2D'+nuisPar+'.pdf')
+  canv.SaveAs(outdir+'2D'+name+'.pdf')
   del canv
 
 #-----------------------------------------------
-def Make1DFitPlot(fitResults, nuisPar):
-  bin_vals = np.zeros(len(regions))
-  bin_yerr = np.zeros(len(regions))
-  for i,region in enumerate(regions):
-    result = fitResults[region.Data()]
-    bin_vals[i] = result.GetPar(nuisPar)
-    bin_yerr[i] = result.GetErr(nuisPar)
+def Make1DPlot(bin_vals, bin_yerr, name):
 
   # Set up bins and labels for 1D plots
   fj_bins = MyConfig.GetFatJetPtBins()
@@ -256,7 +257,7 @@ def Make1DFitPlot(fitResults, nuisPar):
   gr.SetTitle("")
 
   gr.GetXaxis().SetTitle("Large-R Jet p_{T} [GeV]")
-  gr.GetYaxis().SetTitle(nuisPar)
+  gr.GetYaxis().SetTitle(name)
 
   gr.GetXaxis().SetTitleSize(0.04)
   gr.GetYaxis().SetTitleSize(0.04)
@@ -308,14 +309,86 @@ def Make1DFitPlot(fitResults, nuisPar):
   text.DrawLatex(0.675, 0.86, '#font[42]{#scale[0.8]{%s}}' % sqrtText)
   text.DrawLatex(0.675, 0.81, '#font[42]{#scale[0.8]{%s}}' % calibText)
 
-  if 'ScaleFactor' in nuisPar:
-    line = TLine(fj_bins[0],1.,fj_bins[len(fj_bins)-1],1.)
+  if 'ScaleFactor' in name:
+    line = TLine(fj_low_cut,1.,fj_bins[len(fj_bins)-1],1.)
     line.SetLineStyle(2)
     line.SetLineWidth(1.5)
     line.Draw("same")
 
-  canv.SaveAs(outdir+nuisPar+'.pdf')
+  canv.SaveAs(outdir+name+'.pdf')
   del canv
+
+#-----------------------------------------------
+def MakeFitPlot(fitResults, nuisPar):
+  bin_vals = np.zeros(len(regions))
+  bin_errs = np.zeros(len(regions))
+  for i,region in enumerate(regions):
+    result = fitResults[region.Data()]
+    bin_vals[i] = result.GetPar(nuisPar)
+    bin_errs[i] = result.GetErr(nuisPar)
+  if args.bins == 'trkjet':
+    Make2DPlot(bin_vals, bin_errs, nuisPar)
+  elif args.bins == 'fatjet':
+    Make1DPlot(bin_vals, bin_errs, nuisPar)
+
+#-----------------------------------------------
+def MakeFlavFracPlot(fitResults, nuisPar, prefit=True):
+  # make sure the nuisPar provided is a valid flavor pair
+  flavCheck = False
+  FlavList = MyConfig.GetFlavourPairs()
+  for flav in FlavList:
+    if flav.Data() in nuisPar:
+      flavCheck = True
+      break
+  if not flavCheck:
+    print(nuisPar+" is not in the list of flavor pairs")
+    return
+
+  name = nuisPar + 'Frac'
+  if prefit:
+    name += 'Prefit'
+  bin_vals = np.zeros(len(regions))
+  bin_errs = np.zeros(len(regions))
+  for i,region in enumerate(regions):
+    result = results[region.Data()]
+    mc = {}
+    stat_err = {}
+    mc_tot = 0
+    for flav in FlavList:
+      h_temp = config.getKey(infile,MyConfig.GetMCHistName('Nom',region,flav,'mjmeanSd0').Data())
+      err = Double(0)
+      n_temp = h_temp.IntegralAndError(0,h_temp.GetNbinsX()+1,err)
+      mc[flav.Data()] = n_temp
+      stat_err[flav.Data()] = err
+      if prefit:
+        mc_tot += n_temp
+      else:
+        mc_tot += n_temp * result.GetPar(flav.Data())
+
+    if prefit:
+      bin_vals[i] = mc['BB'] / mc_tot
+      bin_errs[i] = stat_err['BB'] / mc_tot
+    else :
+      frac_BB = mc['BB'] * result.GetPar('BB') / mc_tot
+      bin_vals[i] = frac_BB
+      err_temp = 0
+      stat_err_temp = pow(stat_err['BB'] * result.GetPar(flav.Data()) / mc_tot,2)
+      for flav_i in FlavList:
+        dFdxi = -frac_BB * mc[flav_i.Data()] / mc_tot
+        if 'BB' in flav_i.Data():
+          dFdxi += mc['BB'] / mc_tot
+        for flav_j in FlavList:
+          dFdxj = -frac_BB * mc[flav_j.Data()] / mc_tot
+          if 'BB' in flav_j.Data():
+            dFdxj += mc['BB'] / mc_tot
+          err_temp += dFdxi * dFdxj * result.GetCorr(flav_i.Data(),flav_j.Data()) \
+                      * result.GetErr(flav_i.Data()) * result.GetErr(flav_j.Data())
+      bin_errs[i] = np.sqrt(err_temp + stat_err_temp)
+
+  if args.bins == 'trkjet':
+    Make2DPlot(bin_vals,bin_errs,name)
+  elif args.bins == 'fatjet':
+    Make1DPlot(bin_vals,bin_errs,name)
 
 ##-----------------------------------------------
 #def MakeRatioPlot(dataHist,mcHists,uncertHists=None,doChi2=False,setLogy=False):
@@ -368,13 +441,13 @@ def Make1DFitPlot(fitResults, nuisPar):
 #-----------------------------------------------
 # Main function
 #-----------------------------------------------
+# Get fit results
 results = ReadFitResults()
+# Get input histograms
+infile = TFile("{0}/trex_input.root".format(args.input))
 
-if args.bins == 'trkjet':
-  Make2DFitPlot(results,'ScaleFactor')
-  for flav in MyConfig.GetFlavourPairs():
-    Make2DFitPlot(results,flav.Data())
-elif args.bins == 'fatjet':
-  Make1DFitPlot(results,'ScaleFactor')
-  for flav in MyConfig.GetFlavourPairs():
-    Make1DFitPlot(results,flav.Data())
+MakeFitPlot(results, 'ScaleFactor')
+for flav in MyConfig.GetFlavourPairs():
+  MakeFitPlot(results, flav.Data())
+  MakeFlavFracPlot(results, flav.Data(), prefit=True)
+  MakeFlavFracPlot(results, flav.Data(), prefit=False)
