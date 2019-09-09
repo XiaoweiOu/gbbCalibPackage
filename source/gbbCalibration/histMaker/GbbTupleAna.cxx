@@ -1002,11 +1002,11 @@ bool GbbTupleAna::Processgbb(int i_evt){
     if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG");
 
     if (gbbcand.nRecoMuons > 1) {
-      if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
-      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
-      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
-      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight,"PREFITPOSTTAG_TWOMUON");
-      if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG_TWOMUON");
+      if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
+      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
+      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
+      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
+      if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"TWOMUON_PREFITPOSTTAG");
     }
 
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"DRditrkjetfatjet_PREFITPOSTTAG"),

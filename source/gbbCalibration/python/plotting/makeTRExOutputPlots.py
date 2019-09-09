@@ -366,21 +366,21 @@ def MakeFlavFracPlot(fitResults, nuisPar, prefit=True):
         mc_tot += n_temp * result.GetPar(flav.Data())
 
     if prefit:
-      bin_vals[i] = mc['BB'] / mc_tot
-      bin_errs[i] = stat_err['BB'] / mc_tot
+      bin_vals[i] = mc[nuisPar] / mc_tot
+      bin_errs[i] = stat_err[nuisPar] / mc_tot
     else :
-      frac_BB = mc['BB'] * result.GetPar('BB') / mc_tot
-      bin_vals[i] = frac_BB
+      this_frac = mc[nuisPar] * result.GetPar(nuisPar) / mc_tot
+      bin_vals[i] = this_frac
       err_temp = 0
-      stat_err_temp = pow(stat_err['BB'] * result.GetPar(flav.Data()) / mc_tot,2)
+      stat_err_temp = pow(stat_err[nuisPar] * result.GetPar(flav.Data()) / mc_tot,2)
       for flav_i in FlavList:
-        dFdxi = -frac_BB * mc[flav_i.Data()] / mc_tot
-        if 'BB' in flav_i.Data():
-          dFdxi += mc['BB'] / mc_tot
+        dFdxi = -this_frac * mc[flav_i.Data()] / mc_tot
+        if nuisPar in flav_i.Data():
+          dFdxi += mc[nuisPar] / mc_tot
         for flav_j in FlavList:
-          dFdxj = -frac_BB * mc[flav_j.Data()] / mc_tot
-          if 'BB' in flav_j.Data():
-            dFdxj += mc['BB'] / mc_tot
+          dFdxj = -this_frac * mc[flav_j.Data()] / mc_tot
+          if nuisPar in flav_j.Data():
+            dFdxj += mc[nuisPar] / mc_tot
           err_temp += dFdxi * dFdxj * result.GetCorr(flav_i.Data(),flav_j.Data()) \
                       * result.GetErr(flav_i.Data()) * result.GetErr(flav_j.Data())
       bin_errs[i] = np.sqrt(err_temp + stat_err_temp)

@@ -27,7 +27,10 @@ ListOfVariables_general = [
   'mjmaxSd0_pt_PREFITPOSTTAG','nmjmaxSd0_pt_PREFITPOSTTAG',
   'mjsubSd0_pt_PREFITPOSTTAG','nmjsubSd0_pt_PREFITPOSTTAG',
   'mjthirdSd0_pt_PREFITPOSTTAG','nmjthirdSd0_pt_PREFITPOSTTAG',
-  'mjpt_PREFITUNTAG'
+  'mjpt_PREFITUNTAG',
+
+  'mjmeanSd0_TWOMUON','nmjmeanSd0_TWOMUON',
+  'mjmeanSd0_PREFITPOSTTAG_TWOMUON','nmjmeanSd0_PREFITPOSTTAG_TWOMUON'
   ]
 
 ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_PREFITPOSTTAG','XbbScoreTop_PREFITPOSTTAG','XbbScoreQCD_PREFITPOSTTAG','XbbScoreRatiof0_PREFITPOSTTAG','XbbScoreRatiofp2_PREFITPOSTTAG']
