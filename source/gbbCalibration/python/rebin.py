@@ -139,7 +139,11 @@ def RebinHist(region,var):
       hist.Write(hist.GetName())
   else:
     if dataHist.GetXaxis().GetBinLowEdge(dataHist.GetNbinsX()+1) not in bins:
-      bins.append(dataHist.GetXaxis().GetBinLowEdge(dataHist.GetNbinsX()+1))
+      #bins.append(dataHist.GetXaxis().GetBinLowEdge(dataHist.GetNbinsX()+1))
+      if len(bins) > 1:
+        bins[len(bins)-1] = dataHist.GetXaxis().GetBinLowEdge(dataHist.GetNbinsX()+1)
+      else:
+        bins.append(dataHist.GetXaxis().GetBinLowEdge(dataHist.GetNbinsX()+1))
     print("|")
     print("| New Binning in channel "+region.Data()+' '+var.Data()+" :")
     print("| NBins = "+str(len(bins)))

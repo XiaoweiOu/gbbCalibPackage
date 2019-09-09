@@ -6,6 +6,15 @@ import json
 
 
 #-----------------------------------------------
+def getKey(infile,key):
+  # get TObject from ROOT file
+  obj = infile.Get(key)
+  if not obj:
+    print('cannot find '+key+' in file '+infile.GetName())
+    exit()
+  return obj
+
+#-----------------------------------------------
 def GetPathsFromJSON(infile):
   dataPath = ''
   inclMCPaths = []
