@@ -975,7 +975,8 @@ void ScaleFactorCalculator::SaveReweightHists(TString &var, TString &outfilename
 void ScaleFactorCalculator::MakeNFPlots(){
 
   std::vector<TString> flavs = m_config->GetFlavourPairs();
-  std::vector<TString> systematics = m_config->GetSystematics();
+  std::vector<TString> systematics;
+  if(m_doSystematics) systematics = m_config->GetSystematics();
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
 
   systematics.push_back("Nom"); //we want to get nominal plots too

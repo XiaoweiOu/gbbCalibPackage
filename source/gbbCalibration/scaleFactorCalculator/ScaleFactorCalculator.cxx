@@ -396,7 +396,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
 
   if(m_doCalibSequence){
 
-    this->SaveFitCorrectionFactorsSys();
+    if(m_doSystematics) this->SaveFitCorrectionFactorsSys();
     CalibResult c_res=this->CalculateScaleFactorsAndErrors(true);
     if (m_doFitInFatJetPtBins) {
       MakeCalibrationPlots(c_res,"SF");
@@ -722,7 +722,8 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   std::vector<float> data_eff_err_sq_up(fj_bins.size()-1,0.);
   std::vector<float> data_eff_err_sq_down(fj_bins.size()-1,0.);
 
-  std::vector<TString> systematics=m_config->GetSystematics();
+  std::vector<TString> systematics;
+  if(m_doSystematics) systematics = m_config->GetSystematics();
   systematics.emplace(systematics.begin(),TString("Nom")); //Run over nominal first
 
   sf_nom.clear();
