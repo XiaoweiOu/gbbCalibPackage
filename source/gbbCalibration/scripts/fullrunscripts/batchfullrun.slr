@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH --account=atlas
+#SBATCH --time=24:00:00
+#SBATCH --qos=shared
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=32
+#SBATCH --constraint=haswell
+#SBATCH -J gbbCalibration
+#SBATCH --image=centos:centos7 --export=ALL
+
+#export TMPDIR=${SLURM_TMP}
+source /global/homes/h/helen86/gbbCalibPackage/setup.sh
+srun python /global/homes/h/helen86/gbbCalibPackage/source/gbbCalibration/scripts/fullrunscripts/fullrun.py

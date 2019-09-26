@@ -23,20 +23,21 @@ Run the full scale factor calculation chain takes several steps and will depend 
       * You can get cross-section information for samples using the getMetadata.py script provided in AthAnalysis
    * __Commit your changes and create a tag for future reference__
 2. Making reweighting histograms from FTNtupCalib input
-   * Local Run: run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; &lt;tree\_name&gt; gbbCalibration/configs/run\_GbbTupleAna\_Reweight.cfg
+   * Local Run: run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; &lt;tree\_name&gt; ../source/gbbCalibration/data/configs/run\_GbbTupleAna\_Reweight.cfg
       * If the <input> file ends in .txt it is assumed to be list
       * Some input lists are provided in the `datasets` directory
       * As reweighting is done for nominal only <tree\_name> should be FlavourTagging\_Nominal
-   * qsub Run: source scripts/NAFScripts/submit\_gbbTupleAna\_array.sh 0 gbbCalibration/configs/run\_GbbTupleAna\_Reweight.cfg <tag>  
+   * qsub Run: source ../source/gbbCalibration/scripts/slurm\_scripts/submit\_gbbTupleAna\_array.sh 0 ../source/gbbCalibration/data/configs/run\_GbbTupleAna\_Reweight.cfg <tag>  
       * 0 -- Nominal Only
       * Change user variables to ones fitting you in scripts/NAFScripts/submit\_gbbTupleAna\_array.sh 
       * Do separately for data and each MC channel
-   * Manually hadd your data histograms into a single file (we should fix this at some point)
+   * Manually hadd your data histograms into a single file (do data and each MC channel seperately)
    * Create a json file with the locations of the &lt;output&gt; files (examples in `/data/examples/json/`)
       * The json also file also needs to contain the name of the xsections file to use
    * python makeReweightingHistos.py &lt;root\_output&gt; &lt;json\_input&gt; &lt;filter\_type&gt;
-      * Run from the `source/gbbCalibration/python` directory
+      * Run from the `source/` directory
       * <filter_type>: 0 -- mu-filtered, 1 -- inclusive
+      * Run once for each filter type to create 2 output root files, write the file pathes to run\_GbbTupleAna\_Calib.cfg
 3. Making template histograms from FTNtupCalib input
    * Local Run: run\_gbbTupleAna &lt;input&gt; &lt;root\_output&gt; <tree\_name> gbbCalibration/configs/run\_GbbTupleAna\_Calib.cfg
    * qsub Run: source scripts/NAFScripts/submit\_gbbTupleAna\_array.sh <run\_type> gbbCalibration/configs/run\_GbbTupleAna\_Calib.cfg <tag>  
