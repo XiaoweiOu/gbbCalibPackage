@@ -8,6 +8,7 @@ atlas_subdir( gbbCalibration )
 # Declare the package's dependencies:
 atlas_depends_on_subdirs(
    PUBLIC
+   Control/AthToolSupport/AsgTools
    Tools/PathResolver
    )
 
@@ -34,7 +35,7 @@ atlas_add_library( gbbTupleLib
    ${_gbbDictSource}
    PUBLIC_HEADERS histMaker
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
+   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver xAODBTaggingEfficiencyLib
    )
 atlas_add_library( ScaleFactorCalcLib
    scaleFactorCalculator/*.cxx scaleFactorCalculator/*.h
@@ -56,12 +57,12 @@ atlas_add_executable( run_calculateSF
    LINK_LIBRARIES ${ROOT_LIBRARIES} ScaleFactorCalcLib
    )
 
- # add a test exe
- atlas_add_executable( run_GbbTest
-   tests/run_tests.cxx
-   INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES} gbbTupleLib
-   )
+ ## add a test exe
+ #atlas_add_executable( run_GbbTest
+ #  tests/run_tests.cxx
+ #  INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
+ #  LINK_LIBRARIES ${ROOT_LIBRARIES} gbbTupleLib
+ #  )
 
 atlas_install_python_modules( python/makeReweightHistos.py LINK_LIBRARIES configLib )
 #atlas_install_python_modules( python/*.py )
