@@ -62,6 +62,7 @@ private:
   TString m_outdir;
 
   bool m_Debug;
+  bool m_doSystematics;
   bool m_doMCStatsNP;
   bool m_doFitInFatJetPtBins;
   bool m_doControlPlots;

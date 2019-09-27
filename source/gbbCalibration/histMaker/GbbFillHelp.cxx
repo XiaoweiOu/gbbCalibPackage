@@ -384,17 +384,17 @@ void GbbTupleAna::FillTemplates(GbbCandidate* gbbcand, float event_weight,TStrin
 
   // Fill fatjet histograms for SF calculation if not done in FillFatJetProperties
   if (!(m_RunMode & RunMode::FILL_FATJET_PROPERTIES)) {
-    m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
-     this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight);
-    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
-     this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight);
+    m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/5 GeV;",
+     this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight);
+    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/5 GeV;",
+     this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight);
 
     if(m_isMC) {
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
-       this->getScaledFatPt(this->fat_pt->at(gbbcand->ind_fj)/1e3),125,500.,1000.,event_weight);
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),";scaled large-R jet p_{T} [GeV];Events/5 GeV;",
+       this->getScaledFatPt(this->fat_pt->at(gbbcand->ind_fj)/1e3),100,500.,1000.,event_weight);
     } else {
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
-       this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight);
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),";scaled large-R jet p_{T} [GeV];Events/5 GeV;",
+       this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight);
     }
   }
 
@@ -487,16 +487,16 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
   //inclusive only for pt and eta
   if(m_isNominal) {
     m_HistSvc->FastFillTH1D(
-     makeFlavInclPlotName("fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
-     this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight
+     makeFlavInclPlotName("fjpt"+nametag),";large-R jet p_{T} [GeV];Events/5 GeV;",
+     this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight
     );
     m_HistSvc->FastFillTH1D(
      makeFlavInclPlotName("fjeta"+nametag),";large-R jet #eta;Events/0.2;",
      this->fat_eta->at(gbbcand->ind_fj),10,-2.5,2.5,event_weight
     );
 
-    m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
-     this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight);
+    m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/5 GeV;",
+     this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight);
     //m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,"fjptsc"+nametag),
     // ";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
     // this->getScaledFatPt(this->fat_pt->at(gbbcand->ind_fj)/1e3),250,0.,1000.,event_weight);
@@ -505,19 +505,19 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
 
   }
 
-  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
-   this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight);
-  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/4 GeV;",
-   this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight);
+  m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/5 GeV;",
+   this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight);
+  m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjpt"+nametag),";large-R jet p_{T} [GeV];Events/5 GeV;",
+   this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight);
 
   if (m_isMC) {
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),
-     ";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
-     this->getScaledFatPt(this->fat_pt->at(gbbcand->ind_fj)/1e3),125,500.,1000.,event_weight);
+     ";scaled large-R jet p_{T} [GeV];Events/5 GeV;",
+     this->getScaledFatPt(this->fat_pt->at(gbbcand->ind_fj)/1e3),100,500.,1000.,event_weight);
   } else {
     m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"fjptsc"+nametag),
-     ";scaled large-R jet p_{T} [GeV];Events/4 GeV;",
-     this->fat_pt->at(gbbcand->ind_fj)/1e3,125,500.,1000.,event_weight);
+     ";scaled large-R jet p_{T} [GeV];Events/5 GeV;",
+     this->fat_pt->at(gbbcand->ind_fj)/1e3,100,500.,1000.,event_weight);
   }
 
   m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,"fjD2"+nametag),";large-R jet D2;Events/0.02;",
