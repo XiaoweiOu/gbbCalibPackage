@@ -5,7 +5,7 @@ import ConfigFunctions as config
 import argparse
 
 ROOT.gROOT.SetBatch(True)
-from ROOT import TCanvas,TPad,TH2,TTree
+from ROOT import TCanvas,TPad,TH2,TTree,TString
 
 #SetupStyle()
 
@@ -23,7 +23,7 @@ Lumi = 36000.0 #in pb^-1
 
 histHelper = config.HistHelper(xsecFile)
 
-ListOfTriggers = [ 'HLT_j380' ]
+ListOfTriggers = [ 'HLT_j420' ]
 #ListOfTriggers = [ 'HLT_j150', 'HLT_j175', 'HLT_j260', 'HLT_j380' ]
 
 #make list of histograms
