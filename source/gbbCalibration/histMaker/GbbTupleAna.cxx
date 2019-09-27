@@ -847,6 +847,11 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
     m_HistSvc->FastFillTH1D("Hist_MCStatsUnc",1,1,0.5,1.5,total_evt_weight);
 
+    if (m_isMC && m_isNominal) {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"SF"),";product of track-jet SFs;Events",
+        mjSF*nmjSF,50,0.,5.,total_evt_weight);
+    }
+
     if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight);
     if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight);
     if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight);
@@ -983,6 +988,12 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if (passSpecificCuts(eventFlag, CutsWith2Btags)) {
     //std::cout<<"Filling post-tag plots for"<<m_SysVarName<<"with btag_SF :"<<btag_SF_nom<<std::endl;
+
+    if (m_isMC && m_isNominal) {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"SF_PREFITPOSTTAG"),
+        ";product of track-jet SFs;Events",
+        mjSF*nmjSF,50,0.,5.,total_evt_weight);
+    }
 
     if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
