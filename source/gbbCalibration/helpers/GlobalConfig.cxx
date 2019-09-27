@@ -161,6 +161,9 @@ char GlobalConfig::GetFlavour(int truthType) {
     case 0:
       return 'L';
       break;
+    case 15:
+      return 'T';
+      break;
     default:
       std::cout<<"GlobalConfig - Unrecognized truth type: "<<truthType<<std::endl;
       return 'O';
@@ -172,7 +175,7 @@ TString GlobalConfig::GetFlavourPair(int muJetTruth, int nonMuJetTruth) {
   TString output = "";
   output += GetFlavour(muJetTruth);
   output += GetFlavour(nonMuJetTruth);
-  if (output.Contains("O")) return "Other";
+  if (output.Contains("O") || output.Contains("T")) return "Other";
   if (!m_doMergeFlavours) return output;
   else {
     //FIXME: Hard-coding this is sub-optimal if categories ever change

@@ -226,7 +226,7 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   // use configstring for btagging
   if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
     try {
-      this->m_bTagger = new BTagger(this->m_BTagWP.Data(), this->m_useVRTrkJets);
+      m_bTagger = TaggerFactory::Create(m_BTagWP.Data());
     } catch (std::exception& e){
       // if the config string is bad, abort
       std::cerr << "exception: " << e.what() << std::endl;
@@ -402,6 +402,8 @@ void GbbTupleAna::Loop() {
           std::cout<<"Unknown data run number: "<<this->eve_run<<std::endl;
         }
       }
+      m_bTagger->setFlags({m_isMC, m_useVRTrkJets});
+      m_bTagger->initialize(*this);
     }
 
     m_doFillMujet=false;
@@ -768,26 +770,14 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //7.) B-Tagging
   //=========================================
 
-  //Benchmark Numbers Flavour Tagging Group (AntiKt2PV0TrackJets @ 70% eff)
-  //https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingBenchmarks#MV2c20_tagger_AntiKt2PV0TrackJet
-  //  this->FillFtagInfo(&gbbcand,total_evt_weight_corr,ftagtag);
-  //if(this->trkjet_MV2c20->at(gbbcand.ind_mj)<-0.3098 || this->trkjet_MV2c20->at(gbbcand.ind_nmj)<-0.3098) return false;
-  //Moved to MV2c10 at 70% efficiency
-
-  /* wesley: not used for XbbScore
-  int isTagged = passBTagCut(gbbcand);
-  if (isTagged == -99) {
-    std::cout<<"processgbb(): Unrecognized b-tag type"<<std::endl;
-    return false;
-  }
-  */
   /*bTagger ---*/
   // read xbbscore parameters, then use xbbcutter to determine
   // if this gbb candidate is b tagged.
   int isTagged = 0;
+  float mjSF(-1.), nmjSF(-1.);
   if(m_Debug) std::cout<<"processgbb(): Getting tags"<<std::endl;
   if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
-    isTagged = this->m_bTagger->tag(*this,gbbcand);
+    isTagged = m_bTagger->accept(gbbcand,mjSF,nmjSF);
   } else {
     std::cout << " not tagging mode. done." << std::endl;
     return false;
@@ -797,23 +787,23 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
 
   //at least 1 b-tag
-  if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);
+  if(isTagged == 1 || isTagged == 2) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);
   //2 b-tags
-  if(isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMu2Btags,true);
+  if(isTagged == 2) updateFlag(eventFlag,GbbCuts::MuNonMu2Btags,true);
   //0 b-tags
-  if(isTagged == -1) updateFlag(eventFlag,GbbCuts::MuNonMuAnti2Btags,true);
+  if(isTagged == 0) updateFlag(eventFlag,GbbCuts::MuNonMuAnti2Btags,true);
   //at most 1 b-tag
-  if(isTagged == 0 || isTagged == -1) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
+  if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
 
   icut++;
-  if (isTagged == 1) {
+  if (isTagged == 2) {
     if(m_Debug) std::cout<<"processgbb(): Has two b-tags"<<std::endl;
     m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
     ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "2 b-tags");
   }
 
   icut++;
-  if (isTagged == 1 && gbbcand.nRecoMuons > 1) {
+  if (isTagged == 2 && gbbcand.nRecoMuons > 1) {
     if(m_Debug) std::cout<<"processgbb(): Has two b-tags and two muons"<<std::endl;
     m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
     ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "2 muons and 2 b-tags");
@@ -856,6 +846,11 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if(passSpecificCuts(eventFlag, CutsNoBtag)){
 
     m_HistSvc->FastFillTH1D("Hist_MCStatsUnc",1,1,0.5,1.5,total_evt_weight);
+
+    if (m_isMC && m_isNominal) {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"SF"),";product of track-jet SFs;Events",
+        mjSF*nmjSF,50,0.,5.,total_evt_weight);
+    }
 
     if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight);
     if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight);
@@ -993,6 +988,12 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if (passSpecificCuts(eventFlag, CutsWith2Btags)) {
     //std::cout<<"Filling post-tag plots for"<<m_SysVarName<<"with btag_SF :"<<btag_SF_nom<<std::endl;
+
+    if (m_isMC && m_isNominal) {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"SF_PREFITPOSTTAG"),
+        ";product of track-jet SFs;Events",
+        mjSF*nmjSF,50,0.,5.,total_evt_weight);
+    }
 
     if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
     if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");

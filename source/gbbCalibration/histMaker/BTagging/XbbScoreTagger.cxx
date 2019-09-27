@@ -1,36 +1,88 @@
-
-
-#include "XbbScoreHybridCutter.h"
-#include <stdexcept>
+#include "XbbScoreTagger.h"
+#include "gbbUtil.h"
 #include <cmath> // for log
-// need p_h, p_qcd, p_top
-// p_h = higgs
-int XbbScoreHybridCutter::cut(float p_h, float p_qcd, float p_top, float fat_pt_val) {
-  // D in the formula
-  // calculate from the formula D given in the doc
-  float candidateValue = std::log( p_h / ( (1 - f_)*p_qcd + f_ * p_top) );
-  // compare with cutValue and decided if it is btagged
-  float cutValue;
-  // comput cutValue
-  if ( f_ == 0.2 ){
-    cutValue = XbbTag_antiQCDtop_flat60eff(fat_pt_val);
-  } else if ( f_ == 0 ) {
-    cutValue = XbbTag_antiQCD_flat60eff(fat_pt_val);
-  } else{
-    throw std::invalid_argument("invalide f in xbbscoreHybrid" );
-  }
-  
-  if(candidateValue > cutValue) {
-    // Double-b-tagged
-    return 1;
-  } else {
-    // Not double-b-tagged
+
+XbbScoreTagger::XbbScoreTagger(std::string operatingPt, float xbbTopFrac) :
+  BJetTagger("XbbScore",operatingPt),
+  m_topFrac(xbbTopFrac),
+  m_fixed_cut(-1.),
+  m_useHybWP(false),
+  v_XbbScoreHiggs(nullptr),
+  v_XbbScoreQCD(nullptr),
+  v_XbbScoreTop(nullptr),
+  v_fat_pt(nullptr) {
+}
+
+int XbbScoreTagger::initialize(const TupleAna& gbbtuple) {
+  // get address of containers for relevant variables
+  // WARNING: no protection from TupleAna deleting these pointers
+  // this is bad practice, so be careful
+  v_XbbScoreHiggs = gbbtuple.fat_XbbScoreHiggs;
+  v_XbbScoreQCD   = gbbtuple.fat_XbbScoreQCD;
+  v_XbbScoreTop   = gbbtuple.fat_XbbScoreTop;
+  v_fat_pt        = gbbtuple.fat_pt;
+
+  auto configV = GbbUtil::splitString(m_operatingPt,"_");
+  if (configV.size() != 2) {
+    std::cerr << "ERROR : invalid XbbScore operating point " << m_operatingPt.c_str() << std::endl;
     return -1;
   }
-}  
+  m_eff = std::stoi(configV[1], nullptr);
+  if (configV[0].find("HybBEff") != std::string::npos) {
+    m_useHybWP = true;
+  } else {
+    setFixedCut();
+  }
+  return 0;
+}
 
+void XbbScoreTagger::setFixedCut() {
 
-double XbbScoreHybridCutter::XbbTag_antiQCD_flat60eff(double x) {
+  // check that requested top fraction is in the map
+  if(m_fixedCutMap.count(m_topFrac) == 0) {
+    throw std::invalid_argument( "invalid input top frac: " + std::to_string(m_topFrac) );
+  }
+  // check that requested efficiency point exists
+  if(m_fixedCutMap[m_topFrac].count(m_eff) == 0) {
+    throw std::invalid_argument( "invalid input eff: " + std::to_string(m_eff) );
+  }
+
+  // set cut value
+  m_fixed_cut = m_fixedCutMap[m_topFrac][m_eff];
+}
+
+int XbbScoreTagger::accept(const GbbCandidate& gbbcand, float& mjSF, float& nmjSF) {
+  mjSF = -1.;
+  nmjSF = -1.;
+  return accept(gbbcand);
+}
+
+int XbbScoreTagger::accept(const GbbCandidate& gbbcand) {
+
+  float p_higgs = v_XbbScoreHiggs->at(gbbcand.ind_fj);
+  float p_qcd   = v_XbbScoreQCD->at(gbbcand.ind_fj);
+  float p_top   = v_XbbScoreTop->at(gbbcand.ind_fj);
+  float fat_pt  = v_fat_pt->at(gbbcand.ind_fj);
+
+  float xbb_discriminant = std::log( p_higgs / ( (1-m_topFrac)*p_qcd + m_topFrac*p_top) );
+  float cut_val = 0.;
+  if (m_useHybWP) {
+    if ( m_topFrac == 0.2 ) {
+      cut_val = XbbTag_antiQCDtop_flat60eff(fat_pt);
+    } else if ( m_topFrac == 0 ) {
+      cut_val = XbbTag_antiQCD_flat60eff(fat_pt);
+    } else {
+      return -1;
+    }
+  } else {
+    cut_val = m_fixed_cut;
+  }
+
+  // return 2 for double-tagged or 0
+  return (xbb_discriminant > cut_val) ? 2 : 0;
+}
+
+double XbbScoreTagger::XbbTag_antiQCD_flat60eff(double x) {
 
   const int fNp = 12, fKstep = 0;
   const double fDelta = -1, fXmin = 0, fXmax = 2750;
@@ -71,7 +123,7 @@ double XbbScoreHybridCutter::XbbTag_antiQCD_flat60eff(double x) {
   return (fY[klow]+dx*(fB[klow]+dx*(fC[klow]+dx*fD[klow])));
 }
 
-double XbbScoreHybridCutter::XbbTag_antiQCDtop_flat60eff(double x) {
+double XbbScoreTagger::XbbTag_antiQCDtop_flat60eff(double x) {
    // 20% fraction for top
    const int fNp = 12, fKstep = 0;
    const double fDelta = -1, fXmin = 0, fXmax = 2750;
@@ -110,43 +162,3 @@ double XbbScoreHybridCutter::XbbTag_antiQCDtop_flat60eff(double x) {
    double dx=x-fX[klow];
    return (fY[klow]+dx*(fB[klow]+dx*(fC[klow]+dx*fD[klow])));
 }
-
-// // what is this?? not used??
-// double XbbTag_spline_flatQCDrejection_mH_0(double x) {
-//    const int fNp = 11, fKstep = 0;
-//    const double fDelta = -1, fXmin = 0, fXmax = 185;
-//    const double fX[11] = { 0, 50, 65, 80, 95,
-//                         110, 125, 140, 155, 170,
-//                         185 };
-//    const double fY[11] = { 0, 2.875, 3.625, 4.75, 5.25,
-//                         5.5, 5.375, 4.75, 4.5, 3.75,
-//                         3.625 };
-//    const double fB[11] = { 0.137238, 0.0346611, 0.0704599, 0.0584995, 0.0205421,
-//                         0.00933219, -0.0328708, -0.0278489, -0.0307337, -0.0492165,
-//                         0.0525997 };
-//    const double fC[11] = { -0.00273274, 0.000681202, 0.00170538, -0.00250274, -2.77557e-05,
-//                         -0.00071957, -0.00209396, 0.00242876, -0.00262108, 0.00138889,
-//                         15 };
-//    const double fD[11] = { 2.27596e-05, 2.27596e-05, -9.35139e-05, 5.49997e-05, -1.53737e-05,
-//                         -3.05421e-05, 0.000100505, -0.000112219, 8.91104e-05, 8.91104e-05,
-//                         6.96152 };
-//    int klow=0;
-//    if(x<=fXmin) klow=0;
-//    else if(x>=fXmax) klow=fNp-1;
-//    else {
-//      if(fKstep) {
-//        // Equidistant knots, use histogramming
-//        klow = int((x-fXmin)/fDelta);
-//        if (klow < fNp-1) klow = fNp-1;
-//      } else {
-//        int khig=fNp-1, khalf;
-//        // Non equidistant knots, binary search
-//        while(khig-klow>1)
-//          if(x>fX[khalf=(klow+khig)/2]) klow=khalf;
-//          else khig=khalf;
-//      }
-//    }
-//    // Evaluate now
-//    double dx=x-fX[klow];
-//    return (fY[klow]+dx*(fB[klow]+dx*(fC[klow]+dx*fD[klow])));
-// }

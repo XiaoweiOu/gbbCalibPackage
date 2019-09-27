@@ -17,7 +17,7 @@
 #include "TRandom3.h"
 #include <map>
 // wesley add for b tagging module
-#include "BTagging/BTagger.h"
+#include "BTagging/BJetTagger.h"
 #include "GbbStructures.h"
 #include <functional>
 
@@ -129,7 +129,7 @@ private:
   // wesley:
   // this for cutting the gbb candidate
   // in b-tagging step
-  BTagger* m_bTagger;
+  BJetTagger* m_bTagger;
 
   void Loop(const TString& sys);
   bool Processgbb(int i_evt);
