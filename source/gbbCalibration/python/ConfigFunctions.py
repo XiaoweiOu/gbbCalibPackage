@@ -45,10 +45,11 @@ def GetDataFile(name):
   if os.path.exists(name):
     print "found",name
     return name
-  data_paths = string.split(os.environ['GBB_BUILD_DIR'], os.pathsep)
+  data_paths = string.split(os.environ['DATAPATH'], os.pathsep)
+  #data_paths = string.split(os.environ['GBB_BUILD_DIR'], os.pathsep)
   found = False
   for path in data_paths:
-    path = os.path.join(path,'gbbCalibration/data')
+    #path = os.path.join(path,'gbbCalibration/data')
     if os.path.exists(os.path.join(path,name)):
       found = True
       break
@@ -91,8 +92,15 @@ def GetChannelNumber(filename):
 
 #-----------------------------------------------
 def LoadGlobalConfig():
+  #from ROOT import GlobalConfig
+  #return GlobalConfig('gbbCalibration/configs/GlobalConfig.cfg')
+  filepath = GetDataFile("gbbCalibration/configs/GlobalConfig.cfg")
+  if not filepath:
+    print "Global config file not found!"
+    exit()
   from ROOT import GlobalConfig
-  return GlobalConfig('GlobalConfig.cfg')
+  return GlobalConfig(filepath)
+
 
 #-----------------------------------------------
 def GetLumi(year):

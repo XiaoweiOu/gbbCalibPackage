@@ -1,5 +1,5 @@
 #include "BJetTagger.h"
-#include "gbbUtil.h"
+#include "helpers/GbbUtil.h"
 #include "AsgToolTagger.h"
 #include "XbbScoreTagger.h"
 
