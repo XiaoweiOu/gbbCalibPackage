@@ -15,34 +15,30 @@ atlas_depends_on_subdirs(
 find_package( ROOT COMPONENTS Core MathCore RIO Hist Tree Matrix Gpad Graf Physics Minuit)
 
 # Build a dictionary for the library:
-atlas_add_root_dictionary( gbbTupleLib _gbbDictSource
-   ROOT_HEADERS histMaker/TupleAna.h histMaker/GbbTupleAna.h histMaker/LinkDef.h
-   EXTERNAL_PACKAGES ROOT )
-atlas_add_root_dictionary( configLib _configDictSource
-   ROOT_HEADERS helpers/GlobalConfig.h helpers/LinkDef.h
+atlas_add_root_dictionary( gbbCommonLib gbbCommonDictSource
+   ROOT_HEADERS helpers/GbbUtil.h helpers/GlobalConfig.h helpers/LinkDef.h
    EXTERNAL_PACKAGES ROOT )
 
-atlas_add_library( configLib
-   helpers/GlobalConfig.cxx helpers/GlobalConfig.h
-   ${_configDictSource}
+atlas_add_library( gbbCommonLib
+   helpers/GbbUtil.cxx helpers/GlobalConfig.cxx helpers/GlobalConfig.h
+   ${gbbCommonDictSource}
+   PUBLIC_HEADERS helpers
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
    )
 atlas_add_library( gbbTupleLib
    histMaker/*.cxx histMaker/*.h
    histMaker/BTagging/*.cxx histMaker/BTagging/*.h
-   helpers/*.cxx helpers/*.h
-   ${_gbbDictSource}
    PUBLIC_HEADERS histMaker
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver xAODBTaggingEfficiencyLib
+   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver xAODBTaggingEfficiencyLib gbbCommonLib
    )
 atlas_add_library( ScaleFactorCalcLib
    scaleFactorCalculator/*.cxx scaleFactorCalculator/*.h
-   helpers/*.cxx helpers/*.h  helpers/atlasstyle/*.C helpers/atlasstyle/*.h
+   helpers/atlasstyle/*.C helpers/atlasstyle/*.h
    PUBLIC_HEADERS scaleFactorCalculator
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver
+   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver gbbCommonLib
    )
 
 # Install files from the package:
@@ -57,13 +53,13 @@ atlas_add_executable( run_calculateSF
    LINK_LIBRARIES ${ROOT_LIBRARIES} ScaleFactorCalcLib
    )
 
- ## add a test exe
- #atlas_add_executable( run_GbbTest
- #  tests/run_tests.cxx
- #  INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
- #  LINK_LIBRARIES ${ROOT_LIBRARIES} gbbTupleLib
- #  )
+## add a test exe
+#atlas_add_executable( run_GbbTest
+#  tests/run_tests.cxx
+#  INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
+#  LINK_LIBRARIES ${ROOT_LIBRARIES} gbbTupleLib
+#  )
 
-atlas_install_python_modules( python/makeReweightHistos.py LINK_LIBRARIES configLib )
+#atlas_install_python_modules( python/makeReweightHistos.py LINK_LIBRARIES gbbCommonLib )
 #atlas_install_python_modules( python/*.py )
 atlas_install_data( data/* )

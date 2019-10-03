@@ -54,7 +54,6 @@ GbbTupleAna::GbbTupleAna() : TupleAna(),m_Debug(false),m_SumWeightTuple(0),m_nev
 GbbTupleAna::~GbbTupleAna() {
   // TODO Auto-generated destructor stub
 
-  if(m_FlavFracCorrector) delete m_FlavFracCorrector;
   if(m_HistSvc) delete m_HistSvc;
   if(m_config) delete m_config;
 
@@ -147,12 +146,6 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_doSd0Systematics = config->GetValue("doSd0Systematics",false);
   std::cout<<"doSd0Systematics (will only work if nominal): "<<m_doSd0Systematics<<std::endl;
 
-  m_doFlavFracCorrection = config->GetValue("doFlavFracCorrection",false);
-  std::cout<<"doFlavFracCorrection: "<<m_doFlavFracCorrection<<std::endl;
-
-  m_FlavFracCorrectorFile = config->GetValue("FlavFracCorrectorFile","./data/160714_FitResults_allsys.root");
-  std::cout<<"FlavFracCorrectorFile: "<<m_FlavFracCorrectorFile<<std::endl;
-
   m_doEvenOddTemplates=config->GetValue("doEvenOddTemplates",false);
   std::cout<<"m_doEvemOddTemplates: "<< m_doEvenOddTemplates<<std::endl;
 
@@ -196,9 +189,6 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   m_nevtTuple(0),
   //m_reweightHistos(),
   m_doEvenOddTemplates(false),
-  m_doFlavFracCorrection(false),
-  m_FlavFracCorrectorFile(""),
-  m_FlavFracCorrector(nullptr),
   m_doTrackSmearing(false),
   m_noMuonReq(false),
   m_doApplyBTaggingSF(false),
@@ -306,14 +296,6 @@ GbbTupleAna::GbbTupleAna(const std::vector<TString> infiles, const TString outfi
   if (m_isNominal) std::cout<<"Running on Nominal sample!"<<std::endl;
   else std::cout<<"Running on Systematics sample!"<<std::endl;
 
-
-  //=========================================
-  //Initialize Correction and Smearing
-  //=========================================
-
-  //Flavour Fraction correction
-  if(m_doFlavFracCorrection) m_FlavFracCorrector=new FlavourFracCorrector(m_FlavFracCorrectorFile);
-  else m_FlavFracCorrector=0;
 
   //=========================================
   //Initialize Reweighting histograms
@@ -1091,60 +1073,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
        this->trkjet_pt->at(gbbcand.ind_mj)/1e3,250,0.,500.,total_evt_weight);
     }
 
-  }
-
-  //4.) Histograms for Fit-Error calculation (pre- & post-b-tagging in fit pt-bins, for nominal only)
-
-  if(m_doFlavFracCorrection){
-
-    if(m_isNominal && this->eve_isMC && passSpecificCuts(eventFlag, CutsNoBtag)){
-      this->FillTrackJetProperties(&gbbcand,total_evt_weight,ptlabel+"_FITERR");
-      this->FillFatJetProperties(&gbbcand,total_evt_weight,ptlabel+"_FITERR");
-    }
-
-    if(m_isNominal && this->eve_isMC && passSpecificCuts(eventFlag, CutsWith2Btags)){
-      this->FillTrackJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_"+ptlabel+"_FITERR");
-      this->FillFatJetProperties(&gbbcand,total_evt_weight,"PREFITPOSTTAG_"+ptlabel+"_FITERR");
-    }
-
-  }
-
-  //3.) After Fit and before/after b-tagging
-  double fffit_fact=1.;
-
-  if(m_doFlavFracCorrection && this->eve_isMC){
-
-    if(m_isNominal) {
-      fffit_fact = m_FlavFracCorrector->GetCorrectionFactorNom(dijet_flav,
-                    this->trkjet_pt->at(gbbcand.ind_mj)/1e3,
-                    this->trkjet_pt->at(gbbcand.ind_nmj)/1e3);
-    } else {
-      fffit_fact = m_FlavFracCorrector->GetCorrectionFactorSys(dijet_flav,
-                    this->trkjet_pt->at(gbbcand.ind_mj)/1e3,
-                    this->trkjet_pt->at(gbbcand.ind_nmj)/1e3,
-                    m_SysVarName);
-    }
-
-    if(passSpecificCuts(eventFlag, CutsNoBtag)){
-      this->FillTemplates(&gbbcand,total_evt_weight*fffit_fact,"POSTFIT");
-      this->FillTrackJetProperties(&gbbcand,total_evt_weight*fffit_fact,"POSTFIT");
-      this->FillFatJetProperties(&gbbcand,total_evt_weight*fffit_fact,"POSTFIT");
-    }
-
-    if(passSpecificCuts(eventFlag, CutsWith2Btags)){
-      this->FillTemplates(&gbbcand,total_evt_weight*fffit_fact*btag_SF_nom,"POSTFITPOSTTAG");
-      this->FillTrackJetProperties(&gbbcand,total_evt_weight*fffit_fact*btag_SF_nom,"POSTFITPOSTTAG");
-      this->FillFatJetProperties(&gbbcand,total_evt_weight*fffit_fact*btag_SF_nom,"POSTFITPOSTTAG");
-
-      if(m_isNominal){
-        //fill histograms with b-tagging systematics applied
-        this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"POSTFITPOSTTAG_BTAGUP");
-        this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"POSTFITPOSTTAG_BTAGUP");
-
-        this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"POSTFITPOSTTAG_BTAGDOWN");
-        this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"POSTFITPOSTTAG_BTAGDOWN");
-      }
-    }
   }
 
   /*  if(total_evt_weight > 50){
