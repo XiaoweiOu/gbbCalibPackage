@@ -1,11 +1,12 @@
 #include "GbbUtil.h"
-#include <string>
 #include <memory>
 
 #include <iostream>
 
 #include <boost/algorithm/string.hpp> // for trimming
 #include <wordexp.h>
+
+#include "PathResolver/PathResolver.h"
 
 namespace GbbUtil {
 
@@ -49,6 +50,10 @@ namespace GbbUtil {
       std::cerr << exc << std::endl;
       exit(2);
     }
+  }
+
+  TString findConfigFile(const TString filename) {
+    return PathResolverFindCalibFile(("gbbCalibration/configs/"+filename).Data());
   }
 
   std::vector<std::string> splitString(std::string str, std::string delimiter){

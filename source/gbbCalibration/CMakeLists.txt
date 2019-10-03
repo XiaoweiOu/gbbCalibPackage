@@ -31,14 +31,14 @@ atlas_add_library( gbbTupleLib
    histMaker/BTagging/*.cxx histMaker/BTagging/*.h
    PUBLIC_HEADERS histMaker
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver xAODBTaggingEfficiencyLib gbbCommonLib
+   LINK_LIBRARIES ${ROOT_LIBRARIES} xAODBTaggingEfficiencyLib gbbCommonLib
    )
 atlas_add_library( ScaleFactorCalcLib
    scaleFactorCalculator/*.cxx scaleFactorCalculator/*.h
    helpers/atlasstyle/*.C helpers/atlasstyle/*.h
    PUBLIC_HEADERS scaleFactorCalculator
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
-   LINK_LIBRARIES ${ROOT_LIBRARIES} PathResolver gbbCommonLib
+   LINK_LIBRARIES ${ROOT_LIBRARIES} gbbCommonLib
    )
 
 # Install files from the package:
@@ -60,6 +60,6 @@ atlas_add_executable( run_calculateSF
 #  LINK_LIBRARIES ${ROOT_LIBRARIES} gbbTupleLib
 #  )
 
-#atlas_install_python_modules( python/makeReweightHistos.py LINK_LIBRARIES gbbCommonLib )
+atlas_install_python_modules( python/makeReweightHistos.py LINK_LIBRARIES gbbCommonLib )
 #atlas_install_python_modules( python/*.py )
 atlas_install_data( data/* )

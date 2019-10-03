@@ -3,6 +3,8 @@
 
 #include <map>
 #include <vector>
+#include <string>
+#include "TString.h"
 
 namespace GbbUtil {
 
@@ -10,6 +12,8 @@ namespace GbbUtil {
   std::string expandFilename(const char* filename);
   // prepend path to config files before expanding
   std::string expandConfigFilename(const char* filename);
+  // use PathResolver to find file
+  TString findConfigFile(const TString filename);
 
   // split s into multiple parts with delim
   std::vector<std::string> splitString(std::string str, std::string delimiter);
@@ -24,5 +28,5 @@ namespace GbbUtil {
   std::map<std::string,std::string> splitWholeThenEach
     (std::string s, std::string delimiter1, std::string delimiter2);
 
-};
+}
 #endif

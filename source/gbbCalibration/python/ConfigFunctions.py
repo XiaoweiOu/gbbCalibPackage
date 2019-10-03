@@ -92,14 +92,8 @@ def GetChannelNumber(filename):
 
 #-----------------------------------------------
 def LoadGlobalConfig():
-  #from ROOT import GlobalConfig
-  #return GlobalConfig('gbbCalibration/configs/GlobalConfig.cfg')
-  filepath = GetDataFile("gbbCalibration/configs/GlobalConfig.cfg")
-  if not filepath:
-    print "Global config file not found!"
-    exit()
   from ROOT import GlobalConfig
-  return GlobalConfig(filepath)
+  return GlobalConfig('GlobalConfig.cfg')
 
 
 #-----------------------------------------------

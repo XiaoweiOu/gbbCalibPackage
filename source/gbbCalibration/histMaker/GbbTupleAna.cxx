@@ -15,7 +15,7 @@
 #include "TObjString.h"
 #include "TTree.h"
 #include "TChain.h"
-#include "PathResolver/PathResolver.h"
+#include "helpers/GbbUtil.h"
 #include "TSystem.h"
 
 
@@ -66,18 +66,9 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
 
   std::cout<<"=============================================="<<std::endl;
 
-  TString m_config_path = config_path;
-  //if ( !(gSystem->AccessPathName(m_config_path.Data())) )
-  m_config_path = PathResolverFindCalibFile(m_config_path.Data());
-
-  if (config_path == "") {
-    std::cout << "Cannot find settings file " + config_path + "\n  also searched in " + m_config_path << std::endl;
-    abort();
-  } else std::cout << "Config file is set to: " << m_config_path << std::endl;
-
   TEnv* config = new TEnv("env");
-  if (config->ReadFile(m_config_path.Data(),EEnvLevel(0)) == -1) {
-    std::cout << "Could not read config file " << m_config_path.Data() << std::endl;
+  if (config->ReadFile(GbbUtil::findConfigFile(config_path).Data(),EEnvLevel(0)) == -1) {
+    std::cout << "Could not read config file " << config_path.Data() << std::endl;
     abort();
   }
   //config->Print();
@@ -85,7 +76,7 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_Debug = config->GetValue("doDebug",false);
   std::cout<<"doDebug: "<<m_Debug<<std::endl;
 
-  m_config = new GlobalConfig(PathResolverFindCalibFile("gbbCalibration/configs/GlobalConfig.cfg"));
+  m_config = new GlobalConfig("GlobalConfig.cfg");
   std::cout<<"Loaded GlobalConfig"<<std::endl;
 
   std::vector<TString> tempRunMode = SplitString(config->GetValue("RunMode",""),',');
@@ -1100,7 +1091,7 @@ void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
 
   std::cout<<"Looking for hist: "<<hist_name<<std::endl;
 
-  TFile* file=TFile::Open(PathResolverFindCalibFile(filename.Data()).data(),"READ");
+  TFile* file=TFile::Open(GbbUtil::expandFilename(("${GBB_BUILD_DIR}/"+filename).Data()).data(),"READ");
   file->GetObject(hist_name,hist);
   hist->SetDirectory(0);
   m_reweightHistos[trigger_passed]=std::shared_ptr<TH2D>(new TH2D(*hist));
