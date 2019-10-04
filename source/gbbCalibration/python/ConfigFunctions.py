@@ -49,7 +49,7 @@ def GetDataFile(name):
   #data_paths = string.split(os.environ['GBB_BUILD_DIR'], os.pathsep)
   found = False
   for path in data_paths:
-    #path = os.path.join(path,'gbbCalibration/data')
+    path = os.path.join(path,'gbbCalibration')
     if os.path.exists(os.path.join(path,name)):
       found = True
       break
