@@ -30,9 +30,7 @@ class AsgToolTagger : public BJetTagger {
   std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2017-21-13TeV-MC16-CDI-2019-07-30_v1.root";
 
   std::string m_jetAuthor = "AntiKt2PV0TrackJets";
-  std::string m_taggerName = "MV2c10";
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
-  std::string m_operatingPt = "FixedCutBEff_70";
   bool        m_useDevelopmentFile = true;
   bool        m_coneFlavourLabel = true;
   std::string m_systematicsStrategy = "SFEigen";
