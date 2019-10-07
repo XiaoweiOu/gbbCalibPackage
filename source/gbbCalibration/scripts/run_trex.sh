@@ -51,10 +51,8 @@ shift "$(($OPTIND -1))"
 [ -z $DIRNAME ] && loud_exit "Output directory not set"
 [ -d ${DIRNAME} ] && loud_exit "${DIRNAME} exists already"
 
-mkdir -p "${DIRNAME}/TRexFit"
+mkdir -p "${DIRNAME}/TRExFit"
 cp ${INFILE} ${DIRNAME}/trex_input.root
-# if MAKECONFIG is set (to anything) the run the python script with default settings
-[ ! -z $MAKECONFIG ] && python generate_trex_config.py ${DIRNAME} --year 2017 --nosys --noMCstat --fitSF
 
 # make TRExFitter config files
 python ${GBB_BUILD_DIR}/../source/gbbCalibration/scripts/generate_trex_config.py ${DIRNAME} ${CONFIGARGS}

@@ -9,13 +9,9 @@ import numpy as np
 import os
 
 #ROOT.gROOT.SetBatch(True)
-<<<<<<< HEAD
-from ROOT import gROOT,gStyle,TCanvas,TH2D,TLatex,TGraphAsymmErrors,TLine
-=======
 from ROOT import gROOT,gStyle,TFile,Double
 from ROOT import TCanvas,TH2D,TLatex,TGraphAsymmErrors,TLine
 from ROOT import kGreen
->>>>>>> 5e20005... Add flavor fraction plots
 
 #ROOT.gStyle.SetOptStat(0)
 #SetupStyle()
