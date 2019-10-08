@@ -206,6 +206,7 @@ MakeNEventHist('Incl')
 for var in ListOfTmplVars:
   RebinHist(TString('Incl'),var)
   RebinHist(TString('Incl'),TString(var.Data()+'_PREFITPOSTTAG'))
+  RebinHist(TString('Incl'),TString(var.Data()+'_PREFITUNTAG'))
 # Copy plot variables from infile to outfile
 for var in ListOfPlotVars:
   if var in ListOfTmplVars:
@@ -220,6 +221,7 @@ for region in ListOfTJpt:
   for var in ListOfTmplVars:
     RebinHistsAll(region,var)
     RebinHistsAll(region,TString(var.Data()+'_PREFITPOSTTAG'))
+    RebinHistsAll(region,TString(var.Data()+'_PREFITUNTAG'))
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
     if var in ListOfTmplVars:
@@ -227,19 +229,20 @@ for region in ListOfTJpt:
     CopyHists(region,var)
     CopyHists(region,var.Data()+'_PREFITPOSTTAG')
 
-## fat-jet bins
-#for region in ListOfFJpt:
-#  MakeNEventHist(region.Data())
-#  # Rebin template variables
-#  for var in ListOfTmplVars:
-#    RebinHistsAll(region,var)
-#    RebinHistsAll(region,TString(var.Data()+'_PREFITPOSTTAG'))
-#  # Copy plot variables from infile to outfile
-#  for var in ListOfPlotVars:
-#    if var in ListOfTmplVars:
-#      continue
-#    CopyHists(region,var)
-#    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
+# fat-jet bins
+for region in ListOfFJpt:
+  MakeNEventHist(region.Data())
+  # Rebin template variables
+  for var in ListOfTmplVars:
+    RebinHistsAll(region,var)
+    RebinHistsAll(region,TString(var.Data()+'_PREFITPOSTTAG'))
+    RebinHistsAll(region,TString(var.Data()+'_PREFITUNTAG'))
+  # Copy plot variables from infile to outfile
+  for var in ListOfPlotVars:
+    if var in ListOfTmplVars:
+      continue
+    CopyHists(region,var)
+    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
 
 infile.Close()
 outfile.Close()

@@ -52,6 +52,7 @@ atlas_add_executable( run_calculateSF
    INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
    LINK_LIBRARIES ${ROOT_LIBRARIES} ScaleFactorCalcLib
    )
+atlas_install_scripts( util/run_trex.sh )
 
 ## add a test exe
 #atlas_add_executable( run_GbbTest

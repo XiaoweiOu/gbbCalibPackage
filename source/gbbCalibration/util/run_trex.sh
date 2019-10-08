@@ -10,6 +10,7 @@ function usage {
   echo "       -o <output> Name of directory to store TRExFitter results"
   echo "       -i <input>  Name of histogram file for TRExFitter input"
   echo "       -h          Print this help message"
+  echo "       -c          Name of config file (located in data/configs)"
   echo "       -e          Additional arguments to be passed directly"
   echo "                   to generate_trex_config.py"
 }
@@ -17,7 +18,8 @@ function usage {
 INFILE=
 DIRNAME=
 CONFIGARGS=
-while getopts 'hi:o:e:' OPTION; do
+CONFIGNAME=
+while getopts 'hi:o:e:c:' OPTION; do
   case "$OPTION" in
     i)
       INFILE="$OPTARG"
@@ -27,6 +29,9 @@ while getopts 'hi:o:e:' OPTION; do
       ;;
     e)
       CONFIGARGS="$OPTARG"
+      ;;
+    c)
+      CONFIGNAME="--cfg $OPTARG"
       ;;
     h)
       usage
@@ -55,7 +60,7 @@ mkdir -p "${DIRNAME}/TRExFit"
 cp ${INFILE} ${DIRNAME}/trex_input.root
 
 # make TRExFitter config files
-python ${GBB_BUILD_DIR}/../source/gbbCalibration/scripts/generate_trex_config.py ${DIRNAME} ${CONFIGARGS}
+python ${GBB_BUILD_DIR}/../source/gbbCalibration/python/generate_trex_config.py ${DIRNAME} ${CONFIGARGS} ${CONFIGNAME}
 [ $? -eq 0 ] || loud_exit "Failed to make config files"
 
 CONFIGFILES=(`ls ${DIRNAME}`)

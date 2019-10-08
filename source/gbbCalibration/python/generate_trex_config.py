@@ -13,20 +13,68 @@ parser.add_argument('--asimov', action='store_true',
     help="Do Asimov fit rather than fitting to data")
 parser.add_argument('--noMCstat', action='store_true',
     help="Don't use MC stat errors in fit for comparison to old framework")
-parser.add_argument('--simul', action='store_true',
-    help="Simultaneously fit pre- and post-tag regions")
 parser.add_argument('--fitSF', action='store_true',
     help="Fit scale factor directly (rather than only correcting flavor fractions)")
+parser.add_argument('--cfg', type=str,
+    help="Name of extra config file (located in gbbCalibration/data/configs)")
 parser.add_argument('--debug', type=int, default=2,
     help="Debug level for TRexFitter [default: 2]")
 parser.add_argument('--nosys', action='store_true',
     help="Run nominal-only fit")
 args = parser.parse_args()
 
-useMCstat = not args.noMCstat
-MyConfig = config.LoadGlobalConfig()
+# define arguments
+debug = args.debug
+doAsimov = args.asimov
+doSystematics = not args.nosys
+fitSF = args.fitSF
+bins = args.bins
+useMCstats = not args.noMCstat
+MCstatThreshold = 0
 
-if not args.nosys:
+MyConfig = config.LoadGlobalConfig()
+if args.cfg:
+  trexConfig = config.GetDataFile(args.cfg)
+  if not trexConfig:
+    exit()
+  else:
+    # Parse config file
+    # Expect each line to be in the form;
+    #   Key Value1(,Value2...)
+    with open(trexConfig,'r') as f:
+      line = f.readline()
+      while line:
+        line = line.strip()
+        if not line:
+          line = f.readline()
+          continue
+        elif line[0] == '#':
+          line = f.readline()
+          continue
+        tokens = line.split()
+        # check key against possible arguments and store value(s) in global variable
+        if tokens[0] == 'Debug':
+          debug = tokens[1]
+        elif tokens[0] == 'doAsimov':
+          doAsimov = int(tokens[1])
+        elif tokens[0] == 'doSystematics':
+          doSystematics = int(tokens[1])
+        elif tokens[0] == 'fitSF':
+          fitSF = int(tokens[1])
+        elif tokens[0] == 'useMCstats':
+          useMCstats = int(tokens[1])
+        elif tokens[0] == 'MCstatThreshold':
+          MCstatThreshold = float(tokens[1])
+        elif tokens[0] == 'bins':
+          bins = tokens[1]
+        elif tokens[0] == 'year':
+          year = tokens[1]
+        else:
+          print('Unrecognized option string: '+tokens[0])
+
+        line = f.readline()
+
+if doSystematics:
   ListOfSystematics = MyConfig.GetSystematics()
   ListOfSystematicsSd0 = MyConfig.GetSystematics_Sd0()
   #ListOfSystematicsWeightVar = MyConfig.GetSystematics_WeightVar()
@@ -56,28 +104,16 @@ if not args.nosys:
 
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfTmplVars = MyConfig.GetTemplateVariables()
-if args.bins == "trkjet":
+if bins == "trkjet":
   ListOfPtBins = MyConfig.GetTrkJetRegions()
-elif args.bins == "fatjet":
+elif bins == "fatjet":
   ListOfPtBins = MyConfig.GetFatJetRegions()
-elif args.bins == "incl":
+elif bins == "incl":
   ListOfPtBins = [ TString("Incl") ]
 else:
-  print("Please choose either trkjet or fatjet binning. "+args.bins+" is not an option")
+  print("Please choose either trkjet or fatjet binning. "+bins+" is not an option")
 
-# luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
-# values used should match the GRL and lumicalc file used to generate the ntuples
-Lumi = 0
-if args.year == "2015" :
-  Lumi = 3219.56 # in /pb
-elif args.year == "2016" :
-  Lumi = 32988.1 # in /pb
-elif args.year == "2015+2016" :
-  Lumi = 3219.56 + 32988.1 # in /pb
-elif args.year == "2017" :
-  Lumi = 44307.4 # in /pb
-elif args.year == "2018" :
-  Lumi = 58450.1 # in /pb
+Lumi = config.GetLumi(year)
 print("Lumi is "+str(Lumi)+" /pb.")
 
 colorStr = {
@@ -88,19 +124,33 @@ colorStr = {
   'LL' : '255,204,0'
 }
 
-varTitles = {
-  'mjmeanSd0' : 'Muon-jet #LT s_{d0} #GT',
-  'nmjmeanSd0' : 'Non-muon-jet #LT s_{d0} #GT',
-  'mjmeanSd0_PREFITPOSTTAG' : 'BB-tagged Muon-jet #LT s_{d0} #GT',
-  'nmjmeanSd0_PREFITPOSTTAG' : 'BB-tagged Non-muon-jet #LT s_{d0} #GT'
-}
+def GetVarTitle(var):
+  title = ''
+  if 'nmj' in var:
+    title += 'Non-muon-jet'
+  elif 'mj' in var:
+    title += 'Muon-jet'
+
+  if 'meanSd0' in var:
+    title += ' #LT s_{d0} #GT'
+
+  return title
+
+def GetVarLabel(var):
+  if 'POSTTAG' in var:
+    return 'passed double-B tag'
+  elif 'UNTAG' in var:
+    return 'failed double-B tag'
+  else:
+    return 'pre B-tagging'
 
 def WriteRegionBlock(outfile,ptbin,var):
   outfile.write('Region: "'+var+'"\n')
   outfile.write('  Type: SIGNAL\n')
   outfile.write('  LogScale: TRUE\n')
   outfile.write('  HistoName: "h_'+ptbin+'_'+var+'"\n') #TODO: use config.GetName() functions
-  outfile.write('  VariableTitle: "'+varTitles[var]+'"\n')
+  outfile.write('  VariableTitle: "'+GetVarTitle(var)+'"\n')
+  outfile.write('  Label: "'+GetVarLabel(var)+'"\n')
   outfile.write('\n')
 
 def WriteSampleBlock(outfile,flav):
@@ -111,7 +161,7 @@ def WriteSampleBlock(outfile,flav):
   outfile.write('  FillColorRGB: '+colorStr[flav]+'\n')
   outfile.write('  LineColorRGB: 0,0,0\n')
   outfile.write('  NormFactor: "'+flav+'Fraction",1,0,100\n')
-  if useMCstat:
+  if useMCstats:
     outfile.write('  UseMCstat: TRUE\n')
   else:
     outfile.write('  UseMCstat: FALSE\n')
@@ -140,16 +190,16 @@ def WriteSystBlock1Sided(outfile,sys):
 def WriteConfigFile(ptbin,outdir):
   with open(outdir+'/fit_'+ptbin+'.config','w') as outfile:
     jobStr = 'Fit_'+ptbin
-    if args.asimov:
+    if doAsimov:
       jobStr += '_Asimov'
     else:
       jobStr += '_Data'
     # write Job block
     outfile.write('Job: "'+jobStr+'"\n')
-    outfile.write('  Label: "R21"\n')
+    #outfile.write('  Label: "R21"\n')
     outfile.write('  CmeLabel: "13 TeV"\n')
     outfile.write('  LumiLabel: "%1.1f fb^{-1}"\n' % float(Lumi/1000.))
-    if args.fitSF:
+    if fitSF:
       outfile.write('  POI: "ScaleFactor"\n')
     else:
       outfile.write('  POI: "BBFraction"\n')
@@ -160,8 +210,9 @@ def WriteConfigFile(ptbin,outdir):
     outfile.write('  OutputDir: "'+outdir+'/TRexFit/"\n')
     outfile.write('  DebugLevel: 2\n')
     outfile.write('  SystControlPlots: FALSE\n')
-    if useMCstat:
+    if useMCstats:
       outfile.write('  UseGammaPulls: TRUE\n')
+      outfile.write('  MCstatThreshold: {:.2f}\n'.format(MCstatThreshold))
     else:
       outfile.write('  UseGammaPulls: FALSE\n')
     outfile.write('\n')
@@ -171,7 +222,7 @@ def WriteConfigFile(ptbin,outdir):
     outfile.write('  FitType: SPLUSB\n')
     outfile.write('  FitRegion: CRSR\n')
     outfile.write('  GetGoodnessOfFit: TRUE\n')
-    if args.asimov:
+    if doAsimov:
       outfile.write('  FitBlind: TRUE\n')
       outfile.write('  POIAsimov: 1\n')
     else:
@@ -180,11 +231,14 @@ def WriteConfigFile(ptbin,outdir):
 
     # write region blocks
     for var in ListOfTmplVars:
-      WriteRegionBlock(outfile,ptbin,var.Data())
-      if args.simul:
+      if fitSF:
         WriteRegionBlock(outfile,ptbin,var.Data()+'_PREFITPOSTTAG')
+        #WriteRegionBlock(outfile,ptbin,var.Data()+'_PREFITUNTAG')
+        WriteRegionBlock(outfile,ptbin,var.Data())
+      else:
+        WriteRegionBlock(outfile,ptbin,var.Data())
 
-    if not args.asimov:
+    if not doAsimov:
       # write block for data
       outfile.write('Sample: "Data"\n')
       outfile.write('  Title: "Data"\n')
@@ -196,24 +250,42 @@ def WriteConfigFile(ptbin,outdir):
     for flav in ListOfFlavourPairs:
       WriteSampleBlock(outfile,flav.Data())
 
-    if args.fitSF:
-      outfile.write('Region: "NEvts_PREFITPOSTTAG"\n')
-      outfile.write('  Type: SIGNAL\n')
-      outfile.write('  HistoName: "h_'+ptbin+'_NEvts_PREFITPOSTTAG"\n') #TODO: use config.GetName() functions
-      outfile.write('  VariableTitle: "N_{Events}^{BB-tagged}"\n')
-      outfile.write('  Label: "BB-tagged Events"\n')
-      outfile.write('\n')
+    if fitSF:
+      #outfile.write('Region: "NEvts_PREFITPOSTTAG"\n')
+      #outfile.write('  Type: SIGNAL\n')
+      #outfile.write('  HistoName: "h_'+ptbin+'_NEvts_PREFITPOSTTAG"\n') #TODO: use config.GetName() functions
+      #outfile.write('  VariableTitle: "N_{Events}^{BB-tagged}"\n')
+      #outfile.write('  Label: "BB-tagged Events"\n')
+      #outfile.write('\n')
+
+      #outfile.write('NormFactor: "ScaleFactor"\n')
+      #outfile.write('  Samples: "BB"\n')
+      #outfile.write('  Regions: "NEvts_PREFITPOSTTAG"\n')
+      #outfile.write('  Title: "ScaleFactor"\n')
+      #outfile.write('  Nominal: 1\n')
+      #outfile.write('  Min: 0\n')
+      #outfile.write('  Max: 10\n')
+      #outfile.write('\n')
 
       outfile.write('NormFactor: "ScaleFactor"\n')
       outfile.write('  Samples: "BB"\n')
-      outfile.write('  Regions: "NEvts_PREFITPOSTTAG"\n')
+      outfile.write('  Regions: "mjmeanSd0_PREFITPOSTTAG","nmjmeanSd0_PREFITPOSTTAG"\n')
       outfile.write('  Title: "ScaleFactor"\n')
       outfile.write('  Nominal: 1\n')
       outfile.write('  Min: 0\n')
       outfile.write('  Max: 10\n')
       outfile.write('\n')
+      #outfile.write('NormFactor: "AntiScaleFactor"\n')
+      #outfile.write('  Samples: "BB"\n')
+      #outfile.write('  Regions: "mjmeanSd0_PREFITUNTAG","nmjmeanSd0_PREFITUNTAG"\n')
+      #outfile.write('  Title: "ScaleFactor"\n')
+      #outfile.write('  Nominal: 0.5\n')
+      #outfile.write('  Min: 0\n')
+      #outfile.write('  Max: 1\n')
+      #outfile.write('  Expression: (1-ScaleFactor):ScaleFactor[0.5,0.,1.]\n')
+      #outfile.write('\n')
 
-    if not args.nosys:
+    if doSystematics:
       # write systematics blocks
       for sys in ListOf1SidedSysts:
         WriteSystBlock1Sided(outfile,sys)
