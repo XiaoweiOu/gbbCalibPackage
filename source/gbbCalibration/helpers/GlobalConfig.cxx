@@ -132,7 +132,7 @@ std::vector<TString> GlobalConfig::GetTrkJetRegions() {
 
 std::vector<double> GlobalConfig::GetBinning(const TString var) {
   TString temp = var;
-  // If var has a tag, like _PREFITPOSTTAG, then remove it
+  // If var has a tag, like _2TAG, then remove it
   if (temp.Contains(TRegexp("_[A-Z]+"))) temp = temp(0,temp.Index(TRegexp("_[A-Z]+")));
   // Check the binning map for var
   if (m_PlotBinning.find(temp) != m_PlotBinning.end())

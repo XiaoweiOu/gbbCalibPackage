@@ -236,8 +236,8 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
   for (TString region : regions) {
     for (TString sys : systematics) {
       for (TString var : tmpl_vars) {
-        tmpl_data = m_config->GetDataHistName(region,var+"_PREFITPOSTTAG"); //FIXME?: less calls to GetDataHistName if this could be out of the systematics loop
-        tmpl_mc = m_config->GetMCHistNamesBySys(sys,region,var+"_PREFITPOSTTAG");
+        tmpl_data = m_config->GetDataHistName(region,var+"_2TAG"); //FIXME?: less calls to GetDataHistName if this could be out of the systematics loop
+        tmpl_mc = m_config->GetMCHistNamesBySys(sys,region,var+"_2TAG");
         m_fitdata->SetHistogramNames(var,tmpl_data,tmpl_mc);
       }
 
@@ -339,12 +339,12 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
   std::vector<TString> none={};
   std::vector<TString> variables = m_config->GetPlotVariables();
   std::vector<TString> variables_posttag, variables_posttag_btagsys;
-  //std::vector<TString> calib_var={"mjmaxSd0", "mjmaxSd0_PREFITPOSTTAG"};
+  //std::vector<TString> calib_var={"mjmaxSd0", "mjmaxSd0_2TAG"};
 
   for(auto& el : variables){
   //TODO: can this be mre generic?
     if(el.Contains("ANTITAG") || el.Contains("trjpt") || el.Contains("srj") || el.Contains("evemu") || (el.Contains("fjeta") && el.Contains("fjphi")) || el.Contains("slR4jpt") || el.Contains("trjptfjptratio") || el.Contains("trjptgbbcandratio")) continue;
-    variables_posttag.push_back(TString(el)+"_PREFITPOSTTAG");
+    variables_posttag.push_back(TString(el)+"_2TAG");
   }
   for(auto& el : variables_posttag){
     //TODO: not really sure why we skip mjmaxSd0 here
@@ -355,7 +355,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
     //if (isTemplate) continue;
     for (TString sys : btag_sys) variables_posttag_btagsys.push_back(TString(el)+"_"+sys);
   }
-  variables_posttag_btagsys.push_back("mjpt_PREFITUNTAG");
+  variables_posttag_btagsys.push_back("mjpt_NOT2TAG");
 
   this->ReadInFatJetHists(variables,systematics);
   this->ReadInFatJetHists(variables_posttag,systematics);
@@ -421,22 +421,22 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactors(TString &sys, bool doP
 //FIXME: why only Nominal?
   std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsMC(m_default_var, sys, 0);
 //NOTE: posttag_unscaled was scaled before
-  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 0);
+  std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsMC(m_default_var+"_2TAG", sys, 0);
   std::vector<TH1D*> hist_pretag_mc;
   std::vector<TH1D*> hist_posttag_mc;
   if (doPseudo) {
     hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 2, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 2, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_2TAG", sys, 2, i_pseudo);
   } else if (doPseudoData) {
     hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 3, i_pseudo);
-    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 3, i_pseudo);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_2TAG", sys, 3, i_pseudo);
   } else {
     hist_pretag_mc = GetRebinHistsMC(m_default_var, sys, 1);
-    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_PREFITPOSTTAG", sys, 1);
+    hist_posttag_mc = GetRebinHistsMC(m_default_var+"_2TAG", sys, 1);
   }
 
   TH1D* hist_pretag_data = GetRebinHistData(m_default_var);
-  TH1D* hist_posttag_data = GetRebinHistData(m_default_var+"_PREFITPOSTTAG");
+  TH1D* hist_posttag_data = GetRebinHistData(m_default_var+"_2TAG");
 
   //subtract backgrounds and calculate scale factor (or data stat error)
   float N_BB_pretag_mc, N_BB_posttag_mc, N_BB_pretag_data, N_BB_posttag_data, N_total_pretag_mc, N_total_pretag_data, N_total_posttag_data;
@@ -547,25 +547,25 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
   for (TString region : regions) {
 
     std::vector<TH1D*> hist_pretag_mc_unscaled = GetRebinHistsByRegionMC(m_default_var, sys, region, 0);
-    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 0);
+    std::vector<TH1D*> hist_posttag_mc_unscaled = GetRebinHistsByRegionMC(m_default_var+"_2TAG", sys, region, 0);
     std::vector<TH1D*> hist_pretag_mc;
     std::vector<TH1D*> hist_posttag_mc;
     std::vector<TH1D*> hist_untag_mc_unscaled;
     if (doPseudo) {
       hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 2, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 2, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_2TAG", sys, region, 2, i_pseudo);
     } else if (doPseudoData) {
       hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 3, i_pseudo);
-      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 3, i_pseudo);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_2TAG", sys, region, 3, i_pseudo);
     } else {
       hist_pretag_mc = GetRebinHistsByRegionMC(m_default_var, sys, region, 1);
-      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_PREFITPOSTTAG", sys, region, 1);
+      hist_posttag_mc = GetRebinHistsByRegionMC(m_default_var+"_2TAG", sys, region, 1);
     }
-    if (sys.Contains("Nom")) hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_PREFITUNTAG", sys, region, 0);
+    if (sys.Contains("Nom")) hist_untag_mc_unscaled = GetRebinHistsByRegionMC("mjpt_NOT2TAG", sys, region, 0);
     unsigned int nBinsX = hist_pretag_mc_unscaled[0]->GetNbinsX(); // All hists have same binning
 
     TH1D* hist_pretag_data = GetRebinHistByRegionData(m_default_var, region);
-    TH1D* hist_posttag_data = GetRebinHistByRegionData(m_default_var+"_PREFITPOSTTAG", region);
+    TH1D* hist_posttag_data = GetRebinHistByRegionData(m_default_var+"_2TAG", region);
 
     N_total_pretag_mc=0.;
     N_total_posttag_mc=0.;
@@ -1049,7 +1049,7 @@ void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, c
   for (TString region : regions) {
     for (TString var : vars) {
       // Read in data hist
-      if ( !var.Contains("BTAG") && !var.Contains("UNTAG") ) {
+      if ( !var.Contains("BTAG") && !var.Contains("NOT2TAG") ) {
         histName = m_config->GetDataHistName(region,var).Data();
         infile->GetObject(histName.Data(), temp);
         if (!temp) {
