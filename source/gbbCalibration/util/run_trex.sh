@@ -56,7 +56,7 @@ shift "$(($OPTIND -1))"
 [ -z $DIRNAME ] && loud_exit "Output directory not set"
 [ -d ${DIRNAME} ] && loud_exit "${DIRNAME} exists already"
 
-mkdir -p "${DIRNAME}/TRExFit"
+mkdir -p "${DIRNAME}"
 cp ${INFILE} ${DIRNAME}/trex_input.root
 
 # make TRExFitter config files

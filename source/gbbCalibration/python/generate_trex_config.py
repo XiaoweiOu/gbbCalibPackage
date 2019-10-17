@@ -34,7 +34,7 @@ MCstatThreshold = 0
 
 MyConfig = config.LoadGlobalConfig()
 if args.cfg:
-  trexConfig = config.GetDataFile(args.cfg)
+  trexConfig = config.GetDataFile('configs/'+args.cfg)
   if not trexConfig:
     exit()
   else:
@@ -160,7 +160,7 @@ def WriteSampleBlock(outfile,flav):
   outfile.write('  HistoNameSuff: "_'+flav+'"\n')
   outfile.write('  FillColorRGB: '+colorStr[flav]+'\n')
   outfile.write('  LineColorRGB: 0,0,0\n')
-  outfile.write('  NormFactor: "'+flav+'Fraction",1,0,100\n')
+  outfile.write('  NormFactor: "'+flav+'",1,0,100\n')
   if useMCstats:
     outfile.write('  UseMCstat: TRUE\n')
   else:
@@ -202,7 +202,7 @@ def WriteConfigFile(ptbin,outdir):
     if fitSF:
       outfile.write('  POI: "ScaleFactor"\n')
     else:
-      outfile.write('  POI: "BBFraction"\n')
+      outfile.write('  POI: "BB"\n')
     outfile.write('  ReadFrom: HIST\n')
     outfile.write('  HistoPath: "'+outdir+'/"\n')
     outfile.write('  HistoFile: "trex_input"\n')
@@ -233,8 +233,8 @@ def WriteConfigFile(ptbin,outdir):
     for var in ListOfTmplVars:
       if fitSF:
         WriteRegionBlock(outfile,ptbin,var.Data()+'_PREFITPOSTTAG')
-        #WriteRegionBlock(outfile,ptbin,var.Data()+'_PREFITUNTAG')
-        WriteRegionBlock(outfile,ptbin,var.Data())
+        WriteRegionBlock(outfile,ptbin,var.Data()+'_PREFITUNTAG')
+        #WriteRegionBlock(outfile,ptbin,var.Data())
       else:
         WriteRegionBlock(outfile,ptbin,var.Data())
 
@@ -272,18 +272,18 @@ def WriteConfigFile(ptbin,outdir):
       outfile.write('  Regions: "mjmeanSd0_PREFITPOSTTAG","nmjmeanSd0_PREFITPOSTTAG"\n')
       outfile.write('  Title: "ScaleFactor"\n')
       outfile.write('  Nominal: 1\n')
-      outfile.write('  Min: 0\n')
+      outfile.write('  Min: 0.1\n')
       outfile.write('  Max: 10\n')
       outfile.write('\n')
-      #outfile.write('NormFactor: "AntiScaleFactor"\n')
-      #outfile.write('  Samples: "BB"\n')
-      #outfile.write('  Regions: "mjmeanSd0_PREFITUNTAG","nmjmeanSd0_PREFITUNTAG"\n')
-      #outfile.write('  Title: "ScaleFactor"\n')
-      #outfile.write('  Nominal: 0.5\n')
-      #outfile.write('  Min: 0\n')
-      #outfile.write('  Max: 1\n')
-      #outfile.write('  Expression: (1-ScaleFactor):ScaleFactor[0.5,0.,1.]\n')
-      #outfile.write('\n')
+      outfile.write('NormFactor: "AntiScaleFactor"\n')
+      outfile.write('  Samples: "BB"\n')
+      outfile.write('  Regions: "mjmeanSd0_PREFITUNTAG","nmjmeanSd0_PREFITUNTAG"\n')
+      outfile.write('  Title: "ScaleFactor"\n')
+      outfile.write('  Nominal: 1\n')
+      outfile.write('  Min: 0.1\n')
+      outfile.write('  Max: 10\n')
+      outfile.write('  Expression: (1/ScaleFactor):ScaleFactor[1.,0.1,10.]\n')
+      outfile.write('\n')
 
     if doSystematics:
       # write systematics blocks
