@@ -11,7 +11,6 @@
 #include "TupleAna.h"
 #include "HistogramService.h"
 #include <memory>
-#include <helpers/FlavourFracCorrector.h>
 #include <helpers/GlobalConfig.h>
 #include "TEnv.h"
 #include "TRandom3.h"
@@ -100,11 +99,6 @@ private:
 
   std::map<TString,std::shared_ptr<TH2D>> m_reweightHistos;
   bool m_doEvenOddTemplates;
-
-  bool m_doFlavFracCorrection;
-
-  TString m_FlavFracCorrectorFile;
-  FlavourFracCorrector* m_FlavFracCorrector;
 
   bool m_doTrackSmearing;
   bool m_noMuonReq;

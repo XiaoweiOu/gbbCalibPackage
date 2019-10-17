@@ -62,20 +62,8 @@ if not dataOnly:
   print("Using x-sections file: "+args.xsec)
   histHelper = config.HistHelper(args.xsec)
 
-  # luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
-  # values used should match the GRL and lumicalc file used to generate the ntuples
-  Lumi = 0
-  if args.year == "2015" :
-    Lumi = 3219.56 # in /pb
-  elif args.year == "2016" :
-    Lumi = 32988.1 # in /pb
-  elif args.year == "2015+2016" :
-    Lumi = 3219.56 + 32988.1 # in /pb
-  elif args.year == "2017" :
-    Lumi = 44307.4 # in /pb
-  elif args.year == "2018" :
-    Lumi = 58450.1 # in /pb
-  print("Lumi is "+str(Lumi))
+  Lumi = GetLumi(args.year)
+  print('Lumi is {}'.format(Lumi))
 
   ListOfMCPaths = []
   ListOfInclusiveMCPaths = []

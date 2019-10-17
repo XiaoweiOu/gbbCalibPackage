@@ -27,7 +27,10 @@ ListOfVariables_general = [
   'mjmaxSd0_pt_PREFITPOSTTAG','nmjmaxSd0_pt_PREFITPOSTTAG',
   'mjsubSd0_pt_PREFITPOSTTAG','nmjsubSd0_pt_PREFITPOSTTAG',
   'mjthirdSd0_pt_PREFITPOSTTAG','nmjthirdSd0_pt_PREFITPOSTTAG',
-  'mjpt_PREFITUNTAG'
+  'mjpt_PREFITUNTAG',
+
+  'mjmeanSd0_TWOMUON','nmjmeanSd0_TWOMUON',
+  'mjmeanSd0_PREFITPOSTTAG_TWOMUON','nmjmeanSd0_PREFITPOSTTAG_TWOMUON'
   ]
 
 ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_PREFITPOSTTAG','XbbScoreTop_PREFITPOSTTAG','XbbScoreQCD_PREFITPOSTTAG','XbbScoreRatiof0_PREFITPOSTTAG','XbbScoreRatiofp2_PREFITPOSTTAG']
@@ -69,19 +72,8 @@ parser.add_argument('--year', type=str, default="2015+2016",
 args = parser.parse_args()
 
 # setting variables
-# luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
-# values used should match the GRL and lumicalc file used to generate the ntuples
-Lumi = 0
-if args.year == "2015" :
-  Lumi = 3219.56 # in /pb
-elif args.year == "2016" :
-  Lumi = 32988.1 # in /pb
-elif args.year == "2015+2016" :
-  Lumi = 3219.56 + 32988.1 # in /pb
-elif args.year == "2017" :
-  Lumi += 44307.4 # in /pb
-elif args.year == "2018" :
-  Lumi += 58450.1 # in /pb
+Lumi = config.GetLumi(args.year)
+print('Lumi is {}'.format(Lumi))
 
 outfilename = args.outfile
 pathData, ListOfMCPaths, ListOfInclusiveMCPaths, xsecFile = config.GetPathsFromJSON(args.infiles)

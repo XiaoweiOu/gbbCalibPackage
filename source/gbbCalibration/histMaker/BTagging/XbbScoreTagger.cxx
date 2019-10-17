@@ -1,5 +1,5 @@
 #include "XbbScoreTagger.h"
-#include "gbbUtil.h"
+#include "helpers/GbbUtil.h"
 #include <cmath> // for log
 
 XbbScoreTagger::XbbScoreTagger(std::string operatingPt, float xbbTopFrac) :

@@ -34,8 +34,8 @@ find_package( AnalysisBase )
 atlas_ctest_setup()
 
 # Set up a work directory project:
-atlas_project( WorkDir 21.2.35
-   USE AnalysisBase 21.2.35
+atlas_project( WorkDir 21.2.83
+   USE AnalysisBase 21.2.83
     )
 
 # Set up the runtime environment setup script(s):

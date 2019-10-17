@@ -6,6 +6,15 @@ import json
 
 
 #-----------------------------------------------
+def getKey(infile,key):
+  # get TObject from ROOT file
+  obj = infile.Get(key)
+  if not obj:
+    print('cannot find '+key+' in file '+infile.GetName())
+    exit()
+  return obj
+
+#-----------------------------------------------
 def GetPathsFromJSON(infile):
   dataPath = ''
   inclMCPaths = []
@@ -37,8 +46,10 @@ def GetDataFile(name):
     print "found",name
     return name
   data_paths = string.split(os.environ['DATAPATH'], os.pathsep)
+  #data_paths = string.split(os.environ['GBB_BUILD_DIR'], os.pathsep)
   found = False
   for path in data_paths:
+    path = os.path.join(path,'gbbCalibration')
     if os.path.exists(os.path.join(path,name)):
       found = True
       break
@@ -52,7 +63,7 @@ def GetDataFile(name):
 
 #-----------------------------------------------
 def GetChannelWeights(xsecfile):
-  filepath = GetDataFile("gbbCalibration/"+xsecfile)
+  filepath = GetDataFile(xsecfile)
   if not filepath:
     print "Cross-sections file not found!"
     exit()
@@ -81,12 +92,27 @@ def GetChannelNumber(filename):
 
 #-----------------------------------------------
 def LoadGlobalConfig():
-  filepath = GetDataFile("gbbCalibration/configs/GlobalConfig.cfg")
-  if not filepath:
-    print "Global config file not found!"
-    exit()
   from ROOT import GlobalConfig
-  return GlobalConfig(filepath)
+  return GlobalConfig('GlobalConfig.cfg')
+
+
+#-----------------------------------------------
+def GetLumi(year):
+  # luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
+  # values used should match the GRL and lumicalc file used to generate the ntuples
+  if year == "2015" :
+    return 3219.56 # in /pb
+  elif year == "2016" :
+    return 32988.1 # in /pb
+  elif year == "2015+2016" :
+    return 3219.56 + 32988.1 # in /pb
+  elif year == "2017" :
+    return 44307.4 # in /pb
+  elif year == "2018" :
+    return 58450.1 # in /pb
+  else:
+    print('Year {} not found'.format(year))
+    return 0.
 
 #===============================================
 class HistHelper:

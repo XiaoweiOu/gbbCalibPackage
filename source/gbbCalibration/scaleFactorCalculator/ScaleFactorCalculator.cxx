@@ -26,7 +26,7 @@
 #include <TVectorD.h>
 #include "TH2.h"
 #include "TObjString.h"
-#include "PathResolver/PathResolver.h"
+#include "helpers/GbbUtil.h"
 #include "TSystem.h"
 #include "TEnv.h"
 
@@ -43,26 +43,16 @@ ScaleFactorCalculator::~ScaleFactorCalculator() {
 
 void ScaleFactorCalculator::ReadConfig(const TString config_path){
 
-  std::cout<<"=============================================="<<std::endl;
-  TString m_config_path = config_path;
-  //if ( !(gSystem->AccessPathName(m_config_path.Data())) )
-  m_config_path = PathResolverFindCalibFile(m_config_path.Data());
-
-  if (config_path == "") {
-    std::cout << "Cannot find settings file " + config_path + "\n  also searched in " + m_config_path << std::endl;
-    abort();
-  } else std::cout << "Config file is set to: " << m_config_path << std::endl;
-
   TEnv* config = new TEnv("env");
-  if (config->ReadFile(m_config_path.Data(),EEnvLevel(0)) == -1) {
-    std::cout << "Could not read config file " << m_config_path.Data() << std::endl;
+  if (config->ReadFile(GbbUtil::findConfigFile(config_path).Data(),EEnvLevel(0)) == -1) {
+    std::cout << "Could not read config file " << config_path.Data() << std::endl;
     abort();
   }
 
   m_Debug = config->GetValue("doDebug",false);
   std::cout<<"doDebug: "<<m_Debug<<std::endl;
 
-  m_config = new GlobalConfig(PathResolverFindCalibFile("gbbCalibration/configs/GlobalConfig.cfg"));
+  m_config = new GlobalConfig("GlobalConfig.cfg");
   std::cout<<"Loaded GlobalConfig"<<std::endl;
 
   m_doSystematics = config->GetValue("doSystematics",true);

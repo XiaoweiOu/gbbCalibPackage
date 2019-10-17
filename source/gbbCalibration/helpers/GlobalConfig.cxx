@@ -3,7 +3,7 @@
 #include "TObjString.h"
 #include "TObjArray.h"
 #include "TRegexp.h"
-#include "PathResolver/PathResolver.h"
+#include "GbbUtil.h"
 
 GlobalConfig::~GlobalConfig() {
   // TODO Auto-generated destructor stub
@@ -11,19 +11,9 @@ GlobalConfig::~GlobalConfig() {
 
 GlobalConfig::GlobalConfig(const TString& config_path) {
 
-  std::cout<<"=============================================="<<std::endl;
-  TString m_config_path = config_path;
-  //if ( !(gSystem->AccessPathName(m_config_path.Data())) )
-  m_config_path = PathResolverFindCalibFile(m_config_path.Data());
-
-  if (m_config_path == "") {
-    std::cout << "Cannot find settings file " + config_path + "\n  also searched in " + m_config_path << std::endl;
-    abort();
-  } else std::cout << "GlobalConfig file is set to: " << m_config_path << std::endl;
-
   TEnv* config = new TEnv("env");
-  if (config->ReadFile(m_config_path.Data(),EEnvLevel(0)) == -1) {
-    std::cout << "Could not read config file " << m_config_path.Data() << std::endl;
+  if (config->ReadFile(GbbUtil::findConfigFile(config_path).Data(),EEnvLevel(0)) == -1) {
+    std::cout << "Could not read config file " << config_path.Data() << std::endl;
     abort();
   }
 
@@ -188,11 +178,11 @@ TString GlobalConfig::GetFlavourPair(int muJetTruth, int nonMuJetTruth) {
 }
 
 TString GlobalConfig::GetMCHistName(const TString sys, const TString ptLabel, const TString flav, const TString var) {
-  TString _sys(sys); if (_sys!="") _sys=="Nom"; _sys+="_";
-  TString _ptLabel(ptLabel); if (_ptLabel=="") _ptLabel=="Incl"; _ptLabel+="_";
+  TString _sys(sys); if (_sys!="") _sys=="Nom";
+  TString _ptLabel(ptLabel); if (_ptLabel=="") _ptLabel=="Incl";
   //TString _flav(flav); if (_flav!="") _flav+="_";
-  //return "h_"+_sys+_ptLabel+_flav+var;
-  return "h"+flav+_sys+_ptLabel+var;
+  return "h_"+_ptLabel+"_"+var+"_"+flav+"_"+_sys;
+  //return "h"+flav+_sys+"_"+_ptLabel+"_"+var;
 }
 
 std::vector<TString> GlobalConfig::GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var) {
