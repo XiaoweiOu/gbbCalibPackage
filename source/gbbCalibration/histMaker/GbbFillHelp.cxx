@@ -542,16 +542,28 @@ void GbbTupleAna::FillFatJetProperties(GbbCandidate* gbbcand, float event_weight
 void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, float event_weight,TString nametag){
 
   if(m_Debug) std::cout<<"processgbb(): Fill advanced properties with tag "<<nametag.Data()<<std::endl;
-  TLorentzVector mujet,trigjet, muon;
+  TLorentzVector mujet,nonmujet,ditrkjet,fatjet,trigjet,muon;
 
   if (!nametag.IsNull()) nametag.Prepend("_");
 
   //Topology: Plot DR(fatjet,muonjet)
   mujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand->ind_mj),this->trkjet_eta->at(gbbcand->ind_mj),this->trkjet_phi->at(gbbcand->ind_mj),this->trkjet_E->at(gbbcand->ind_mj));
+  nonmujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand->ind_nmj),this->trkjet_eta->at(gbbcand->ind_nmj),this->trkjet_phi->at(gbbcand->ind_nmj),this->trkjet_E->at(gbbcand->ind_nmj));
+
+  ditrkjet=mujet+nonmujet;
+  fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand->ind_fj),this->fat_eta->at(gbbcand->ind_fj),this->fat_phi->at(gbbcand->ind_fj),this->fat_E->at(gbbcand->ind_fj));
+  float DRditrkjetfatjet = fatjet.DeltaR(ditrkjet);
 
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trig_jet),this->jet_eta->at(i_trig_jet),this->jet_phi->at(i_trig_jet),this->jet_E->at(i_trig_jet));
 
+
   if(m_isNominal) {
+
+    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,"DRditrkjetfatjet"+nametag),
+     ";#Delta R(fatjet, inv. sum of track-jets);Events/0.002",
+     DRditrkjetfatjet,250,0.,0.5,event_weight
+    );
+
     for (unsigned int i_trk=0; i_trk<trkjet_assocTrk_pt->at(gbbcand->ind_mj).size(); i_trk++) {
       m_HistSvc->FastFillTH2D(
        m_config->GetMCHistName("Nom","Incl","Incl","trjptVstrkd0"+nametag),

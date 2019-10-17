@@ -395,12 +395,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Start!"<<std::endl;
 
-  // Initialize eventFlag - all cuts are initialized to false by default
-  unsigned long int eventFlag = 0;
-
   //bool IsLargeWeightEvent=false;
-
-  updateFlag(eventFlag,GbbCuts::AllNtup,true);
 
   //=========================================
   //1.) Event cleaning & weight calculation
@@ -431,8 +426,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
   if (!this->isCleanEvt(total_evt_weight)) return false;
 
   if (this->hasBadJet()) return false;
-
-  updateFlag(eventFlag,GbbCuts::EventCleaning,true);
 
   icut++;
   m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
@@ -467,7 +460,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
   int i_trigjet = this->getTrigMatch();
   if (i_trigjet<0) return false; //no successful trigger match
 
-  updateFlag(eventFlag,GbbCuts::TriggerJet,true);
   if(m_Debug) std::cout<<"processgbb(): Got Trigger Jet!"<<std::endl;
 
   icut++;
@@ -628,8 +620,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
     std::cout<<"processgbb(): gbbcand.ind_nmj "<<gbbcand.ind_nmj<<std::endl;
   }
 
-  updateFlag(eventFlag, GbbCuts::GbbCandidate, true);
-
   //define flavour truth labels & pt labels
   int muojet_truth=this->trkjet_truth->at(gbbcand.ind_mj);
   int nonmuojet_truth=this->trkjet_truth->at(gbbcand.ind_nmj);
@@ -675,7 +665,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(TMath::Abs(muojet_maxsd0+99.)<1e-5 || TMath::Abs(nonmuojet_maxsd0+99.)<1e-5) return false; //associated tracks do not fulfil selection cuts
 
-  updateFlag(eventFlag,GbbCuts::GoodSd0Tracks,true);
   if(m_Debug) std::cout<<"processgbb(): Good sd0."<<std::endl;
 
   icut++;
@@ -693,17 +682,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trigjet),this->jet_eta->at(i_trigjet),this->jet_phi->at(i_trigjet),this->jet_E->at(i_trigjet));
 
   if(mujet.DeltaR(trigjet)<1.5) return false;
-
-  updateFlag(eventFlag,GbbCuts::DRTrigJetMuJet,true);
-
-  //DR 2-Track jets
-  TLorentzVector ditrkjet,nonmujet, fatjet;
-  nonmujet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.ind_nmj),this->trkjet_eta->at(gbbcand.ind_nmj),this->trkjet_phi->at(gbbcand.ind_nmj),this->trkjet_E->at(gbbcand.ind_nmj));
-
-  ditrkjet=mujet+nonmujet;
-  fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand.ind_fj),this->fat_eta->at(gbbcand.ind_fj),this->fat_phi->at(gbbcand.ind_fj),this->fat_E->at(gbbcand.ind_fj));
-
-  float DRditrkjetfatjet=fatjet.DeltaR(ditrkjet);
 
   if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
   icut++;
@@ -756,18 +734,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
     return false;
   }
 
-  /*bTagger ---*/
-
-
-  //at least 1 b-tag
-  if(isTagged == 1 || isTagged == 2) updateFlag(eventFlag,GbbCuts::MuNonMu1Btag,true);
-  //2 b-tags
-  if(isTagged == 2) updateFlag(eventFlag,GbbCuts::MuNonMu2Btags,true);
-  //0 b-tags
-  if(isTagged == 0) updateFlag(eventFlag,GbbCuts::MuNonMuAnti2Btags,true);
-  //at most 1 b-tag
-  if(isTagged == 0 || isTagged == 1) updateFlag(eventFlag,GbbCuts::MuNonMuUntagged,true);
-
   icut++;
   if (isTagged == 2) {
     if(m_Debug) std::cout<<"processgbb(): Has two b-tags"<<std::endl;
@@ -801,276 +767,160 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   }
 
+  double Had_weight_incl=1., Had_weight_Mu=1.;
+  if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
+	  int ID_transform=0;
+	  if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==511) ID_transform=1; //B0
+	  else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==521)ID_transform=2; //B+-
+	  else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==531)ID_transform=3; //B_s
+	  else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5122)ID_transform=4; //Lambda_B
+	  else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5132)ID_transform=5; //Cascade_B-
+	  else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5232)ID_transform=6; //Cascade_B0
+
+	  if(ID_transform) {
+      m_HistSvc->FastFillTH1D(
+       m_config->GetMCHistName(m_SysVarName,"Incl","BX","mjBHadPdgID"),
+       ";muon-jet b-hadron ID;Events",
+       ID_transform,6,0.5,6.5,total_evt_weight
+      );
+    }
+    //FIXME: where do these values come from?
+    if(ID_transform==1){
+	    Had_weight_incl=0.93;
+	    Had_weight_Mu=0.97;
+    }else if(ID_transform==2){
+	    Had_weight_incl=0.95;
+	    Had_weight_Mu=0.95;
+    }else if(ID_transform==3){
+	    Had_weight_incl=1.06;
+	    Had_weight_Mu=1.07;
+    }else if(ID_transform==4){
+	    Had_weight_incl=1.81;
+	    Had_weight_Mu=2.16;
+	  }
+  }
+
+  // In post-tag categories get SF from single-tag calibrations
+  // FIXME: I don't think the weight saved in the tuple is correct
+  // l/c/b SFs are always applied for non-2BTAG categories
+  float btag_SF_nom=1., btag_SF_up=1., btag_SF_down=1.;
+  if (m_isMC && (m_doApplyBTaggingSF || !dijet_flav.Contains("BB")))
+    getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
+
   //=========================================
   //8.) Fill histograms
   //=========================================
-  //DEFINE cuts
 
+  std::vector<TString> categories{""}, btag_categories{}, muon_categories{};
 
-  std::vector<unsigned int> CutsNoBtag={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet};
-  std::vector<unsigned int> CutsWith1Btag={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMu1Btag};
-  std::vector<unsigned int> CutsWith2Btags={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMu2Btags};
-  std::vector<unsigned int> CutsWithAnti2Btags={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMuAnti2Btags};
-  std::vector<unsigned int> CutsWithUntag={GbbCuts::AllNtup,GbbCuts::EventCleaning,GbbCuts::TriggerJet,GbbCuts::GbbCandidate,GbbCuts::GoodSd0Tracks,GbbCuts::DRTrigJetMuJet,GbbCuts::MuNonMuUntagged};
+  // B-tag categories not exclusive
+  if (isTagged == 2) btag_categories.push_back("2TAG");
+  if (isTagged == 0 || isTagged == 1) btag_categories.push_back("NOT2TAG");
+  //if(isTagged == 1 || isTagged == 2) btag_categories.push_back("NOT0TAG");
+  //if (isTagged == 0) btag_categories.push_back("0TAG");
 
+  // 0MUON plots should only be filled if noMuonReq flag is set
+  if (gbbcand.nRecoMuons > 1) muon_categories.push_back("2MUON");
+  else if (gbbcand.nRecoMuons == 1) muon_categories.push_back("1MUON");
+  else if (gbbcand.nRecoMuons == 0) muon_categories.push_back("0MUON");
 
-  //1.) Before Fit and b-tagging
-  if(m_Debug) std::cout<<"processgbb(): Fill histograms"<<std::endl;
-  if(passSpecificCuts(eventFlag, CutsNoBtag)){
+  for (TString bcat : btag_categories) {
+    categories.push_back(bcat);
+    for (TString mcat : muon_categories) {
+      categories.push_back(bcat+"_"+mcat);
+    }
+  }
 
-    m_HistSvc->FastFillTH1D("Hist_MCStatsUnc",1,1,0.5,1.5,total_evt_weight);
+  for (TString cat : categories) {
+    if(m_Debug) std::cout<<"processgbb(): Fill histograms for category "<<cat.Data()<<std::endl;
+    // Leave this here to be able to change weight by e.g. adding single-tag SFs
+    float category_wgt = total_evt_weight;
+    if (!cat.IsNull()) category_wgt *= btag_SF_nom;
 
+    // Fill standard set of plots for each category
+    if (m_RunMode & RunMode::FILL_TEMPLATES) {
+      FillTemplates(&gbbcand, category_wgt, cat);
+    }
+    if (!(m_RunMode & RunMode::FOR_FIT_ONLY)) {
+      if (m_RunMode & RunMode::FILL_TRKJET_PROPERTIES)
+        FillTrackJetProperties(&gbbcand, category_wgt, cat);
+      if (m_RunMode & RunMode::FILL_FATJET_PROPERTIES)
+        FillFatJetProperties(&gbbcand, category_wgt, cat);
+      if (m_RunMode & RunMode::FILL_ADV_PROPERTIES)
+        FillAdvancedProperties(&gbbcand,i_trigjet, category_wgt, cat);
+      if (m_RunMode & RunMode::FILL_MC_STATS)
+        FillMCStatsInfo(&gbbcand, cat);
+    }
+
+    //=========================================
+    // Put special plots here (nominal-only, data-/MC-only, etc.)
+    //=========================================
+
+    //for crosscheck: Even and Odd Templates
+    if (m_isMC && m_isNominal && m_doEvenOddTemplates
+         && (m_RunMode & RunMode::FILL_TEMPLATES)){
+      if ( i_evt%2 ) FillTemplates(&gbbcand, category_wgt, cat+"_ODD");
+      else FillTemplates(&gbbcand, category_wgt, cat+"_EVEN");
+    }
+
+    //variations of track-jet SFs
+    if (m_isMC && m_isNominal && !cat.IsNull()) {
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"indivSFs_"+cat),
+        ";product of track-jet SFs;Events / 0.05",
+        mjSF*nmjSF,30,0.5,2.,total_evt_weight);
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"btagSFs_"+cat),
+        ";track-jet SFs from tuple;Events / 0.05",
+        btag_SF_nom,30,0.5,2.,total_evt_weight);
+      if (m_RunMode & RunMode::FILL_TEMPLATES) {
+        FillTemplates(&gbbcand, total_evt_weight*btag_SF_up, cat+"_BTAGUP");
+        FillTemplates(&gbbcand, total_evt_weight*btag_SF_down, cat+"_BTAGDOWN");
+      }
+    }
+
+    //Fill BHad fragmentation information for extrapolation studies
     if (m_isMC && m_isNominal) {
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"SF"),";product of track-jet SFs;Events",
-        mjSF*nmjSF,50,0.,5.,total_evt_weight);
+      if (m_RunMode & RunMode::FILL_EXTRAP_INCL) {
+	      FillTemplates(&gbbcand, total_evt_weight*Had_weight_incl, cat+"_HADINCL");
+      }
+      if (m_RunMode & RunMode::FILL_EXTRAP_MU) {
+	      FillTemplates(&gbbcand, total_evt_weight*Had_weight_Mu, cat+"_HADMU");
+      }
+      //fill BHadron pt for reweighting
+      if(dijet_flav.EqualTo("BB")){
+        m_HistSvc->FastFillTH1D(
+          m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPt"),
+          ";muon-jet b-hadron p_{T} [GeV];Events/5 GeV;",
+          this->trkjet_BHad_pt->at(gbbcand.ind_mj)/1e3,100,0.,500.,total_evt_weight
+        );
+        //FIXME: don't these just shift the plot left/right slightly?
+        m_HistSvc->FastFillTH1D(
+          m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledUp"),
+          ";muon-jet b-hadron p_{T} (scaled up) [GeV];Events/5 GeV;",
+          this->trkjet_BHad_pt->at(gbbcand.ind_mj)*1.1/1e3,100,0.,500.,total_evt_weight
+        );
+        m_HistSvc->FastFillTH1D(
+          m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledDown"),
+          ";muon-jet b-hadron p_{T} (scaled down) [GeV];Events/5 GeV;",
+          this->trkjet_BHad_pt->at(gbbcand.ind_mj)*0.9/1e3,100,0.,500.,total_evt_weight
+        );
+
+        FillTemplates(&gbbcand, total_evt_weight*Bhadupweight, cat+"_BHADPTUP");
+        FillTemplates(&gbbcand, total_evt_weight*Bhaddownweight, cat+"_BHADPTDOWN");
+      }
     }
 
-    if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight);
-    if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight);
-    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight);
-    if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight);
-    if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand);
-
-    if (gbbcand.nRecoMuons > 1) {
-      if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight,"TWOMUON");
-      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight,"TWOMUON");
-      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight,"TWOMUON");
-      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight,"TWOMUON");
-      if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"TWOMUON");
-    }
-
-    //for crosscheck: Fill Even and Odd Templates
-    if(this->eve_isMC && m_doEvenOddTemplates && m_RunMode & RunMode::FILL_TEMPLATES){
-      if(!(i_evt%2)) this->FillTemplates(&gbbcand,total_evt_weight,"EVEN");
-      else this->FillTemplates(&gbbcand,total_evt_weight,"ODD");
-    }
-
-    m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"DRditrkjetfatjet"),
-     ";#Delta R(fatjet, inv. sum of track-jets);Events/0.002",
-     DRditrkjetfatjet,250,0.,0.5,total_evt_weight
-    );
-    if(m_isNominal) {
-      m_HistSvc->FastFillTH2D(
-       m_config->GetMCHistName(m_SysVarName,"Incl","Incl","DRditrkjetfatjetVSfjpt"),
-       ";#Delta R(fatjet, inv. sum of track-jets);large-R jet p_{T} [GeV]",
-       DRditrkjetfatjet,fatjet.Pt()/1e3,25,0.,0.5,50,0.,1000.,total_evt_weight
-      );
-
-      //Fill BHad fragmentation information for extrapolation studies
-      if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
-	int ID_transform=0;
-	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==511) ID_transform=1; //B0
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==521)ID_transform=2; //B+-
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==531)ID_transform=3; //B_s
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5122)ID_transform=4; //Lambda_B
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5132)ID_transform=5; //Cascade_B-
-	else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5232)ID_transform=6; //Cascade_B0
-
-
-	if(ID_transform) {
-          m_HistSvc->FastFillTH1D(
-           m_config->GetMCHistName(m_SysVarName,"Incl","BX","mjBHadPdgID"),
-           ";muon-jet b-hadron ID;Events",
-           ID_transform,6,0.5,6.5,total_evt_weight
-          );
+    if (cat.IsNull()) {
+      TLorentzVector smallRJet;
+      if(i_sublsmallRjet>=0){
+        smallRJet.SetPtEtaPhiE(this->jet_pt->at(i_sublsmallRjet),this->jet_eta->at(i_sublsmallRjet),this->jet_phi->at(i_sublsmallRjet),this->jet_E->at(i_sublsmallRjet));
+        if(smallRJet.DeltaR(trigjet)>1.5) {
+          m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"slR4jpt"),
+           ";sub-leading R=0.4 jet p_{T} [GeV];Events/4 GeV",
+           trjet_pt/1e3,250,0.,1000.,total_evt_weight);
         }
       }
-
-      //If mode specifies, fill extrapolation-specific histograms
-      double Had_weight_incl=1., Had_weight_Mu=1.;
-      if(dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")){
-
-        //FIXME: where do these values come from?
-	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==511){//B0
-	  Had_weight_incl=0.93;
-	  Had_weight_Mu=0.97;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==521){//B+-
-	  Had_weight_incl=0.95;
-	  Had_weight_Mu=0.95;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==531){ //B_s
-	  Had_weight_incl=1.06;
-	  Had_weight_Mu=1.07;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5122){//Lambda_B
-	  Had_weight_incl=1.81;
-	  Had_weight_Mu=2.16;
-	}
-
-	/*if(dijet_flav.EqualTo("BB")){
-	  FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl);
-	 }*/
-
-      }
-
-      if (m_RunMode & RunMode::FILL_EXTRAP_INCL) {
-	FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl,"EXTRDATA");
-	FillTemplates(&gbbcand,total_evt_weight,"EXTR");
-      }
-      if (m_RunMode & RunMode::FILL_EXTRAP_MU) {
-	FillTemplates(&gbbcand,total_evt_weight*Had_weight_Mu,"EXTRDATA");
-	FillTemplates(&gbbcand,total_evt_weight,"EXTR");
-      }
-    }
-
-    //fill BHadron pt for reweighting
-    if(dijet_flav.EqualTo("BB")){
-      m_HistSvc->FastFillTH1D(
-        m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPt"),
-        ";muon-jet b-hadron p_{T} [GeV];Events/5 GeV;",
-        this->trkjet_BHad_pt->at(gbbcand.ind_mj)/1e3,100,0.,500.,total_evt_weight
-      );
-      //FIXME: don't these just shift the plot left/right slightly?
-      m_HistSvc->FastFillTH1D(
-        m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledUp"),
-        ";muon-jet b-hadron p_{T} (scaled up) [GeV];Events/5 GeV;",
-        this->trkjet_BHad_pt->at(gbbcand.ind_mj)*1.1/1e3,100,0.,500.,total_evt_weight
-      );
-      m_HistSvc->FastFillTH1D(
-        m_config->GetMCHistName(m_SysVarName,"Incl",dijet_flav,"BHadPtScaledDown"),
-        ";muon-jet b-hadron p_{T} (scaled down) [GeV];Events/5 GeV;",
-        this->trkjet_BHad_pt->at(gbbcand.ind_mj)*0.9/1e3,100,0.,500.,total_evt_weight
-      );
-
-      this->FillTemplates(&gbbcand,total_evt_weight*Bhadupweight,"BHADPTUP");
-      this->FillTemplates(&gbbcand,total_evt_weight*Bhaddownweight,"BHADPTDOWN");
-    }
-
-    TLorentzVector smallRJet;
-    if(i_sublsmallRjet>=0){
-      smallRJet.SetPtEtaPhiE(this->jet_pt->at(i_sublsmallRjet),this->jet_eta->at(i_sublsmallRjet),this->jet_phi->at(i_sublsmallRjet),this->jet_E->at(i_sublsmallRjet));
-      if(smallRJet.DeltaR(trigjet)>1.5) {
-        m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"slR4jpt"),
-         ";sub-leading R=0.4 jet p_{T} [GeV];Events/4 GeV",
-         trjet_pt/1e3,250,0.,1000.,total_evt_weight);
-      }
-    }
-
-    m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"srjN"),";No. of R=0.4 jets;Events",
-     this->jet_pt->size(),10,0.,10.,total_evt_weight);
-
-    for (unsigned int i=0; i < this->jet_pt->size(); i++) {
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"allsrjpt"),";R=0.4 jet p_{T} [GeV];Events/4 GeV",
-       this->jet_pt->at(i)/1e3,250,0.,1000.,total_evt_weight);
-    }
-
-  }
-
-  //2.) Before Fit and after b-tagging
-  float btag_SF_nom=1., btag_SF_up=1., btag_SF_down=1.;
-  //FIXME: shouldn't the doApplyBTaggingSF flag turn off BTagging SFs?
-  if(this->eve_isMC && (m_doApplyBTaggingSF || !dijet_flav.Contains("BB"))) this->getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
-
-  if (passSpecificCuts(eventFlag, CutsWith2Btags)) {
-    //std::cout<<"Filling post-tag plots for"<<m_SysVarName<<"with btag_SF :"<<btag_SF_nom<<std::endl;
-
-    if (m_isMC && m_isNominal) {
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"SF_PREFITPOSTTAG"),
-        ";product of track-jet SFs;Events",
-        mjSF*nmjSF,50,0.,5.,total_evt_weight);
-    }
-
-    if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
-    if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
-    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
-    if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) this->FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight*btag_SF_nom,"PREFITPOSTTAG");
-    if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"PREFITPOSTTAG");
-
-    if (gbbcand.nRecoMuons > 1) {
-      if(m_RunMode & RunMode::FILL_TEMPLATES) FillTemplates(&gbbcand,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
-      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) FillTrackJetProperties(&gbbcand,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
-      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) FillFatJetProperties(&gbbcand,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
-      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight,"TWOMUON_PREFITPOSTTAG");
-      if(m_RunMode & RunMode::FILL_MC_STATS) FillMCStatsInfo(&gbbcand,"TWOMUON_PREFITPOSTTAG");
-    }
-
-    m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"DRditrkjetfatjet_PREFITPOSTTAG"),
-     ";#Delta R(fatjet, inv. sum of track-jets);Events/0.002",
-     DRditrkjetfatjet,250,0.,0.5,total_evt_weight
-    );
-
-    if(m_isNominal){
-
-      if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
-      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
-      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
-    if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) this->FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight*btag_SF_up,"PREFITPOSTTAG_BTAGUP");
-
-      if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FOR_FIT_ONLY)) this->FillTemplates(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-      if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-      if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-      if(m_RunMode & RunMode::FILL_ADV_PROPERTIES) this->FillAdvancedProperties(&gbbcand,i_trigjet,total_evt_weight*btag_SF_down,"PREFITPOSTTAG_BTAGDOWN");
-
-      //If mode specifies, fill extrapolation-specific histograms
-      double Had_weight_incl=1., Had_weight_Mu=1.;
-      if (dijet_flav.EqualTo("BB") || dijet_flav.EqualTo("BL")) {
-
-        //FIXME: where do these values come from?
-	if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==511){//B0
-	  Had_weight_incl=0.93;
-	  Had_weight_Mu=0.97;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==521){//B+-
-	  Had_weight_incl=0.95;
-	  Had_weight_Mu=0.95;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==531){ //B_s
-	  Had_weight_incl=1.06;
-	  Had_weight_Mu=1.07;
-	}else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_mj))==5122){//Lambda_B
-	  Had_weight_incl=1.81;
-	  Had_weight_Mu=2.16;
-	}
-
-	/*if(dijet_flav.EqualTo("BB")){
-	  FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl);
-	 }*/
-
-      }
-
-      if (m_RunMode & RunMode::FILL_EXTRAP_INCL) {
-	FillTemplates(&gbbcand,total_evt_weight*Had_weight_incl,"PREFITPOSTTAG_EXTRDATA");
-	FillTemplates(&gbbcand,total_evt_weight,"PREFITPOSTTAG_EXTR");
-      }
-      if (m_RunMode & RunMode::FILL_EXTRAP_MU) {
-	FillTemplates(&gbbcand,total_evt_weight*Had_weight_Mu,"PREFITPOSTTAG_EXTRDATA");
-	FillTemplates(&gbbcand,total_evt_weight,"PREFITPOSTTAG_EXTR");
-      }
-    }
-
-    //fill BHadron pt for reweighting
-    if (dijet_flav.EqualTo("BB")) {
-      this->FillTemplates(&gbbcand,total_evt_weight*Bhadupweight,"PREFITPOSTTAG_BHADPTUP");
-      this->FillTemplates(&gbbcand,total_evt_weight*Bhaddownweight,"PREFITPOSTTAG_BHADPTDOWN");
     }
   }
-
-
-  //3a)Fill fat jet info for AntiBtag
-  /*if(passSpecificCuts(eventFlag, CutsWithAnti2Btags)){
-
-    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITANTITAG");
-
-    }*/
-
-  //3b) Fill untagged info, for MC uncertainty calculation
-  if(m_isNominal && passSpecificCuts(eventFlag, CutsWithUntag)){
-    if(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES) this->FillTrackJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
-    if(m_RunMode & RunMode::FILL_FATJET_PROPERTIES) this->FillFatJetProperties(&gbbcand,total_evt_weight*btag_SF_nom,"PREFITUNTAG");
-    // SF calculation needs mjpt_PREFITUNTAG so fill this even if the rest of the track-jet
-    // properties aren't asked for
-    if(m_RunMode & RunMode::FILL_TEMPLATES && !(m_RunMode & RunMode::FILL_TRKJET_PROPERTIES)) {
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
-       ";muon-jet p_{T} [GeV];Events/2 GeV;",
-       this->trkjet_pt->at(gbbcand.ind_mj)/1e3,250,0.,500.,total_evt_weight);
-      m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(&gbbcand,"mjpt_PREFITUNTAG"),
-       ";muon-jet p_{T} [GeV];Events/2 GeV;",
-       this->trkjet_pt->at(gbbcand.ind_mj)/1e3,250,0.,500.,total_evt_weight);
-    }
-
-  }
-
-  /*  if(total_evt_weight > 50){
-    std::cout<<"original weight: "<<original_evt_weight<<" total_evt_weight: "<<total_evt_weight<<std::endl;
-    std::cout<<"mc weight: "<<this->eve_mc_w<<std::endl;
-    std::cout<<"PU weight: "<<this->eve_pu_w<<std::endl;
-    } */
 
   return true;
 }
@@ -1558,11 +1408,4 @@ void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion
 
   if(gbbcand->nTruthMuons == 0) hasNoTruthMuon=true;
 
-}
-
-
-// a function to update the bit flag
-void GbbTupleAna::updateFlag(unsigned long int &flag, const unsigned int cutPosition, const bool passCut) {
-  // Put bit passCut (true or false) at position cutPosition
-  flag = flag | passCut << cutPosition;
 }

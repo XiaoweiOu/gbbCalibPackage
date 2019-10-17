@@ -224,12 +224,3 @@ bool GbbTupleAna::passAssocTrkSelection(unsigned int i_trk, unsigned int i_jet){
  }
  return true;
 }
-
-// a function to check specific cuts
-bool GbbTupleAna::passSpecificCuts(const unsigned long int flag, const std::vector<unsigned int> &cuts) {
-  unsigned int mask = 0;
-  // Make the bit mask
-  for (auto cut : cuts) mask = mask | 1 << cut;
-  // Check if the flag matches the bit mask
-  return (flag & mask) == mask;
-}
