@@ -225,35 +225,10 @@ private:
   std::vector<TString> SplitString(TString str, char delim);
   std::vector<float> SplitStringD(TString str, char delim);
 
-  //bitstring cutflow (based on CxAODReader_VHbb)
-  void updateFlag(unsigned long int &flag, const unsigned int cutPosition, const bool passCut);
-  bool passSpecificCuts(const unsigned long int flag, const std::vector<unsigned int> &cuts);
-
   float getScaledFatPt(float fjpt){
     return fjpt*(0.9725+(1e-5)*fjpt);
     //    return fjpt*(0.95+((2.86e-5)*fjpt));
   }
 };
-
-namespace GbbCuts {
-
-  enum Cuts {
-
-    AllNtup=0,
-    EventCleaning,
-    TriggerJet,
-    GbbCandidate,
-    GoodSd0Tracks,
-    DRTrigJetMuJet,
-    MuNonMu1Btag,
-    MuNonMu2Btags,
-    MuNonMuAnti2Btags,
-    MuNonMuUntagged
-  };
-
-}
-
-
-
 
 #endif /* GBBTUPLEANA_H_ */

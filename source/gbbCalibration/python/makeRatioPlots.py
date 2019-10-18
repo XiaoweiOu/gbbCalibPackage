@@ -189,7 +189,7 @@ for key in fileData1.GetListOfKeys():
 
   # got numerator and denominator, now draw them
   tagText=''
-  if 'POSTTAG' in key.GetName():
+  if '_2TAG' in key.GetName():
     tagText='double-b-tagged'
   chi2Text=''
   if args.chi2:

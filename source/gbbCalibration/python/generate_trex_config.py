@@ -137,10 +137,10 @@ def GetVarTitle(var):
   return title
 
 def GetVarLabel(var):
-  if 'POSTTAG' in var:
-    return 'passed double-B tag'
-  elif 'UNTAG' in var:
+  if 'NOT2TAG' in var:
     return 'failed double-B tag'
+  elif '2TAG' in var:
+    return 'passed double-B tag'
   else:
     return 'pre B-tagging'
 
@@ -232,8 +232,8 @@ def WriteConfigFile(ptbin,outdir):
     # write region blocks
     for var in ListOfTmplVars:
       if fitSF:
-        WriteRegionBlock(outfile,ptbin,var.Data()+'_PREFITPOSTTAG')
-        WriteRegionBlock(outfile,ptbin,var.Data()+'_PREFITUNTAG')
+        WriteRegionBlock(outfile,ptbin,var.Data()+'_2TAG')
+        WriteRegionBlock(outfile,ptbin,var.Data()+'_NOT2TAG')
         #WriteRegionBlock(outfile,ptbin,var.Data())
       else:
         WriteRegionBlock(outfile,ptbin,var.Data())
@@ -251,16 +251,16 @@ def WriteConfigFile(ptbin,outdir):
       WriteSampleBlock(outfile,flav.Data())
 
     if fitSF:
-      #outfile.write('Region: "NEvts_PREFITPOSTTAG"\n')
+      #outfile.write('Region: "NEvts_2TAG"\n')
       #outfile.write('  Type: SIGNAL\n')
-      #outfile.write('  HistoName: "h_'+ptbin+'_NEvts_PREFITPOSTTAG"\n') #TODO: use config.GetName() functions
+      #outfile.write('  HistoName: "h_'+ptbin+'_NEvts_2TAG"\n') #TODO: use config.GetName() functions
       #outfile.write('  VariableTitle: "N_{Events}^{BB-tagged}"\n')
       #outfile.write('  Label: "BB-tagged Events"\n')
       #outfile.write('\n')
 
       #outfile.write('NormFactor: "ScaleFactor"\n')
       #outfile.write('  Samples: "BB"\n')
-      #outfile.write('  Regions: "NEvts_PREFITPOSTTAG"\n')
+      #outfile.write('  Regions: "NEvts_2TAG"\n')
       #outfile.write('  Title: "ScaleFactor"\n')
       #outfile.write('  Nominal: 1\n')
       #outfile.write('  Min: 0\n')
@@ -269,7 +269,7 @@ def WriteConfigFile(ptbin,outdir):
 
       outfile.write('NormFactor: "ScaleFactor"\n')
       outfile.write('  Samples: "BB"\n')
-      outfile.write('  Regions: "mjmeanSd0_PREFITPOSTTAG","nmjmeanSd0_PREFITPOSTTAG"\n')
+      outfile.write('  Regions: "mjmeanSd0_2TAG","nmjmeanSd0_2TAG"\n')
       outfile.write('  Title: "ScaleFactor"\n')
       outfile.write('  Nominal: 1\n')
       outfile.write('  Min: 0.1\n')
@@ -277,7 +277,7 @@ def WriteConfigFile(ptbin,outdir):
       outfile.write('\n')
       outfile.write('NormFactor: "AntiScaleFactor"\n')
       outfile.write('  Samples: "BB"\n')
-      outfile.write('  Regions: "mjmeanSd0_PREFITUNTAG","nmjmeanSd0_PREFITUNTAG"\n')
+      outfile.write('  Regions: "mjmeanSd0_NOT2TAG","nmjmeanSd0_NOT2TAG"\n')
       outfile.write('  Title: "ScaleFactor"\n')
       outfile.write('  Nominal: 1\n')
       outfile.write('  Min: 0.1\n')

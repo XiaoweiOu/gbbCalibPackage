@@ -525,7 +525,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
   //TODO: is this needed? if so, can it be added to GetRebinHists functions?
   std::vector<double> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta"))  ? m_config->GetBinning(var_fjpt) : m_config->GetBinning(var);
 
-  bool isPosttag = var.Contains("PREFITPOSTTAG");
+  bool isPosttag = var.Contains("2TAG");
 
   std::cout << " ***** Integrals **** "<< std::endl;
   std::cout << "Variable: " << var;
@@ -597,7 +597,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
 
   pad1->cd();
   hist_data->Draw("EP");
-  if(var.Contains("PREFITPOSTTAG") || var.Contains("nmjpt")) hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*1.4);
+  if(var.Contains("2TAG") || var.Contains("nmjpt")) hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*1.4);
   else if(var.Contains("fjm") || var.Contains("mjpt")) hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*2.);
   else hist_data->GetYaxis()->SetRangeUser(0.,hist_data->GetMaximum()*1.2);
   mystack->Draw("HIST SAME");
@@ -752,7 +752,7 @@ std::cout<<"finished expsys plotting"<<std::endl;
   name += applyFitCorrection ? "postfit_" : "prefit_";
   name += isPosttag ? "posttag_" : "pretag_";
   if (doPrintByRegion) name += TString(region+"_");
-  name += isPosttag ? TString(var(0,var.Index("_PREFITPOSTTAG"))) : var;
+  name += isPosttag ? TString(var(0,var.Index("_2TAG"))) : var;
   name += m_pext;
 
   canv->SaveAs(name.Data());
@@ -790,9 +790,9 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   std::vector<int> color={kBlue+1,kAzure-4,kCyan+3,kGreen-9,kOrange};
 
   std::vector<TH1D*> hist_pretag_mc = GetRebinHistsMC(var, "Nom", 1);
-  std::vector<TH1D*> hist_posttag_mc = GetRebinHistsMC(var+"_PREFITPOSTTAG", "Nom", 1);
+  std::vector<TH1D*> hist_posttag_mc = GetRebinHistsMC(var+"_2TAG", "Nom", 1);
   TH1D* hist_pretag_data = GetRebinHistData(var);
-  TH1D* hist_posttag_data = GetRebinHistData(var+"_PREFITPOSTTAG");
+  TH1D* hist_posttag_data = GetRebinHistData(var+"_2TAG");
 
   TH1D* full_mc_pretag = (TH1D*)hist_pretag_mc[0]->Clone();
   for (unsigned int i=1; i < hist_pretag_mc.size(); i++) full_mc_pretag->Add(hist_pretag_mc[i]);
@@ -876,7 +876,7 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   leg->AddEntry(fitsys,"fit uncert.","f");
 
   //Btagging uncertainties
-  TString fjpt="fjpt",fjpt_posttag="fjpt_PREFITPOSTTAG";
+  TString fjpt="fjpt",fjpt_posttag="fjpt_2TAG";
   double x,y,eyl,eyh;
   TGraphAsymmErrors *btagsys=getBTagUncert(fjpt_posttag,true);
   for(int i=0; i<btagsys->GetN(); i++){

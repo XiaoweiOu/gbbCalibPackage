@@ -391,7 +391,7 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
   if prefit:
     name += 'Prefit'
   tagText=''
-  if 'POSTTAG' in var:
+  if '_2TAG' in var:
     tagText='double-b-tagged'
 
   colors = [1,601,856,435,407,800,417]

@@ -721,7 +721,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
         delete help_vec[i_p];
       }//fpairs
 
-      help_vec = GetRebinHistsByRegionMC(var+"_PREFITPOSTTAG","Nom",region);
+      help_vec = GetRebinHistsByRegionMC(var+"_2TAG","Nom",region);
       for(unsigned int i_p=0; i_p < help_vec.size(); i_p++) {
 	help_vec[i_p]->Scale(randomv(i_p));
 	hist_total_posttag->Add(help_vec[i_p]);
@@ -837,7 +837,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
   }
 
   if (isEff) {
-    help_vec = GetRebinHistsMC(var+"_PREFITPOSTTAG","Nom",applyFitCorrection);
+    help_vec = GetRebinHistsMC(var+"_2TAG","Nom",applyFitCorrection);
     for (unsigned int i_p=0; i_p < help_vec.size(); i_p++) {
       h_posttag->Add(help_vec[i_p]);
       delete help_vec[i_p];
@@ -859,7 +859,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
     }
 
     if (isEff) {
-      help_vec = GetRebinHistsMC(var+"_PREFITPOSTTAG",sys+"__1up",applyFitCorrection);
+      help_vec = GetRebinHistsMC(var+"_2TAG",sys+"__1up",applyFitCorrection);
       for (unsigned int i_p=0; i_p < help_vec.size(); i_p++) {
         h_posttag->Add(help_vec[i_p]);
         delete help_vec[i_p];
@@ -881,7 +881,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getExperimentalUncert(TString &var, st
       delete h_down;
       h_down = nullptr;
     } else if (isEff) {
-      help_vec = GetRebinHistsMC(var+"_PREFITPOSTTAG",sys+"__1down",applyFitCorrection);
+      help_vec = GetRebinHistsMC(var+"_2TAG",sys+"__1down",applyFitCorrection);
       for (unsigned int i_p=0; i_p < help_vec.size(); i_p++) {
         h_posttag->Add(help_vec[i_p]);
         delete help_vec[i_p];
@@ -1177,7 +1177,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::
   std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
   std::vector<TString> flavours = m_config->GetFlavourPairs();
 
-  isPosttag = var.Contains("PREFITPOSTTAG");
+  isPosttag = var.Contains("2TAG");
 
   TH1D *h_nom=new TH1D("h_nom","",fj_bins.size()-1,&(fj_bins[0]));
 

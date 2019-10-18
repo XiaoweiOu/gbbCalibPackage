@@ -12,37 +12,39 @@ from ROOT import TCanvas,TPad,TString
 
 ListOfVariables_general = [
   'fjpt','fjptsc','fjm',
-  'fjpt_PREFITPOSTTAG','fjptsc_PREFITPOSTTAG','fjm_PREFITPOSTTAG',
+  'fjpt_2TAG','fjptsc_2TAG','fjm_2TAG',
   'mjpt','nmjpt','mjeta','nmjeta',
-  'mjpt_PREFITPOSTTAG','nmjpt_PREFITPOSTTAG','mjeta_PREFITPOSTTAG','nmjeta_PREFITPOSTTAG',
+  'mjpt_2TAG','nmjpt_2TAG','mjeta_2TAG','nmjeta_2TAG',
   'fjD2','fjtau21','mjMV2c10','nmjMV2c10',
-  'fjD2_PREFITPOSTTAG','fjtau21_PREFITPOSTTAG','mjMV2c10_PREFITPOSTTAG','nmjMV2c10_PREFITPOSTTAG',
+  'fjD2_2TAG','fjtau21_2TAG','mjMV2c10_2TAG','nmjMV2c10_2TAG',
   'mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets',
 
+  #'mjmaxSd0_pt','nmjmaxSd0_pt','mjmaxd0_pt','nmjmaxd0_pt','mjmaxd0err_pt','nmjmaxd0err_pt',
+  #'mjsubSd0_pt','nmjsubSd0_pt','mjsubd0_pt','nmjsubd0_pt','mjsubd0err_pt','nmjsubd0err_pt',
+  #'mjthirdSd0_pt','nmjthirdSd0_pt','mjthirdd0_pt','nmjthirdd0_pt','mjthirdd0err_pt','nmjthirdd0err_pt',
+  #'mjmaxSd0_pt_2TAG','nmjmaxSd0_pt_2TAG',
+  #'mjsubSd0_pt_2TAG','nmjsubSd0_pt_2TAG',
+  #'mjthirdSd0_pt_2TAG','nmjthirdSd0_pt_2TAG',
   'mjmeanSd0','nmjmeanSd0',
-  'mjmaxSd0_pt','nmjmaxSd0_pt','mjmaxd0_pt','nmjmaxd0_pt','mjmaxd0err_pt','nmjmaxd0err_pt',
-  'mjsubSd0_pt','nmjsubSd0_pt','mjsubd0_pt','nmjsubd0_pt','mjsubd0err_pt','nmjsubd0err_pt',
-  'mjthirdSd0_pt','nmjthirdSd0_pt','mjthirdd0_pt','nmjthirdd0_pt','mjthirdd0err_pt','nmjthirdd0err_pt',
-  'mjmeanSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG',
-  'mjmaxSd0_pt_PREFITPOSTTAG','nmjmaxSd0_pt_PREFITPOSTTAG',
-  'mjsubSd0_pt_PREFITPOSTTAG','nmjsubSd0_pt_PREFITPOSTTAG',
-  'mjthirdSd0_pt_PREFITPOSTTAG','nmjthirdSd0_pt_PREFITPOSTTAG',
-  'mjpt_PREFITUNTAG',
+  'mjmeanSd0_2TAG','nmjmeanSd0_2TAG',
+  'mjmeanSd0_NOT2TAG','nmjmeanSd0_NOT2TAG',
+  'mjpt_NOT2TAG',
 
-  'mjmeanSd0_TWOMUON','nmjmeanSd0_TWOMUON',
-  'mjmeanSd0_PREFITPOSTTAG_TWOMUON','nmjmeanSd0_PREFITPOSTTAG_TWOMUON'
+  'mjmeanSd0_2TAG_2MUON','nmjmeanSd0_2TAG_2MUON',
+  'mjmeanSd0_NOT2TAG_2MUON','nmjmeanSd0_NOT2TAG_2MUON',
+  'mjmeanSd0_2TAG_1MUON','nmjmeanSd0_2TAG_1MUON',
+  'mjmeanSd0_NOT2TAG_1MUON','nmjmeanSd0_NOT2TAG_1MUON'
   ]
 
-ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_PREFITPOSTTAG','XbbScoreTop_PREFITPOSTTAG','XbbScoreQCD_PREFITPOSTTAG','XbbScoreRatiof0_PREFITPOSTTAG','XbbScoreRatiofp2_PREFITPOSTTAG']
+ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_2TAG','XbbScoreTop_2TAG','XbbScoreQCD_2TAG','XbbScoreRatiof0_2TAG','XbbScoreRatiofp2_2TAG']
 
 ListOfVariables_r20p7 = []
 
 ListOfVariables_minimal = [
-  'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0',
-  'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0',
-  'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG',
-  'nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG',
-  'mjpt_PREFITUNTAG'
+  'mjmeanSd0','nmjmeanSd0',
+  'mjmeanSd0_2TAG','nmjmeanSd0_2TAG',
+  'mjmeanSd0_NOT2TAG','nmjmeanSd0_NOT2TAG',
+  'mjpt_NOT2TAG',
   ]
 
 # variables for which only the pt-inclusive plots are desired
@@ -156,13 +158,13 @@ for flavour in ListOfFlavourPairs :
       ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var).Data())
       for sys in ListOfSystematics :
         #TODO: don't hard-code these exceptions
-        if ("fjeta" in var or "fjphi" in var or "PREFITUNTAG" in var) and "Nom" not in sys.Data():
+        if ("fjeta" in var or "fjphi" in var or "NOT2TAG" in var) and "Nom" not in sys.Data():
           continue
         ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
       if "Sd0" in var :
         for sys in ListOfSd0Systematics :
           ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
-      if "PREFITPOSTTAG" in var :
+      if "2TAG" in var :
         for sys in ListOfWeightVariations :
           ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys.Data()).Data())
   for fjpt in ListOfFJpt :
@@ -170,13 +172,13 @@ for flavour in ListOfFlavourPairs :
       ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var).Data())
       for sys in ListOfSystematics :
         #TODO: don't hard-code these exceptions
-        if ("fjeta" in var or "fjphi" in var or "PREFITUNTAG" in var) and "Nom" not in sys.Data():
+        if ("fjeta" in var or "fjphi" in var or "NOT2TAG" in var) and "Nom" not in sys.Data():
           continue
         ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
       if "Sd0" in var :
         for sys in ListOfSd0Systematics :
           ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
-      if "PREFITPOSTTAG" in var :
+      if "2TAG" in var :
         for sys in ListOfWeightVariations :
           ListOfHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var+"_"+sys.Data()).Data())
 
@@ -201,7 +203,7 @@ for histname in ListOfHists :
     print("Wrote "+histname)
   else:
     print("Could not find "+histname+" in all input files!")
-    if 'PREFITPOSTTAG' in histname:
+    if '2TAG' in histname:
       help_name=histname.rsplit('_',1)[0]
       if 'BTAGUP' in histname or 'BTAGDOWN' in histname:
         help_name=histname.rsplit('_',2)[0]

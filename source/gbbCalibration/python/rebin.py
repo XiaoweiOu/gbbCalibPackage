@@ -203,42 +203,42 @@ def CopyHists(region,var):
 # Rebin template variables
 for var in ListOfTmplVars:
   RebinHist(TString('Incl'),var)
-  RebinHist(TString('Incl'),TString(var.Data()+'_PREFITPOSTTAG'))
-  RebinHist(TString('Incl'),TString(var.Data()+'_PREFITUNTAG'))
+  RebinHist(TString('Incl'),TString(var.Data()+'_2TAG'))
+  RebinHist(TString('Incl'),TString(var.Data()+'_NOT2TAG'))
 # Copy plot variables from infile to outfile
 for var in ListOfPlotVars:
   if var in ListOfTmplVars:
     continue
   CopyHists(TString('Incl'),var)
-  CopyHists(TString('Incl'),var.Data()+'_PREFITPOSTTAG')
+  CopyHists(TString('Incl'),var.Data()+'_2TAG')
 
 # track-jet bins
 for region in ListOfTJpt:
   # Rebin template variables
   for var in ListOfTmplVars:
     RebinHistsAll(region,var)
-    RebinHistsAll(region,TString(var.Data()+'_PREFITPOSTTAG'))
-    RebinHistsAll(region,TString(var.Data()+'_PREFITUNTAG'))
+    RebinHistsAll(region,TString(var.Data()+'_2TAG'))
+    RebinHistsAll(region,TString(var.Data()+'_NOT2TAG'))
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
     if var in ListOfTmplVars:
       continue
     CopyHists(region,var)
-    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
+    CopyHists(region,var.Data()+'_2TAG')
 
 # fat-jet bins
 for region in ListOfFJpt:
   # Rebin template variables
   for var in ListOfTmplVars:
     RebinHistsAll(region,var)
-    RebinHistsAll(region,TString(var.Data()+'_PREFITPOSTTAG'))
-    RebinHistsAll(region,TString(var.Data()+'_PREFITUNTAG'))
+    RebinHistsAll(region,TString(var.Data()+'_2TAG'))
+    RebinHistsAll(region,TString(var.Data()+'_NOT2TAG'))
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
     if var in ListOfTmplVars:
       continue
     CopyHists(region,var)
-    CopyHists(region,var.Data()+'_PREFITPOSTTAG')
+    CopyHists(region,var.Data()+'_2TAG')
 
 infile.Close()
 outfile.Close()

@@ -11,14 +11,14 @@ from ROOT import TCanvas,TPad,TString
 
 #----------------- variables ------------------------
 
-ListOfVariables = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_PREFITPOSTTAG', 'mjmaxSd0_PREFITPOSTTAG','mjsubSd0_PREFITPOSTTAG', 'mjthirdSd0_PREFITPOSTTAG','nmjmeanSd0_PREFITPOSTTAG', 'nmjmaxSd0_PREFITPOSTTAG', 'nmjsubSd0_PREFITPOSTTAG', 'nmjthirdSd0_PREFITPOSTTAG']
+ListOfVariables = [ 'mjmaxSd0', 'mjmeanSd0','mjsubSd0','mjthirdSd0', 'nmjmaxSd0', 'nmjmeanSd0','nmjsubSd0','nmjthirdSd0', 'mjmeanSd0_2TAG', 'mjmaxSd0_2TAG','mjsubSd0_2TAG', 'mjthirdSd0_2TAG','nmjmeanSd0_2TAG', 'nmjmaxSd0_2TAG', 'nmjsubSd0_2TAG', 'nmjthirdSd0_2TAG']
 
 ListOfVariablePairs = [ 'mjmaxSd0_nmjmaxSd0','mjsubSd0_nmjsubSd0','mjthirdSd0_nmjthirdSd0','mjmeanSd0_nmjmeanSd0','mjmaxSd0_mjsubSd0','mjmaxSd0_mjthirdSd0','mjsubSd0_mjthirdSd0','nmjmaxSd0_nmjsubSd0','nmjmaxSd0_nmjthirdSd0','nmjsubSd0_nmjthirdSd0']
 
 ListOfVariablePairs_posttag = []
 
 for var in ListOfVariablePairs:
-  posttag_var = var+'_PREFITPOSTTAG'
+  posttag_var = var+'_2TAG'
   ListOfVariablePairs_posttag.append(posttag_var)
 ListOfVariablePairs+=ListOfVariablePairs_posttag
 
@@ -101,13 +101,13 @@ for tjpt in ListOfTJpt :
 #      ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var).Data())
 #      for sys in ListOfSystematics :
 #        #TODO: don't hard-code these exceptions
-#        if ("fjeta" in var or "fjphi" in var or "PREFITUNTAG" in var) and "Nom" not in sys.Data():
+#        if ("fjeta" in var or "fjphi" in var or "NOT2TAG" in var) and "Nom" not in sys.Data():
 #          continue
 #        ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
 #      if "Sd0" in var :
 #        for sys in ListOfSd0Systematics :
 #          ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
-#      if "PREFITPOSTTAG" in var :
+#      if "2TAG" in var :
 #        for sys in ListOfWeightVariations :
 #          ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys.Data()).Data())
 
@@ -129,7 +129,7 @@ for tjpt in ListOfTJpt :
 #    print("Wrote "+histname)
 #  else:
 #    print("Could not find "+histname+" in all input files!")
-#    if 'PREFITPOSTTAG' in histname:
+#    if '2TAG' in histname:
 #      help_name=histname.rsplit('_',1)[0]
 #      if 'BTAGUP' in histname or 'BTAGDOWN' in histname:
 #        help_name=histname.rsplit('_',2)[0]
