@@ -190,7 +190,7 @@ bool GbbTupleAna::passMuonSelection(unsigned int i_muon){
 
   if(TMath::Abs(this->muo_d0->at(i_muon))<2. && TMath::Abs(this->muo_z0sintheta->at(i_muon))<2.) track=true;
 
-  if(this->muo_pt->at(i_muon)>5e3 && TMath::Abs(this->muo_eta->at(i_muon))<2.4 ) kin=true;
+  if(this->muo_pt->at(i_muon)>10e3 && TMath::Abs(this->muo_eta->at(i_muon))<2.4 ) kin=true;
 
   if(m_Debug && !id) std::cout<<"passMuonSelection: Did not pass quality requirement, quality is"<<this->muo_quality->at(i_muon)<<std::endl;
   if(m_Debug && !track) std::cout<<"passMuonSelection: Did not pass track requirement"<<std::endl;
