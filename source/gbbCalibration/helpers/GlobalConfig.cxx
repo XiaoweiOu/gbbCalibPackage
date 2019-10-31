@@ -59,7 +59,12 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   for (TString var : m_PlotVariables) {
     std::vector<float> tempBins = SplitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
     std::vector<double> binning; //TH1::Rebin only works with double values
-    for (float bin : tempBins) binning.push_back((double)bin);
+    // Format is either exactly 3 values (min,max,step) or a list of bin edges
+    if (tempBins.size() == 3) {
+      for (double bin = tempBins[0]; bin <= tempBins[1]; bin += tempBins[2]) binning.push_back(bin);
+    } else {
+      for (float bin : tempBins) binning.push_back((double)bin);
+    }
     m_PlotBinning.emplace(var, binning);
     std::cout <<("PlotBins."+var).Data()<<": "<<config->GetValue(("PlotBins."+var).Data(),"")<<std::endl;
   }
