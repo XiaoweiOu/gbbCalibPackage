@@ -804,7 +804,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
   // FIXME: I don't think the weight saved in the tuple is correct
   // l/c/b SFs are always applied for non-2BTAG categories
   float btag_SF_nom=1., btag_SF_up=1., btag_SF_down=1.;
-  if (m_isMC && (m_doApplyBTaggingSF || !dijet_flav.Contains("BB")))
+  //if (m_isMC && (m_doApplyBTaggingSF || !dijet_flav.Contains("BB")))
+  if (m_isMC && m_doApplyBTaggingSF)
     getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
 
   //=========================================
@@ -824,18 +825,21 @@ bool GbbTupleAna::Processgbb(int i_evt){
   else if (gbbcand.nRecoMuons == 1) muon_categories.push_back("1MUON");
   else if (gbbcand.nRecoMuons == 0) muon_categories.push_back("0MUON");
 
+  for (TString mcat : muon_categories) {
+    categories.push_back(mcat);
+    for (TString bcat : btag_categories) {
+      categories.push_back(mcat+"_"+bcat);
+    }
+  }
   for (TString bcat : btag_categories) {
     categories.push_back(bcat);
-    for (TString mcat : muon_categories) {
-      categories.push_back(bcat+"_"+mcat);
-    }
   }
 
   for (TString cat : categories) {
     if(m_Debug) std::cout<<"processgbb(): Fill histograms for category "<<cat.Data()<<std::endl;
     // Leave this here to be able to change weight by e.g. adding single-tag SFs
     float category_wgt = total_evt_weight;
-    if (!cat.IsNull()) category_wgt *= btag_SF_nom;
+    if (cat.Contains("TAG")) category_wgt *= btag_SF_nom;
 
     // Fill standard set of plots for each category
     if (m_RunMode & RunMode::FILL_TEMPLATES) {
