@@ -654,7 +654,7 @@ void ScaleFactorCalculator::MakeFatJetControlPlots(TString &var, bool applyFitCo
       //h_ratio->Draw("EPsame");
   }
 
-  if(isPosttag){
+  if(isPosttag && m_doSystematics){
 
     btagsys=this->getBTagUncert(var,applyFitCorrection);
 if (btagsys->GetErrorYhigh(10) == 0) std::cout<<"zero btag uncert!"<<std::endl;
@@ -864,6 +864,8 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   h_ratio->Draw("EP");
 
   //Systematic uncertainties
+  TGraphAsymmErrors *btagsys(nullptr);
+  TString fjpt="fjpt",fjpt_posttag="fjpt_2TAG";
   TGraphAsymmErrors *fitsys=getFitUncertBTagRateToys();
   fitsys->SetFillColor(kGreen+1);
   fitsys->SetFillStyle(3001);
@@ -874,26 +876,26 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   pad2->cd();
   fitsys->Draw("2");
   leg->AddEntry(fitsys,"fit uncert.","f");
+  if (m_doSystematics) {
+    //Btagging uncertainties
+    double x,y,eyl,eyh;
+    btagsys=getBTagUncert(fjpt_posttag,true);
+    for(int i=0; i<btagsys->GetN(); i++){
+      btagsys->GetPoint(i,x,y);
+      eyl = btagsys->GetErrorYlow(i);
+      eyh = btagsys->GetErrorYhigh(i);
+      btagsys->SetPoint(i,x,1);
+      btagsys->SetPointEYlow(i,eyl);
+      btagsys->SetPointEYhigh(i,eyh);
+    }
 
-  //Btagging uncertainties
-  TString fjpt="fjpt",fjpt_posttag="fjpt_2TAG";
-  double x,y,eyl,eyh;
-  TGraphAsymmErrors *btagsys=getBTagUncert(fjpt_posttag,true);
-  for(int i=0; i<btagsys->GetN(); i++){
-    btagsys->GetPoint(i,x,y);
-    eyl = btagsys->GetErrorYlow(i);
-    eyh = btagsys->GetErrorYhigh(i);
-    btagsys->SetPoint(i,x,1);
-    btagsys->SetPointEYlow(i,eyl);
-    btagsys->SetPointEYhigh(i,eyh);
+    btagsys->SetLineColor(kRed);
+    btagsys->SetFillStyle(0);
+    //pad2->cd();
+    btagsys->Draw("5");
+    h_ratio->Draw("EPsame");
+    leg->AddEntry(btagsys,"b-tagging uncert.","l");
   }
-
-  btagsys->SetLineColor(kRed);
-  btagsys->SetFillStyle(0);
-  //pad2->cd();
-  btagsys->Draw("5");
-  h_ratio->Draw("EPsame");
-  leg->AddEntry(btagsys,"b-tagging uncert.","l");
 
   TGraphAsymmErrors *expsys=this->getExperimentalUncert(fjpt,sys,true,true);
 
@@ -915,8 +917,8 @@ void ScaleFactorCalculator::MakeBTaggingRatePlots(std::vector<TString> &sys, std
   pad2->cd();
   leg->AddEntry(totsys,"total uncert.","f");
   totsys->Draw("5");
-  fitsys->Draw("2");
-  btagsys->Draw("5");
+  if (fitsys) fitsys->Draw("2");
+  if (btagsys) btagsys->Draw("5");
   //if(modsys) modsys->Draw("2");
   h_ratio->Draw("EPsame");
 
