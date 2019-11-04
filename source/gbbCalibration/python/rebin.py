@@ -153,7 +153,7 @@ def Rebin(hist,bins,pseudo=False):
 
 def RebinHistsAll(region,var):
   h_data = getKey(infile, MyConfig.GetDataHistName(region,var).Data() )
-  h_mcBB = getKey(infile, MyConfig.GetMCHistName('Nom',region,'CC',var).Data() )
+  h_mcBB = getKey(infile, MyConfig.GetMCHistName('Nom',region,'BB',var).Data() )
   bins = GetBinsByStats(h_mcBB, args.stat, args.force)
 
   print("==================================")
@@ -202,9 +202,9 @@ def CopyHists(region,var):
 # pt-inclusive bin first
 # Rebin template variables
 for var in ListOfTmplVars:
-  RebinHist(TString('Incl'),var)
-  RebinHist(TString('Incl'),TString(var.Data()+'_2TAG'))
-  RebinHist(TString('Incl'),TString(var.Data()+'_NOT2TAG'))
+  RebinHistsAll(TString('Incl'),var)
+  RebinHistsAll(TString('Incl'),TString(var.Data()+'_2TAG'))
+  RebinHistsAll(TString('Incl'),TString(var.Data()+'_NOT2TAG'))
 # Copy plot variables from infile to outfile
 for var in ListOfPlotVars:
   if var in ListOfTmplVars:

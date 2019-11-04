@@ -1,19 +1,8 @@
-#import ROOT
-from PlotFunctions import *
-from TAxisFunctions import *
-import ConfigFunctions as config
 import argparse
 # numpy arrays are contiguous in memory (unlike python lists) and
 # can be implicitly converted to c-style arrays for input to ROOT
 import numpy as np
 import os
-
-#ROOT.gROOT.SetBatch(True)
-from ROOT import gROOT,gStyle,TFile,Double
-from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine
-
-gROOT.SetStyle('ATLAS')
-gStyle.SetErrorX(0.5)
 
 parser = argparse.ArgumentParser(description='Make fit result histograms.')
 parser.add_argument('input', help="Folder containing TRExFitter results")
@@ -27,6 +16,17 @@ parser.add_argument('--debug', action='store_true',
 #parser.add_argument('--plots', nargs='+',
 #    help="List of plots to make. Options include 'SF','NF','CorrMat',...")
 args = parser.parse_args()
+
+#import ROOT
+from PlotFunctions import *
+from TAxisFunctions import *
+import ConfigFunctions as config
+from ROOT import gROOT,gStyle,TFile,Double
+from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine
+
+gROOT.SetBatch(True)
+gROOT.SetStyle('ATLAS')
+gStyle.SetErrorX(0.5)
 
 # set variables from args
 outdir = args.input+'/Plots/'
@@ -80,7 +80,7 @@ def ReadFitResults():
   for region in regions:
     # Read in fit from TRExFitter output
     # TODO: add option for Asimov fit
-    path = "{0}/TRexFit/Fit_{1}_Data/Fits/Fit_{1}_Data.txt".format(args.input,region.Data())
+    path = "{0}/TRExFit/Fit_{1}_Data/Fits/Fit_{1}_Data.txt".format(args.input,region.Data())
 
     nuisPars = {}
     nll = 0
@@ -168,7 +168,7 @@ def Make2DPlot(bin_vals, bin_errs, name):
   nmj_labels = makeTrkJetLabels(MyConfig.GetNonMuJetPtBins(),"non-#mu-jet")
 
   # Create canvas
-  canv = TCanvas('canv','',800,600)
+  canv = TCanvas('c','',800,600)
   canv.SetTopMargin(0.05)
   canv.SetLeftMargin(0.28)
   canv.SetRightMargin(0.05)
@@ -241,7 +241,7 @@ def Make1DPlot(bin_vals, bin_yerr, name):
     bin_x[i+1] = fj_bins[i]+bin_xerr[i+1]
 
   # Create canvas
-  canv = TCanvas('canv','',800,600)
+  canv = TCanvas('c','',800,600)
 
   # Make TGraph with error bands
   gr = TGraphAsymmErrors(N,bin_x[0],bin_vals[0],bin_xerr[0],bin_xerr[0],bin_yerr[0],bin_yerr[0])
@@ -389,7 +389,9 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
 
   name = var
   if prefit:
-    name += 'Prefit'
+    name += '_prefit'
+  else:
+    name += '_postfit'
   tagText=''
   if '_2TAG' in var:
     tagText='double-b-tagged'
@@ -455,7 +457,8 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
 
     chi2Text=''
     if doChi2:
-      chi2 = h_data.Chi2Test(h_mcSum,"UW CHI2/NDF");
+      # rebinning means data is weighted histogram too
+      chi2 = h_data.Chi2Test(h_mcSum,"WW CHI2/NDF");
       #print(str(chi2))
       chi2Text='#chi^{{2}}/NDF = {:.2f}'.format(chi2)
 
@@ -481,8 +484,8 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
       for ibin in range(1,nbins+1):
         err_x[ibin-1] = (h_fitErr.GetBinLowEdge(ibin) - h_fitErr.GetBinLowEdge(ibin))/2
         bin_x[ibin-1] = h_fitErr.GetBinLowEdge(ibin) + err_x[ibin-1]
-        bin_y[ibin-1] = h_mcSum.GetBinContent([ibin])
-        err_y[ibin-1] = abs(h_fitErr.GetBinContent([ibin]) - bin_y[ibin-1])
+        bin_y[ibin-1] = h_mcSum.GetBinContent(ibin)
+        err_y[ibin-1] = abs(h_fitErr.GetBinContent(ibin) - bin_y[ibin-1])
       g_fitErr = TGraphAsymmErrors(nbins,bin_x,bin_y,err_x,err_x,err_y,err_y)
       g_fitErr.Draw('2')
       #AddHistogram(canv,g_fitErr,'2')
@@ -524,6 +527,17 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
     # finally, clear the canvas for the next histograms
     canv.Clear('D')
 
+def MakeTemplatePlots():
+  for var in MyConfig.GetTemplateVariables():
+    MakeRatioPlots(var.Data(),prefit=True ,doChi2=True,setLogy=True)
+    MakeRatioPlots(var.Data(),prefit=False,doChi2=True,setLogy=True)
+
+    MakeRatioPlots(var.Data()+'_2TAG',prefit=True ,doChi2=True,setLogy=True)
+    MakeRatioPlots(var.Data()+'_2TAG',prefit=False,doChi2=True,setLogy=True)
+
+    MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=True ,doChi2=True,setLogy=True)
+    MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=False,doChi2=True,setLogy=True)
+
 #-----------------------------------------------
 # Main function
 #-----------------------------------------------
@@ -533,8 +547,8 @@ results = ReadFitResults()
 infile = TFile("{0}/trex_input.root".format(args.input))
 
 #MakeFitPlot(results, 'ScaleFactor')
-MakeRatioPlots('mjmeanSd0',doChi2=True,setLogy=True)
-#for flav in MyConfig.GetFlavourPairs():
-#  MakeFitPlot(results, flav.Data())
-#  MakeFlavFracPlot(results, flav.Data(), prefit=True)
-#  MakeFlavFracPlot(results, flav.Data(), prefit=False)
+MakeTemplatePlots()
+for flav in MyConfig.GetFlavourPairs():
+  MakeFitPlot(results, flav.Data())
+  MakeFlavFracPlot(results, flav.Data(), prefit=True)
+  MakeFlavFracPlot(results, flav.Data(), prefit=False)
