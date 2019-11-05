@@ -12,10 +12,12 @@
 //
 struct GbbCandidate{
   unsigned int ind_fj;
-  unsigned int ind_mj;
-  unsigned int ind_mj_mu;
-  unsigned int ind_nmj;
-  unsigned int ind_nmj_mu;
+  unsigned int ind_j1;
+  unsigned int ind_j1_mu;
+  unsigned int ind_j2;
+  unsigned int ind_j2_mu;
+  unsigned int ind_j3;
+  unsigned int ind_j3_mu;
   bool hasLeadTrkJets;
   unsigned int nTruthMuons;
   unsigned int nRecoMuons;

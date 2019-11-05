@@ -116,10 +116,10 @@ bool AsgToolTagger::accept(const unsigned int idx, float& SF) {
   return tag;
 }
 
-int AsgToolTagger::accept(const GbbCandidate& gbbcand, float& mjSF, float& nmjSF) {
+int AsgToolTagger::accept(const GbbCandidate& gbbcand, float& j1SF, float& j2SF) {
   int tag = 0;
-  if (accept(gbbcand.ind_mj,  mjSF) ) tag++;
-  if (accept(gbbcand.ind_nmj, nmjSF)) tag++;
+  if (accept(gbbcand.ind_j1,  j1SF) ) tag++;
+  if (accept(gbbcand.ind_j2, j2SF)) tag++;
   return tag;
 }
 
