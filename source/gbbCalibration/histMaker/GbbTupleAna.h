@@ -182,6 +182,8 @@ private:
   TString makeFatJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeFlavInclPlotName(const TString var);
+  TString getTrkjetName(unsigned int i);
+  TString getTrkjetLabel(unsigned int i);
 
   float getTrigJetWeight(int i_trig_jet, TString trigger_passed);
   float getTrigFatJetWeight(float trigfjpt, float trigfjeta,TString trigger_passed);
@@ -199,7 +201,7 @@ private:
   void FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, float event_weight,TString nametag="");
   // Helper function for FillTemplates
-  void FillSd0Plots(trkjetSd0Info j1Sd0Info, trkjetSd0Info j2Sd0Info, float event_weight, std::function<TString (TString)> namingFunc);
+  void FillSd0Plots(std::vector<trkjetSd0Info> sd0Info, float event_weight, std::function<TString (TString)> namingFunc);
   //Tong: Fill 2D histogram for correlation check
   void FillSd02DPlots(trkjetSd0Info j1Sd0Info, trkjetSd0Info j2Sd0Info, float event_weight, std::function<TString (TString)> namingFunc);
 
