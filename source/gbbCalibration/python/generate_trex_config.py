@@ -160,21 +160,21 @@ def WriteSampleBlock(outfile,flav):
   outfile.write('  HistoNameSuff: "_'+flav+'"\n')
   outfile.write('  FillColorRGB: '+colorStr[flav]+'\n')
   outfile.write('  LineColorRGB: 0,0,0\n')
-  #outfile.write('  NormFactor: "'+flav+'",1,0,100\n')
+  outfile.write('  NormFactor: "'+flav+'",1,0,100\n')
   if useMCstats:
     outfile.write('  UseMCstat: TRUE\n')
   else:
     outfile.write('  UseMCstat: FALSE\n')
   outfile.write('\n')
 
-  outfile.write('NormFactor: "'+flav+'"\n')
-  outfile.write('  Samples: "'+flav+'"\n')
-  outfile.write('  Title: "'+flav+'"\n')
-  outfile.write('  Nominal: 1\n')
-  outfile.write('  Min: 0.1\n')
-  outfile.write('  Max: 10\n')
-  outfile.write('  Tau: 1\n')
-  outfile.write('\n')
+  #outfile.write('NormFactor: "'+flav+'"\n')
+  #outfile.write('  Samples: "'+flav+'"\n')
+  #outfile.write('  Title: "'+flav+'"\n')
+  #outfile.write('  Nominal: 1\n')
+  #outfile.write('  Min: 0.1\n')
+  #outfile.write('  Max: 10\n')
+  #outfile.write('  Tau: 1\n')
+  #outfile.write('\n')
 
 def WriteSystBlock2Sided(outfile,sys):
   outfile.write('Systematic: "'+sys+'"\n')
