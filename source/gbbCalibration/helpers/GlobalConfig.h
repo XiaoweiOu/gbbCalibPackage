@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <stdexcept>
 
 //
 // Class used to standardize regions and naming conventions between
@@ -62,6 +63,11 @@ class GlobalConfig {
   std::vector<TString> GetTrkJetRegions();
   TString GetDiTrkJetLabel(float muJetPt, float nonMuJetPt) {
     return GetMuJetLabel(muJetPt)+"_"+GetNonMuJetLabel(nonMuJetPt);
+  }
+  TString GetTrkJetLabel(float trkJetPt, unsigned int i) {
+    if (i==0) return GetPtLabel(trkJetPt, m_MuonJetPtBins, m_MuonJetRegions);
+    else if (i==1) return GetPtLabel(trkJetPt, m_NonMuJetPtBins, m_NonMuJetRegions);
+    else throw std::out_of_range(Form("Pt bins for trkjet %i don't exist",i));
   }
   TString GetMuJetLabel(float muJetPt) { return GetPtLabel(muJetPt, m_MuonJetPtBins, m_MuonJetRegions); }
   TString GetNonMuJetLabel(float nonMuJetPt) {

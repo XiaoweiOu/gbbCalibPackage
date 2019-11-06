@@ -17,6 +17,7 @@ namespace GbbUtil {
 
   // split s into multiple parts with delim
   std::vector<std::string> splitString(std::string str, std::string delimiter);
+  std::vector<std::string> splitStringD(std::string str, std::string delimiter);
 
   // split each string in vector to a pair using delimiter
   std::map<std::string,std::string> splitEach
@@ -28,5 +29,7 @@ namespace GbbUtil {
   std::map<std::string,std::string> splitWholeThenEach
     (std::string s, std::string delimiter1, std::string delimiter2);
 
+  std::vector<TString> SplitString(TString str, char delim);
+  std::vector<float> SplitStringD(TString str, char delim);
 }
 #endif

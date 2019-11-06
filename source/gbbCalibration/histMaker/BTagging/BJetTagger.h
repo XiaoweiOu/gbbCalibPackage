@@ -12,7 +12,7 @@ class BJetTagger {
 
   virtual int initialize(const TupleAna& gbbtuple) = 0;
   virtual int accept(const GbbCandidate& gbbcand) = 0;
-  virtual int accept(const GbbCandidate& gbbcand, float& mjSF, float& nmjSF) = 0;
+  virtual int accept(const GbbCandidate& gbbcand, float& sf) = 0;
   virtual void setFlags(const std::vector<bool>& flags) = 0;
 
  protected:

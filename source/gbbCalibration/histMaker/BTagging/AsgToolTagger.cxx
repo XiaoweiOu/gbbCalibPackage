@@ -116,14 +116,18 @@ bool AsgToolTagger::accept(const unsigned int idx, float& SF) {
   return tag;
 }
 
-int AsgToolTagger::accept(const GbbCandidate& gbbcand, float& j1SF, float& j2SF) {
+int AsgToolTagger::accept(const GbbCandidate& gbbcand, float& sf) {
   int tag = 0;
-  if (accept(gbbcand.ind_j1,  j1SF) ) tag++;
-  if (accept(gbbcand.ind_j2, j2SF)) tag++;
+  sf = 1.;
+  float temp_sf(1.);
+  for (auto ind_tj : gbbcand.ind_tj) {
+    if (accept(ind_tj, temp_sf) ) tag++;
+    sf *= temp_sf;
+  }
   return tag;
 }
 
 int AsgToolTagger::accept(const GbbCandidate& gbbcand) {
-  float sf1(-1.), sf2(-1);
-  return accept(gbbcand, sf1, sf2);
+  float sf(-1.);
+  return accept(gbbcand, sf);
 }

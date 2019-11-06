@@ -11,7 +11,7 @@ class XbbScoreTagger : public BJetTagger {
   int initialize(const TupleAna& gbbtuple);
   int accept(const GbbCandidate& gbbcand);
   // return -1 for SFs. should it return MV2c10_FixedCutBEff_70 SFs instead?
-  int accept(const GbbCandidate& gbbcand, float& mjSF, float& nmjSF);
+  int accept(const GbbCandidate& gbbcand, float& sf);
   void setFlags(const std::vector<bool>& flags) {};
 
  private:

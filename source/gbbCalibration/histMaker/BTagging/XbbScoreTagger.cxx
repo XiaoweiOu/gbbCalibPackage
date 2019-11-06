@@ -51,9 +51,8 @@ void XbbScoreTagger::setFixedCut() {
   m_fixed_cut = m_fixedCutMap[m_topFrac][m_eff];
 }
 
-int XbbScoreTagger::accept(const GbbCandidate& gbbcand, float& j1SF, float& j2SF) {
-  j1SF = -1.;
-  j2SF = -1.;
+int XbbScoreTagger::accept(const GbbCandidate& gbbcand, float& sf) {
+  sf = -1.;
   return accept(gbbcand);
 }
 

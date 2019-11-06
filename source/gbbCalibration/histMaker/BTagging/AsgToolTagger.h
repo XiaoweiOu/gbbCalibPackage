@@ -14,7 +14,7 @@ class AsgToolTagger : public BJetTagger {
 
   int initialize(const TupleAna& gbbtuple);
   int accept(const GbbCandidate& gbbcand);
-  int accept(const GbbCandidate& gbbcand, float& mjSF, float& nmjSF);
+  int accept(const GbbCandidate& gbbcand, float& sf);
   void setFlags(const std::vector<bool>& flags);
 
   // Static object that provides athena-based message logging functionality

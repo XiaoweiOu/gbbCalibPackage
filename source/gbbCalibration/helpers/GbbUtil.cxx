@@ -74,7 +74,6 @@ namespace GbbUtil {
     return res;
   }
 
-
   std::map<std::string,std::string> splitEach
   (std::vector<std::string> &v, std::string delimiter){
     std::map<std::string,std::string> res;
@@ -95,6 +94,31 @@ namespace GbbUtil {
     std::vector<std::string> vp = splitString(s,delimiter1);
 
     return splitEach(vp,delimiter2);
+  }
+
+  std::vector<TString> SplitString(TString str, char delim){
+
+    std::vector<TString> tokens;
+    TObjArray *Strings=str.Tokenize(delim);
+
+    for(int i=0; i<Strings->GetEntriesFast(); i++){
+      tokens.push_back(((TObjString*) (*Strings)[i])->GetString());
+    }
+
+    return tokens;
+  }
+
+  std::vector<float> SplitStringD(TString str, char delim){
+
+    std::vector<float> tokens;
+    TObjArray *Strings=str.Tokenize(delim);
+
+    for(int i=0; i<Strings->GetEntriesFast(); i++){
+      tokens.push_back((((TObjString*) (*Strings)[i])->GetString()).Atof());
+      std::cout<<"Token: "<<((TObjString*) (*Strings)[i])->GetString()<<" vs "<<tokens[i]<<std::endl;
+    }
+
+    return tokens;
   }
 
 }
