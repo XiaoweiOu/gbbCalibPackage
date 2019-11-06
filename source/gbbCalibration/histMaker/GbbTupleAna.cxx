@@ -653,12 +653,12 @@ bool GbbTupleAna::Processgbb(int i_evt){
   fatjet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.ind_fj),this->trkjet_eta->at(gbbcand.ind_fj),this->trkjet_phi->at(gbbcand.ind_fj),this->trkjet_E->at(gbbcand.ind_fj));
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trigjet),this->jet_eta->at(i_trigjet),this->jet_phi->at(i_trigjet),this->jet_E->at(i_trigjet));
 
-  if (fatjet.DeltaR(trigjet) < 1.5) return false;
+  //if (fatjet.DeltaR(trigjet) < 1.5) return false;
 
-  if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
-  icut++;
-  m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
-  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass topo cuts");
+  //if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
+  //icut++;
+  //m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  //((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass topo cuts");
 
   icut++;
   if (gbbcand.nRecoMuons > 1) {
@@ -794,7 +794,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //8.) Fill histograms
   //=========================================
 
-  std::vector<TString> categories{""}, btag_categories{}, muon_categories{};
+  std::vector<TString> categories{""}, topo_categories{}, btag_categories{}, muon_categories{};
 
   // B-tag categories not exclusive
   if (isTagged == 2) btag_categories.push_back("2TAG");
@@ -807,6 +807,15 @@ bool GbbTupleAna::Processgbb(int i_evt){
   else if (gbbcand.nRecoMuons == 1) muon_categories.push_back("1MUON");
   else if (gbbcand.nRecoMuons == 0) muon_categories.push_back("0MUON");
 
+  if (fatjet.DeltaR(trigjet) < 1.5) topo_categories.push_back("TRIG");
+  else topo_categories.push_back("NOTTRIG");
+
+  for (TString tcat : topo_categories) {
+    categories.push_back(tcat);
+    for (TString bcat : btag_categories) {
+      categories.push_back(tcat+"_"+bcat);
+    }
+  }
   for (TString mcat : muon_categories) {
     categories.push_back(mcat);
     for (TString bcat : btag_categories) {
