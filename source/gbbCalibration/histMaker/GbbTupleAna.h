@@ -175,7 +175,7 @@ private:
   // Wrapper functions for the MakePlotName functions from the
   // GlobalConfig class. Defined in GbbFillHelp.cxx
   //
-  TString makeTrkJetPlotName(GbbCandidate* gbbcand, unsigned int i, const TString var);
+  TString makeInclTrkJetPlotName(GbbCandidate* gbbcand, unsigned int i, const TString var);
   TString makeDiJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeFatJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString var);

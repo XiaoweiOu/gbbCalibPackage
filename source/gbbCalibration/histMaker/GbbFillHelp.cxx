@@ -14,13 +14,12 @@
 #include <functional>
 #include <stdexcept>
 
-TString GbbTupleAna::makeTrkJetPlotName(GbbCandidate* gbbcand, unsigned int i, const TString var) {
+TString GbbTupleAna::makeInclTrkJetPlotName(GbbCandidate* gbbcand, unsigned int i, const TString var) {
   if (i >= gbbcand->ind_tj.size()) throw std::out_of_range("Requested track-jet does not exist");
   unsigned int ind_tj = gbbcand->ind_tj.at(i);
   int truth = trkjet_truth->at(ind_tj);
   TString flav = this->eve_isMC ? m_config->GetFlavour(truth) : TString("Data");
-  TString ptlabel = m_config->GetTrkJetLabel(this->trkjet_pt->at(ind_tj)/1e3,i);
-  return m_config->GetMCHistName(m_SysVarName,ptlabel,flav,var);
+  return m_config->GetMCHistName(m_SysVarName,"Incl",flav,var);
 }
 
 TString GbbTupleAna::makeDiJetPlotName(GbbCandidate* gbbcand, const TString var) {
@@ -84,18 +83,12 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
     TString label = m_config->GetTrkJetLabel(i);
 
     // Plot track-jet kinematics with single-flavour label
-    m_HistSvc->FastFillTH1D( makeTrkJetPlotName(gbbcand,i,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
+    m_HistSvc->FastFillTH1D( makeInclTrkJetPlotName(gbbcand,i,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
      this->trkjet_pt->at(ind_tj)/1e3,250,0.,500.,event_weight);
-    m_HistSvc->FastFillTH1D( makeTrkJetPlotName(gbbcand,i,name+"eta"+nametag),";"+label+" #eta;Events/0.2;",
+    m_HistSvc->FastFillTH1D( makeInclTrkJetPlotName(gbbcand,i,name+"eta"+nametag),";"+label+" #eta;Events/0.2;",
      this->trkjet_eta->at(ind_tj),100,-2.5,2.5,event_weight);
 
     // Plot track-jet kinematics with di-flavour label
-    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
-     this->trkjet_pt->at(ind_tj)/1e3,250,0.,500.,event_weight);
-    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,name+"eta"+nametag),";"+label+" #eta;Events/0.2;",
-     this->trkjet_eta->at(ind_tj),100,-2.5,2.5,event_weight);
-
-    // Plot track-jet kinematics with di-flavour label inclusive in pt
     m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
      this->trkjet_pt->at(ind_tj)/1e3,250,0.,500.,event_weight);
     m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,name+"eta"+nametag),";"+label+" #eta;Events/0.2;",
@@ -103,6 +96,8 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
 
     m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
      this->trkjet_pt->at(ind_tj)/1e3,250,0.,500.,event_weight);
+    m_HistSvc->FastFillTH1D( makeFatJetPlotName(gbbcand,name+"eta"+nametag),";"+label+" #eta;Events/0.2;",
+     this->trkjet_eta->at(ind_tj),100,-2.5,2.5,event_weight);
 
     // Plot the pt fraction of the tracks used to calculate meanSd0
     std::vector<float> trk_pts = this->trkjet_assocTrk_pt->at(ind_tj);
@@ -546,13 +541,13 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
       );
     }
 
-    m_HistSvc->FastFillTH1D(makeTrkJetPlotName(gbbcand, i, name+"MV2c10"+nametag),
+    m_HistSvc->FastFillTH1D(makeInclTrkJetPlotName(gbbcand, i, name+"MV2c10"+nametag),
      ";"+label+" MV2c10;Events;",
      this->trkjet_MV2c10->at(ind_tj),100,-1.,1.,event_weight);
 
     if(!m_config->GetIsR20p7()){
 
-      m_HistSvc->FastFillTH1D(makeTrkJetPlotName(gbbcand, i, name+"Ntrks"+nametag),
+      m_HistSvc->FastFillTH1D(makeInclTrkJetPlotName(gbbcand, i, name+"Ntrks"+nametag),
        ";"+label+" N_{tracks};Events;",
        this->trkjet_nTrks->at(ind_tj),100,0.,50.,event_weight);
 
