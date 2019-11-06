@@ -80,8 +80,8 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
     unsigned int ind_tj = gbbcand->ind_tj.at(i);
 
     // Name goes in the plot name, label goes on the plot axis
-    TString name = getTrkjetName(i);
-    TString label = getTrkjetLabel(i);
+    TString name = m_config->GetTrkJetName(i);
+    TString label = m_config->GetTrkJetLabel(i);
 
     // Plot track-jet kinematics with single-flavour label
     m_HistSvc->FastFillTH1D( makeTrkJetPlotName(gbbcand,i,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
@@ -106,28 +106,30 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
 
     // Plot the pt fraction of the tracks used to calculate meanSd0
     std::vector<float> trk_pts = this->trkjet_assocTrk_pt->at(ind_tj);
-    std::sort(trk_pts.begin(),trk_pts.end(),std::greater<float>());
-    float ptfrac = ( trk_pts.at(0) + trk_pts.at(1) + trk_pts.at(2) ) / this->trkjet_pt->at(ind_tj);
-    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,name+"ptfrac"+nametag),";"+label+" p_{T} fraction (3 lead trks);Events;",
-     ptfrac,100,0.,1.,event_weight);
-    m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,name+"ptfrac"+nametag),";"+label+" p_{T} fraction (3 lead trks);Events;",
-     ptfrac,100,0.,1.,event_weight);
-    // Plot pt fraction vs. trk multiplicity for j1 and j2
-    m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,name+"ptfracVs"+name+"trkmult"+nametag),
-      ";"+label+" p_{T} fraction (3 lead trks);"+label+" track multiplicity;",
-      ptfrac,this->trkjet_assocTrk_pt->at(ind_tj).size(),
-      20,0.,1.,25,0.,50.,event_weight );
-    m_HistSvc->FastFillTH2D( makeInclDiJetPlotName(gbbcand,name+"ptfracVs"+name+"trkmult"+nametag),
-      ";"+label+" p_{T} fraction (3 lead trks);"+label+" track multiplicity;",
-      ptfrac,this->trkjet_assocTrk_pt->at(ind_tj).size(),
-      20,0.,1.,25,0.,50.,event_weight );
+    if (trk_pts.size() > 2) {
+      std::sort(trk_pts.begin(),trk_pts.end(),std::greater<float>());
+      float ptfrac = ( trk_pts.at(0) + trk_pts.at(1) + trk_pts.at(2) ) / this->trkjet_pt->at(ind_tj);
+      m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,name+"ptfrac"+nametag),";"+label+" p_{T} fraction (3 lead trks);Events;",
+       ptfrac,100,0.,1.,event_weight);
+      m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,name+"ptfrac"+nametag),";"+label+" p_{T} fraction (3 lead trks);Events;",
+       ptfrac,100,0.,1.,event_weight);
+      // Plot pt fraction vs. trk multiplicity for j1 and j2
+      m_HistSvc->FastFillTH2D( makeDiJetPlotName(gbbcand,name+"ptfracVs"+name+"trkmult"+nametag),
+        ";"+label+" p_{T} fraction (3 lead trks);"+label+" track multiplicity;",
+        ptfrac,this->trkjet_assocTrk_pt->at(ind_tj).size(),
+        20,0.,1.,25,0.,50.,event_weight );
+      m_HistSvc->FastFillTH2D( makeInclDiJetPlotName(gbbcand,name+"ptfracVs"+name+"trkmult"+nametag),
+        ";"+label+" p_{T} fraction (3 lead trks);"+label+" track multiplicity;",
+        ptfrac,this->trkjet_assocTrk_pt->at(ind_tj).size(),
+        20,0.,1.,25,0.,50.,event_weight );
+    }
 
     for (unsigned int j=i+1; j < gbbcand->ind_tj.size(); j++) {
       unsigned int ind_tj2 = gbbcand->ind_tj.at(j);
 
       // Name goes in the plot name, label goes on the plot axis
-      TString name2 = getTrkjetName(j);
-      TString label2 = getTrkjetLabel(j);
+      TString name2 = m_config->GetTrkJetName(j);
+      TString label2 = m_config->GetTrkJetLabel(j);
 
       // Make pt correlation plot
       m_HistSvc->FastFillTH2D( makeInclDiJetPlotName(gbbcand,name+"ptVs"+name2+"pt"+nametag),
@@ -166,8 +168,8 @@ void GbbTupleAna::FillSd0Plots(std::vector<trkjetSd0Info> sd0InfoVec, float even
     if (sd0Info.meanSd0_pt == -99.) continue;
 
     // Name goes in the plot name, label goes on the plot axis
-    TString name = getTrkjetName(i);
-    TString label = getTrkjetLabel(i);
+    TString name = m_config->GetTrkJetName(i);
+    TString label = m_config->GetTrkJetLabel(i);
 
     //m_HistSvc->FastFillTH1D( namingFunc(name+"maxSd0"),";"+label+" leading s_{d0};Events/1.5;",
     // sd0Info.maxSd0,80,-40.,80.,event_weight);
@@ -504,8 +506,8 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
     unsigned int ind_tj = gbbcand->ind_tj.at(i);
 
     // Name goes in the plot name, label goes on the plot axis
-    TString name = getTrkjetName(i);
-    TString label = getTrkjetLabel(i);
+    TString name = m_config->GetTrkJetName(i);
+    TString label = m_config->GetTrkJetLabel(i);
 
     trkjet.SetPtEtaPhiE(this->trkjet_pt->at(ind_tj),this->trkjet_eta->at(ind_tj),this->trkjet_phi->at(ind_tj),this->trkjet_E->at(ind_tj));
 

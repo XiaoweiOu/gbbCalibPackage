@@ -10,7 +10,7 @@
 
 class AsgToolTagger : public BJetTagger {
  public:
-  AsgToolTagger(std::string taggerName, std::string operatingPt);
+  AsgToolTagger(TString taggerName, TString operatingPt);
 
   int initialize(const TupleAna& gbbtuple);
   int accept(const GbbCandidate& gbbcand);
@@ -27,13 +27,13 @@ class AsgToolTagger : public BJetTagger {
  private:
   bool m_isMC;
   bool m_useVRTrkJets;
-  std::string m_corrFileName = "xAODBTaggingEfficiency/13TeV/2017-21-13TeV-MC16-CDI-2019-07-30_v1.root";
+  TString m_corrFileName = "xAODBTaggingEfficiency/13TeV/2017-21-13TeV-MC16-CDI-2019-07-30_v1.root";
 
-  std::string m_jetAuthor = "AntiKt2PV0TrackJets";
+  TString m_jetAuthor = "AntiKt2PV0TrackJets";
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface
   bool        m_useDevelopmentFile = true;
   bool        m_coneFlavourLabel = true;
-  std::string m_systematicsStrategy = "SFEigen";
+  TString m_systematicsStrategy = "SFEigen";
 
   std::vector<float>* v_pt;
   std::vector<float>* v_eta;

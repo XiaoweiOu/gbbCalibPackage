@@ -29,6 +29,7 @@ class GlobalConfig {
   virtual ~GlobalConfig();
 
   bool GetIsR20p7() { return m_isR20p7; }
+  bool UseLeadingJets() { return m_useLeadingJets; }
 
   //
   // Functions to return lists of systematics
@@ -51,8 +52,9 @@ class GlobalConfig {
   // Functions to return integer bin edges for the pT regions
   //
   std::vector<float> GetFatJetPtBins() { return m_FatJetPtBins; }
-  std::vector<float> GetMuonJetPtBins() { return m_MuonJetPtBins; }
-  std::vector<float> GetNonMuJetPtBins() { return m_NonMuJetPtBins; }
+  std::vector<float> GetTrkJetPtBins(unsigned int i) { return m_TrkJetPtBins[i]; }
+  std::vector<float> GetMuonJetPtBins() { return m_TrkJetPtBins[0]; }
+  std::vector<float> GetNonMuJetPtBins() { return m_TrkJetPtBins[1]; }
 
   //
   // Functions to return the set of all pT regions (as strings)
@@ -60,18 +62,21 @@ class GlobalConfig {
   //
   std::vector<TString> GetFatJetRegions() { return m_FatJetRegions; }
   TString GetFatJetLabel(float fatJetPt) { return GetPtLabel(fatJetPt, m_FatJetPtBins, m_FatJetRegions); }
-  std::vector<TString> GetTrkJetRegions();
+  std::vector<TString> GetDiTrkJetRegions();
   TString GetDiTrkJetLabel(float muJetPt, float nonMuJetPt) {
     return GetMuJetLabel(muJetPt)+"_"+GetNonMuJetLabel(nonMuJetPt);
   }
+  std::vector<TString> GetTrkJetRegions(unsigned int i);
   TString GetTrkJetLabel(float trkJetPt, unsigned int i) {
-    if (i==0) return GetPtLabel(trkJetPt, m_MuonJetPtBins, m_MuonJetRegions);
-    else if (i==1) return GetPtLabel(trkJetPt, m_NonMuJetPtBins, m_NonMuJetRegions);
-    else throw std::out_of_range(Form("Pt bins for trkjet %i don't exist",i));
+    if ( i >= m_TrkJetPtBins.size())
+      throw std::out_of_range("Request labels for trkjet %i that doesn't exist");
+    return GetPtLabel(trkJetPt, m_TrkJetPtBins[i], m_TrkJetRegions[i]);
   }
-  TString GetMuJetLabel(float muJetPt) { return GetPtLabel(muJetPt, m_MuonJetPtBins, m_MuonJetRegions); }
+  TString GetMuJetLabel(float muJetPt) {
+    return GetPtLabel(muJetPt, m_TrkJetPtBins[0], m_TrkJetRegions[0]);
+  }
   TString GetNonMuJetLabel(float nonMuJetPt) {
-    return GetPtLabel(nonMuJetPt, m_NonMuJetPtBins, m_NonMuJetRegions);
+    return GetPtLabel(nonMuJetPt, m_TrkJetPtBins[1], m_TrkJetRegions[1]);
   }
 
   //
@@ -94,6 +99,31 @@ class GlobalConfig {
   std::vector<TString> GetMCHistNamesBySys(const TString sys, const TString ptLabel, const TString var);
   std::map<TString,std::vector<TString> > GetMCHistNames(const TString ptLabel, const TString var);
 
+  //
+  // If useLeadingJets is set then track-jets
+  // are leading/subleading otherwise they
+  // are muon/non-muon. These functions allow
+  // plot names and labels to be changed accordingly.
+  //
+  TString GetTrkJetName(unsigned int i) {
+    if (!m_useLeadingJets) {
+      if ( i==0 ) {
+        return "mj";
+      } else if ( i==1 ) {
+        return "nmj";
+      } else return Form("j%u",i+1);
+    } else return Form("j%u",i+1);
+  }
+  TString GetTrkJetLabel(unsigned int i) {
+    if ( i==0 ) {
+      return m_useLeadingJets ? "leading jet" : "muon-jet";
+    } else if ( i==1 ) {
+      return m_useLeadingJets ? "subleading jet" : "non-muon-jet";
+    } else if ( i==2 ) {
+      return "third jet";
+    } else return Form("jet %u",i+1);
+  }
+
  private:
   bool m_isR20p7;
   std::vector<TString> m_Systematics_R20p7;
@@ -102,13 +132,12 @@ class GlobalConfig {
   std::vector<TString> m_Systematics_WeightVar;
   std::vector<TString> m_FlavourPairs;
   bool m_doMergeFlavours;
+  bool m_useLeadingJets;
 
   std::vector<float> m_FatJetPtBins;
   std::vector<TString> m_FatJetRegions;
-  std::vector<float> m_MuonJetPtBins;
-  std::vector<float> m_NonMuJetPtBins;
-  std::vector<TString> m_MuonJetRegions;
-  std::vector<TString> m_NonMuJetRegions;
+  std::vector<std::vector<float> > m_TrkJetPtBins;
+  std::vector<std::vector<TString> > m_TrkJetRegions;
 
   std::vector<TString> m_TemplateVariables;
   std::vector<TString> m_PlotVariables;
@@ -117,12 +146,6 @@ class GlobalConfig {
   std::vector<TString> MakeLabels(const std::vector<float> ptBins, const TString prefix);
   TString GetPtLabel(float pt, std::vector<float> ptBins, std::vector<TString> ptRegions);
   TString FloatToStr(const float val);
-
-  //
-  // Functions used to parse strings from configuration files as vectors
-  //
-  std::vector<TString> SplitString(TString str, char delim);
-  std::vector<float> SplitStringD(TString str, char delim);
 
 };
 

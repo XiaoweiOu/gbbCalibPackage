@@ -303,7 +303,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncert(TString& var){
 
   TString var_fjpt="fjpt";
   std::vector<double> fj_bins= (var.Contains("fjphi") && var.Contains("fjeta")) ? m_config->GetBinning(var_fjpt) : m_config->GetBinning(var);
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
 
   TH1D *hist_total=new TH1D("hist_total","",fj_bins.size()-1,&(fj_bins[0]));
 
@@ -395,7 +395,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertToys(TString& var){
     std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
     return nullptr;
   }
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
 
   for(unsigned int i_b=0; i_b<bins.size(); i_b++){
     toy_bins.push_back(new TH1D("toy_bins","",50,0,2));
@@ -509,7 +509,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRate(){
   TString name_pretag, name_posttag;
 
   std::vector<double> fj_bins=m_config->GetBinning(var);
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
 
   TH1D *hist_total=new TH1D("hist_total","",fj_bins.size()-1,&(fj_bins[0]));
   TH1D *hist_total_posttag=new TH1D("hist_total_posttag","",fj_bins.size()-1,&(fj_bins[0]));
@@ -643,7 +643,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::getFitUncertBTagRateToys(){
   TString name_pretag, name_posttag;
 
   std::vector<double> fj_bins=m_config->GetBinning(var);
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
 
   for(unsigned int i_b=0; i_b<fj_bins.size(); i_b++){
     toy_bins.push_back(new TH1D("toy_bins","",50,0,-1));
@@ -967,7 +967,7 @@ TGraphAsymmErrors* ScaleFactorCalculator::HistStackToTGraph(const TH1* h_nom, co
 std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSeparate(TString &var, std::vector<TString> &systematics, bool applyFitCorrection, bool isPosttag, bool isEff){
 
   std::vector<double> fj_bins=m_config->GetBinning(var);
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
 
   std::vector<int> color={kBlue+1, kViolet, kRed, kGreen+2,kCyan+1, kOrange+7, kViolet+2, kRed-6, kAzure+7, kGray+2};
 
@@ -1174,7 +1174,7 @@ std::vector<TGraphAsymmErrors*> ScaleFactorCalculator::getExperimentalUncertSepa
 TGraphAsymmErrors* ScaleFactorCalculator::getModellingUncert(TString &var, std::vector<TString> &systematics, bool applyFitCorrection, bool isPosttag, bool isEff){
 
   std::vector<double> fj_bins = m_config->GetBinning(var);
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
   std::vector<TString> flavours = m_config->GetFlavourPairs();
 
   isPosttag = var.Contains("2TAG");

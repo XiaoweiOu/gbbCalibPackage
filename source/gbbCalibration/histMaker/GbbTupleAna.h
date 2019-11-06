@@ -102,7 +102,6 @@ private:
 
   bool m_doTrackSmearing;
   bool m_noMuonReq;
-  bool m_useLeadingJets;
   bool m_doApplyBTaggingSF;
 
   bool m_doSd0Systematics;
@@ -218,41 +217,11 @@ private:
 
   void getSystematicsFlags(GbbCandidate *, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMu);
 
-  //
-  // Functions used to parse strings from configuration files as vectors
-  //
-  std::vector<TString> SplitString(TString str, char delim);
-  std::vector<float> SplitStringD(TString str, char delim);
-
   float getScaledFatPt(float fjpt){
     return fjpt*(0.9725+(1e-5)*fjpt);
     //    return fjpt*(0.95+((2.86e-5)*fjpt));
   }
 
-  //
-  // If useLeadingJets is set then track-jets
-  // are leading/subleading otherwise they
-  // are muon/non-muon. These functions allow
-  // plot names and labels to be changed accordingly.
-  //
-  TString getTrkjetName(unsigned int i) {
-    if (!m_useLeadingJets) {
-      if ( i==0 ) {
-        return "mj";
-      } else if ( i==1 ) {
-        return "nmj";
-      } else return Form("j%u",i);
-    } else return Form("j%u",i);
-  }
-  TString getTrkjetLabel(unsigned int i) {
-    if ( i==0 ) {
-      return m_useLeadingJets ? "leading jet" : "muon-jet";
-    } else if ( i==1 ) {
-      return m_useLeadingJets ? "subleading jet" : "non-muon-jet";
-    } else if ( i==2 ) {
-      return "third jet";
-    } else return Form("jet %u",i);
-  }
 };
 
 #endif /* GBBTUPLEANA_H_ */

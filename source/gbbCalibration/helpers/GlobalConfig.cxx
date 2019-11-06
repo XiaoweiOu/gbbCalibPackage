@@ -20,44 +20,50 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
   m_isR20p7 = config->GetValue("isR20p7",false);
   std::cout<<"isR20p7: "<<m_isR20p7<<std::endl;
 
-  m_Systematics_R20p7 = SplitString(config->GetValue("Systematics_R20p7",""),',');
+  m_Systematics_R20p7 = GbbUtil::splitString(config->GetValue("Systematics_R20p7",""),',');
   std::cout<<"Systematics_R20p7: "<<config->GetValue("Systematics_R20p7","")<<std::endl;
 
-  m_Systematics_R21 = SplitString(config->GetValue("Systematics_R21",""),',');
+  m_Systematics_R21 = GbbUtil::splitString(config->GetValue("Systematics_R21",""),',');
   std::cout<<"Systematics_R21: "<<config->GetValue("Systematics_R21","")<<std::endl;
 
-  m_Systematics_Sd0 = SplitString(config->GetValue("Systematics_Sd0",""),',');
+  m_Systematics_Sd0 = GbbUtil::splitString(config->GetValue("Systematics_Sd0",""),',');
   std::cout<<"Systematics_Sd0: "<<config->GetValue("Systematics_Sd0","")<<std::endl;
 
-  m_Systematics_WeightVar = SplitString(config->GetValue("Systematics_WeightVar",""),',');
+  m_Systematics_WeightVar = GbbUtil::splitString(config->GetValue("Systematics_WeightVar",""),',');
   std::cout<<"Systematics_WeightVar: "<<config->GetValue("Systematics_WeightVar","")<<std::endl;
 
   m_doMergeFlavours = config->GetValue("doMergeFlavours",true);
   std::cout<<"doMergeFlavours: "<<m_doMergeFlavours<<std::endl;
 
-  m_FlavourPairs = SplitString(config->GetValue("FlavourPairs",""),',');
+  m_useLeadingJets = config->GetValue("useLeadingJets",false);
+  std::cout<<"useLeadingJets: "<<m_useLeadingJets<<std::endl;
+
+  m_FlavourPairs = GbbUtil::splitString(config->GetValue("FlavourPairs",""),',');
   std::cout<<"FlavourPairs: "<<config->GetValue("FlavourPairs","")<<std::endl;
 
-  m_MuonJetPtBins = SplitStringD(config->GetValue("MuonJetPtBins",""),',');
-  std::cout<<"MuonJetPtBins: "<<config->GetValue("MuonJetPtBins","")<<std::endl;
-  m_MuonJetRegions = MakeLabels(m_MuonJetPtBins, "mjpt");
+  std::cout<<"TrkJetPtBins: "<<config->GetValue("TrkJetPtBins","")<<std::endl;
+  std::vector<TString> ptBinsStrV = GbbUtil::splitString(config->GetValue("TrkJetPtBins",""),'|');
+  if (ptBinsStrV.size() < 2)
+    throw std::invalid_argument("TrkJetPtBins must contain at least 2 sets of bins");
+  for (unsigned int i=0; i < ptBinsStrV.size(); i++) {
+    auto ptBinsStr = ptBinsStrV[i];
+    std::vector<float> ptBins = GbbUtil::splitStringD(ptBinsStr,',');
+    m_TrkJetPtBins.push_back(ptBins);
+    m_TrkJetRegions.push_back(MakeLabels(ptBins, GetTrkJetName(i)+"pt"));
+  }
 
-  m_NonMuJetPtBins = SplitStringD(config->GetValue("NonMuJetPtBins",""),',');
-  std::cout<<"NonMuoJetPtBins: "<<config->GetValue("NonMuJetPtBins","")<<std::endl;
-  m_NonMuJetRegions = MakeLabels(m_NonMuJetPtBins, "nmjpt");
-
-  m_FatJetPtBins = SplitStringD(config->GetValue("FatJetPtBins",""),',');
+  m_FatJetPtBins = GbbUtil::splitStringD(config->GetValue("FatJetPtBins",""),',');
   std::cout<<"FatJetPtBins: "<<config->GetValue("FatJetPtBins","")<<std::endl;
   m_FatJetRegions = MakeLabels(m_FatJetPtBins, "fjpt");
 
-  m_TemplateVariables = SplitString(config->GetValue("TemplateVariables",""),',');
+  m_TemplateVariables = GbbUtil::splitString(config->GetValue("TemplateVariables",""),',');
   std::cout<<"TemplateVariable: "<<config->GetValue("TemplateVariables","")<<std::endl;
 
-  m_PlotVariables = SplitString(config->GetValue("PlotVariables",""),',');
+  m_PlotVariables = GbbUtil::splitString(config->GetValue("PlotVariables",""),',');
   std::cout<<"PlotVariables: "<<config->GetValue("PlotVariables","")<<std::endl;
 
   for (TString var : m_PlotVariables) {
-    std::vector<float> tempBins = SplitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
+    std::vector<float> tempBins = GbbUtil::splitStringD(config->GetValue(("PlotBins."+var).Data(),""),',');
     std::vector<double> binning; //TH1::Rebin only works with double values
     // Format is either exactly 3 values (min,max,step) or a list of bin edges
     if (tempBins.size() == 3) {
@@ -71,26 +77,6 @@ GlobalConfig::GlobalConfig(const TString& config_path) {
 
   std::cout<<"=============================================="<<std::endl;
   delete config;
-}
-
-std::vector<TString> GlobalConfig::SplitString(TString str, char delim){
-  std::vector<TString> tokens;
-  TObjArray *strings = str.Tokenize(delim);
-  for(int i=0; i < strings->GetEntriesFast(); i++){
-    tokens.push_back(((TObjString*) (*strings)[i])->GetString());
-  }
-  delete strings;
-  return tokens;
-}
-
-std::vector<float> GlobalConfig::SplitStringD(TString str, char delim){
-  std::vector<float> tokens;
-  TObjArray *strings=str.Tokenize(delim);
-  for(int i=0; i < strings->GetEntriesFast(); i++){
-    tokens.push_back((((TObjString*) (*strings)[i])->GetString()).Atof());
-  }
-  delete strings;
-  return tokens;
 }
 
 // Returns string in format:
@@ -125,10 +111,10 @@ TString GlobalConfig::GetPtLabel(float pt, std::vector<float> ptBins, std::vecto
   return ptRegions[i];
 }
 
-std::vector<TString> GlobalConfig::GetTrkJetRegions() {
+std::vector<TString> GlobalConfig::GetDiTrkJetRegions() {
   std::vector<TString> regions;
-  for (TString muRegion : m_MuonJetRegions) {
-    for (TString nonmuRegion : m_NonMuJetRegions) {
+  for (TString muRegion : m_TrkJetRegions[0]) {
+    for (TString nonmuRegion : m_TrkJetRegions[1]) {
       regions.push_back(muRegion+"_"+nonmuRegion);
     }
   }

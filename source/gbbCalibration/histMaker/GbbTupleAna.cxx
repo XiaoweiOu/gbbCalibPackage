@@ -79,7 +79,7 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
   m_config = new GlobalConfig("GlobalConfig.cfg");
   std::cout<<"Loaded GlobalConfig"<<std::endl;
 
-  std::vector<TString> tempRunMode = SplitString(config->GetValue("RunMode",""),',');
+  std::vector<TString> tempRunMode = GbbUtil::splitString(config->GetValue("RunMode",""),',');
   std::cout<<"RunModes: "<<config->GetValue("RunMode","")<<std::endl;
   m_RunMode = 0;
   for (TString mode : tempRunMode) {
@@ -127,9 +127,6 @@ void GbbTupleAna::ReadConfig(const TString &config_path){
 
   m_noMuonReq = config->GetValue("noMuonReq",false);
   std::cout<<"noMuonReq: "<<m_noMuonReq<<std::endl;
-
-  m_useLeadingJets = config->GetValue("useLeadingJets",false);
-  std::cout<<"useLeadingJets: "<<m_useLeadingJets<<std::endl;
 
   m_doApplyBTaggingSF = config->GetValue("doApplyBTaggingSF",false);
   std::cout<<"doApplyBTaggingSF "<<m_doApplyBTaggingSF<<std::endl;
@@ -530,7 +527,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if(m_Debug) std::cout<<"processgbb(): Constructing Gbb candidate..."<<std::endl;
 
-  std::vector<GbbCandidate> gbbcands = constructGbbCandidates(m_noMuonReq || m_useLeadingJets);
+  std::vector<GbbCandidate> gbbcands = constructGbbCandidates(m_noMuonReq || m_config->UseLeadingJets());
 
   if (gbbcands.size() == 0) {
     if(m_Debug) std::cout<<"processgbb(): No gbb candidate found"<<std::endl;
@@ -930,7 +927,7 @@ void GbbTupleAna::setReweightHisto(TString filename, TString trigger_passed){
 
   std::cout<<"Looking for hist: "<<hist_name<<std::endl;
 
-  TFile* file=TFile::Open(GbbUtil::expandFilename(("${GBB_BUILD_DIR}/"+filename).Data()).data(),"READ");
+  TFile* file=TFile::Open(GbbUtil::expandFilename(("${GBB_BUILD_DIR}/"+filename).Data()).Data(),"READ");
   file->GetObject(hist_name,hist);
   hist->SetDirectory(0);
   m_reweightHistos[trigger_passed]=std::shared_ptr<TH2D>(new TH2D(*hist));
@@ -1039,6 +1036,9 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
     if (useLeading) {
       // Add trackjets to gbbcand in pt order
       for (auto inds : trkjet_info) {
+        // Store at most 3 trkjets
+        if (gbbcand.ind_tj.size() >= 3) break;
+
         gbbcand.ind_tj.push_back(inds.first);
         if (inds.second.size() > 0) {
           gbbcand.nRecoMuons++;
@@ -1072,6 +1072,9 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
       if (gbbcand.ind_tj.size() == 0) continue; // No muon-jet found
       // Muon-jet takes first spot, now fill the rest
       for (auto inds : trkjet_info) {
+        // Store at most 3 trkjets
+        if (gbbcand.ind_tj.size() >= 3) break;
+
         if (inds.first == gbbcand.ind_tj.at(0)) continue;
         gbbcand.ind_tj.push_back(inds.first);
         if (inds.second.size() > 0) {

@@ -197,12 +197,6 @@ private:
 	void SaveFitCorrectionFactorsSys();
 
   std::vector<TString> makeTrkJetLabels(std::vector<float> bins, TString jetName);
-
-  //
-  // Functions used to parse strings from configuration files as vectors
-  //
-	std::vector<TString> SplitString(TString str, char delim);
-	std::vector<float> SplitStringD(TString str, char delim);
 };
 
 #endif /* SCALEFACTORCALCULATOR_H_ */

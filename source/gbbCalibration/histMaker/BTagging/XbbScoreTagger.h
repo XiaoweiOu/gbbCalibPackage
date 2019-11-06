@@ -6,7 +6,7 @@
 
 class XbbScoreTagger : public BJetTagger {
  public :
-  XbbScoreTagger(std::string operatingPt, float xbbTopFrac);
+  XbbScoreTagger(TString operatingPt, float xbbTopFrac);
 
   int initialize(const TupleAna& gbbtuple);
   int accept(const GbbCandidate& gbbcand);

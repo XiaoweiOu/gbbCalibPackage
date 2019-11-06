@@ -73,22 +73,22 @@ void ScaleFactorCalculator::ReadConfig(const TString config_path){
   m_doCalibSequence = config->GetValue("doCalibSequence",false);
   std::cout<<"doCalibSequence: "<<m_doCalibSequence<<std::endl;
 
-  m_chans=SplitString(config->GetValue("Channels","muo,nonmuo"),',');
+  m_chans=GbbUtil::splitString(config->GetValue("Channels","muo,nonmuo"),',');
   std::cout<<"Channels: "<<config->GetValue("Channels","")<<std::endl;
 
   m_nSmoothingPasses=config->GetValue("smoothTemplatesNtimes",0);
   std::cout<<"smoothTemplatesNtimes: "<<m_nSmoothingPasses<<std::endl;
 
-  m_fitpar_names=SplitString(config->GetValue("ParameterNames",""),',');
+  m_fitpar_names=GbbUtil::splitString(config->GetValue("ParameterNames",""),',');
   std::cout<<"ParameterNames: "<<config->GetValue("ParameterNames","")<<std::endl;
 
-  m_fitpar_start=SplitStringD(config->GetValue("ParameterStart",""),',');
+  m_fitpar_start=GbbUtil::splitStringD(config->GetValue("ParameterStart",""),',');
   std::cout<<"ParameterStart: "<<config->GetValue("ParameterStart","")<<std::endl;
 
-  m_fitpar_low=SplitStringD(config->GetValue("ParameterLow",""),',');
+  m_fitpar_low=GbbUtil::splitStringD(config->GetValue("ParameterLow",""),',');
   std::cout<<"ParameterLow: "<<config->GetValue("ParameterLow","")<<std::endl;
 
-  m_fitpar_high=SplitStringD(config->GetValue("ParameterHigh",""),',');
+  m_fitpar_high=GbbUtil::splitStringD(config->GetValue("ParameterHigh",""),',');
   std::cout<<"ParameterHigh: "<<config->GetValue("ParameterHigh","")<<std::endl;
 
   m_nPseudoExps=config->GetValue("NPseudoExperiments",1000);
@@ -148,7 +148,7 @@ ScaleFactorCalculator::ScaleFactorCalculator(TString &input_file, TString &cfg_f
     if (sys.Contains("__1up")) sys_only.push_back(TString(sys(0,sys.Length()-5)));
   }
 
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
   std::vector<TString> tmpl_vars = m_config->GetTemplateVariables();
   std::vector<TString> fitpar_names=m_fitpar_names;
   std::vector<float> fitpar_start=m_fitpar_start;
@@ -529,7 +529,7 @@ SFCalcResult ScaleFactorCalculator::CalculateScaleFactorsByRegion(TString &sys, 
 std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsByRegion"<<std::endl;
   //Correct MC histograms by fit factors, subtract from data, BB_data
 
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
 
   //subtract backgrounds and calculate scale factor (or data stat error)
 
@@ -699,7 +699,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
   std::vector<float> mc_eff_nom, mc_eff_stat_err;
 
   std::vector<float> fj_bins;
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
   if(doByRegion){
     int size = regions.size();
     for(int i=0; i<size; i++) fj_bins.push_back((float)i);
@@ -757,7 +757,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
       //if(!sys.EqualTo("Nom")) current_SF[i_bin]=current_SF[i_bin]*current_mc_eff[i_bin]/mc_eff_nom[i_bin];
 
       //FIXME: what is bin 11?
-      //if(i_bin==11)std::cout<<"Region: "<<m_config->GetTrkJetRegions()[i_bin]<<std::endl;
+      //if(i_bin==11)std::cout<<"Region: "<<m_config->GetDiTrkJetRegions()[i_bin]<<std::endl;
 
       float diff=current_SF[i_bin]-sf_nom[i_bin];
       //if(i_bin==11) std::cout<<"SF diff: "<<diff<<std::endl;
@@ -810,8 +810,8 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
 
    //FIXME: what is region 11?
    //std::cout<<"Total: "<<std::endl;
-   //std::cout<<"Up is now "<<error_map_up[m_config->GetTrkJetRegions()[11]].back()<<std::endl;
-   //std::cout<<"Down is now "<<error_map_down[m_config->GetTrkJetRegions()[11]].back()<<std::endl;
+   //std::cout<<"Up is now "<<error_map_up[m_config->GetDiTrkJetRegions()[11]].back()<<std::endl;
+   //std::cout<<"Down is now "<<error_map_down[m_config->GetDiTrkJetRegions()[11]].back()<<std::endl;
 
 
    /*for(unsigned int i_bin=0; i_bin<fj_bins.size()-1; i_bin++){
@@ -1035,7 +1035,7 @@ std::cout<<"In ScaleFactorCalculator::CalculateScaleFactorsAndErrors"<<std::endl
 }
 
 void ScaleFactorCalculator::ReadInFatJetHists(const std::vector<TString> vars, const std::vector<TString> systematics){
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
   //std::vector<TString> regions = m_config->GetFatJetRegions();
 
   TFile *infile = TFile::Open(m_inputfile.Data(),"READ");
@@ -1342,7 +1342,7 @@ void ScaleFactorCalculator::SaveFitCorrectionFactorsSys(){
 
   std::vector<TString> names={"BB_corrfact","BL_corrfact","CC_corrfact","CL_corrfact","LL_corrfact"};
 
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
   std::vector<TString> systematics=m_config->GetSystematics();
 
   TString name;
@@ -1371,7 +1371,7 @@ void ScaleFactorCalculator::SaveFitCorrectionFactorsSys(){
 }
 
 TH1D* ScaleFactorCalculator::GetRebinHistData(const TString var) {
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
   std::vector<double> bins = m_config->GetBinning(var);
   if (bins.size() == 0) {
     std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
@@ -1418,7 +1418,7 @@ TH1D* ScaleFactorCalculator::GetRebinHistByRegionData(const TString var, const T
 
 std::vector<TH1D*> ScaleFactorCalculator::GetRebinHistsMC(const TString var, const TString sys, const unsigned int scaleType, const unsigned int i_pseudo) {
   std::vector<TH1D*> output = std::vector<TH1D*>();
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
   std::vector<double> bins = m_config->GetBinning(var);
   if (bins.size() == 0) {
     std::cerr<<"ERROR: couldn't get bins for variable "<<var.Data()<<std::endl;
@@ -1522,31 +1522,6 @@ float ScaleFactorCalculator::GetPseudoDataFitScale(const TString region, const T
   }
   if (found) return m_pseudo_fit_params_Data[region][i_pseudo][i_p];
   else return 0;
-}
-
-std::vector<TString> ScaleFactorCalculator::SplitString(TString str, char delim){
-
-  std::vector<TString> tokens;
-  TObjArray *Strings=str.Tokenize(delim);
-
-  for(int i=0; i<Strings->GetEntriesFast(); i++){
-    tokens.push_back(((TObjString*) (*Strings)[i])->GetString());
-  }
-
-  return tokens;
-}
-
-std::vector<float> ScaleFactorCalculator::SplitStringD(TString str, char delim){
-
-  std::vector<float> tokens;
-  TObjArray *Strings=str.Tokenize(delim);
-
-  for(int i=0; i<Strings->GetEntriesFast(); i++){
-    tokens.push_back((((TObjString*) (*Strings)[i])->GetString()).Atof());
-    std::cout<<"Token: "<<((TObjString*) (*Strings)[i])->GetString()<<" vs "<<tokens[i]<<std::endl;
-  }
-
-  return tokens;
 }
 
 //  LocalWords:  ReadInHistograms
