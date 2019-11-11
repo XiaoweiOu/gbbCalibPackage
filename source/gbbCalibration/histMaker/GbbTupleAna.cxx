@@ -1050,12 +1050,15 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
 
         gbbcand.ind_tj.push_back(inds.first);
         if (inds.second.size() > 0) {
-          gbbcand.nRecoMuons++;
           gbbcand.ind_tj_mu.push_back(inds.second.at(0));
-          for (unsigned int ind_mu : inds.second) {
-            if (this->muo_hasTruth->at(ind_mu)) {
-              gbbcand.nTruthMuons++;
-              break; // only care if there is >1 truth muon per trkjet
+          // Store nMuon info only for first 2 trkjets
+          if (gbbcand.ind_tj.size() <= 2) {
+            gbbcand.nRecoMuons++;
+            for (unsigned int ind_mu : inds.second) {
+              if (this->muo_hasTruth->at(ind_mu)) {
+                gbbcand.nTruthMuons++;
+                break; // only care if there is >1 truth muon per trkjet
+              }
             }
           }
         } else {
@@ -1087,12 +1090,15 @@ std::vector<GbbCandidate> GbbTupleAna::constructGbbCandidates(bool useLeading){
         if (inds.first == gbbcand.ind_tj.at(0)) continue;
         gbbcand.ind_tj.push_back(inds.first);
         if (inds.second.size() > 0) {
-          gbbcand.nRecoMuons++;
           gbbcand.ind_tj_mu.push_back(inds.second.at(0));
-          for (unsigned int ind_mu : inds.second) {
-            if (this->muo_hasTruth->at(ind_mu)) {
-              gbbcand.nTruthMuons++;
-              break; // only care if there is >1 truth muon per trkjet
+          // Store nMuon info only for first 2 trkjets
+          if (gbbcand.ind_tj.size() <= 2) {
+            gbbcand.nRecoMuons++;
+            for (unsigned int ind_mu : inds.second) {
+              if (this->muo_hasTruth->at(ind_mu)) {
+                gbbcand.nTruthMuons++;
+                break; // only care if there is >1 truth muon per trkjet
+              }
             }
           }
         } else {
