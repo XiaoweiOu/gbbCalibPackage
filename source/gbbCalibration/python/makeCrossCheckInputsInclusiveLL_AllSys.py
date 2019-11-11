@@ -105,7 +105,7 @@ else:
   print("Using inclusive samples for LL template only")
   ListOfInclusiveFlavourPairs = [ TString('LL') ]
 
-ListOfTJpt = MyConfig.GetTrkJetRegions()
+ListOfTJpt = MyConfig.GetDiTrkJetRegions()
 ListOfFJpt = MyConfig.GetFatJetRegions()
 ListOfTJpt.push_back(TString("Incl"))
 isR20p7 = MyConfig.GetIsR20p7()

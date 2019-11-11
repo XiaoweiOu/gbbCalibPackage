@@ -105,7 +105,7 @@ if doSystematics:
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfTmplVars = MyConfig.GetTemplateVariables()
 if bins == "trkjet":
-  ListOfPtBins = MyConfig.GetTrkJetRegions()
+  ListOfPtBins = MyConfig.GetDiTrkJetRegions()
 elif bins == "fatjet":
   ListOfPtBins = MyConfig.GetFatJetRegions()
 elif bins == "incl":

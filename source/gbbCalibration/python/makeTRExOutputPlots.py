@@ -35,7 +35,7 @@ if not os.path.isdir(outdir):
 
 MyConfig = config.LoadGlobalConfig()
 if args.bins == 'trkjet':
-  regions = MyConfig.GetTrkJetRegions()
+  regions = MyConfig.GetDiTrkJetRegions()
 elif args.bins == 'fatjet':
   regions = MyConfig.GetFatJetRegions()
 elif args.bins == 'incl':

@@ -57,7 +57,7 @@ ListOfTmplVars = MyConfig.GetTemplateVariables()
 ListOfPlotVars = MyConfig.GetPlotVariables()
 
 ListOfFJpt = MyConfig.GetFatJetRegions()
-ListOfTJpt = MyConfig.GetTrkJetRegions()
+ListOfTJpt = MyConfig.GetDiTrkJetRegions()
 
 def GetBinsByStats(hist,thr,n_f):
   '''
