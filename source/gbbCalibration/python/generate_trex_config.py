@@ -242,8 +242,8 @@ def WriteConfigFile(ptbin,outdir):
     for var in ListOfTmplVars:
       if fitSF:
         WriteRegionBlock(outfile,ptbin,var.Data()+'_2TAG')
-        WriteRegionBlock(outfile,ptbin,var.Data()+'_NOT2TAG')
-        #WriteRegionBlock(outfile,ptbin,var.Data())
+        #WriteRegionBlock(outfile,ptbin,var.Data()+'_NOT2TAG')
+        WriteRegionBlock(outfile,ptbin,var.Data())
       else:
         WriteRegionBlock(outfile,ptbin,var.Data())
 
@@ -278,21 +278,24 @@ def WriteConfigFile(ptbin,outdir):
 
       outfile.write('NormFactor: "ScaleFactor"\n')
       outfile.write('  Samples: "BB"\n')
-      outfile.write('  Regions: "mjmeanSd0_2TAG","nmjmeanSd0_2TAG"\n')
+      outfile.write('  Regions: ')
+      for var in ListOfTmplVars[:-1]:
+        outfile.write('"'+var.Data()+'_2TAG",')
+      outfile.write('"'+ListOfTmplVars[-1].Data()+'_2TAG"\n')
       outfile.write('  Title: "ScaleFactor"\n')
       outfile.write('  Nominal: 1\n')
       outfile.write('  Min: 0.1\n')
       outfile.write('  Max: 10\n')
       outfile.write('\n')
-      outfile.write('NormFactor: "AntiScaleFactor"\n')
-      outfile.write('  Samples: "BB"\n')
-      outfile.write('  Regions: "mjmeanSd0_NOT2TAG","nmjmeanSd0_NOT2TAG"\n')
-      outfile.write('  Title: "ScaleFactor"\n')
-      outfile.write('  Nominal: 1\n')
-      outfile.write('  Min: 0.1\n')
-      outfile.write('  Max: 10\n')
-      outfile.write('  Expression: (1/ScaleFactor):ScaleFactor[1.,0.1,10.]\n')
-      outfile.write('\n')
+      #outfile.write('NormFactor: "AntiScaleFactor"\n')
+      #outfile.write('  Samples: "BB"\n')
+      #outfile.write('  Regions: "mjmeanSd0_NOT2TAG","nmjmeanSd0_NOT2TAG"\n')
+      #outfile.write('  Title: "ScaleFactor"\n')
+      #outfile.write('  Nominal: 1\n')
+      #outfile.write('  Min: 0.1\n')
+      #outfile.write('  Max: 10\n')
+      #outfile.write('  Expression: (1/ScaleFactor):ScaleFactor[1.,0.1,10.]\n')
+      #outfile.write('\n')
 
     if doSystematics:
       # write systematics blocks
