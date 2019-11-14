@@ -74,7 +74,7 @@ namespace GbbUtil {
 
     for(int i=0; i<Strings->GetEntriesFast(); i++){
       tokens.push_back((((TObjString*) (*Strings)[i])->GetString()).Atof());
-      std::cout<<"Token: "<<((TObjString*) (*Strings)[i])->GetString()<<" vs "<<tokens[i]<<std::endl;
+      //std::cout<<"Token: "<<((TObjString*) (*Strings)[i])->GetString()<<" vs "<<tokens[i]<<std::endl;
     }
 
     return tokens;

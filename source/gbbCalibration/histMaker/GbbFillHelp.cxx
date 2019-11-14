@@ -89,6 +89,11 @@ void GbbTupleAna::FillTrackJetProperties(GbbCandidate* gbbcand, float event_weig
      this->trkjet_eta->at(ind_tj),100,-2.5,2.5,event_weight);
 
     // Plot track-jet kinematics with di-flavour label
+    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
+     this->trkjet_pt->at(ind_tj)/1e3,250,0.,500.,event_weight);
+    m_HistSvc->FastFillTH1D( makeDiJetPlotName(gbbcand,name+"eta"+nametag),";"+label+" #eta;Events/0.2;",
+     this->trkjet_eta->at(ind_tj),100,-2.5,2.5,event_weight);
+
     m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,name+"pt"+nametag),";"+label+" p_{T} [GeV];Events/2 GeV;",
      this->trkjet_pt->at(ind_tj)/1e3,250,0.,500.,event_weight);
     m_HistSvc->FastFillTH1D( makeInclDiJetPlotName(gbbcand,name+"eta"+nametag),";"+label+" #eta;Events/0.2;",
@@ -201,19 +206,19 @@ void GbbTupleAna::FillSd0Plots(std::vector<trkjetSd0Info> sd0InfoVec, float even
 
       m_HistSvc->FastFillTH1D( namingFunc(name+"maxd0_pt"),";"+label+" leading track d0;Events/0.005;",
        sd0Info.maxd0_pt,60,-0.15,0.15,event_weight);
-      m_HistSvc->FastFillTH1D( namingFunc(name+"subd0_pt"),";"+label+" sub-leading track d0;Events/0.005;",
-       sd0Info.subd0_pt,60,-0.15,0.15,event_weight);
-      m_HistSvc->FastFillTH1D( namingFunc(name+"thirdd0_pt"),";"+label+" third-leading track d0;Events/0.005;",
-       sd0Info.thirdd0_pt,60,-0.15,0.15,event_weight);
-      m_HistSvc->FastFillTH1D( namingFunc(name+"meand0_pt"),";"+label+" mean d0;Events/0.005;",
-       sd0Info.meand0_pt,60,-0.15,0.15,event_weight);
+      //m_HistSvc->FastFillTH1D( namingFunc(name+"subd0_pt"),";"+label+" sub-leading track d0;Events/0.005;",
+      // sd0Info.subd0_pt,60,-0.15,0.15,event_weight);
+      //m_HistSvc->FastFillTH1D( namingFunc(name+"thirdd0_pt"),";"+label+" third-leading track d0;Events/0.005;",
+      // sd0Info.thirdd0_pt,60,-0.15,0.15,event_weight);
+      //m_HistSvc->FastFillTH1D( namingFunc(name+"meand0_pt"),";"+label+" mean d0;Events/0.005;",
+      // sd0Info.meand0_pt,60,-0.15,0.15,event_weight);
 
       m_HistSvc->FastFillTH1D( namingFunc(name+"max_z0sintheta_pt"),";"+label+" leading track z0sin#theta;Events/0.01;",
        sd0Info.max_z0sintheta_pt,80,-0.4,0.4,event_weight);
-      m_HistSvc->FastFillTH1D( namingFunc(name+"sub_z0sintheta_pt"),";"+label+" sub-leading track z0sin#theta;Events/0.01;",
-       sd0Info.sub_z0sintheta_pt,80,-0.4,0.4,event_weight);
-      m_HistSvc->FastFillTH1D( namingFunc(name+"third_z0sintheta_pt"),";"+label+" third-leading track z0sin#theta;Events/0.01;",
-       sd0Info.third_z0sintheta_pt,80,-0.4,0.4,event_weight);
+      //m_HistSvc->FastFillTH1D( namingFunc(name+"sub_z0sintheta_pt"),";"+label+" sub-leading track z0sin#theta;Events/0.01;",
+      // sd0Info.sub_z0sintheta_pt,80,-0.4,0.4,event_weight);
+      //m_HistSvc->FastFillTH1D( namingFunc(name+"third_z0sintheta_pt"),";"+label+" third-leading track z0sin#theta;Events/0.01;",
+      // sd0Info.third_z0sintheta_pt,80,-0.4,0.4,event_weight);
 
       //m_HistSvc->FastFillTH1D( namingFunc(name+"maxd0err"),";"+label+" leading #sigma_{d0};Events/0.002;",
       // sd0Info.maxd0err,50,0.,0.1,event_weight);
@@ -224,10 +229,10 @@ void GbbTupleAna::FillSd0Plots(std::vector<trkjetSd0Info> sd0InfoVec, float even
 
       m_HistSvc->FastFillTH1D( namingFunc(name+"maxd0err_pt"),";"+label+" leading track #sigma_{d0};Events/0.002;",
        sd0Info.maxd0err_pt,50,0.,0.1,event_weight);
-      m_HistSvc->FastFillTH1D( namingFunc(name+"subd0err_pt"),";"+label+" sub-leading track #sigma_{d0};Events/0.002;",
-       sd0Info.subd0err_pt,50,0.,0.1,event_weight);
-      m_HistSvc->FastFillTH1D( namingFunc(name+"thirdd0err_pt"),";"+label+" third-leading track #sigma_{d0};Events/0.002;",
-       sd0Info.thirdd0err_pt,50,0.,0.1,event_weight);
+      //m_HistSvc->FastFillTH1D( namingFunc(name+"subd0err_pt"),";"+label+" sub-leading track #sigma_{d0};Events/0.002;",
+      // sd0Info.subd0err_pt,50,0.,0.1,event_weight);
+      //m_HistSvc->FastFillTH1D( namingFunc(name+"thirdd0err_pt"),";"+label+" third-leading track #sigma_{d0};Events/0.002;",
+      // sd0Info.thirdd0err_pt,50,0.,0.1,event_weight);
       }
     }
 }
@@ -563,43 +568,53 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
     if (ind_mu != 999) {
       muon.SetPtEtaPhiE(this->muo_pt->at(ind_mu),this->muo_eta->at(ind_mu),this->muo_phi->at(ind_mu),this->muo_E->at(ind_mu));
       m_HistSvc->FastFillTH1D(
-       makeFlavInclPlotName("mupt"+nametag),
-       ";muon p_{T} [GeV];Events/4 GeV;",
+       makeInclDiJetPlotName(gbbcand, name+"mupt"+nametag),
+       ";"+label+" leading muon p_{T} [GeV];Events/4 GeV;",
        this->muo_pt->at(ind_mu)/1e3,100,0.,400.,event_weight
       );
       m_HistSvc->FastFillTH1D(
-       makeFlavInclPlotName("muphi"+nametag),
-       ";muon #phi;Events/0.4;",
+       makeInclDiJetPlotName(gbbcand, name+"muphi"+nametag),
+       ";"+label+" leading muon #phi;Events/0.4;",
        this->muo_phi->at(ind_mu),16,-3.2,3.2,event_weight
       );
       m_HistSvc->FastFillTH1D(
-       makeFlavInclPlotName("mueta"+nametag),
-       ";muon #eta;Events/0.5;",
+       makeInclDiJetPlotName(gbbcand, name+"mueta"+nametag),
+       ";"+label+" leading muon #eta;Events/0.5;",
        this->muo_eta->at(ind_mu),10,-2.5,2.5,event_weight
       );
       m_HistSvc->FastFillTH1D(
-       makeFlavInclPlotName("muE"+nametag),
-       ";muon E [GeV];Events/4 GeV;",
+       makeInclDiJetPlotName(gbbcand, name+"muE"+nametag),
+       ";"+label+" leading muon E [GeV];Events/4 GeV;",
        this->muo_E->at(ind_mu)/1e3,100,0.,400.,event_weight
       );
       m_HistSvc->FastFillTH1D(
-       makeFlavInclPlotName("mud0"+nametag),
-       ";muon d0;Events/0.001;",
+       makeInclDiJetPlotName(gbbcand, name+"mud0"+nametag),
+       ";"+label+" leading muon d0;Events/0.001;",
        this->muo_d0->at(ind_mu),30,-0.15,0.15,event_weight
       );
       m_HistSvc->FastFillTH1D(
-       makeFlavInclPlotName("muz0"+nametag),
-       ";muon z0;Events/0.001;",
+       makeInclDiJetPlotName(gbbcand, name+"mud0sig"+nametag),
+       ";"+label+" leading muon Sd0;Events/1.5;",
+       this->muo_d0sig->at(ind_mu),80,-40,80,event_weight
+      );
+      m_HistSvc->FastFillTH1D(
+       makeInclDiJetPlotName(gbbcand, name+"mud0sigBL"+nametag),
+       ";"+label+" leading muon Sd0_{BL};Events/1.5;",
+       this->muo_d0sigBL->at(ind_mu),80,-40,80,event_weight
+      );
+      m_HistSvc->FastFillTH1D(
+       makeInclDiJetPlotName(gbbcand, name+"muz0"+nametag),
+       ";"+label+" leading muon z0;Events/0.001;",
        this->muo_z0->at(ind_mu),90,-0.4,0.4,event_weight
       );
       m_HistSvc->FastFillTH1D(
-       makeFlavInclPlotName("muz0sintheta"+nametag),
-       ";muon z0sintheta;Events/0.001;",
+       makeInclDiJetPlotName(gbbcand, name+"muz0sintheta"+nametag),
+       ";"+label+" leading muon z0sintheta;Events/0.001;",
        this->muo_z0sintheta->at(ind_mu),90,-0.4,0.4,event_weight
       );
       m_HistSvc->FastFillTH1D(
-       makeInclDiJetPlotName(gbbcand, "muptrel"+nametag),
-       ";muon p_{T}-rel [GeV];Events/0.25 GeV;",
+       makeInclDiJetPlotName(gbbcand, name+"muptrel"+nametag),
+       ";"+label+" leading muon p_{T}-rel [GeV];Events/0.25 GeV;",
        muon.Pt(trkjet.Vect())/1e3,40,0.,10.,event_weight
       );
     }

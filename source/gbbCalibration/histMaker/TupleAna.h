@@ -169,6 +169,8 @@ public :
    vector<int>     *muo_ind;
    vector<float>   *muo_z0;
    vector<float>   *muo_d0;
+   vector<float>   *muo_d0sig;
+   vector<float>   *muo_d0sigBL;
    vector<float>   *muo_z0sintheta;
    vector<int>     *muo_quality;
    vector<int>     *muo_acceptedTool;
@@ -367,6 +369,8 @@ public :
    TBranch        *b_muo_ind;   //!
    TBranch        *b_muo_z0;   //!
    TBranch        *b_muo_d0;   //!
+   TBranch        *b_muo_d0sig;   //!
+   TBranch        *b_muo_d0sigBL;   //!
    TBranch        *b_muo_z0sintheta;   //!
    TBranch        *b_muo_quality;   //!
    TBranch        *b_muo_acceptedTool;   //!
@@ -550,6 +554,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    muo_ind = 0;
    muo_z0 = 0;
    muo_d0 = 0;
+   muo_d0sig = 0;
+   muo_d0sigBL = 0;
    muo_z0sintheta = 0;
    muo_quality = 0;
    muo_acceptedTool = 0;
@@ -759,6 +765,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("muo_ind", &muo_ind, &b_muo_ind);
    fChain->SetBranchAddress("muo_z0", &muo_z0, &b_muo_z0);
    fChain->SetBranchAddress("muo_d0", &muo_d0, &b_muo_d0);
+   fChain->SetBranchAddress("muo_d0sig", &muo_d0sig, &b_muo_d0sig);
+   fChain->SetBranchAddress("muo_d0sigBL", &muo_d0sigBL, &b_muo_d0sigBL);
    fChain->SetBranchAddress("muo_z0sintheta", &muo_z0sintheta, &b_muo_z0sintheta);
    fChain->SetBranchAddress("muo_quality", &muo_quality, &b_muo_quality);
    fChain->SetBranchAddress("muo_acceptedTool", &muo_acceptedTool, &b_muo_acceptedTool);
