@@ -653,7 +653,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   fatjet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.ind_fj),this->trkjet_eta->at(gbbcand.ind_fj),this->trkjet_phi->at(gbbcand.ind_fj),this->trkjet_E->at(gbbcand.ind_fj));
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trigjet),this->jet_eta->at(i_trigjet),this->jet_phi->at(i_trigjet),this->jet_E->at(i_trigjet));
 
-  //if (fatjet.DeltaR(trigjet) < 1.5) return false;
+  if (fatjet.DeltaR(trigjet) < 1.5) return false;
 
   //if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
   //icut++;
@@ -807,15 +807,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
   else if (gbbcand.nRecoMuons == 1) muon_categories.push_back("1MUON");
   else if (gbbcand.nRecoMuons == 0) muon_categories.push_back("0MUON");
 
-  if (fatjet.DeltaR(trigjet) < 1.5) topo_categories.push_back("TRIG");
-  else topo_categories.push_back("NOTTRIG");
-
-  for (TString tcat : topo_categories) {
-    categories.push_back(tcat);
-    for (TString bcat : btag_categories) {
-      categories.push_back(tcat+"_"+bcat);
-    }
-  }
   for (TString mcat : muon_categories) {
     categories.push_back(mcat);
     for (TString bcat : btag_categories) {
