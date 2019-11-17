@@ -15,9 +15,10 @@ ListOfVariables_general = [
   'fjpt_2TAG','fjptsc_2TAG','fjm_2TAG',
   'mjpt','nmjpt','mjeta','nmjeta',
   'mjpt_2TAG','nmjpt_2TAG','mjeta_2TAG','nmjeta_2TAG',
-  'fjD2','fjtau21','mjMV2c10','nmjMV2c10',
-  'fjD2_2TAG','fjtau21_2TAG','mjMV2c10_2TAG','nmjMV2c10_2TAG',
-  'mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets',
+  #'fjD2','fjtau21','mjMV2c10','nmjMV2c10',
+  #'fjD2_2TAG','fjtau21_2TAG','mjMV2c10_2TAG','nmjMV2c10_2TAG',
+  #'mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets',
+  'muSd0','muSd0BL',
 
   #'mjmaxSd0_pt','nmjmaxSd0_pt','mjmaxd0_pt','nmjmaxd0_pt','mjmaxd0err_pt','nmjmaxd0err_pt',
   #'mjsubSd0_pt','nmjsubSd0_pt','mjsubd0_pt','nmjsubd0_pt','mjsubd0err_pt','nmjsubd0err_pt',

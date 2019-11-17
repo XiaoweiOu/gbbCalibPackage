@@ -499,7 +499,7 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
 
   if (!nametag.IsNull()) nametag.Prepend("_");
 
-  if (m_isNominal) return;
+  if (!m_isNominal) return;
 
   //Topology: Plot DR(fatjet,muonjet)
   for (unsigned int i=0; i < gbbcand->ind_tj.size(); i++) {

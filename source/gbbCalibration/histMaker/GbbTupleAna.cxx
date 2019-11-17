@@ -602,6 +602,20 @@ bool GbbTupleAna::Processgbb(int i_evt){
     std::cout<<"processgbb(): gbbcand.ind_j2 "<<gbbcand.ind_tj.at(1)<<std::endl;
   }
 
+  //define flavour truth labels & pt labels
+  int j1_truth=this->trkjet_truth->at(gbbcand.ind_tj.at(0));
+  int j2_truth=this->trkjet_truth->at(gbbcand.ind_tj.at(1));
+  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(j1_truth,j2_truth) : TString("Data");
+
+  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand.ind_tj.at(0))/1e3,
+                                               this->trkjet_pt->at(gbbcand.ind_tj.at(1))/1e3);
+
+  if (dijet_flav.Contains("Other")) return false;
+  if(m_Debug) std::cout<<"processgbb(): Pass truth flavor cut."<<std::endl;
+  icut++;
+  m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass truth flavor cut");
+
   float gbbcandpt=this->fat_pt->at(gbbcand.ind_fj);
   //  std::cout<<"trigjet pt is: "<<this->jet_pt->at(i_trigjet)<<" "<<gbbcandpt<<std::endl;
 
@@ -692,14 +706,6 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //=========================================
   //7.) B-Tagging
   //=========================================
-
-  //define flavour truth labels & pt labels
-  int j1_truth=this->trkjet_truth->at(gbbcand.ind_tj.at(0));
-  int j2_truth=this->trkjet_truth->at(gbbcand.ind_tj.at(1));
-  TString dijet_flav = this->eve_isMC ? m_config->GetFlavourPair(j1_truth,j2_truth) : TString("Data");
-
-  TString ptlabel = m_config->GetDiTrkJetLabel(this->trkjet_pt->at(gbbcand.ind_tj.at(0))/1e3,
-                                               this->trkjet_pt->at(gbbcand.ind_tj.at(1))/1e3);
 
   /*bTagger ---*/
   // read xbbscore parameters, then use xbbcutter to determine
@@ -893,6 +899,34 @@ bool GbbTupleAna::Processgbb(int i_evt){
         FillTemplates(&gbbcand, total_evt_weight*Bhadupweight, cat+"_BHADPTUP");
         FillTemplates(&gbbcand, total_evt_weight*Bhaddownweight, cat+"_BHADPTDOWN");
       }
+
+      TString label = "";
+      int full_flav = 1;
+      if (trkjet_BHad_n->at(gbbcand.ind_tj[0]) > 0) { full_flav += 24; label += 'B'; }
+      else if (trkjet_CHad_n->at(gbbcand.ind_tj[0]) > 0) { full_flav += 12; label += 'C'; }
+      else { full_flav += 0; label += 'L'; }
+      if (trkjet_BHad_n->at(gbbcand.ind_tj[1]) > 0) { full_flav += 8; label += 'B'; }
+      else if (trkjet_CHad_n->at(gbbcand.ind_tj[1]) > 0) { full_flav += 4; label += 'C'; }
+      else { full_flav += 0; label += 'L'; }
+      int extra_flav = 0;
+      char extra_label = 'x';
+      for (unsigned int i=2; i < gbbcand.ind_tj.size(); i++) {
+        if (trkjet_BHad_n->at(gbbcand.ind_tj[i]) > 0) {
+          extra_flav = 3;
+          extra_label = 'B';
+          break;
+        } else if (trkjet_CHad_n->at(gbbcand.ind_tj[i]) > 0) {
+          extra_flav = 2;
+          extra_label = 'C';
+        } else if (extra_flav < 1) {
+          extra_flav = 1;
+          extra_label = 'L';
+        }
+      }
+      full_flav += extra_flav;
+      label += extra_label;
+      m_HistSvc->FastFillTH1D("TrkjetLabels_"+cat,full_flav-0.5,36,0.,36.,total_evt_weight);
+      ((TH1D*) m_HistSvc->GetHisto(Form("TrkjetLabels_"+cat)))->GetXaxis()->SetBinLabel(full_flav, label);
     }
 
     if (cat.IsNull()) {

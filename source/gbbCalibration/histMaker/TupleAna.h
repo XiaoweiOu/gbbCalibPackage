@@ -203,6 +203,8 @@ public :
    vector<int>     *trkjet_hasHadMatInt;
    vector<int>     *trkjet_BHad_n;
    vector<int>     *trkjet_CHad_n;
+   vector<int>     *trkjet_BHad_n_GA;
+   vector<int>     *trkjet_CHad_n_GA;
    vector<int>     *trkjet_BHad_pdgId;
    vector<float>   *trkjet_BHad_pt;
    vector<float>   *trkjet_BHad_eta;
@@ -403,6 +405,8 @@ public :
    TBranch        *b_trkjet_hasHadMatInt;   //!
    TBranch        *b_trkjet_BHad_n;   //!
    TBranch        *b_trkjet_CHad_n;   //!
+   TBranch        *b_trkjet_BHad_n_GA;   //!
+   TBranch        *b_trkjet_CHad_n_GA;   //!
    TBranch        *b_trkjet_BHad_pdgId;   //!
    TBranch        *b_trkjet_BHad_pt;   //!
    TBranch        *b_trkjet_BHad_eta;   //!
@@ -588,6 +592,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    trkjet_hasHadMatInt = 0;
    trkjet_BHad_n = 0;
    trkjet_CHad_n = 0;
+   trkjet_BHad_n_GA = 0;
+   trkjet_CHad_n_GA = 0;
    trkjet_BHad_pdgId = 0;
    trkjet_BHad_pt = 0;
    trkjet_BHad_eta = 0;
@@ -801,6 +807,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("trkjet_hasHadMatInt", &trkjet_hasHadMatInt, &b_trkjet_hasHadMatInt);
    fChain->SetBranchAddress("trkjet_BHad_n", &trkjet_BHad_n, &b_trkjet_BHad_n);
    fChain->SetBranchAddress("trkjet_CHad_n", &trkjet_CHad_n, &b_trkjet_CHad_n);
+   fChain->SetBranchAddress("trkjet_BHad_n_GA", &trkjet_BHad_n_GA, &b_trkjet_BHad_n_GA);
+   fChain->SetBranchAddress("trkjet_CHad_n_GA", &trkjet_CHad_n_GA, &b_trkjet_CHad_n_GA);
    fChain->SetBranchAddress("trkjet_BHad_pdgId", &trkjet_BHad_pdgId, &b_trkjet_BHad_pdgId);
    fChain->SetBranchAddress("trkjet_BHad_pt", &trkjet_BHad_pt, &b_trkjet_BHad_pt);
    fChain->SetBranchAddress("trkjet_BHad_eta", &trkjet_BHad_eta, &b_trkjet_BHad_eta);
