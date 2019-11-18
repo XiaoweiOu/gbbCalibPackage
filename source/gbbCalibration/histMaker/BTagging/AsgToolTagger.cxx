@@ -120,9 +120,12 @@ int AsgToolTagger::accept(const GbbCandidate& gbbcand, float& sf) {
   int tag = 0;
   sf = 1.;
   float temp_sf(1.);
+  int ctr = 0;
   for (auto ind_tj : gbbcand.ind_tj) {
     if (accept(ind_tj, temp_sf) ) tag++;
     sf *= temp_sf;
+    ctr++;
+    if (ctr >= 2) break;
   }
   return tag;
 }
