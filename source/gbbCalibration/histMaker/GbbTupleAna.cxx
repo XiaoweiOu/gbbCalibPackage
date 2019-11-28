@@ -669,10 +669,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
 
   if (fatjet.DeltaR(trigjet) < 1.5) return false;
 
-  //if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
-  //icut++;
-  //m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
-  //((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass topo cuts");
+  if(m_Debug) std::cout<<"processgbb(): Pass topo cuts"<<std::endl;
+  icut++;
+  m_HistSvc->FastFillTH1D(Form("CutFlow_%s",m_SysVarName.Data()),icut,15,0.5,15.5,total_evt_weight);
+  ((TH1D*) m_HistSvc->GetHisto(Form("CutFlow_%s",m_SysVarName.Data())))->GetXaxis()->SetBinLabel(icut, "pass topo cuts");
 
   icut++;
   if (gbbcand.nRecoMuons > 1) {
