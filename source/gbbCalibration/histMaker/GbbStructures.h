@@ -12,10 +12,8 @@
 //
 struct GbbCandidate{
   unsigned int ind_fj;
-  unsigned int ind_mj;
-  unsigned int ind_mj_mu;
-  unsigned int ind_nmj;
-  unsigned int ind_nmj_mu;
+  std::vector<unsigned int> ind_tj;
+  std::vector<unsigned int> ind_tj_mu;
   bool hasLeadTrkJets;
   unsigned int nTruthMuons;
   unsigned int nRecoMuons;

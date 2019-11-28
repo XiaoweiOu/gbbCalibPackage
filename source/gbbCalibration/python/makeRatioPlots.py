@@ -62,7 +62,7 @@ if not dataOnly:
   print("Using x-sections file: "+args.xsec)
   histHelper = config.HistHelper(args.xsec)
 
-  Lumi = GetLumi(args.year)
+  Lumi = config.GetLumi(args.year)
   print('Lumi is {}'.format(Lumi))
 
   ListOfMCPaths = []
@@ -222,8 +222,8 @@ for key in fileData1.GetListOfKeys():
   if args.pdf:
     canv.Print(args.output+'.pdf')
   else:
-    canv.Print(args.output+os.sep+(key.GetName()).replace('hDataNom_','')+'.eps')
-    canv.Print(args.output+os.sep+(key.GetName()).replace('hDataNom_','')+'.png')
+    canv.Print(args.output+os.sep+(key.GetName()).replace('_Data_Nom','')+'.eps')
+    canv.Print(args.output+os.sep+(key.GetName()).replace('_Data_Nom','')+'.png')
   # finally, clear the canvas for the next histograms
   canv.Clear('D')
 

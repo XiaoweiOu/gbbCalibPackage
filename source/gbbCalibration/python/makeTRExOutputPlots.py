@@ -12,9 +12,8 @@ parser.add_argument('--year', type=str, default="2015+2016",
     help="Year determines luminosity to normalize to [default: 2015+2016]")
 parser.add_argument('--debug', action='store_true',
     help="Add extra printouts")
-#TODO: add flags for which types of plots to make
-#parser.add_argument('--plots', nargs='+',
-#    help="List of plots to make. Options include 'SF','NF','CorrMat',...")
+parser.add_argument('--plots', nargs='+',
+    help="List of plots to make. Options include 'SF','NF','Tmpl','Kine',...")
 args = parser.parse_args()
 
 #import ROOT
@@ -35,7 +34,7 @@ if not os.path.isdir(outdir):
 
 MyConfig = config.LoadGlobalConfig()
 if args.bins == 'trkjet':
-  regions = MyConfig.GetTrkJetRegions()
+  regions = MyConfig.GetDiTrkJetRegions()
 elif args.bins == 'fatjet':
   regions = MyConfig.GetFatJetRegions()
 elif args.bins == 'incl':
@@ -538,6 +537,17 @@ def MakeTemplatePlots():
     MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=True ,doChi2=True,setLogy=True)
     MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=False,doChi2=True,setLogy=True)
 
+def MakeKinematicPlots():
+  for var in ['fjpt','fjm','mjpt','nmjpt']:
+    MakeRatioPlots(var,prefit=True ,doChi2=True)
+    MakeRatioPlots(var,prefit=False,doChi2=True)
+
+    MakeRatioPlots(var+'_2TAG',prefit=True ,doChi2=True)
+    MakeRatioPlots(var+'_2TAG',prefit=False,doChi2=True)
+
+    MakeRatioPlots(var+'_NOT2TAG',prefit=True ,doChi2=True)
+    MakeRatioPlots(var+'_NOT2TAG',prefit=False,doChi2=True)
+
 #-----------------------------------------------
 # Main function
 #-----------------------------------------------
@@ -546,9 +556,14 @@ results = ReadFitResults()
 # Get input histograms
 infile = TFile("{0}/trex_input.root".format(args.input))
 
-#MakeFitPlot(results, 'ScaleFactor')
-MakeTemplatePlots()
-for flav in MyConfig.GetFlavourPairs():
-  MakeFitPlot(results, flav.Data())
-  MakeFlavFracPlot(results, flav.Data(), prefit=True)
-  MakeFlavFracPlot(results, flav.Data(), prefit=False)
+if 'SF' in args.plots:
+  MakeFitPlot(results, 'ScaleFactor')
+if 'Tmpl' in args.plots:
+  MakeTemplatePlots()
+if 'Kine' in args.plots:
+  MakeKinematicPlots()
+if 'NF' in args.plots:
+  for flav in MyConfig.GetFlavourPairs():
+    MakeFitPlot(results, flav.Data())
+    MakeFlavFracPlot(results, flav.Data(), prefit=True)
+    MakeFlavFracPlot(results, flav.Data(), prefit=False)

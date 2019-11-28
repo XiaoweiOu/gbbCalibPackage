@@ -4,7 +4,7 @@
 #include <AsgTools/MessageCheck.h>
 #include "CalibrationDataInterface/CalibrationDataVariables.h"
 
-AsgToolTagger::AsgToolTagger(std::string taggerName, std::string operatingPt) :
+AsgToolTagger::AsgToolTagger(TString taggerName, TString operatingPt) :
   BJetTagger(taggerName, operatingPt),
   v_pt(nullptr),
   v_eta(nullptr),
@@ -39,7 +39,7 @@ int AsgToolTagger::initialize(const TupleAna& gbbtuple) {
 
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("MaxEta",2.5));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("MinPt",20000.));
-  ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.c_str()));
+  ANA_CHECK( m_BJetSelectTool_handle.setProperty("FlvTagCutDefinitionsFileName",m_corrFileName.Data()));
   // configurable parameters
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("TaggerName",          m_taggerName));
   ANA_CHECK( m_BJetSelectTool_handle.setProperty("OperatingPoint",      m_operatingPt));
@@ -59,7 +59,7 @@ int AsgToolTagger::initialize(const TupleAna& gbbtuple) {
   ANA_CHECK( m_BJetEffSFTool_handle.setProperty("OutputLevel", msg().level() ));
   //if(gbbtuple.eve_isMC) {
   //  // Pythia8
-  //  std::string calibration = "410501";
+  //  TString calibration = "410501";
   //  //    case HelperFunctions::Pythia8:
   //  //calibration="410501";
   //  //    case HelperFunctions::Herwig7:
@@ -116,14 +116,21 @@ bool AsgToolTagger::accept(const unsigned int idx, float& SF) {
   return tag;
 }
 
-int AsgToolTagger::accept(const GbbCandidate& gbbcand, float& mjSF, float& nmjSF) {
+int AsgToolTagger::accept(const GbbCandidate& gbbcand, float& sf) {
   int tag = 0;
-  if (accept(gbbcand.ind_mj,  mjSF) ) tag++;
-  if (accept(gbbcand.ind_nmj, nmjSF)) tag++;
+  sf = 1.;
+  float temp_sf(1.);
+  int ctr = 0;
+  for (auto ind_tj : gbbcand.ind_tj) {
+    if (accept(ind_tj, temp_sf) ) tag++;
+    sf *= temp_sf;
+    ctr++;
+    if (ctr >= 2) break;
+  }
   return tag;
 }
 
 int AsgToolTagger::accept(const GbbCandidate& gbbcand) {
-  float sf1(-1.), sf2(-1);
-  return accept(gbbcand, sf1, sf2);
+  float sf(-1.);
+  return accept(gbbcand, sf);
 }

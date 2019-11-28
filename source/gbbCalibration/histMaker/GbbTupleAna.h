@@ -102,7 +102,6 @@ private:
 
   bool m_doTrackSmearing;
   bool m_noMuonReq;
-  bool m_useLeadingJets;
   bool m_doApplyBTaggingSF;
 
   bool m_doSd0Systematics;
@@ -176,8 +175,7 @@ private:
   // Wrapper functions for the MakePlotName functions from the
   // GlobalConfig class. Defined in GbbFillHelp.cxx
   //
-  TString makeMuJetPlotName(GbbCandidate* gbbcand, const TString var);
-  TString makeNonMuJetPlotName(GbbCandidate* gbbcand, const TString var);
+  TString makeInclTrkJetPlotName(GbbCandidate* gbbcand, unsigned int i, const TString var);
   TString makeDiJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeFatJetPlotName(GbbCandidate* gbbcand, const TString var);
   TString makeInclDiJetPlotName(GbbCandidate* gbbcand, const TString var);
@@ -199,9 +197,9 @@ private:
   void FillTemplates(GbbCandidate* gbbcand, float event_weight,TString nametag="");
   void FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, float event_weight,TString nametag="");
   // Helper function for FillTemplates
-  void FillSd0Plots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc);
+  void FillSd0Plots(std::vector<trkjetSd0Info> sd0Info, float event_weight, std::function<TString (TString)> namingFunc);
   //Tong: Fill 2D histogram for correlation check
-  void FillSd02DPlots(trkjetSd0Info muSd0Info, trkjetSd0Info nonmuSd0Info, float event_weight, std::function<TString (TString)> namingFunc);
+  void FillSd02DPlots(trkjetSd0Info j1Sd0Info, trkjetSd0Info j2Sd0Info, float event_weight, std::function<TString (TString)> namingFunc);
 
   bool isLargeWeightEvent(int DSID,float evt_weight, float max_evt_weight);
 
@@ -219,16 +217,11 @@ private:
 
   void getSystematicsFlags(GbbCandidate *, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMu);
 
-  //
-  // Functions used to parse strings from configuration files as vectors
-  //
-  std::vector<TString> SplitString(TString str, char delim);
-  std::vector<float> SplitStringD(TString str, char delim);
-
   float getScaledFatPt(float fjpt){
     return fjpt*(0.9725+(1e-5)*fjpt);
     //    return fjpt*(0.95+((2.86e-5)*fjpt));
   }
+
 };
 
 #endif /* GBBTUPLEANA_H_ */

@@ -70,7 +70,7 @@ elif (args.useIncl == 2):
   for flav in ListOfFlavourPairs:
     ListOfInclusiveFlavourPairs.append(flav.Data())
 
-ListOfTJpt = MyConfig.GetTrkJetRegions()
+ListOfTJpt = MyConfig.GetDiTrkJetRegions()
 ListOfTJpt.push_back(TString("Incl"))
 isR20p7 = MyConfig.GetIsR20p7()
 

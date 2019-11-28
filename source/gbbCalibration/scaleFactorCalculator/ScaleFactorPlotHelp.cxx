@@ -979,7 +979,7 @@ void ScaleFactorCalculator::MakeNFPlots(){
   std::vector<TString> flavs = m_config->GetFlavourPairs();
   std::vector<TString> systematics;
   if(m_doSystematics) systematics = m_config->GetSystematics();
-  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetTrkJetRegions();
+  std::vector<TString> regions = m_doFitInFatJetPtBins ? m_config->GetFatJetRegions() : m_config->GetDiTrkJetRegions();
 
   systematics.push_back("Nom"); //we want to get nominal plots too
 

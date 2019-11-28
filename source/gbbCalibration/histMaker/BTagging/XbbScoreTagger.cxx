@@ -2,7 +2,7 @@
 #include "helpers/GbbUtil.h"
 #include <cmath> // for log
 
-XbbScoreTagger::XbbScoreTagger(std::string operatingPt, float xbbTopFrac) :
+XbbScoreTagger::XbbScoreTagger(TString operatingPt, float xbbTopFrac) :
   BJetTagger("XbbScore",operatingPt),
   m_topFrac(xbbTopFrac),
   m_fixed_cut(-1.),
@@ -22,13 +22,12 @@ int XbbScoreTagger::initialize(const TupleAna& gbbtuple) {
   v_XbbScoreTop   = gbbtuple.fat_XbbScoreTop;
   v_fat_pt        = gbbtuple.fat_pt;
 
-  auto configV = GbbUtil::splitString(m_operatingPt,"_");
-  if (configV.size() != 2) {
-    std::cerr << "ERROR : invalid XbbScore operating point " << m_operatingPt.c_str() << std::endl;
-    return -1;
-  }
-  m_eff = std::stoi(configV[1], nullptr);
-  if (configV[0].find("HybBEff") != std::string::npos) {
+  auto configV = GbbUtil::splitString(m_operatingPt,'_');
+  if (configV.size() != 2)
+    throw std::invalid_argument(Form("invalid XbbScore operating point %s",m_operatingPt.Data()));
+
+  m_eff = configV[1].Atoi();
+  if (configV[0].Contains("HybBEff")) {
     m_useHybWP = true;
   } else {
     setFixedCut();
@@ -51,9 +50,8 @@ void XbbScoreTagger::setFixedCut() {
   m_fixed_cut = m_fixedCutMap[m_topFrac][m_eff];
 }
 
-int XbbScoreTagger::accept(const GbbCandidate& gbbcand, float& mjSF, float& nmjSF) {
-  mjSF = -1.;
-  nmjSF = -1.;
+int XbbScoreTagger::accept(const GbbCandidate& gbbcand, float& sf) {
+  sf = -1.;
   return accept(gbbcand);
 }
 

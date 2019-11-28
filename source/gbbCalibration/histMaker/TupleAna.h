@@ -169,6 +169,8 @@ public :
    vector<int>     *muo_ind;
    vector<float>   *muo_z0;
    vector<float>   *muo_d0;
+   vector<float>   *muo_d0sig;
+   vector<float>   *muo_d0sigBL;
    vector<float>   *muo_z0sintheta;
    vector<int>     *muo_quality;
    vector<int>     *muo_acceptedTool;
@@ -201,6 +203,8 @@ public :
    vector<int>     *trkjet_hasHadMatInt;
    vector<int>     *trkjet_BHad_n;
    vector<int>     *trkjet_CHad_n;
+   vector<int>     *trkjet_BHad_n_GA;
+   vector<int>     *trkjet_CHad_n_GA;
    vector<int>     *trkjet_BHad_pdgId;
    vector<float>   *trkjet_BHad_pt;
    vector<float>   *trkjet_BHad_eta;
@@ -367,6 +371,8 @@ public :
    TBranch        *b_muo_ind;   //!
    TBranch        *b_muo_z0;   //!
    TBranch        *b_muo_d0;   //!
+   TBranch        *b_muo_d0sig;   //!
+   TBranch        *b_muo_d0sigBL;   //!
    TBranch        *b_muo_z0sintheta;   //!
    TBranch        *b_muo_quality;   //!
    TBranch        *b_muo_acceptedTool;   //!
@@ -399,6 +405,8 @@ public :
    TBranch        *b_trkjet_hasHadMatInt;   //!
    TBranch        *b_trkjet_BHad_n;   //!
    TBranch        *b_trkjet_CHad_n;   //!
+   TBranch        *b_trkjet_BHad_n_GA;   //!
+   TBranch        *b_trkjet_CHad_n_GA;   //!
    TBranch        *b_trkjet_BHad_pdgId;   //!
    TBranch        *b_trkjet_BHad_pt;   //!
    TBranch        *b_trkjet_BHad_eta;   //!
@@ -550,6 +558,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    muo_ind = 0;
    muo_z0 = 0;
    muo_d0 = 0;
+   muo_d0sig = 0;
+   muo_d0sigBL = 0;
    muo_z0sintheta = 0;
    muo_quality = 0;
    muo_acceptedTool = 0;
@@ -582,6 +592,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    trkjet_hasHadMatInt = 0;
    trkjet_BHad_n = 0;
    trkjet_CHad_n = 0;
+   trkjet_BHad_n_GA = 0;
+   trkjet_CHad_n_GA = 0;
    trkjet_BHad_pdgId = 0;
    trkjet_BHad_pt = 0;
    trkjet_BHad_eta = 0;
@@ -759,6 +771,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("muo_ind", &muo_ind, &b_muo_ind);
    fChain->SetBranchAddress("muo_z0", &muo_z0, &b_muo_z0);
    fChain->SetBranchAddress("muo_d0", &muo_d0, &b_muo_d0);
+   fChain->SetBranchAddress("muo_d0sig", &muo_d0sig, &b_muo_d0sig);
+   fChain->SetBranchAddress("muo_d0sigBL", &muo_d0sigBL, &b_muo_d0sigBL);
    fChain->SetBranchAddress("muo_z0sintheta", &muo_z0sintheta, &b_muo_z0sintheta);
    fChain->SetBranchAddress("muo_quality", &muo_quality, &b_muo_quality);
    fChain->SetBranchAddress("muo_acceptedTool", &muo_acceptedTool, &b_muo_acceptedTool);
@@ -793,6 +807,8 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("trkjet_hasHadMatInt", &trkjet_hasHadMatInt, &b_trkjet_hasHadMatInt);
    fChain->SetBranchAddress("trkjet_BHad_n", &trkjet_BHad_n, &b_trkjet_BHad_n);
    fChain->SetBranchAddress("trkjet_CHad_n", &trkjet_CHad_n, &b_trkjet_CHad_n);
+   fChain->SetBranchAddress("trkjet_BHad_n_GA", &trkjet_BHad_n_GA, &b_trkjet_BHad_n_GA);
+   fChain->SetBranchAddress("trkjet_CHad_n_GA", &trkjet_CHad_n_GA, &b_trkjet_CHad_n_GA);
    fChain->SetBranchAddress("trkjet_BHad_pdgId", &trkjet_BHad_pdgId, &b_trkjet_BHad_pdgId);
    fChain->SetBranchAddress("trkjet_BHad_pt", &trkjet_BHad_pt, &b_trkjet_BHad_pt);
    fChain->SetBranchAddress("trkjet_BHad_eta", &trkjet_BHad_eta, &b_trkjet_BHad_eta);
