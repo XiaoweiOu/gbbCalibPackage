@@ -664,7 +664,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //=========================================
 
   TLorentzVector fatjet,trigjet;
-  fatjet.SetPtEtaPhiE(this->trkjet_pt->at(gbbcand.ind_fj),this->trkjet_eta->at(gbbcand.ind_fj),this->trkjet_phi->at(gbbcand.ind_fj),this->trkjet_E->at(gbbcand.ind_fj));
+  fatjet.SetPtEtaPhiE(this->fat_pt->at(gbbcand.ind_fj),this->fat_eta->at(gbbcand.ind_fj),this->fat_phi->at(gbbcand.ind_fj),this->fat_E->at(gbbcand.ind_fj));
   trigjet.SetPtEtaPhiE(this->jet_pt->at(i_trigjet),this->jet_eta->at(i_trigjet),this->jet_phi->at(i_trigjet),this->jet_E->at(i_trigjet));
 
   if (fatjet.DeltaR(trigjet) < 1.5) return false;
