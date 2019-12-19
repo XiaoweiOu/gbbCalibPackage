@@ -534,8 +534,8 @@ def MakeTemplatePlots():
     MakeRatioPlots(var.Data()+'_2TAG',prefit=True ,doChi2=True,setLogy=True)
     MakeRatioPlots(var.Data()+'_2TAG',prefit=False,doChi2=True,setLogy=True)
 
-    MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=True ,doChi2=True,setLogy=True)
-    MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=False,doChi2=True,setLogy=True)
+    #MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=True ,doChi2=True,setLogy=True)
+    #MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=False,doChi2=True,setLogy=True)
 
 def MakeKinematicPlots():
   for var in ['fjpt','fjm','mjpt','nmjpt']:
@@ -545,8 +545,8 @@ def MakeKinematicPlots():
     MakeRatioPlots(var+'_2TAG',prefit=True ,doChi2=True)
     MakeRatioPlots(var+'_2TAG',prefit=False,doChi2=True)
 
-    MakeRatioPlots(var+'_NOT2TAG',prefit=True ,doChi2=True)
-    MakeRatioPlots(var+'_NOT2TAG',prefit=False,doChi2=True)
+    #MakeRatioPlots(var+'_NOT2TAG',prefit=True ,doChi2=True)
+    #MakeRatioPlots(var+'_NOT2TAG',prefit=False,doChi2=True)
 
 #-----------------------------------------------
 # Main function
