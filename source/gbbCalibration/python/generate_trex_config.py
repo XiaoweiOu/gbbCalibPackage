@@ -1,9 +1,7 @@
 import argparse
-import ConfigFunctions as config
 import os
-from ROOT import TString
 
-parser = argparse.ArgumentParser(description='Make ratio plots.')
+parser = argparse.ArgumentParser(description='Write config files used to run TRExFitter.')
 parser.add_argument('output', help="Name of output directory")
 parser.add_argument('--bins', type=str, default="trkjet",
     help="Use trkjet bins, fatjet bins or no bins (incl) [default: trkjet]")
@@ -22,6 +20,9 @@ parser.add_argument('--debug', type=int, default=2,
 parser.add_argument('--nosys', action='store_true',
     help="Run nominal-only fit")
 args = parser.parse_args()
+
+import ConfigFunctions as config
+from ROOT import TString
 
 # define arguments
 debug = args.debug
