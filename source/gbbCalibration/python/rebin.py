@@ -10,8 +10,8 @@ parser.add_argument('--nosys', help="Rebin only nominal histograms",
                     action="store_true")
 parser.add_argument('--stat', type=float, default=0.25,
                     help="Stat threshold (err/N) for rebinning [default: 0.25]")
-parser.add_argument('--force', type=int, default=1,
-                    help="Force rebinning by at least n [default: 1]")
+parser.add_argument('--force', type=int, default=2,
+                    help="Force rebinning by at least n [default: 2]")
 parser.add_argument('--hist', type=str, default='BB',
                     help="Changes which hists are checked for stat threshold. Options are 'data', 'MC', or any of the flavour-pair labels [default: BB].")
 parser.add_argument('--split', action='store_true',
