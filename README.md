@@ -57,11 +57,98 @@ run_calculateSF <root_input> config_Calib_SF.cfg <output_folder>
 ```
 
 ### Producing scale factors with TRExFitter
-`run_calculateSF` automatically rebins the template histograms to reduce per-bin errors. A copy of this rebinning algorithm is provided in `rebin.py`. Scripts to produce TRExFitter config files and run them are located in `gbbCalibPackage/source/gbbCalibration/scripts`. To run them do:
+The consolidated histogram file output by `gbbCalibration/python/makeCrossCheckInputsInclusiveLL_AllSys.py` can be used to calculate SFs with TRExFitter. In this case, however, there are a few extra steps to process the input and output correctly. `run_calculateSF` automatically rebins histograms to reduce statistical fluctuations in the templates. A version of this rebinning is provided as a standalone script called `rebin.py`. The output of this rebinning script is then given to `run_trex.sh`, which will create a TRExFitter config file for each bin and then fit them in sequence. TRExFitter will automatically produce some plots, such as correlation matrices, ranking and pull plots.
+Another script, `makeTRExOutputPlots.py`, is provided to read the fit results and make plots that aren't made automatically.
 ```
 python gbbCalibration/python/rebin.py <trex_input> <hist_input> [<options>]
-gbbCalibration/scripts/run_trex.sh -o <output_folder> -i <tex_input> [-e "--fitSF <options>"]
-python gbbCalibration/python/plotting/makeTRExOutputPlots.py <output_folder> [<options>]
+run_trex.sh -o <output_folder> -i <tex_input> [<options>]
+python gbbCalibration/python/plotting/makeTRExOutputPlots.py <input_folder> [<options>]
 ```
 
-To produce scale factors consistent with the scaleFactorCalculator output, add the --noMCstat flag to the list of options for run\_trex.sh.
+A config file can be given to `run_trex.sh` to make it easier to control the options provided. One such config file is provided here: `data/configs/trex_Calib_SF.cfg`. Other notable options include the `--nosys` option, which tells these scripts to produce and plot nominal-only fits, and the `--bins` option which can be set to `fatjet` to run the fit in bins of large-R jet pT.
+
+#### Rebin.py options
+```
+usage: rebin.py [-h] [--nosys] [--stat STAT] [--force FORCE] [--hist HIST]
+                [--split]
+                outfile infile
+
+Make reweight histograms.
+
+positional arguments:
+  outfile        Name of output ROOT file
+  infile         Name of input ROOT file
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --nosys        Rebin only nominal histograms
+  --stat STAT    Stat threshold (err/N) for rebinning [default: 0.25]
+  --force FORCE  Force rebinning by at least n [default: 1]
+  --hist HIST    Changes which hists are checked for stat threshold. Options
+                 are 'data', 'MC', or any of the flavour-pair labels [default:
+                 BB].
+  --split        Rebin negative tail separately (merging from right to left)
+```
+
+#### run\_trex.sh options
+```
+Usage: run_trex.sh -i <input> -o <output> [-h] [-e <args>]
+       -o <output> Name of directory to store TRExFitter results
+       -i <input>  Name of histogram file for TRExFitter input
+       -h          Print this help message
+       -c          Name of config file (located in data/configs)
+       -e          Additional arguments to be passed directly
+                   to generate_trex_config.py
+```
+`run_trex.sh` uses another script, `generate_trex_config.py`, to write TRExFitter config files. The options for this script are:
+```
+usage: generate_trex_config.py [-h] [--bins BINS] [--year YEAR] [--asimov]
+                               [--noMCstat] [--fitSF] [--cfg CFG]
+                               [--debug DEBUG] [--nosys]
+                               output
+
+Write config files used to run TRExFitter.
+
+positional arguments:
+  output         Name of output directory
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --bins BINS    Use trkjet bins, fatjet bins or no bins (incl) [default:
+                 trkjet]
+  --year YEAR    Year determines luminosity to normalize to [default:
+                 2015+2016]
+  --asimov       Do Asimov fit rather than fitting to data
+  --noMCstat     Don't use MC stat errors in fit for comparison to old
+                 framework
+  --fitSF        Fit scale factor directly (rather than only correcting flavor
+                 fractions)
+  --cfg CFG      Name of extra config file (located in
+                 gbbCalibration/data/configs)
+  --debug DEBUG  Debug level for TRexFitter [default: 2]
+  --nosys        Run nominal-only fit
+```
+Note that options provided in the config file (if any) will override options provided directly to the script.
+
+#### makeTRExOutputPlots.py options
+```
+usage: makeTRExOutputPlots.py [-h] [--bins BINS] [--year YEAR] [--debug]
+                              [--plots PLOTS [PLOTS ...]]
+                              input
+
+Make fit result histograms.
+
+positional arguments:
+  input                 Folder containing TRExFitter results
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --bins BINS           Use trkjet bins, fatjet bins or no bins (incl)
+                        [default: trkjet]
+  --year YEAR           Year determines luminosity to normalize to [default:
+                        2015+2016]
+  --debug               Add extra printouts
+  --plots PLOTS [PLOTS ...]
+                        List of plots to make. Options include
+                        'SF','NF','Tmpl','Kine',...
+```
