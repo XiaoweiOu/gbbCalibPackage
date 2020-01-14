@@ -86,10 +86,10 @@ def GetBinsByStats(hists,thr,n_f,split=False):
     err2 = np.zeros(len(hists))
     ctr = 0
     if scanRight:
-      rng = range(imin,imax)
+      rng = range(imin,imax+1)
       bins = [ hists[0].GetBinLowEdge(imin) ]
     else:
-      rng = range(imax,imin,-1)
+      rng = range(imax,imin-1,-1)
       bins = [ hists[0].GetBinLowEdge(imax+1) ]
 
     for ibin in rng:
@@ -113,9 +113,9 @@ def GetBinsByStats(hists,thr,n_f,split=False):
 
     # if last bin would fail threshold, append it to second-to-last
     if scanRight:
-      edge = hists[0].GetBinLowEdge(nbins)
+      edge = hists[0].GetBinLowEdge(imax+1)
     else:
-      edge = hists[0].GetBinLowEdge(1)
+      edge = hists[0].GetBinLowEdge(imin)
 
     if edge not in bins:
       # in case histogram has only 1 bin left don't remove it
@@ -135,11 +135,11 @@ def GetBinsByStats(hists,thr,n_f,split=False):
         izero = ibin
         break
     print(izero)
-    bins_l = GetBinningInRange(1,izero-1,scanRight=False)
-    bins_r = GetBinningInRange(izero,nbins)
+    bins_l = GetBinningInRange(1,izero-1,scanRight=True)
+    bins_r = GetBinningInRange(izero,nbins-1,scanRight=False)
     # lower edge of izero contained in both lists so remove it from
     # bins_r when merging
-    return bins_l[::-1] + bins_r[1:]
+    return bins_l[:-1] + bins_r[::-1]
   else:
     imin = 1 # 41 to remove negative Sd0
     return GetBinningInRange(imin,nbins)
