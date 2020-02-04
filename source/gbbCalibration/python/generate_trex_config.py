@@ -91,7 +91,10 @@ if doSystematics:
           ListOf2SidedSysts.append(sysName)
           twoSided = True
       if not twoSided:
-        ListOf1SidedSysts.append(sysName)
+        ListOf1SidedSysts.append(sysName+"__1up")
+    else:
+      if "__1down" not in sys.Data():
+        ListOf1SidedSysts.append(sys.Data())
   for sys in ListOfSystematicsSd0:
     twoSided = False
     if "__1up" in sys.Data():
@@ -102,6 +105,9 @@ if doSystematics:
           twoSided = True
       if not twoSided:
         ListOf1SidedSysts.append(sysName)
+    else:
+      if "__1down" not in sys.Data():
+        ListOf1SidedSysts.append(sys.Data())
 
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfTmplVars = MyConfig.GetTemplateVariables()
@@ -191,11 +197,9 @@ def WriteSystBlock1Sided(outfile,sys):
   outfile.write('  Type: HISTO\n')
   outfile.write('  Title: "'+sys+'"\n')
   outfile.write('  Samples: all\n')
-  outfile.write('  HistoNameSufUp: "_'+sys+'__1up"\n')
+  outfile.write('  HistoNameSufUp: "_'+sys+'"\n')
   outfile.write('  Symmetrisation: ONESIDED\n')
   outfile.write('\n')
-
-## TODO: Add systematics blocks
 
 def WriteConfigFile(ptbin,outdir):
   with open(outdir+'/fit_'+ptbin+'.config','w') as outfile:

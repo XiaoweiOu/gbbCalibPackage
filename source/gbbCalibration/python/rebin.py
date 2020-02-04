@@ -8,14 +8,14 @@ parser.add_argument('outfile', help="Name of output ROOT file")
 parser.add_argument('infile', help="Name of input ROOT file")
 parser.add_argument('--nosys', help="Rebin only nominal histograms",
                     action="store_true")
-parser.add_argument('--stat', type=float, default=0.25,
-                    help="Stat threshold (err/N) for rebinning [default: 0.25]")
+parser.add_argument('--stat', type=float, default=0.75,
+                    help="Stat threshold (err/N) for rebinning [default: 0.75]")
 parser.add_argument('--force', type=int, default=2,
                     help="Force rebinning by at least n [default: 2]")
-parser.add_argument('--hist', type=str, default='BB',
-                    help="Changes which hists are checked for stat threshold. Options are 'data', 'MC', or any of the flavour-pair labels [default: BB].")
-parser.add_argument('--split', action='store_true',
-                    help="Rebin negative tail separately (merging from right to left)")
+parser.add_argument('--hist', type=str, default='MC',
+                    help="Changes which hists are checked for stat threshold. Options are 'data', 'MC', or any of the flavour-pair labels [default: MC].")
+parser.add_argument('--nosplit', action='store_true',
+                    help="Rebin merging from right to left (rather than inwards toward zero)")
 args = parser.parse_args()
 
 # import ROOT after argument parsing so it can't steal arguments
@@ -64,7 +64,7 @@ ListOfPlotVars = MyConfig.GetPlotVariables()
 ListOfFJpt = MyConfig.GetFatJetRegions()
 ListOfTJpt = MyConfig.GetDiTrkJetRegions()
 
-def GetBinsByStats(hists,thr,n_f,split=False):
+def GetBinsByStats(hists,thr,n_f,split=True):
   '''
   Define a new binning for input histograms such that
   (bin error)/(bin value) < threshold for all bins
@@ -142,7 +142,7 @@ def GetBinsByStats(hists,thr,n_f,split=False):
     return bins_l[:-1] + bins_r[::-1]
   else:
     imin = 1 # 41 to remove negative Sd0
-    return GetBinningInRange(imin,nbins)
+    return GetBinningInRange(imin,nbins-1)
 
 def Rebin(hist,bins,pseudo=False):
   '''
@@ -197,17 +197,17 @@ def RebinHistsAll(region,var):
   bins = []
   h_data = getKey(infile, MyConfig.GetDataHistName(region,var).Data() )
   if args.hist == 'data':
-    bins = GetBinsByStats([h_data], args.stat, args.force, args.split)
+    bins = GetBinsByStats([h_data], args.stat, args.force, not args.nosplit)
   elif args.hist == 'MC':
     h_mc_vec = []
     for histname in MyConfig.GetMCHistNamesBySys('Nom',region,var):
       h_mc_vec.append(getKey(infile, histname.Data()))
-    bins = GetBinsByStats(h_mc_vec, args.stat, args.force, args.split)
+    bins = GetBinsByStats(h_mc_vec, args.stat, args.force, not args.nosplit)
   else:
     for flav in ListOfFlavourPairs:
       if args.hist == flav.Data():
         h_mc = getKey(infile, MyConfig.GetMCHistName('Nom',region,flav,var).Data())
-        bins = GetBinsByStats([h_mc], args.stat, args.force, args.split)
+        bins = GetBinsByStats([h_mc], args.stat, args.force, not args.nosplit)
         break
   if not len(bins):
     print("ERROR: could not define binning in channel "+region.Data()+' '+var.Data())
@@ -232,10 +232,14 @@ def RebinHistsAll(region,var):
   for sys in systs:
     for flav in ListOfFlavourPairs:
       histname = MyConfig.GetMCHistName(sys,region,flav,var).Data()
-      h_mc = getKey(infile,histname)
-      new_mc = Rebin(h_mc,bins)
-      new_mc.GetYaxis().SetTitle('dN/d'+var.Data())
-      new_mc.Write(h_mc.GetName())
+      #h_mc = getKey(infile,histname)
+      h_mc = infile.Get(histname)
+      if h_mc:
+        new_mc = Rebin(h_mc,bins)
+        new_mc.GetYaxis().SetTitle('dN/d'+var.Data())
+        new_mc.Write(h_mc.GetName())
+      else:
+        print('cannot find '+histname+' in file '+infile.GetName())
 
 def CopyHists(region,var):
   # Read in data histogram
