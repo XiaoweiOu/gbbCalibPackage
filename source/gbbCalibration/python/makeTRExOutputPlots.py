@@ -20,8 +20,8 @@ args = parser.parse_args()
 from PlotFunctions import *
 from TAxisFunctions import *
 import ConfigFunctions as config
-from ROOT import gROOT,gStyle,TFile,Double
-from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine
+from ROOT import gROOT,SetOwnership,gStyle,TFile,Double
+from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine,TString
 
 gROOT.SetBatch(True)
 gROOT.SetStyle('ATLAS')
@@ -161,13 +161,17 @@ def makeTrkJetLabels(bins,jetName):
   return labels
 
 #-----------------------------------------------
-def Make2DPlot(bin_vals, bin_errs, name):
+def Make2DPlot(bin_vals, bin_errs, name, zrange=None):
   # Set up bins and labels for 2D plots
   mj_labels = makeTrkJetLabels(MyConfig.GetMuonJetPtBins(),"#mu-jet")
   nmj_labels = makeTrkJetLabels(MyConfig.GetNonMuJetPtBins(),"non-#mu-jet")
 
   # Create canvas
   canv = TCanvas('c','',800,600)
+  # Had trouble with canvas not being deleted properly
+  # Calling ROOT.SetOwnership means it is ignored by python
+  # garbage collection and *must* be deleted manually
+  SetOwnership(canv,False)
   canv.SetTopMargin(0.05)
   canv.SetLeftMargin(0.28)
   canv.SetRightMargin(0.05)
@@ -185,8 +189,13 @@ def Make2DPlot(bin_vals, bin_errs, name):
     for j in range(0,len(nmj_labels)): # loop over non-mu jet pt bins
       n_region = j + i*len(nmj_labels)
       hist.SetBinContent(i+1,j+1,bin_vals[n_region])
-      hist_err_up.SetBinContent(i+1,j+1,bin_errs[n_region])
-      hist_err_down.SetBinContent(i+1,j+1,bin_errs[n_region])
+      # Bins with exactly zero content aren't filled
+      if bin_vals[n_region] == 0:
+        hist.SetBinContent(i+1,j+1,1e-10)
+
+      if bin_errs.size:
+        hist_err_up.SetBinContent(i+1,j+1,bin_errs[n_region])
+        hist_err_down.SetBinContent(i+1,j+1,bin_errs[n_region])
 
   for i in range(0,len(mj_labels)):
     hist.GetXaxis().SetBinLabel(i+1,mj_labels[i])
@@ -199,29 +208,41 @@ def Make2DPlot(bin_vals, bin_errs, name):
 
   canv.cd()
   hist.SetMarkerSize(2)
+  #gStyle.SetPaintTextFormat("4.2e")
   gStyle.SetPaintTextFormat("4.2f")
   hist.Draw("COL TEXT")
-  hist_err_up.SetBarOffset(0.23)
-  hist_err_up.SetMarkerSize(1.3)
-  hist_err_up.Draw("TEXT SAME")
-  hist_err_down.SetBarOffset(-0.23)
-  hist_err_down.SetMarkerSize(1.3)
-  hist_err_down.Draw("TEXT SAME")
+  if bin_errs.size:
+    hist_err_up.SetBarOffset(0.23)
+    hist_err_up.SetMarkerSize(1.3)
+    hist_err_up.Draw("TEXT SAME")
+    hist_err_down.SetBarOffset(-0.23)
+    hist_err_down.SetMarkerSize(1.3)
+    hist_err_down.Draw("TEXT SAME")
 
-  if hist.GetMaximum() > 1.:
-    hist.GetZaxis().SetRangeUser(0.,2.)
+  if zrange is not None:
+    if len(zrange) == 2:
+      hist.GetZaxis().SetRangeUser(zrange[0],zrange[1])
+    else:
+      print("zrange should be list([zmin,zmax])")
+      exit()
   else:
-    hist.GetZaxis().SetRangeUser(0.,1.)
+    if hist.GetMaximum() > 1.:
+      hist.GetZaxis().SetRangeUser(0.,2.)
+    elif hist.GetMaximum() < 0.25:
+      hist.GetZaxis().SetRangeUser(0.,0.25)
+    else:
+      hist.GetZaxis().SetRangeUser(0.,1.)
 
   #Add plot labels
   text = TLatex()
   text.SetNDC()
   text.DrawLatex(0.675, 0.90, '#font[72]{ATLAS} #font[42]{%s}' % plotText)
   text.DrawLatex(0.675, 0.86, '#font[42]{#scale[0.8]{%s}}' % sqrtText)
-  text.DrawLatex(0.675, 0.81, '#font[42]{#scale[0.8]{%s}}' % calibText)
+  text.DrawLatex(0.675, 0.82, '#font[42]{#scale[0.8]{%s}}' % calibText)
+  text.DrawLatex(0.675, 0.78, '#font[42]{#scale[0.8]{%s}}' % name)
 
   canv.SaveAs(outdir+'2D'+name+'.pdf')
-  del canv
+  canv.Close()
 
 #-----------------------------------------------
 def Make1DPlot(bin_vals, bin_yerr, name):
@@ -312,7 +333,7 @@ def Make1DPlot(bin_vals, bin_yerr, name):
   del canv
 
 #-----------------------------------------------
-def MakeFitPlot(fitResults, nuisPar):
+def MakeFitPlot(fitResults, nuisPar, zrange=None):
   bin_vals = np.zeros(len(regions))
   bin_errs = np.zeros(len(regions))
   for i,region in enumerate(regions):
@@ -320,8 +341,11 @@ def MakeFitPlot(fitResults, nuisPar):
     bin_vals[i] = result.GetPar(nuisPar)
     bin_errs[i] = result.GetErr(nuisPar)
   if args.bins == 'trkjet':
-    Make2DPlot(bin_vals, bin_errs, nuisPar)
+    Make2DPlot(bin_vals, bin_errs, nuisPar, zrange)
   elif args.bins == 'fatjet':
+    if zrange is not None:
+      print("zrange option only valid for 2D histograms")
+      exit()
     Make1DPlot(bin_vals, bin_errs, nuisPar)
 
 #-----------------------------------------------
@@ -416,7 +440,9 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
   pad2.SetFillColor(0)
   pad2.Draw()
 
-  for region in regions:
+  chi2vals = np.zeros(len(regions))
+
+  for i,region in enumerate(regions):
     result = results[region.Data()]
     h_mcSum = None
     h_fitErr = None
@@ -460,6 +486,7 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
       chi2 = h_data.Chi2Test(h_mcSum,"WW CHI2/NDF");
       #print(str(chi2))
       chi2Text='#chi^{{2}}/NDF = {:.2f}'.format(chi2)
+      chi2vals[i] = chi2
 
     pad1.cd()
     h_data.Draw('EP')
@@ -526,6 +553,9 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
     # finally, clear the canvas for the next histograms
     canv.Clear('D')
 
+  if doChi2:
+    Make2DPlot(chi2vals, np.array([]), 'chi2_'+name)
+
 def MakeTemplatePlots():
   for var in MyConfig.GetTemplateVariables():
     MakeRatioPlots(var.Data(),prefit=True ,doChi2=True,setLogy=True)
@@ -567,3 +597,11 @@ if 'NF' in args.plots:
     MakeFitPlot(results, flav.Data())
     MakeFlavFracPlot(results, flav.Data(), prefit=True)
     MakeFlavFracPlot(results, flav.Data(), prefit=False)
+if 'Pulls' in args.plots:
+  for syst in MyConfig.GetSystematics():
+    if '__1down' in syst.Data():
+      continue
+    if '__1up' in syst.Data():
+       MakeFitPlot(results, syst.Data()[:-5], zrange=[-1,1])
+    else:
+       MakeFitPlot(results, syst.Data(), zrange=[-1,1])

@@ -1,12 +1,4 @@
-import ROOT
-#from PlotFunctions import *
-#from TAxisFunctions import *
-import ConfigFunctions as config
 import argparse
-
-ROOT.gROOT.SetBatch(True)
-from ROOT import TCanvas,TPad,TString
-
 
 #----------------- variables ------------------------
 
@@ -45,7 +37,11 @@ ListOfVariables_minimal = [
   'mjmeanSd0','nmjmeanSd0',
   'mjmeanSd0_2TAG','nmjmeanSd0_2TAG',
   'mjmeanSd0_NOT2TAG','nmjmeanSd0_NOT2TAG',
-  'mjpt_NOT2TAG',
+  #'fjpt','fjm',
+  'mjpt','nmjpt',
+  #'fjpt_NOT2TAG','fjpt_2TAG',
+  'mjpt_NOT2TAG','mjpt_2TAG',
+  'nmjpt_NOT2TAG','nmjpt_2TAG'
   ]
 
 # variables for which only the pt-inclusive plots are desired
@@ -73,6 +69,14 @@ parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"]
 parser.add_argument('--year', type=str, default="2015+2016",
     help="Year determines luminosity to normalize to [default: 2015+2016]")
 args = parser.parse_args()
+
+import ROOT
+#from PlotFunctions import *
+#from TAxisFunctions import *
+import ConfigFunctions as config
+
+ROOT.gROOT.SetBatch(True)
+from ROOT import TCanvas,TPad,TString
 
 # setting variables
 Lumi = config.GetLumi(args.year)
@@ -106,9 +110,12 @@ else:
   print("Using inclusive samples for LL template only")
   ListOfInclusiveFlavourPairs = [ TString('LL') ]
 
-ListOfTJpt = MyConfig.GetDiTrkJetRegions()
-ListOfFJpt = MyConfig.GetFatJetRegions()
-ListOfTJpt.push_back(TString("Incl"))
+ListOfPtBins = ['Incl']
+for ptBin in MyConfig.GetDiTrkJetRegions():
+  ListOfPtBins.append(ptBin.Data())
+for ptBin in MyConfig.GetFatJetRegions():
+  ListOfPtBins.append(ptBin.Data())
+
 isR20p7 = MyConfig.GetIsR20p7()
 
 # setting variables
@@ -134,12 +141,9 @@ print("--- end of varlist ---")
 
 # make list of data hists
 ListOfDataHists = []
-for tjpt in ListOfTJpt :
+for ptBin in ListOfPtBins :
     for var in ListOfVariables :
-        ListOfDataHists.append( MyConfig.GetDataHistName(tjpt,var).Data() )
-for fjpt in ListOfFJpt :
-    for var in ListOfVariables :
-        ListOfDataHists.append( MyConfig.GetDataHistName(fjpt,var).Data() )
+        ListOfDataHists.append( MyConfig.GetDataHistName(ptBin,var).Data() )
 if not args.tiny :
     for var in ListOfVariables_inclusive :
         ListOfDataHists.append( MyConfig.GetDataHistName("Incl",var).Data() )
@@ -147,41 +151,23 @@ if not args.tiny :
 ListOfDataHists.append('CutFlow_Nom');
 
 # make list of MC hists
-ListOfHists = []
-ListOfHerwigHists = []
-ListOfHists.append('CutFlow_Nom')
+ListOfHists = ['CutFlow_Nom']
+ListOfNomOnlyHists = []
+#ListOfHerwigHists = []
 for flavour in ListOfFlavourPairs :
   if not args.tiny :
     for var in ListOfVariables_inclusive :
-      ListOfHists.append( MyConfig.GetMCHistName("Nom","Incl",flavour,var).Data() )
-  for tjpt in ListOfTJpt :
+      ListOfNomOnlyHists.append( MyConfig.GetMCHistName("Nom","Incl",flavour,var).Data() )
+  for ptBin in ListOfPtBins :
     for var in ListOfVariables :
-      ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var).Data())
-      for sys in ListOfSystematics :
-        #TODO: don't hard-code these exceptions
-        if ("fjeta" in var or "fjphi" in var or "NOT2TAG" in var) and "Nom" not in sys.Data():
-          continue
-        ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
+      #ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",ptBin,flavour,var).Data())
+      ListOfHists.append(MyConfig.GetMCHistName("Nom",ptBin,flavour,var).Data())
       if "Sd0" in var :
         for sys in ListOfSd0Systematics :
-          ListOfHists.append(MyConfig.GetMCHistName(sys,tjpt,flavour,var).Data())
+          ListOfNomOnlyHists.append(MyConfig.GetMCHistName(sys,ptBin,flavour,var).Data())
       if "2TAG" in var :
         for sys in ListOfWeightVariations :
-          ListOfHists.append(MyConfig.GetMCHistName("Nom",tjpt,flavour,var+"_"+sys.Data()).Data())
-  for fjpt in ListOfFJpt :
-    for var in ListOfVariables :
-      ListOfHerwigHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var).Data())
-      for sys in ListOfSystematics :
-        #TODO: don't hard-code these exceptions
-        if ("fjeta" in var or "fjphi" in var or "NOT2TAG" in var) and "Nom" not in sys.Data():
-          continue
-        ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
-      if "Sd0" in var :
-        for sys in ListOfSd0Systematics :
-          ListOfHists.append(MyConfig.GetMCHistName(sys,fjpt,flavour,var).Data())
-      if "2TAG" in var :
-        for sys in ListOfWeightVariations :
-          ListOfHists.append(MyConfig.GetMCHistName("Nom",fjpt,flavour,var+"_"+sys.Data()).Data())
+          ListOfNomOnlyHists.append(MyConfig.GetMCHistName("Nom",ptBin,flavour,var+"_"+sys.Data()).Data())
 
 #--------------------- output -----------------------
 
@@ -189,39 +175,50 @@ for flavour in ListOfFlavourPairs :
 outfile=ROOT.TFile(outfilename,"RECREATE")
 
 # loop over and write MC histograms
-for histname in ListOfHists :
-  ListOfPaths = ListOfMCPaths
-  for inclFlav in ListOfInclusiveFlavourPairs:
-    if inclFlav.Data() in histname:
-      ListOfPaths = ListOfInclusiveMCPaths
-  histMC = histHelper.AddMCHists(histname,ListOfPaths)
-  outfile.cd()
-  if histMC:
-    histMC.Scale(Lumi)
-    if histname is 'CutFlow_Nom':
-      histMC.SetName('CutFlow_MC')
-    histMC.Write()
-    print("Wrote "+histname)
-  else:
-    print("Could not find "+histname+" in all input files!")
-    if '2TAG' in histname:
-      help_name=histname.rsplit('_',1)[0]
-      if 'BTAGUP' in histname or 'BTAGDOWN' in histname:
-        help_name=histname.rsplit('_',2)[0]
+for sys in ListOfSystematics:
+  histHelper.ClearFileMap()
+  syspath = sys.Data()+"/"
+  if "Nom" in sys.Data():
+    syspath = "Nominal/"
 
-      print("Writing "+help_name+" with 0 entries instead")
-      path = ListOfPaths[0]
-      file_curr = ROOT.TFile(path,"READ")
-      if not file_curr:
-        print("Cannot open file "+path)
-        exit()
-      hist_help = file_curr.Get(help_name)
-      if hist_help:
-        hist_default=ROOT.TH1D(histname,"",hist_help.GetNbinsX(),hist_help.GetXaxis().GetXmin(),hist_help.GetXaxis().GetXmax())
-        hist_default.Write()
-      else:
-        print("Cannot find hist "+help_name+" in file "+path)
-      file_curr.Close()
+  for histname in ListOfHists :
+    if not "Nom" in sys.Data():
+      #FIXME need solution that doesn't rely on lack of extra 'Nom's in histname
+      histname = histname.replace("Nom",sys.Data())
+
+    ListOfPaths = ListOfMCPaths[syspath]
+    for inclFlav in ListOfInclusiveFlavourPairs:
+      if inclFlav.Data() in histname:
+        ListOfPaths = ListOfInclusiveMCPaths[syspath]
+    histMC = histHelper.AddMCHists(histname,ListOfPaths)
+    outfile.cd()
+    if histMC:
+      histMC.Scale(Lumi)
+      if histname is 'CutFlow_Nom':
+        histMC.SetName('CutFlow_MC')
+      histMC.Write()
+      #print("Wrote "+histname)
+    else:
+      print("Could not find "+histname+" in all input files!")
+      #exit()
+      #if '2TAG' in histname:
+      #  help_name=histname.rsplit('_',1)[0]
+      #  if 'BTAGUP' in histname or 'BTAGDOWN' in histname:
+      #    help_name=histname.rsplit('_',2)[0]
+
+      #  print("Writing "+help_name+" with 0 entries instead")
+      #  path = ListOfPaths[0]
+      #  file_curr = ROOT.TFile(path,"READ")
+      #  if not file_curr:
+      #    print("Cannot open file "+path)
+      #    exit()
+      #  hist_help = file_curr.Get(help_name)
+      #  if hist_help:
+      #    hist_default=ROOT.TH1D(histname,"",hist_help.GetNbinsX(),hist_help.GetXaxis().GetXmin(),hist_help.GetXaxis().GetXmax())
+      #    hist_default.Write()
+      #  else:
+      #    print("Cannot find hist "+help_name+" in file "+path)
+      #  file_curr.Close()
 
 # loop over and write data histograms
 file_curr = ROOT.TFile(pathData,"READ")
@@ -240,6 +237,7 @@ for histname in ListOfDataHists :
     print("Wrote "+histname)
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
+    exit()
 
 file_curr.Close()
 outfile.Close()
