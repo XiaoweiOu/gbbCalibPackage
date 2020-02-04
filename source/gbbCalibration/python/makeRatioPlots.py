@@ -1,236 +1,194 @@
-import ROOT
+import argparse
+# numpy arrays are contiguous in memory (unlike python lists) and
+# can be implicitly converted to c-style arrays for input to ROOT
+import numpy as np
+import os
+
+parser = argparse.ArgumentParser(description='Make prefit histograms.')
+parser.add_argument('-i','--input', help="ROOT file containing data and MC histograms")
+parser.add_argument('-o','--outdir', help="Directory in which to store output plots")
+parser.add_argument('--bins', type=str, default="trkjet",
+    help="Use trkjet bins, fatjet bins or no bins (incl) [default: trkjet]")
+parser.add_argument('--year', type=str, default="2015+2016",
+    help="Year determines luminosity to normalize to [default: 2015+2016]")
+parser.add_argument('--debug', action='store_true',
+    help="Add extra printouts")
+parser.add_argument('--plots', nargs='+',
+    help="List of variables to plot.")
+args = parser.parse_args()
+
+#import ROOT
 from PlotFunctions import *
 from TAxisFunctions import *
 import ConfigFunctions as config
-import argparse
-import os
+from ROOT import gROOT,gStyle,TFile,Double
+from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine,TString
 
-ROOT.gROOT.SetBatch(True)
-from ROOT import TCanvas,TPad,TH2,TColor
+gROOT.SetBatch(True)
+gROOT.SetStyle('ATLAS')
+gStyle.SetErrorX(0.5)
 
-#ROOT.gStyle.SetOptStat(0)
-SetupStyle()
-
-parser = argparse.ArgumentParser(description='Make ratio plots.')
-parser.add_argument('output', help="Prefix of output files")
-parser.add_argument('--data', nargs='*', help="Input data file(s)")
-parser.add_argument('--mc', nargs='*', help="Input mc folder(s)")
-parser.add_argument('--norm1', action='store_true',
-                    help="Normalize histograms to 1 (always true for data/data ratios) [default: false]")
-parser.add_argument('--chi2', action='store_true',
-                    help="Print chi^2 on plots [default: false]")
-parser.add_argument('--pdf', action='store_true',
-                    help="Store plots in a single pdf [default: separate files]")
-parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"],
-                    help="Tell script how to make MC sample. Options are inclusive-only (incl), mu-filtered only (mufilt) or LL-inclusive (comb) [default: comb]")
-parser.add_argument('--year', type=str, default="2017",
-    help="Year determines luminosity to normalize to [default: 2017]")
-parser.add_argument('--xsec', default="xsections_r21.txt", help="Name of cross-sections file [default: xsections_r21.txt]")
-args = parser.parse_args()
-
-dataOnly=False
-if not args.data:
-  print("No data file(s) given. Exiting...")
-  exit()
-
-if not args.mc:
-  if len(args.data) == 2:
-    print("No MC given. Making data/data ratios")
-    dataOnly=True
-  else:
-    print("No MC given, and number of data files != 2. Exiting...")
-    exit()
+# set variables from args
+###
+if args.outdir:
+  outdir = args.outdir + '/'
 else:
-  print("Making data/MC ratios")
-  if len(args.data) > 1:
-    print("Only first data file ("+args.data[0]+") will be used")
+  # default outdir name is input file name with '.root' replaced by '_plots'
+  outdir = args.input[:-5] + '_plots/'
+# make outdir if it doesn't exist
+if not os.path.isdir(outdir):
+  os.mkdir(outdir)
 
+# Load c++ config library
 MyConfig = config.LoadGlobalConfig()
-if not dataOnly:
-  ListOfSystematics = [ ROOT.TString("Nominal") ] #MyConfig.GetSystematics()
-  ListOfFlavourPairs = MyConfig.GetFlavourPairs()
-  if args.mcflag == 'incl':
-    print("Using inclusive samples for all flavours")
-    ListOfInclusiveFlavourPairs = ListOfFlavourPairs
-  elif args.mcflag == 'mufilt':
-    print("Using mu-filtered samples for all flavours")
-    ListOfInclusiveFlavourPairs = []
-  else:
-    print("Using inclusive samples for LL template only")
-    ListOfInclusiveFlavourPairs = [ 'LL' ]
 
-  print("Using x-sections file: "+args.xsec)
-  histHelper = config.HistHelper(args.xsec)
-
-  Lumi = config.GetLumi(args.year)
-  print('Lumi is {}'.format(Lumi))
-
-  ListOfMCPaths = []
-  ListOfInclusiveMCPaths = []
-  for mcdir in args.mc:
-    for subdir, dirs, files in os.walk(mcdir):
-      for mcfile in files:
-        channel = config.GetChannelNumber(mcfile)
-        if channel > 361019 and channel < 361033:
-          ListOfInclusiveMCPaths.append(subdir + os.sep + mcfile)
-        elif (channel > 427002 and channel < 427006) \
-          or (channel > 427105 and channel < 427108):
-          ListOfMCPaths.append(subdir + os.sep + mcfile)
-        else:
-          print("Not sure how to categorize file: "+mcfile)
-
-colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue]
-canv = RatioCanvas('c',"",800,800,0.3,'pE1',doLogy=True)
-#SetColors(canvas,colors)
-
-if args.pdf:
-  canv.Print(args.output+'.pdf[')
+# Get list of pt regions
+if args.bins == 'trkjet':
+  regions = MyConfig.GetDiTrkJetRegions()
+elif args.bins == 'fatjet':
+  regions = MyConfig.GetFatJetRegions()
+elif args.bins == 'incl':
+  regions = [ TString('Incl') ]
 else:
-  os.mkdir(args.output)
-
-print("Finished setup! Now beginning histogram reading...")
-fileData1 = ROOT.TFile(args.data[0],"READ")
-if fileData1.IsZombie():
-  print("Cannot open data file "+args.data[0])
+  print('Unrecognized argument for --bins: '+args.bins)
   exit()
-if dataOnly:
-  fileData2 = ROOT.TFile(args.data[1],"READ")
-  if fileData2.IsZombie():
-    print("Cannot open data file "+args.data[1])
-    exit()
 
-# loop over all histograms in first data file
-for key in fileData1.GetListOfKeys():
-  splitByFlav = True
-  #if 'hDataNom' not in key.GetName(): #FIXME: hardcodes naming convention = bad
-  #  continue # skip plots inclusive in flavour for now
-  #if any(x in key.GetName() for x  in ['hIncl']):
-  if any(x in key.GetName() for x  in ['CutFlow','EventMu','EventAvgMu','EventPVz','PUDensity']):
-    splitByFlav = False
-  if splitByFlav:
-    if '_Incl_' not in key.GetName():
-      continue # only plots inclusive in pT for now
-    if 'BTAG' in key.GetName():
-      continue # skip btag systemic for now
-    if 'unweighted' in key.GetName():
-      continue # skip unweighted for now
+Lumi = config.GetLumi(args.year)
+print('Lumi is {}'.format(Lumi))
 
-  print("Found histogram "+key.GetName())
-  histNum = fileData1.Get(key.GetName())
-  if histNum.InheritsFrom("TH2"):
-    continue # skip 2D histograms for now
-  if histNum:
-    if 'data17' in args.data[0]:
-      histNum.SetName("data17")
-    elif 'data1516' in args.data[0]:
-      histNum.SetName("data15+16")
-    elif 'data16' in args.data[0]:
-      histNum.SetName("data16")
-    elif 'data15' in args.data[0]:
-      histNum.SetName("data15")
-  else:
-    print("Cannot find hist "+key.GetName()+" in file "+args.data[0])
-    continue
+plotText = 'Internal'
+sqrtText = '#sqrt{s} = 13 TeV, %1.1f fb^{-1}' % (Lumi/1000.)
+calibText = '#bf{g #rightarrow bb calibration}'
 
-  histDen = None
-  if dataOnly: # data/data ratio
-    histDen = fileData2.Get(key.GetName())
-    if histDen:
-      if 'data17' in args.data[1]:
-        histDen.SetName("data17")
-      elif 'data1516' in args.data[1]:
-        histDen.SetName("data15+16")
-      elif 'data16' in args.data[1]:
-        histDen.SetName("data16")
-      elif 'data15' in args.data[1]:
-        histDen.SetName("data15")
-    else:
-      print("Cannot find hist "+key.GetName()+" in file "+args.data[1])
-      continue
+#-----------------------------------------------
+def EnsureNoZeros(hist):
+  minval = 999.
+  for i in range(1,hist.GetNbinsX()+1):
+    binval = hist.GetBinContent(i)
+    if binval == 0:
+      hist.SetBinContent(i,1e-6)
+    elif binval < minval:
+      minval = binval
+  hist.SetMinimum(minval)
 
-  else: # data/mc ratio
-    histTest = histHelper.AddMCHists((key.GetName()).replace('Data','Incl'),ListOfMCPaths)
-    if histTest:
-      splitByFlav = False
+#-----------------------------------------------
+def MakeRatioPlots(var,doChi2=False,setLogy=False):
 
-    if splitByFlav:
-      for flavour in ListOfFlavourPairs:
-        ListOfPaths = ListOfMCPaths
-        if flavour in ListOfInclusiveFlavourPairs:
-          ListOfPaths = ListOfInclusiveMCPaths
-
-        histname = (key.GetName()).replace('Data',flavour.Data())
-        histTemp = histHelper.AddMCHists(histname,ListOfPaths)
-        if histTemp:
-          histTemp.Scale(Lumi)
-          if not histDen:
-            histDen = histTemp
-          else:
-            histDen.Add(histTemp)
-        else:
-          print("Could not find "+histname+" in all input files!")
-          continue
-      if histDen:
-        histDen.SetLineWidth(3);
-        histDen.SetName("Pythia8 MC")
-      else:
-        print("Cannot find hist "+histname+" in MC files")
-        continue
-    else: #plots inclusive in flavour
-      #histDen = histHelper.AddMCHists(key.GetName(),ListOfMCPaths)
-      histDen = histHelper.AddMCHists(key.GetName(),ListOfInclusiveMCPaths)
-      if histDen:
-        histDen.Scale(Lumi)
-        histDen.SetLineWidth(3);
-        histDen.SetName("Pythia8 Incl MC")
-      else:
-        print("Cannot find hist "+key.GetName()+" in inclusive MC files")
-        continue
-
-  # got numerator and denominator, now draw them
+  name = var
   tagText=''
-  if '_2TAG' in key.GetName():
+  if '_2TAG' in var:
     tagText='double-b-tagged'
-  chi2Text=''
-  if args.chi2:
-    if dataOnly:
-      chi2 = histNum.Chi2Test(histDen,"UU CHI2/NDF");
+
+  colors = [1,601,856,435,407,800,417]
+  FlavList = MyConfig.GetFlavourPairs()
+  # Define and format objects for plotting
+  canv = TCanvas('c','',800,800)
+  pad1 = TPad('top','',0.,0.35,1.,1.)
+  pad1.SetRightMargin(0.05)
+  pad1.SetLeftMargin( 0.15)
+  pad1.SetTopMargin(  0.06)
+  pad1.SetBottomMargin(0.005)
+  pad1.SetFillColor(0)
+  if setLogy:
+    pad1.SetLogy()
+  pad1.Draw()
+  pad2 = TPad('bot','',0.,0.,1.,0.35)
+  pad2.SetRightMargin(0.05)
+  pad2.SetLeftMargin( 0.15)
+  pad2.SetTopMargin(  0.05)
+  pad2.SetBottomMargin(0.3)
+  pad2.SetFillColor(0)
+  pad2.Draw()
+
+  for region in regions:
+    h_mcSum = None
+    h_fitErr = None
+    h_sysErr = None
+    mcStack = THStack()
+
+    leg = TLegend(0.84,0.58,0.94,0.88)
+    leg.SetBorderSize(0)
+
+    h_data = config.getKey(infile,MyConfig.GetDataHistName(region,var).Data())
+    EnsureNoZeros(h_data)
+    h_data.SetLineColor(1)
+    h_data.SetMarkerStyle(20)
+    leg.AddEntry(h_data,'Data','epl')
+
+    for j,flav in enumerate(FlavList):
+      h_mc = config.getKey(infile,MyConfig.GetMCHistName('Nom',region,flav,var).Data())
+      EnsureNoZeros(h_mc)
+
+      #h_mc.SetName(flav.Data()) # Name goes on plot legend
+      h_mc.SetFillColor(colors[j+1])
+      h_mc.SetLineColor(1)
+      h_mc.SetMarkerSize(0)
+      leg.AddEntry(h_mc,flav.Data(),'f')
+      mcStack.Add(h_mc)
+      if not h_mcSum:
+        h_mcSum = h_mc.Clone('total_mc')
+      else:
+        h_mcSum.Add(h_mc)
+
+    chi2Text=''
+    if doChi2:
+      chi2 = h_data.Chi2Test(h_mcSum,"UW CHI2/NDF");
+      #print(str(chi2))
+      chi2Text='#chi^{{2}}/NDF = {:.2f}'.format(chi2)
+
+    pad1.cd()
+    h_data.Draw('EP')
+    h_data.GetYaxis().SetLabelSize( 0.04 )
+    h_data.GetYaxis().SetTitleSize( 0.04 )
+    h_data.GetYaxis().SetTitleOffset(1.)
+    if setLogy:
+      h_data.GetYaxis().SetRangeUser(0.1*h_data.GetMinimum(),2*h_data.GetMaximum())
     else:
-      chi2 = histNum.Chi2Test(histDen,"UW CHI2/NDF");
-      #chi2 = histNum.AndersonDarlingTest(histDen);
-    #print(str(chi2))
-    chi2Text='#scale[0.6]{{#chi^{{2}}/NDF = {:.2f}}}'.format(chi2)
-    #print(chi2Text)
-  if args.norm1 or dataOnly:
-    histNum.Scale(1/histNum.Integral())
-    histDen.Scale(1/histDen.Integral())
-  AddHistogram(canv,histNum,'e')
-  if dataOnly:
-    AddHistogram(canv,histDen,'e')
-  else:
-    AddHistogram(canv,histDen,'histe')
-  AddRatio(canv,histNum,histDen)
-  lumi=Lumi/1000
-  yTitle=histNum.GetYaxis().GetTitle()
-  if args.norm1 or dataOnly:
-    lumi=''
-    yTitle='Arbitrary Units'
-  SetAxisLabels(canv,histNum.GetXaxis().GetTitle(),yTitle)
-  FullFormatCanvasDefault(canv,lumi=lumi,additionaltext1=tagText,additionaltext2=chi2Text)
-  SetColors(canv,colors)
-  SetYaxisRangesRatio(canv,0.5,1.5)
-  if args.pdf:
-    canv.Print(args.output+'.pdf')
-  else:
-    canv.Print(args.output+os.sep+(key.GetName()).replace('_Data_Nom','')+'.eps')
-    canv.Print(args.output+os.sep+(key.GetName()).replace('_Data_Nom','')+'.png')
-  # finally, clear the canvas for the next histograms
-  canv.Clear('D')
+      h_data.GetYaxis().SetRangeUser(0.1*h_data.GetMinimum(),1.2*h_data.GetMaximum())
+    mcStack.Draw('hist same')
+    h_data.Draw('EP same') # redraw data so it sits in front
+    leg.Draw()
+    text = TLatex()
+    text.SetNDC()
+    text.DrawLatex(0.6, 0.84, '#font[72]{ATLAS} #font[42]{%s}' % plotText)
+    text.DrawLatex(0.6, 0.80, '#font[42]{#scale[0.8]{%s}}' % sqrtText)
+    text.DrawLatex(0.6, 0.75, '#font[42]{#scale[0.8]{%s}}' % calibText)
+    if tagText:
+      text.DrawLatex(0.6, 0.70, '#font[42]{#scale[0.8]{%s}}' % tagText)
 
-if args.pdf:
-  canv.Print(outfilename+'.pdf]')
+    pad2.cd()
+    ratio = h_data.Clone('ratio')
+    ratio.Divide(h_mcSum)
+    ratio.SetLineColor(1)
+    ratio.Draw('EP')
+    ratio.GetYaxis().SetRangeUser(0.4,1.6)
+    ratio.GetYaxis().SetTitle('Data/MC')
+    line = TLine(ratio.GetBinLowEdge(1),1.,ratio.GetBinLowEdge(ratio.GetNbinsX()+1),1.)
+    line.SetLineStyle(2)
+    #line.SetLineWidth(1.5)
+    line.Draw("same")
 
-canv.Close()
-fileData1.Close()
-if dataOnly:
-  fileData2.Close()
+    ratio.GetXaxis().SetLabelSize( 0.08 )
+    ratio.GetXaxis().SetTitleSize( 0.08 )
+    ratio.GetYaxis().SetLabelSize( 0.08 )
+    ratio.GetYaxis().SetTitleSize( 0.08 )
+    ratio.GetYaxis().SetTitleOffset(0.5)
+    if doChi2:
+      text.DrawLatex(0.18, 0.86, '#font[42]{#scale[1.6]{#bf{%s}}}' % chi2Text)
+
+    canv.SaveAs(outdir+region.Data()+'_'+name+'.pdf')
+    # finally, clear the canvas for the next histograms
+    canv.Clear('D')
+
+#-----------------------------------------------
+# Main function
+#-----------------------------------------------
+# Get input histograms
+infile = TFile(args.input)
+
+for var in args.plots:
+  # make pt, mass and Sd0 plots log scale
+  logy=False
+  if any(x in var for x in ['Sd0','jpt','jm']):
+    logy=True
+  MakeRatioPlots(var, doChi2=True, setLogy=logy)
