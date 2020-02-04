@@ -1,7 +1,7 @@
 import string
 import os
 import re
-from ROOT import TFile,TTree
+from ROOT import TFile,TTree,SetOwnership
 import json
 
 
@@ -17,8 +17,8 @@ def getKey(infile,key):
 #-----------------------------------------------
 def GetPathsFromJSON(infile):
   dataPath = ''
-  inclMCPaths = []
-  muFiltMCPaths = []
+  inclMCPaths = {}
+  muFiltMCPaths = {}
   with open(infile, 'r') as f:
     tbl = json.load(f)
     print "ConfigFunctions >> json file imported"
@@ -27,9 +27,9 @@ def GetPathsFromJSON(infile):
         dataPath = tbl["BasePath"]+tbl["Data"]
       for syspath in tbl["Sys"]:
         if "MuFilteredMC" in tbl:
-          muFiltMCPaths = muFiltMCPaths+[tbl["BasePath"]+tbl["MuBase"]+syspath+path for path in tbl["MuFilteredMC"]]
+          muFiltMCPaths[syspath] = [tbl["BasePath"]+tbl["MuBase"]+syspath+path for path in tbl["MuFilteredMC"]]
         if "InclusiveMC" in tbl:
-          inclMCPaths = inclMCPaths+[tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
+          inclMCPaths[syspath] = [tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
     if "xsecFile" in tbl:
       xsecFile = tbl["xsecFile"]
       #for syspath in tbl["Sys"]:
@@ -130,6 +130,13 @@ class HistHelper:
       openFile.Close()
 
   #-----------------------------------
+  def ClearFileMap(self):
+    print "closing files"
+    for openFile in self.MapOfFiles.itervalues():
+      openFile.Close()
+    self.MapOfFiles.clear()
+
+  #-----------------------------------
   def AddMCHists(self,histname, ListOfMCPaths):
     hist=None
     for path in ListOfMCPaths:
@@ -137,21 +144,24 @@ class HistHelper:
       if not file_curr:
         print("Opening file",path)
         file_curr = TFile(path,"READ")
+        # Set ownership to ROOT to make sure file is
+        # garbage-collected by python
+        SetOwnership(file_curr, False)
         self.MapOfFiles[path] = file_curr
       if file_curr.IsZombie():
         print("Cannot open MC file "+path)
         return None
 
       channel = GetChannelNumber(path)
-      bookkeep_hist = file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 3
+      bookkeep_hist = file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 1
       if self.MapOfChannelWeights[channel] == 0:
         print "missing channel: ",channel
         return None
-      if not bookkeep_hist.GetBinContent(3):
+      if not bookkeep_hist.GetBinContent(1):
         weight = 0;
         print "Warning: nevt in bookKeeping for tuple = 0, event weight set to 0 --- file: ",path
       else:
-        weight = self.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(3)
+        weight = self.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(1)
 
 
       if not hist:
