@@ -100,19 +100,19 @@ def LoadGlobalConfig():
 def GetLumi(year):
   # luminosity values from https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/GoodRunListsForAnalysisRun2 and may change slightly if data is reprocessed
   # values used should match the GRL and lumicalc file used to generate the ntuples
-  if year == "2015" :
-    return 3219.56 # in /pb
-  elif year == "2016" :
-    return 32988.1 # in /pb
-  elif year == "2015+2016" :
-    return 3219.56 + 32988.1 # in /pb
-  elif year == "2017" :
-    return 44307.4 # in /pb
-  elif year == "2018" :
-    return 58450.1 # in /pb
-  else:
+  lumi = 0.
+  if "15" in year :
+    lumi += 3219.56 # in /pb
+  if "16" in year :
+    lumi += 32988.1 # in /pb
+  if "17" in year :
+    lumi += 44307.4 # in /pb
+  if "18" in year :
+    lumi += 58450.1 # in /pb
+  if lumi == 0.:
     print('Year {} not found'.format(year))
-    return 0.
+
+  return lumi
 
 #===============================================
 class HistHelper:

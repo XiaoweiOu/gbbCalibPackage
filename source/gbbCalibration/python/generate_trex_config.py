@@ -5,8 +5,8 @@ parser = argparse.ArgumentParser(description='Write config files used to run TRE
 parser.add_argument('output', help="Name of output directory")
 parser.add_argument('--bins', type=str, default="trkjet",
     help="Use trkjet bins, fatjet bins or no bins (incl) [default: trkjet]")
-parser.add_argument('--year', type=str, default="2015+2016",
-    help="Year determines luminosity to normalize to [default: 2015+2016]")
+parser.add_argument('--year', type=str, default="15+16",
+    help="Year determines luminosity to normalize to [default: 15+16]")
 parser.add_argument('--asimov', action='store_true',
     help="Do Asimov fit rather than fitting to data")
 parser.add_argument('--noMCstat', action='store_true',
@@ -31,7 +31,8 @@ doSystematics = not args.nosys
 fitSF = args.fitSF
 bins = args.bins
 useMCstats = not args.noMCstat
-MCstatThreshold = 0
+MCstatThreshold = 0.02
+year = args.year
 
 MyConfig = config.LoadGlobalConfig()
 if args.cfg:

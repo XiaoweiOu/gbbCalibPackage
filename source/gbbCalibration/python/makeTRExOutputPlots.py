@@ -8,12 +8,14 @@ parser = argparse.ArgumentParser(description='Make fit result histograms.')
 parser.add_argument('input', help="Folder containing TRExFitter results")
 parser.add_argument('--bins', type=str, default="trkjet",
     help="Use trkjet bins, fatjet bins or no bins (incl) [default: trkjet]")
-parser.add_argument('--year', type=str, default="2015+2016",
-    help="Year determines luminosity to normalize to [default: 2015+2016]")
+parser.add_argument('--year', type=str, default="15+16",
+    help="Year determines luminosity to normalize to [default: 15+16]")
 parser.add_argument('--debug', action='store_true',
     help="Add extra printouts")
 parser.add_argument('--plots', nargs='+',
     help="List of plots to make. Options include 'SF','NF','Tmpl','Kine',...")
+parser.add_argument('--asimov', action='store_true',
+    help="Indicate if fit used MC pseudodata")
 args = parser.parse_args()
 
 #import ROOT
@@ -80,6 +82,8 @@ def ReadFitResults():
     # Read in fit from TRExFitter output
     # TODO: add option for Asimov fit
     path = "{0}/TRExFit/Fit_{1}_Data/Fits/Fit_{1}_Data.txt".format(args.input,region.Data())
+    if args.asimov:
+      path = "{0}/TRExFit/Fit_{1}_Asimov/Fits/Fit_{1}_Asimov.txt".format(args.input,region.Data())
 
     nuisPars = {}
     nll = 0

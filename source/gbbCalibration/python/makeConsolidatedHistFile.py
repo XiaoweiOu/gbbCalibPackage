@@ -66,8 +66,8 @@ parser.add_argument('--nosys', help="Store only nominal histograms",
                     action="store_true")
 parser.add_argument('--mcflag', default="comb", choices=["incl","mufilt","comb"],
                     help="Tell script how to make MC sample. Options are inclusive-only (incl), mu-filtered only (mufilt) or LL-inclusive (comb) [default: comb]")
-parser.add_argument('--year', type=str, default="2015+2016",
-    help="Year determines luminosity to normalize to [default: 2015+2016]")
+parser.add_argument('--year', type=str, default="15+16",
+    help="Year determines luminosity to normalize to [default: 15+16]")
 args = parser.parse_args()
 
 import ROOT
@@ -169,6 +169,22 @@ for flavour in ListOfFlavourPairs :
         for sys in ListOfWeightVariations :
           ListOfNomOnlyHists.append(MyConfig.GetMCHistName("Nom",ptBin,flavour,var+"_"+sys.Data()).Data())
 
+def WriteMCHist(histname, syspath):
+  ListOfPaths = ListOfMCPaths[syspath]
+  for inclFlav in ListOfInclusiveFlavourPairs:
+    if inclFlav.Data() in histname:
+      ListOfPaths = ListOfInclusiveMCPaths[syspath]
+  histMC = histHelper.AddMCHists(histname,ListOfPaths)
+  outfile.cd()
+  if histMC:
+    histMC.Scale(Lumi)
+    if histname is 'CutFlow_Nom':
+      histMC.SetName('CutFlow_MC')
+    histMC.Write()
+    #print("Wrote "+histname)
+  else:
+    print("Could not find "+histname+" in all input files!")
+
 #--------------------- output -----------------------
 
 # open output file
@@ -181,44 +197,15 @@ for sys in ListOfSystematics:
   if "Nom" in sys.Data():
     syspath = "Nominal/"
 
+    for histname in ListOfNomOnlyHists :
+      WriteMCHist(histname, syspath)
+
   for histname in ListOfHists :
     if not "Nom" in sys.Data():
       #FIXME need solution that doesn't rely on lack of extra 'Nom's in histname
       histname = histname.replace("Nom",sys.Data())
 
-    ListOfPaths = ListOfMCPaths[syspath]
-    for inclFlav in ListOfInclusiveFlavourPairs:
-      if inclFlav.Data() in histname:
-        ListOfPaths = ListOfInclusiveMCPaths[syspath]
-    histMC = histHelper.AddMCHists(histname,ListOfPaths)
-    outfile.cd()
-    if histMC:
-      histMC.Scale(Lumi)
-      if histname is 'CutFlow_Nom':
-        histMC.SetName('CutFlow_MC')
-      histMC.Write()
-      #print("Wrote "+histname)
-    else:
-      print("Could not find "+histname+" in all input files!")
-      #exit()
-      #if '2TAG' in histname:
-      #  help_name=histname.rsplit('_',1)[0]
-      #  if 'BTAGUP' in histname or 'BTAGDOWN' in histname:
-      #    help_name=histname.rsplit('_',2)[0]
-
-      #  print("Writing "+help_name+" with 0 entries instead")
-      #  path = ListOfPaths[0]
-      #  file_curr = ROOT.TFile(path,"READ")
-      #  if not file_curr:
-      #    print("Cannot open file "+path)
-      #    exit()
-      #  hist_help = file_curr.Get(help_name)
-      #  if hist_help:
-      #    hist_default=ROOT.TH1D(histname,"",hist_help.GetNbinsX(),hist_help.GetXaxis().GetXmin(),hist_help.GetXaxis().GetXmax())
-      #    hist_default.Write()
-      #  else:
-      #    print("Cannot find hist "+help_name+" in file "+path)
-      #  file_curr.Close()
+    WriteMCHist(histname, syspath)
 
 # loop over and write data histograms
 file_curr = ROOT.TFile(pathData,"READ")
