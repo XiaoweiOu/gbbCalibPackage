@@ -43,18 +43,20 @@ if not os.path.isdir(outdir):
 MyConfig = config.LoadGlobalConfig()
 
 # Expand predefined sets in list of variables, and remove duplicates
-plotvars = {}
+plotlist = []
 for var in args.plots:
   if var == "templates":
     for tmpl in MyConfig.GetTemplateVariables():
-      plotvars.add(tmpl.Data())
+      plotlist.append(tmpl.Data())
   elif var == "kinematics":
     for kine in ['fjpt','fjm','mjpt','nmjpt']:
-      plotvars.add(kine)
+      plotlist.append(kine)
   else:
-    plotvars.add(var)
+    plotlist.append(var)
+# Make sure there are no duplicates
+plotvars = set(plotlist)
 
-# Get list of pt regions
+# Get list ofpython pt regions
 if args.bins == 'trkjet':
   regions = MyConfig.GetDiTrkJetRegions()
 elif args.bins == 'fatjet':
