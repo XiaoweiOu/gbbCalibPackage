@@ -58,11 +58,11 @@ run_calculateSF <root_input> config_Calib_SF.cfg <output_folder>
 
 ### Producing scale factors with TRExFitter
 The consolidated histogram file output by `gbbCalibration/python/makeCrossCheckInputsInclusiveLL_AllSys.py` can be used to calculate SFs with TRExFitter. In this case, however, there are a few extra steps to process the input and output correctly. `run_calculateSF` automatically rebins histograms to reduce statistical fluctuations in the templates. A version of this rebinning is provided as a standalone script called `rebin.py`. The output of this rebinning script is then given to `run_trex.sh`, which will create a TRExFitter config file for each bin and then fit them in sequence. TRExFitter will automatically produce some plots, such as correlation matrices, ranking and pull plots.
-Another script, `makeTRExOutputPlots.py`, is provided to read the fit results and make plots that aren't made automatically.
+Another script, `makePostfitPlots.py`, is provided to read the fit results and make plots that aren't made automatically.
 ```
 python gbbCalibration/python/rebin.py <trex_input> <hist_input> [<options>]
 run_trex.sh -o <output_folder> -i <tex_input> [<options>]
-python gbbCalibration/python/plotting/makeTRExOutputPlots.py <input_folder> [<options>]
+python gbbCalibration/python/plotting/makePostfitPlots.py <input_folder> [<options>]
 ```
 
 A config file can be given to `run_trex.sh` to make it easier to control the options provided. One such config file is provided here: `data/configs/trex_Calib_SF.cfg`. Other notable options include the `--nosys` option, which tells these scripts to produce and plot nominal-only fits, and the `--bins` option which can be set to `fatjet` to run the fit in bins of large-R jet pT.
@@ -130,9 +130,9 @@ optional arguments:
 ```
 Note that options provided in the config file (if any) will override options provided directly to the script.
 
-#### makeTRExOutputPlots.py options
+#### makePostfitPlots.py options
 ```
-usage: makeTRExOutputPlots.py [-h] [--bins BINS] [--year YEAR] [--debug]
+usage: makePostfitPlots.py [-h] [--bins BINS] [--year YEAR] [--debug]
                               [--plots PLOTS [PLOTS ...]]
                               input
 
