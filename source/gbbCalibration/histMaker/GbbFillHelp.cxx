@@ -700,18 +700,23 @@ void GbbTupleAna::FillTriggerTurnOnHistograms(int i_trigjet, float event_weight)
   if (eve_HLT_j380) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j380", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j400) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j400", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j420) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j450) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j450", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j300_a10_lcw_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j300_a10_lcw_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j360_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j360_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260_a10_lcw_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10_lcw_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260_a10_lcw_subjes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10_lcw_subjes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260_a10t_lcw_jes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10t_lcw_jes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j400_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j400_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j420_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j260_a10_lcw_subjes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10_lcw_subjes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j420_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10t_lcw_jes_35smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10t_lcw_jes_40smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j440_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j440_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j460_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j460_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j260_a10t_lcw_jes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10t_lcw_jes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j440_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j440_a10t_lcw_jes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j460_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j460_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j460_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j460_a10t_lcw_jes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_2j330_a10t_lcw_jes_35smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_2j330_a10t_lcw_jes_40smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_mu20_iloose_L1MU15) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu20_iloose_L1MU15", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_mu24_ivarloose) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu24_ivarloose", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_mu24_ivarloose_L1MU15) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu24_ivarloose_L1MU15", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_mu26_ivarmedium) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu26_ivarmedium", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   m_HistSvc->FastFillTH1D("trigjet_pt_noHLTreq",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
 
 }

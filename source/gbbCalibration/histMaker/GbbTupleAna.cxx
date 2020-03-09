@@ -793,8 +793,8 @@ bool GbbTupleAna::Processgbb(int i_evt){
   // l/c/b SFs are always applied for non-2BTAG categories
   float btag_SF_nom=1., btag_SF_up=1., btag_SF_down=1.;
   //if (m_isMC && (m_doApplyBTaggingSF || !dijet_flav.Contains("BB")))
-  if (m_isMC && m_doApplyBTaggingSF)
-    getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
+  //if (m_isMC && m_doApplyBTaggingSF)
+  //  getBtagSFWeights(btag_SF_nom,btag_SF_up,btag_SF_down);
 
   //=========================================
   //8.) Fill histograms
@@ -1276,12 +1276,12 @@ float GbbTupleAna::getd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared,
 
   float d0=this->trkjet_assocTrk_d0->at(i_jet).at(i_trk);
   //std::cout<<"d0 is: "<<d0<<std::endl;
-  if (doSmeared && this->eve_isMC) {
-    if(sys.EqualTo("nominal")) d0=this->trkjet_assocTrk_d0_smear->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("up")) d0=this->trkjet_assocTrk_d0_smear_up->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("down")) d0=this->trkjet_assocTrk_d0_smear_down->at(i_jet).at(i_trk);
-    else std::cout<<"ERROR: You have to specify if you want nominal or sys smeared Sd0!"<<std::endl;
-  }
+  //if (doSmeared && this->eve_isMC) {
+  //  if(sys.EqualTo("nominal")) d0=this->trkjet_assocTrk_d0_smear->at(i_jet).at(i_trk);
+  //  else if(sys.EqualTo("up")) d0=this->trkjet_assocTrk_d0_smear_up->at(i_jet).at(i_trk);
+  //  else if(sys.EqualTo("down")) d0=this->trkjet_assocTrk_d0_smear_down->at(i_jet).at(i_trk);
+  //  else std::cout<<"ERROR: You have to specify if you want nominal or sys smeared Sd0!"<<std::endl;
+  //}
   //std::cout<<"smeared d0 is: "<<d0<<std::endl;
   return d0;
 }
@@ -1290,12 +1290,12 @@ float GbbTupleAna::getz0(unsigned int i_trk, unsigned int i_jet, bool doSmeared,
 
   float z0=this->trkjet_assocTrk_z0->at(i_jet).at(i_trk);
   //std::cout<<"d0 is: "<<d0<<std::endl;
-  if (doSmeared && this->eve_isMC) {
-    if(sys.EqualTo("nominal")) z0=this->trkjet_assocTrk_z0_smear->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("up")) z0=this->trkjet_assocTrk_z0_smear_up->at(i_jet).at(i_trk);
-    else if(sys.EqualTo("down")) z0=this->trkjet_assocTrk_z0_smear_down->at(i_jet).at(i_trk);
-    else std::cout<<"ERROR: You have to specify if you want nominal or sys smeared z0!"<<std::endl;
-  }
+  //if (doSmeared && this->eve_isMC) {
+  //  if(sys.EqualTo("nominal")) z0=this->trkjet_assocTrk_z0_smear->at(i_jet).at(i_trk);
+  //  else if(sys.EqualTo("up")) z0=this->trkjet_assocTrk_z0_smear_up->at(i_jet).at(i_trk);
+  //  else if(sys.EqualTo("down")) z0=this->trkjet_assocTrk_z0_smear_down->at(i_jet).at(i_trk);
+  //  else std::cout<<"ERROR: You have to specify if you want nominal or sys smeared z0!"<<std::endl;
+  //}
   //std::cout<<"smeared z0 is: "<<z0<<std::endl;
   return z0;
 }
@@ -1327,6 +1327,7 @@ float GbbTupleAna::getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared
   return val*TMath::Abs(sd0);
 }
 
+#if 0
 void GbbTupleAna::getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down){
 
          btag_SF_nom=this->eve_BtagSFWeightNom;
@@ -1393,6 +1394,7 @@ void GbbTupleAna::getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_do
 
 
 }
+#endif
 
 void GbbTupleAna::getSystematicsFlags(GbbCandidate *gbbcand, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMuon){
 

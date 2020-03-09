@@ -212,8 +212,8 @@ private:
   float getz0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
   float getSd0(unsigned int i_trk, unsigned int i_jet, bool doSmeared=false, TString sys="nominal");
 
-  void getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down);
-  void getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_down);
+  //void getBtagSFWeights(float &btag_SF_nom, float &btag_SF_tot_up, float &btag_SF_tot_down);
+  //void getBtagSysWeights(float &btag_SF_tot_up, float &btag_SF_tot_down);
 
   void getSystematicsFlags(GbbCandidate *, bool &hasConversion, bool &hasHadMatInt, bool &hasLightLongLived, bool &hasNoTruthMu);
 

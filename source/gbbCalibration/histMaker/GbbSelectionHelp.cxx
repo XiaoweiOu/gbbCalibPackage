@@ -201,7 +201,7 @@ bool GbbTupleAna::passMuonSelection(unsigned int i_muon){
 
 bool GbbTupleAna::passR21AssocTrkSelection(unsigned int i_trk, unsigned int i_jet){
 
-  if (!this->trkjet_assocTrk_isLoose->at(i_jet).at(i_trk)) return false;
+  //if (!this->trkjet_assocTrk_isLoose->at(i_jet).at(i_trk)) return false;
   if (this->trkjet_assocTrk_pt->at(i_jet).at(i_trk)/1e3 < 0.5) return false;
   if (fabs(this->trkjet_assocTrk_d0->at(i_jet).at(i_trk)) > 5) return false;
   if (fabs( (this->trkjet_assocTrk_z0->at(i_jet).at(i_trk)  - this->eve_PVz

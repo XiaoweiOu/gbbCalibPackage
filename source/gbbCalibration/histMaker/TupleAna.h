@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Dec 20 14:21:20 2017 by ROOT version 6.02/12
+// Mon Mar  9 06:43:08 2020 by ROOT version 6.16/00
 // from TTree FlavourTagging_Nominal/FlavourTagging_Nominal
-// found on file: ../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root
+// found on file: /xrootdfs/atlas/dq2/rucio/user/aemerman/d6/d6/user.aemerman.20712439._000023.tuple.root
 //////////////////////////////////////////////////////////
 
 #ifndef TupleAna_h
@@ -14,6 +14,8 @@
 #include <iostream>
 
 // Header file for the classes stored in the TTree if any.
+#include "vector"
+#include "vector"
 #include "vector"
 #include "vector"
 
@@ -36,25 +38,16 @@ public :
    Float_t         eve_mc_w;
    Float_t         eve_pu_w;
    vector<float>   *eve_pu_w_sys;
-   Float_t         eve_pu_density;
    Bool_t          eve_isMC;
    Int_t           eve_hasPV;
    Int_t           eve_isCleanEvent;
    Int_t           eve_passGRL;
    Float_t         eve_PVz;
    Float_t         eve_nVtx2Trks;
+   Float_t         eve_pu_density;
    Float_t         eve_beam_sigma_x;
    Float_t         eve_beam_sigma_y;
    Float_t         eve_beam_sigma_xy;
-   Int_t           eve_HLT_j15;
-   Int_t           eve_HLT_j25;
-   Int_t           eve_HLT_j35;
-   Int_t           eve_HLT_j45;
-   Int_t           eve_HLT_j55;
-   Int_t           eve_HLT_j60;
-   Int_t           eve_HLT_j85;
-   Int_t           eve_HLT_j100;
-   Int_t           eve_HLT_j110;
    Int_t           eve_HLT_j150;
    Int_t           eve_HLT_j175;
    Int_t           eve_HLT_j200;
@@ -65,27 +58,23 @@ public :
    Int_t           eve_HLT_j380;
    Int_t           eve_HLT_j400;
    Int_t           eve_HLT_j420;
-   Int_t           eve_HLT_j450;
-   Int_t           eve_HLT_j300_a10_lcw_L1J75;
-   Int_t           eve_HLT_j360_a10_lcw_L1J100;
+   Int_t           eve_HLT_j260_a10_lcw_L1J75;
+   Int_t           eve_HLT_j260_a10_lcw_subjes_L1J75;
+   Int_t           eve_HLT_j260_a10t_lcw_jes_L1J75;
    Int_t           eve_HLT_j400_a10_lcw_L1J100;
    Int_t           eve_HLT_j420_a10_lcw_L1J100;
-   Int_t           eve_HLT_j260_a10_lcw_subjes_L1J75;
-   Int_t           eve_HLT_j420_a10_lcw_subjes_L1J100;
+   Int_t           eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100;
+   Int_t           eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100;
    Int_t           eve_HLT_j440_a10_lcw_subjes_L1J100;
-   Int_t           eve_HLT_j460_a10_lcw_subjes_L1J100;
-   Int_t           eve_HLT_j260_a10t_lcw_jes_L1J75;
    Int_t           eve_HLT_j440_a10t_lcw_jes_L1J100;
+   Int_t           eve_HLT_j460_a10_lcw_subjes_L1J100;
    Int_t           eve_HLT_j460_a10t_lcw_jes_L1J100;
-   Float_t         eve_HLT_j15_ps;
-   Float_t         eve_HLT_j25_ps;
-   Float_t         eve_HLT_j35_ps;
-   Float_t         eve_HLT_j45_ps;
-   Float_t         eve_HLT_j55_ps;
-   Float_t         eve_HLT_j60_ps;
-   Float_t         eve_HLT_j85_ps;
-   Float_t         eve_HLT_j100_ps;
-   Float_t         eve_HLT_j110_ps;
+   Int_t           eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100;
+   Int_t           eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100;
+   Int_t           eve_HLT_mu20_iloose_L1MU15;
+   Int_t           eve_HLT_mu24_ivarloose;
+   Int_t           eve_HLT_mu24_ivarloose_L1MU15;
+   Int_t           eve_HLT_mu26_ivarmedium;
    Float_t         eve_HLT_j150_ps;
    Float_t         eve_HLT_j175_ps;
    Float_t         eve_HLT_j200_ps;
@@ -95,19 +84,9 @@ public :
    Float_t         eve_HLT_j380_ps;
    Float_t         eve_HLT_j400_ps;
    Float_t         eve_HLT_j420_ps;
-   Float_t         eve_HLT_j300_a10_lcw_L1J75_ps;
-   Float_t         eve_HLT_j360_a10_lcw_L1J100_ps;
-   Float_t         eve_HLT_j400_a10_lcw_L1J100_ps;
-   Float_t         eve_HLT_j420_a10_lcw_L1J100_ps;
+   Float_t         eve_HLT_j260_a10_lcw_L1J75_ps;
    Float_t         eve_HLT_j260_a10_lcw_subjes_L1J75_ps;
-   Float_t         eve_HLT_j420_a10_lcw_subjes_L1J100_ps;
-   Float_t         eve_HLT_j440_a10_lcw_subjes_L1J100_ps;
-   Float_t         eve_HLT_j460_a10_lcw_subjes_L1J100_ps;
    Float_t         eve_HLT_j260_a10t_lcw_jes_L1J75_ps;
-   Float_t         eve_HLT_j440_a10t_lcw_jes_L1J100_ps;
-   Float_t         eve_HLT_j460_a10t_lcw_jes_L1J100_ps;
-   Float_t         eve_BtagSFWeightNom;
-   vector<float>   *eve_BtagSFWeightSys;
    vector<float>   *jet_pt;
    vector<float>   *jet_phi;
    vector<float>   *jet_eta;
@@ -124,15 +103,9 @@ public :
    vector<vector<float> > *trkjet_assocTrk_phi;
    vector<vector<float> > *trkjet_assocTrk_eta;
    vector<vector<float> > *trkjet_assocTrk_d0;
-   vector<vector<float> > *trkjet_assocTrk_vz;
    vector<vector<float> > *trkjet_assocTrk_z0;
-   vector<vector<float> > *trkjet_assocTrk_d0_smear;
-   vector<vector<float> > *trkjet_assocTrk_z0_smear;
-   vector<vector<float> > *trkjet_assocTrk_d0_smear_up;
-   vector<vector<float> > *trkjet_assocTrk_z0_smear_up;
-   vector<vector<float> > *trkjet_assocTrk_d0_smear_down;
-   vector<vector<float> > *trkjet_assocTrk_z0_smear_down;
    vector<vector<float> > *trkjet_assocTrk_theta;
+   vector<vector<float> > *trkjet_assocTrk_vz;
    vector<vector<float> > *trkjet_assocTrk_phi0;
    vector<vector<float> > *trkjet_assocTrk_qoverp;
    vector<vector<float> > *trkjet_assocTrk_d0err;
@@ -157,11 +130,24 @@ public :
    vector<float>   *fat_tau32;
    vector<float>   *fat_C2;
    vector<float>   *fat_D2;
+   vector<int>     *fat_isGbbJet;
    vector<float>   *fat_HbbScore;
    vector<float>   *fat_XbbScoreHiggs;
-   vector<float>   *fat_XbbScoreQCD;
    vector<float>   *fat_XbbScoreTop;
+   vector<float>   *fat_XbbScoreQCD;
+   vector<float>   *fat_SubjetBScore_Higgs;
+   vector<float>   *fat_SubjetBScore_Top;
+   vector<float>   *fat_SubjetBScore_QCD;
+   vector<int>     *fat_truth;
+   vector<int>     *fat_BHad_n;
+   vector<int>     *fat_CHad_n;
+   vector<int>     *fat_BHad_n_GA;
+   vector<int>     *fat_CHad_n_GA;
    vector<vector<int> > *fat_assocTrkjet_ind;
+   vector<vector<int> > *fat_assocTrkjetDR_ind;
+   vector<vector<float> > *fat_assocTrk_pt;
+   vector<vector<float> > *fat_assocTrk_eta;
+   vector<vector<float> > *fat_assocTrk_phi;
    vector<float>   *muo_pt;
    vector<float>   *muo_phi;
    vector<float>   *muo_eta;
@@ -174,10 +160,11 @@ public :
    vector<float>   *muo_z0sintheta;
    vector<int>     *muo_quality;
    vector<int>     *muo_acceptedTool;
+   vector<float>   *muo_TTVAEffSF;
    vector<float>   *muo_LooseIDSF;
    vector<float>   *muo_MediumIDSF;
    vector<float>   *muo_TightIDSF;
-   vector<float>   *muo_hasTruth;
+   vector<int>     *muo_hasTruth;
    vector<float>   *trkjet_pt;
    vector<float>   *trkjet_phi;
    vector<float>   *trkjet_eta;
@@ -187,6 +174,7 @@ public :
    vector<float>   *trkjet_MV2c10;
    vector<float>   *trkjet_MV2c20;
    vector<float>   *trkjet_MVb;
+   vector<float>   *trkjet_SV1_masssvx;
    vector<int>     *trkjet_truth;
    vector<int>     *trkjet_nTrks;
    vector<vector<float> > *trkjet_assocMuon_dR;
@@ -194,9 +182,6 @@ public :
    vector<int>     *trkjet_assocMuon_n;
    vector<int>     *trkjet_isMuonJet;
    vector<int>     *trkjet_isNonMuonJet;
-   vector<int>     *trkjet_assocTruthMuon_parentpdgId;
-   vector<float>   *trkjet_assocTruthMuon_ClosestUnmatched_dR;
-   vector<float>   *trkjet_assocMuon_Fake_quality;
    vector<int>     *trkjet_hasKShort;
    vector<int>     *trkjet_hasLambda;
    vector<int>     *trkjet_hasConversion;
@@ -238,25 +223,16 @@ public :
    TBranch        *b_eve_mc_w;   //!
    TBranch        *b_eve_pu_w;   //!
    TBranch        *b_eve_pu_w_sys;   //!
-   TBranch        *b_eve_pu_density;   //!
    TBranch        *b_eve_isMC;   //!
    TBranch        *b_eve_hasPV;   //!
    TBranch        *b_eve_isCleanEvent;   //!
    TBranch        *b_eve_passGRL;   //!
    TBranch        *b_eve_PVz;   //!
    TBranch        *b_eve_nVtx2Trks;   //!
+   TBranch        *b_eve_pu_density;   //!
    TBranch        *b_eve_beam_sigma_x;   //!
    TBranch        *b_eve_beam_sigma_y;   //!
    TBranch        *b_eve_beam_sigma_xy;   //!
-   TBranch        *b_eve_HLT_j15;   //!
-   TBranch        *b_eve_HLT_j25;   //!
-   TBranch        *b_eve_HLT_j35;   //!
-   TBranch        *b_eve_HLT_j45;   //!
-   TBranch        *b_eve_HLT_j55;   //!
-   TBranch        *b_eve_HLT_j60;   //!
-   TBranch        *b_eve_HLT_j85;   //!
-   TBranch        *b_eve_HLT_j100;   //!
-   TBranch        *b_eve_HLT_j110;   //!
    TBranch        *b_eve_HLT_j150;   //!
    TBranch        *b_eve_HLT_j175;   //!
    TBranch        *b_eve_HLT_j200;   //!
@@ -267,27 +243,23 @@ public :
    TBranch        *b_eve_HLT_j380;   //!
    TBranch        *b_eve_HLT_j400;   //!
    TBranch        *b_eve_HLT_j420;   //!
-   TBranch        *b_eve_HLT_j450;   //!
-   TBranch        *b_eve_HLT_j300_a10_lcw_L1J75;   //!
-   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100;   //!
+   TBranch        *b_eve_HLT_j260_a10_lcw_L1J75;   //!
+   TBranch        *b_eve_HLT_j260_a10_lcw_subjes_L1J75;   //!
+   TBranch        *b_eve_HLT_j260_a10t_lcw_jes_L1J75;   //!
    TBranch        *b_eve_HLT_j400_a10_lcw_L1J100;   //!
    TBranch        *b_eve_HLT_j420_a10_lcw_L1J100;   //!
-   TBranch        *b_eve_HLT_j260_a10_lcw_subjes_L1J75;   //!
-   TBranch        *b_eve_HLT_j420_a10_lcw_subjes_L1J100;   //!
+   TBranch        *b_eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100;   //!
+   TBranch        *b_eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100;   //!
    TBranch        *b_eve_HLT_j440_a10_lcw_subjes_L1J100;   //!
-   TBranch        *b_eve_HLT_j460_a10_lcw_subjes_L1J100;   //!
-   TBranch        *b_eve_HLT_j260_a10t_lcw_jes_L1J75;   //!
    TBranch        *b_eve_HLT_j440_a10t_lcw_jes_L1J100;   //!
+   TBranch        *b_eve_HLT_j460_a10_lcw_subjes_L1J100;   //!
    TBranch        *b_eve_HLT_j460_a10t_lcw_jes_L1J100;   //!
-   TBranch        *b_eve_HLT_j15_ps;   //!
-   TBranch        *b_eve_HLT_j25_ps;   //!
-   TBranch        *b_eve_HLT_j35_ps;   //!
-   TBranch        *b_eve_HLT_j45_ps;   //!
-   TBranch        *b_eve_HLT_j55_ps;   //!
-   TBranch        *b_eve_HLT_j60_ps;   //!
-   TBranch        *b_eve_HLT_j85_ps;   //!
-   TBranch        *b_eve_HLT_j100_ps;   //!
-   TBranch        *b_eve_HLT_j110_ps;   //!
+   TBranch        *b_eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100;   //!
+   TBranch        *b_eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100;   //!
+   TBranch        *b_eve_HLT_mu20_iloose_L1MU15;   //!
+   TBranch        *b_eve_HLT_mu24_ivarloose;   //!
+   TBranch        *b_eve_HLT_mu24_ivarloose_L1MU15;   //!
+   TBranch        *b_eve_HLT_mu26_ivarmedium;   //!
    TBranch        *b_eve_HLT_j150_ps;   //!
    TBranch        *b_eve_HLT_j175_ps;   //!
    TBranch        *b_eve_HLT_j200_ps;   //!
@@ -297,19 +269,9 @@ public :
    TBranch        *b_eve_HLT_j380_ps;   //!
    TBranch        *b_eve_HLT_j400_ps;   //!
    TBranch        *b_eve_HLT_j420_ps;   //!
-   TBranch        *b_eve_HLT_j300_a10_lcw_L1J75_ps;   //!
-   TBranch        *b_eve_HLT_j360_a10_lcw_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j400_a10_lcw_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j420_a10_lcw_L1J100_ps;   //!
+   TBranch        *b_eve_HLT_j260_a10_lcw_L1J75_ps;   //!
    TBranch        *b_eve_HLT_j260_a10_lcw_subjes_L1J75_ps;   //!
-   TBranch        *b_eve_HLT_j420_a10_lcw_subjes_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j440_a10_lcw_subjes_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j460_a10_lcw_subjes_L1J100_ps;   //!
    TBranch        *b_eve_HLT_j260_a10t_lcw_jes_L1J75_ps;   //!
-   TBranch        *b_eve_HLT_j440_a10t_lcw_jes_L1J100_ps;   //!
-   TBranch        *b_eve_HLT_j460_a10t_lcw_jes_L1J100_ps;   //!
-   TBranch        *b_eve_BtagSFWeightNom;   //!
-   TBranch        *b_eve_BtagSFWeightSys;   //!
    TBranch        *b_jet_pt;   //!
    TBranch        *b_jet_phi;   //!
    TBranch        *b_jet_eta;   //!
@@ -326,15 +288,9 @@ public :
    TBranch        *b_trkjet_assocTrk_phi;   //!
    TBranch        *b_trkjet_assocTrk_eta;   //!
    TBranch        *b_trkjet_assocTrk_d0;   //!
-   TBranch        *b_trkjet_assocTrk_vz;   //!
    TBranch        *b_trkjet_assocTrk_z0;   //!
-   TBranch        *b_trkjet_assocTrk_d0_smear;   //!
-   TBranch        *b_trkjet_assocTrk_z0_smear;   //!
-   TBranch        *b_trkjet_assocTrk_d0_smear_up;   //!
-   TBranch        *b_trkjet_assocTrk_z0_smear_up;   //!
-   TBranch        *b_trkjet_assocTrk_d0_smear_down;   //!
-   TBranch        *b_trkjet_assocTrk_z0_smear_down;   //!
    TBranch        *b_trkjet_assocTrk_theta;   //!
+   TBranch        *b_trkjet_assocTrk_vz;   //!
    TBranch        *b_trkjet_assocTrk_phi0;   //!
    TBranch        *b_trkjet_assocTrk_qoverp;   //!
    TBranch        *b_trkjet_assocTrk_d0err;   //!
@@ -359,11 +315,24 @@ public :
    TBranch        *b_fat_tau32;   //!
    TBranch        *b_fat_C2;   //!
    TBranch        *b_fat_D2;   //!
+   TBranch        *b_fat_isGbbJet;   //!
    TBranch        *b_fat_HbbScore;   //!
    TBranch        *b_fat_XbbScoreHiggs;   //!
-   TBranch        *b_fat_XbbScoreQCD;   //!
    TBranch        *b_fat_XbbScoreTop;   //!
+   TBranch        *b_fat_XbbScoreQCD;   //!
+   TBranch        *b_fat_SubjetBScore_Higgs;   //!
+   TBranch        *b_fat_SubjetBScore_Top;   //!
+   TBranch        *b_fat_SubjetBScore_QCD;   //!
+   TBranch        *b_fat_truth;   //!
+   TBranch        *b_fat_BHad_n;   //!
+   TBranch        *b_fat_CHad_n;   //!
+   TBranch        *b_fat_BHad_n_GA;   //!
+   TBranch        *b_fat_CHad_n_GA;   //!
    TBranch        *b_fat_assocTrkjet_ind;   //!
+   TBranch        *b_fat_assocTrkjetDR_ind;   //!
+   TBranch        *b_fat_assocTrk_pt;   //!
+   TBranch        *b_fat_assocTrk_eta;   //!
+   TBranch        *b_fat_assocTrk_phi;   //!
    TBranch        *b_muo_pt;   //!
    TBranch        *b_muo_phi;   //!
    TBranch        *b_muo_eta;   //!
@@ -376,6 +345,7 @@ public :
    TBranch        *b_muo_z0sintheta;   //!
    TBranch        *b_muo_quality;   //!
    TBranch        *b_muo_acceptedTool;   //!
+   TBranch        *b_muo_TTVAEffSF;   //!
    TBranch        *b_muo_LooseIDSF;   //!
    TBranch        *b_muo_MediumIDSF;   //!
    TBranch        *b_muo_TightIDSF;   //!
@@ -389,6 +359,7 @@ public :
    TBranch        *b_trkjet_MV2c10;   //!
    TBranch        *b_trkjet_MV2c20;   //!
    TBranch        *b_trkjet_MVb;   //!
+   TBranch        *b_trkjet_SV1_masssvx;   //!
    TBranch        *b_trkjet_truth;   //!
    TBranch        *b_trkjet_nTrks;   //!
    TBranch        *b_trkjet_assocMuon_dR;   //!
@@ -396,9 +367,6 @@ public :
    TBranch        *b_trkjet_assocMuon_n;   //!
    TBranch        *b_trkjet_isMuonJet;   //!
    TBranch        *b_trkjet_isNonMuonJet;   //!
-   TBranch        *b_trkjet_assocTruthMuon_parentpdgId;   //!
-   TBranch        *b_trkjet_assocTruthMuon_ClosestUnmatched_dR;   //!
-   TBranch        *b_trkjet_assocMuon_Fake_quality;   //!
    TBranch        *b_trkjet_hasKShort;   //!
    TBranch        *b_trkjet_hasLambda;   //!
    TBranch        *b_trkjet_hasConversion;   //!
@@ -449,14 +417,8 @@ TupleAna::TupleAna(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-     /*TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root");
-      if (!f || !f->IsOpen()) {
-         f = new TFile("../../FTAGxAOD/submitDir_testfatjettrigger/data-tuple/mc15_13TeV.361025.Pythia8EvtGen_A14NNPDF23LO_jetjet_JZ5W.merge.DAOD_FTAG1.e3668_s2576_s2132_r7725_r7676_p2949.root");
-      }
-      f->GetObject("FlavourTagging_Nominal",tree);*/
      cout<<"TupleAna constructor, no tree specified"<<endl;
-
-   }else Init(tree);
+   } else Init(tree);
 }
 
 TupleAna::~TupleAna()
@@ -496,7 +458,6 @@ void TupleAna::Init(TTree *tree, TString sysName)
 
    // Set object pointer
    eve_pu_w_sys = 0;
-   eve_BtagSFWeightSys = 0;
    jet_pt = 0;
    jet_phi = 0;
    jet_eta = 0;
@@ -513,15 +474,9 @@ void TupleAna::Init(TTree *tree, TString sysName)
    trkjet_assocTrk_phi = 0;
    trkjet_assocTrk_eta = 0;
    trkjet_assocTrk_d0 = 0;
-   trkjet_assocTrk_vz = 0;
    trkjet_assocTrk_z0 = 0;
-   trkjet_assocTrk_d0_smear = 0;
-   trkjet_assocTrk_z0_smear = 0;
-   trkjet_assocTrk_d0_smear_up = 0;
-   trkjet_assocTrk_z0_smear_up = 0;
-   trkjet_assocTrk_d0_smear_down = 0;
-   trkjet_assocTrk_z0_smear_down = 0;
    trkjet_assocTrk_theta = 0;
+   trkjet_assocTrk_vz = 0;
    trkjet_assocTrk_phi0 = 0;
    trkjet_assocTrk_qoverp = 0;
    trkjet_assocTrk_d0err = 0;
@@ -546,11 +501,24 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fat_tau32 = 0;
    fat_C2 = 0;
    fat_D2 = 0;
+   fat_isGbbJet = 0;
    fat_HbbScore = 0;
    fat_XbbScoreHiggs = 0;
-   fat_XbbScoreQCD = 0;
    fat_XbbScoreTop = 0;
+   fat_XbbScoreQCD = 0;
+   fat_SubjetBScore_Higgs = 0;
+   fat_SubjetBScore_Top = 0;
+   fat_SubjetBScore_QCD = 0;
+   fat_truth = 0;
+   fat_BHad_n = 0;
+   fat_CHad_n = 0;
+   fat_BHad_n_GA = 0;
+   fat_CHad_n_GA = 0;
    fat_assocTrkjet_ind = 0;
+   fat_assocTrkjetDR_ind = 0;
+   fat_assocTrk_pt = 0;
+   fat_assocTrk_eta = 0;
+   fat_assocTrk_phi = 0;
    muo_pt = 0;
    muo_phi = 0;
    muo_eta = 0;
@@ -563,6 +531,7 @@ void TupleAna::Init(TTree *tree, TString sysName)
    muo_z0sintheta = 0;
    muo_quality = 0;
    muo_acceptedTool = 0;
+   muo_TTVAEffSF = 0;
    muo_LooseIDSF = 0;
    muo_MediumIDSF = 0;
    muo_TightIDSF = 0;
@@ -576,6 +545,7 @@ void TupleAna::Init(TTree *tree, TString sysName)
    trkjet_MV2c10 = 0;
    trkjet_MV2c20 = 0;
    trkjet_MVb = 0;
+   trkjet_SV1_masssvx = 0;
    trkjet_truth = 0;
    trkjet_nTrks = 0;
    trkjet_assocMuon_dR = 0;
@@ -583,9 +553,6 @@ void TupleAna::Init(TTree *tree, TString sysName)
    trkjet_assocMuon_n = 0;
    trkjet_isMuonJet = 0;
    trkjet_isNonMuonJet = 0;
-   trkjet_assocTruthMuon_parentpdgId = 0;
-   trkjet_assocTruthMuon_ClosestUnmatched_dR = 0;
-   trkjet_assocMuon_Fake_quality = 0;
    trkjet_hasKShort = 0;
    trkjet_hasLambda = 0;
    trkjet_hasConversion = 0;
@@ -616,7 +583,6 @@ void TupleAna::Init(TTree *tree, TString sysName)
    trigjet_a10t_pt = 0;
    trigjet_a10t_phi = 0;
    trigjet_a10t_eta = 0;
-
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -632,25 +598,16 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("eve_mc_w", &eve_mc_w, &b_eve_mc_w);
    fChain->SetBranchAddress("eve_pu_w", &eve_pu_w, &b_eve_pu_w);
    fChain->SetBranchAddress("eve_pu_w_sys", &eve_pu_w_sys, &b_eve_pu_w_sys);
-   fChain->SetBranchAddress("eve_pu_density", &eve_pu_density, &b_eve_pu_density);
    fChain->SetBranchAddress("eve_isMC", &eve_isMC, &b_eve_isMC);
    fChain->SetBranchAddress("eve_hasPV", &eve_hasPV, &b_eve_hasPV);
    fChain->SetBranchAddress("eve_isCleanEvent", &eve_isCleanEvent, &b_eve_isCleanEvent);
    fChain->SetBranchAddress("eve_passGRL", &eve_passGRL, &b_eve_passGRL);
    fChain->SetBranchAddress("eve_PVz", &eve_PVz, &b_eve_PVz);
    fChain->SetBranchAddress("eve_nVtx2Trks", &eve_nVtx2Trks, &b_eve_nVtx2Trks);
+   fChain->SetBranchAddress("eve_pu_density", &eve_pu_density, &b_eve_pu_density);
    fChain->SetBranchAddress("eve_beam_sigma_x", &eve_beam_sigma_x, &b_eve_beam_sigma_x);
    fChain->SetBranchAddress("eve_beam_sigma_y", &eve_beam_sigma_y, &b_eve_beam_sigma_y);
    fChain->SetBranchAddress("eve_beam_sigma_xy", &eve_beam_sigma_xy, &b_eve_beam_sigma_xy);
-   fChain->SetBranchAddress("eve_HLT_j15", &eve_HLT_j15, &b_eve_HLT_j15);
-   fChain->SetBranchAddress("eve_HLT_j25", &eve_HLT_j25, &b_eve_HLT_j25);
-   fChain->SetBranchAddress("eve_HLT_j35", &eve_HLT_j35, &b_eve_HLT_j35);
-   fChain->SetBranchAddress("eve_HLT_j45", &eve_HLT_j45, &b_eve_HLT_j45);
-   fChain->SetBranchAddress("eve_HLT_j55", &eve_HLT_j55, &b_eve_HLT_j55);
-   fChain->SetBranchAddress("eve_HLT_j60", &eve_HLT_j60, &b_eve_HLT_j60);
-   fChain->SetBranchAddress("eve_HLT_j85", &eve_HLT_j85, &b_eve_HLT_j85);
-   fChain->SetBranchAddress("eve_HLT_j100", &eve_HLT_j100, &b_eve_HLT_j100);
-   fChain->SetBranchAddress("eve_HLT_j110", &eve_HLT_j110, &b_eve_HLT_j110);
    fChain->SetBranchAddress("eve_HLT_j150", &eve_HLT_j150, &b_eve_HLT_j150);
    fChain->SetBranchAddress("eve_HLT_j175", &eve_HLT_j175, &b_eve_HLT_j175);
    fChain->SetBranchAddress("eve_HLT_j200", &eve_HLT_j200, &b_eve_HLT_j200);
@@ -661,27 +618,23 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("eve_HLT_j380", &eve_HLT_j380, &b_eve_HLT_j380);
    fChain->SetBranchAddress("eve_HLT_j400", &eve_HLT_j400, &b_eve_HLT_j400);
    fChain->SetBranchAddress("eve_HLT_j420", &eve_HLT_j420, &b_eve_HLT_j420);
-   fChain->SetBranchAddress("eve_HLT_j450", &eve_HLT_j450, &b_eve_HLT_j450);
-   fChain->SetBranchAddress("eve_HLT_j300_a10_lcw_L1J75", &eve_HLT_j300_a10_lcw_L1J75, &b_eve_HLT_j300_a10_lcw_L1J75);
-   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100", &eve_HLT_j360_a10_lcw_L1J100, &b_eve_HLT_j360_a10_lcw_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j260_a10_lcw_L1J75", &eve_HLT_j260_a10_lcw_L1J75, &b_eve_HLT_j260_a10_lcw_L1J75);
+   fChain->SetBranchAddress("eve_HLT_j260_a10_lcw_subjes_L1J75", &eve_HLT_j260_a10_lcw_subjes_L1J75, &b_eve_HLT_j260_a10_lcw_subjes_L1J75);
+   fChain->SetBranchAddress("eve_HLT_j260_a10t_lcw_jes_L1J75", &eve_HLT_j260_a10t_lcw_jes_L1J75, &b_eve_HLT_j260_a10t_lcw_jes_L1J75);
    fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100", &eve_HLT_j400_a10_lcw_L1J100, &b_eve_HLT_j400_a10_lcw_L1J100);
    fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100", &eve_HLT_j420_a10_lcw_L1J100, &b_eve_HLT_j420_a10_lcw_L1J100);
-   fChain->SetBranchAddress("eve_HLT_j260_a10_lcw_subjes_L1J75", &eve_HLT_j260_a10_lcw_subjes_L1J75, &b_eve_HLT_j260_a10_lcw_subjes_L1J75);
-   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_subjes_L1J100", &eve_HLT_j420_a10_lcw_subjes_L1J100, &b_eve_HLT_j420_a10_lcw_subjes_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100", &eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100, &b_eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100", &eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100, &b_eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100);
    fChain->SetBranchAddress("eve_HLT_j440_a10_lcw_subjes_L1J100", &eve_HLT_j440_a10_lcw_subjes_L1J100, &b_eve_HLT_j440_a10_lcw_subjes_L1J100);
-   fChain->SetBranchAddress("eve_HLT_j460_a10_lcw_subjes_L1J100", &eve_HLT_j460_a10_lcw_subjes_L1J100, &b_eve_HLT_j460_a10_lcw_subjes_L1J100);
-   fChain->SetBranchAddress("eve_HLT_j260_a10t_lcw_jes_L1J75", &eve_HLT_j260_a10t_lcw_jes_L1J75, &b_eve_HLT_j260_a10t_lcw_jes_L1J75);
    fChain->SetBranchAddress("eve_HLT_j440_a10t_lcw_jes_L1J100", &eve_HLT_j440_a10t_lcw_jes_L1J100, &b_eve_HLT_j440_a10t_lcw_jes_L1J100);
+   fChain->SetBranchAddress("eve_HLT_j460_a10_lcw_subjes_L1J100", &eve_HLT_j460_a10_lcw_subjes_L1J100, &b_eve_HLT_j460_a10_lcw_subjes_L1J100);
    fChain->SetBranchAddress("eve_HLT_j460_a10t_lcw_jes_L1J100", &eve_HLT_j460_a10t_lcw_jes_L1J100, &b_eve_HLT_j460_a10t_lcw_jes_L1J100);
-   fChain->SetBranchAddress("eve_HLT_j15_ps", &eve_HLT_j15_ps, &b_eve_HLT_j15_ps);
-   fChain->SetBranchAddress("eve_HLT_j25_ps", &eve_HLT_j25_ps, &b_eve_HLT_j25_ps);
-   fChain->SetBranchAddress("eve_HLT_j35_ps", &eve_HLT_j35_ps, &b_eve_HLT_j35_ps);
-   fChain->SetBranchAddress("eve_HLT_j45_ps", &eve_HLT_j45_ps, &b_eve_HLT_j45_ps);
-   fChain->SetBranchAddress("eve_HLT_j55_ps", &eve_HLT_j55_ps, &b_eve_HLT_j55_ps);
-   fChain->SetBranchAddress("eve_HLT_j60_ps", &eve_HLT_j60_ps, &b_eve_HLT_j60_ps);
-   fChain->SetBranchAddress("eve_HLT_j85_ps", &eve_HLT_j85_ps, &b_eve_HLT_j85_ps);
-   fChain->SetBranchAddress("eve_HLT_j100_ps", &eve_HLT_j100_ps, &b_eve_HLT_j100_ps);
-   fChain->SetBranchAddress("eve_HLT_j110_ps", &eve_HLT_j110_ps, &b_eve_HLT_j110_ps);
+   fChain->SetBranchAddress("eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100", &eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100, &b_eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100);
+   fChain->SetBranchAddress("eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100", &eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100, &b_eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100);
+   fChain->SetBranchAddress("eve_HLT_mu20_iloose_L1MU15", &eve_HLT_mu20_iloose_L1MU15, &b_eve_HLT_mu20_iloose_L1MU15);
+   fChain->SetBranchAddress("eve_HLT_mu24_ivarloose", &eve_HLT_mu24_ivarloose, &b_eve_HLT_mu24_ivarloose);
+   fChain->SetBranchAddress("eve_HLT_mu24_ivarloose_L1MU15", &eve_HLT_mu24_ivarloose_L1MU15, &b_eve_HLT_mu24_ivarloose_L1MU15);
+   fChain->SetBranchAddress("eve_HLT_mu26_ivarmedium", &eve_HLT_mu26_ivarmedium, &b_eve_HLT_mu26_ivarmedium);
    fChain->SetBranchAddress("eve_HLT_j150_ps", &eve_HLT_j150_ps, &b_eve_HLT_j150_ps);
    fChain->SetBranchAddress("eve_HLT_j175_ps", &eve_HLT_j175_ps, &b_eve_HLT_j175_ps);
    fChain->SetBranchAddress("eve_HLT_j200_ps", &eve_HLT_j200_ps, &b_eve_HLT_j200_ps);
@@ -691,21 +644,9 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("eve_HLT_j380_ps", &eve_HLT_j380_ps, &b_eve_HLT_j380_ps);
    fChain->SetBranchAddress("eve_HLT_j400_ps", &eve_HLT_j400_ps, &b_eve_HLT_j400_ps);
    fChain->SetBranchAddress("eve_HLT_j420_ps", &eve_HLT_j420_ps, &b_eve_HLT_j420_ps);
-   fChain->SetBranchAddress("eve_HLT_j300_a10_lcw_L1J75_ps", &eve_HLT_j300_a10_lcw_L1J75_ps, &b_eve_HLT_j300_a10_lcw_L1J75_ps);
-   fChain->SetBranchAddress("eve_HLT_j360_a10_lcw_L1J100_ps", &eve_HLT_j360_a10_lcw_L1J100_ps, &b_eve_HLT_j360_a10_lcw_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j400_a10_lcw_L1J100_ps", &eve_HLT_j400_a10_lcw_L1J100_ps, &b_eve_HLT_j400_a10_lcw_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_L1J100_ps", &eve_HLT_j420_a10_lcw_L1J100_ps, &b_eve_HLT_j420_a10_lcw_L1J100_ps);
+   fChain->SetBranchAddress("eve_HLT_j260_a10_lcw_L1J75_ps", &eve_HLT_j260_a10_lcw_L1J75_ps, &b_eve_HLT_j260_a10_lcw_L1J75_ps);
    fChain->SetBranchAddress("eve_HLT_j260_a10_lcw_subjes_L1J75_ps", &eve_HLT_j260_a10_lcw_subjes_L1J75_ps, &b_eve_HLT_j260_a10_lcw_subjes_L1J75_ps);
-   fChain->SetBranchAddress("eve_HLT_j420_a10_lcw_subjes_L1J100_ps", &eve_HLT_j420_a10_lcw_subjes_L1J100_ps, &b_eve_HLT_j420_a10_lcw_subjes_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j440_a10_lcw_subjes_L1J100_ps", &eve_HLT_j440_a10_lcw_subjes_L1J100_ps, &b_eve_HLT_j440_a10_lcw_subjes_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j460_a10_lcw_subjes_L1J100_ps", &eve_HLT_j460_a10_lcw_subjes_L1J100_ps, &b_eve_HLT_j460_a10_lcw_subjes_L1J100_ps);
    fChain->SetBranchAddress("eve_HLT_j260_a10t_lcw_jes_L1J75_ps", &eve_HLT_j260_a10t_lcw_jes_L1J75_ps, &b_eve_HLT_j260_a10t_lcw_jes_L1J75_ps);
-   fChain->SetBranchAddress("eve_HLT_j440_a10t_lcw_jes_L1J100_ps", &eve_HLT_j440_a10t_lcw_jes_L1J100_ps, &b_eve_HLT_j440_a10t_lcw_jes_L1J100_ps);
-   fChain->SetBranchAddress("eve_HLT_j460_a10t_lcw_jes_L1J100_ps", &eve_HLT_j460_a10t_lcw_jes_L1J100_ps, &b_eve_HLT_j460_a10t_lcw_jes_L1J100_ps);
-   if(fChain->GetFriend("FlavourTagging_Nominal")){ //temp fix for systematics: Get b-tagging SF from nominal friend tree
-     fChain->GetFriend("FlavourTagging_Nominal")->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
-   }else fChain->SetBranchAddress("eve_BtagSFWeightNom", &eve_BtagSFWeightNom, &b_eve_BtagSFWeightNom);
-   fChain->SetBranchAddress("eve_BtagSFWeightSys", &eve_BtagSFWeightSys, &b_eve_BtagSFWeightSys);
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
    fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
    fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);
@@ -718,37 +659,27 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("truthjet_phi", &truthjet_phi, &b_truthjet_phi);
    fChain->SetBranchAddress("truthjet_eta", &truthjet_eta, &b_truthjet_eta);
    fChain->SetBranchAddress("truthjet_E", &truthjet_E, &b_truthjet_E);
-   TString trkAddr = "";
-   if (!sysName.EqualTo("Nom") && !sysName.Contains("TRK")) {
-     trkAddr = "FlavourTagging_Nominal.";
-   }
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_pt", &trkjet_assocTrk_pt, &b_trkjet_assocTrk_pt);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_phi", &trkjet_assocTrk_phi, &b_trkjet_assocTrk_phi);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_eta", &trkjet_assocTrk_eta, &b_trkjet_assocTrk_eta);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_d0", &trkjet_assocTrk_d0, &b_trkjet_assocTrk_d0);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_vz", &trkjet_assocTrk_vz, &b_trkjet_assocTrk_vz);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_z0", &trkjet_assocTrk_z0, &b_trkjet_assocTrk_z0);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_d0_smear", &trkjet_assocTrk_d0_smear, &b_trkjet_assocTrk_d0_smear);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_z0_smear", &trkjet_assocTrk_z0_smear, &b_trkjet_assocTrk_z0_smear);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_d0_smear_up", &trkjet_assocTrk_d0_smear_up, &b_trkjet_assocTrk_d0_smear_up);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_z0_smear_up", &trkjet_assocTrk_z0_smear_up, &b_trkjet_assocTrk_z0_smear_up);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_d0_smear_down", &trkjet_assocTrk_d0_smear_down, &b_trkjet_assocTrk_d0_smear_down);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_z0_smear_down", &trkjet_assocTrk_z0_smear_down, &b_trkjet_assocTrk_z0_smear_down);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_theta", &trkjet_assocTrk_theta, &b_trkjet_assocTrk_theta);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_phi0", &trkjet_assocTrk_phi0, &b_trkjet_assocTrk_phi0);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_qoverp", &trkjet_assocTrk_qoverp, &b_trkjet_assocTrk_qoverp);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_d0err", &trkjet_assocTrk_d0err, &b_trkjet_assocTrk_d0err);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_z0err", &trkjet_assocTrk_z0err, &b_trkjet_assocTrk_z0err);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_thetaerr", &trkjet_assocTrk_thetaerr, &b_trkjet_assocTrk_thetaerr);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_phi0err", &trkjet_assocTrk_phi0err, &b_trkjet_assocTrk_phi0err);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_nPixelHits", &trkjet_assocTrk_nPixelHits, &b_trkjet_assocTrk_nPixelHits);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_nSCTHits", &trkjet_assocTrk_nSCTHits, &b_trkjet_assocTrk_nSCTHits);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_nIBLHits", &trkjet_assocTrk_nIBLHits, &b_trkjet_assocTrk_nIBLHits);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_expectIBLHit", &trkjet_assocTrk_expectIBLHit, &b_trkjet_assocTrk_expectIBLHit);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_nBLayerHits", &trkjet_assocTrk_nBLayerHits, &b_trkjet_assocTrk_nBLayerHits);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_expectBLayerHit", &trkjet_assocTrk_expectBLayerHit, &b_trkjet_assocTrk_expectBLayerHit);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
-   fChain->SetBranchAddress(trkAddr+"trkjet_assocTrk_isTightPrimary", &trkjet_assocTrk_isTightPrimary, &b_trkjet_assocTrk_isTightPrimary);
+   fChain->SetBranchAddress("trkjet_assocTrk_pt", &trkjet_assocTrk_pt, &b_trkjet_assocTrk_pt);
+   fChain->SetBranchAddress("trkjet_assocTrk_phi", &trkjet_assocTrk_phi, &b_trkjet_assocTrk_phi);
+   fChain->SetBranchAddress("trkjet_assocTrk_eta", &trkjet_assocTrk_eta, &b_trkjet_assocTrk_eta);
+   fChain->SetBranchAddress("trkjet_assocTrk_d0", &trkjet_assocTrk_d0, &b_trkjet_assocTrk_d0);
+   fChain->SetBranchAddress("trkjet_assocTrk_z0", &trkjet_assocTrk_z0, &b_trkjet_assocTrk_z0);
+   fChain->SetBranchAddress("trkjet_assocTrk_theta", &trkjet_assocTrk_theta, &b_trkjet_assocTrk_theta);
+   fChain->SetBranchAddress("trkjet_assocTrk_vz", &trkjet_assocTrk_vz, &b_trkjet_assocTrk_vz);
+   fChain->SetBranchAddress("trkjet_assocTrk_phi0", &trkjet_assocTrk_phi0, &b_trkjet_assocTrk_phi0);
+   fChain->SetBranchAddress("trkjet_assocTrk_qoverp", &trkjet_assocTrk_qoverp, &b_trkjet_assocTrk_qoverp);
+   fChain->SetBranchAddress("trkjet_assocTrk_d0err", &trkjet_assocTrk_d0err, &b_trkjet_assocTrk_d0err);
+   fChain->SetBranchAddress("trkjet_assocTrk_z0err", &trkjet_assocTrk_z0err, &b_trkjet_assocTrk_z0err);
+   fChain->SetBranchAddress("trkjet_assocTrk_thetaerr", &trkjet_assocTrk_thetaerr, &b_trkjet_assocTrk_thetaerr);
+   fChain->SetBranchAddress("trkjet_assocTrk_phi0err", &trkjet_assocTrk_phi0err, &b_trkjet_assocTrk_phi0err);
+   fChain->SetBranchAddress("trkjet_assocTrk_nPixelHits", &trkjet_assocTrk_nPixelHits, &b_trkjet_assocTrk_nPixelHits);
+   fChain->SetBranchAddress("trkjet_assocTrk_nSCTHits", &trkjet_assocTrk_nSCTHits, &b_trkjet_assocTrk_nSCTHits);
+   fChain->SetBranchAddress("trkjet_assocTrk_nIBLHits", &trkjet_assocTrk_nIBLHits, &b_trkjet_assocTrk_nIBLHits);
+   fChain->SetBranchAddress("trkjet_assocTrk_expectIBLHit", &trkjet_assocTrk_expectIBLHit, &b_trkjet_assocTrk_expectIBLHit);
+   fChain->SetBranchAddress("trkjet_assocTrk_nBLayerHits", &trkjet_assocTrk_nBLayerHits, &b_trkjet_assocTrk_nBLayerHits);
+   fChain->SetBranchAddress("trkjet_assocTrk_expectBLayerHit", &trkjet_assocTrk_expectBLayerHit, &b_trkjet_assocTrk_expectBLayerHit);
+   fChain->SetBranchAddress("trkjet_assocTrk_isLoose", &trkjet_assocTrk_isLoose, &b_trkjet_assocTrk_isLoose);
+   fChain->SetBranchAddress("trkjet_assocTrk_isTightPrimary", &trkjet_assocTrk_isTightPrimary, &b_trkjet_assocTrk_isTightPrimary);
    fChain->SetBranchAddress("fat_E", &fat_E, &b_fat_E);
    fChain->SetBranchAddress("fat_pt", &fat_pt, &b_fat_pt);
    fChain->SetBranchAddress("fat_phi", &fat_phi, &b_fat_phi);
@@ -759,11 +690,24 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("fat_tau32", &fat_tau32, &b_fat_tau32);
    fChain->SetBranchAddress("fat_C2", &fat_C2, &b_fat_C2);
    fChain->SetBranchAddress("fat_D2", &fat_D2, &b_fat_D2);
+   fChain->SetBranchAddress("fat_isGbbJet", &fat_isGbbJet, &b_fat_isGbbJet);
    fChain->SetBranchAddress("fat_HbbScore", &fat_HbbScore, &b_fat_HbbScore);
    fChain->SetBranchAddress("fat_XbbScoreHiggs", &fat_XbbScoreHiggs, &b_fat_XbbScoreHiggs);
-   fChain->SetBranchAddress("fat_XbbScoreQCD", &fat_XbbScoreQCD, &b_fat_XbbScoreQCD);
    fChain->SetBranchAddress("fat_XbbScoreTop", &fat_XbbScoreTop, &b_fat_XbbScoreTop);
+   fChain->SetBranchAddress("fat_XbbScoreQCD", &fat_XbbScoreQCD, &b_fat_XbbScoreQCD);
+   fChain->SetBranchAddress("fat_SubjetBScore_Higgs", &fat_SubjetBScore_Higgs, &b_fat_SubjetBScore_Higgs);
+   fChain->SetBranchAddress("fat_SubjetBScore_Top", &fat_SubjetBScore_Top, &b_fat_SubjetBScore_Top);
+   fChain->SetBranchAddress("fat_SubjetBScore_QCD", &fat_SubjetBScore_QCD, &b_fat_SubjetBScore_QCD);
+   fChain->SetBranchAddress("fat_truth", &fat_truth, &b_fat_truth);
+   fChain->SetBranchAddress("fat_BHad_n", &fat_BHad_n, &b_fat_BHad_n);
+   fChain->SetBranchAddress("fat_CHad_n", &fat_CHad_n, &b_fat_CHad_n);
+   fChain->SetBranchAddress("fat_BHad_n_GA", &fat_BHad_n_GA, &b_fat_BHad_n_GA);
+   fChain->SetBranchAddress("fat_CHad_n_GA", &fat_CHad_n_GA, &b_fat_CHad_n_GA);
    fChain->SetBranchAddress("fat_assocTrkjet_ind", &fat_assocTrkjet_ind, &b_fat_assocTrkjet_ind);
+   fChain->SetBranchAddress("fat_assocTrkjetDR_ind", &fat_assocTrkjetDR_ind, &b_fat_assocTrkjetDR_ind);
+   fChain->SetBranchAddress("fat_assocTrk_pt", &fat_assocTrk_pt, &b_fat_assocTrk_pt);
+   fChain->SetBranchAddress("fat_assocTrk_eta", &fat_assocTrk_eta, &b_fat_assocTrk_eta);
+   fChain->SetBranchAddress("fat_assocTrk_phi", &fat_assocTrk_phi, &b_fat_assocTrk_phi);
    fChain->SetBranchAddress("muo_pt", &muo_pt, &b_muo_pt);
    fChain->SetBranchAddress("muo_phi", &muo_phi, &b_muo_phi);
    fChain->SetBranchAddress("muo_eta", &muo_eta, &b_muo_eta);
@@ -776,6 +720,7 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("muo_z0sintheta", &muo_z0sintheta, &b_muo_z0sintheta);
    fChain->SetBranchAddress("muo_quality", &muo_quality, &b_muo_quality);
    fChain->SetBranchAddress("muo_acceptedTool", &muo_acceptedTool, &b_muo_acceptedTool);
+   fChain->SetBranchAddress("muo_TTVAEffSF", &muo_TTVAEffSF, &b_muo_TTVAEffSF);
    fChain->SetBranchAddress("muo_LooseIDSF", &muo_LooseIDSF, &b_muo_LooseIDSF);
    fChain->SetBranchAddress("muo_MediumIDSF", &muo_MediumIDSF, &b_muo_MediumIDSF);
    fChain->SetBranchAddress("muo_TightIDSF", &muo_TightIDSF, &b_muo_TightIDSF);
@@ -789,18 +734,14 @@ void TupleAna::Init(TTree *tree, TString sysName)
    fChain->SetBranchAddress("trkjet_MV2c10", &trkjet_MV2c10, &b_trkjet_MV2c10);
    fChain->SetBranchAddress("trkjet_MV2c20", &trkjet_MV2c20, &b_trkjet_MV2c20);
    fChain->SetBranchAddress("trkjet_MVb", &trkjet_MVb, &b_trkjet_MVb);
-   if(fChain->GetFriend("FlavourTagging_Nominal")){ //temp fix for systematics: Get trackjet truth label from nominal friend tree
-     fChain->GetFriend("FlavourTagging_Nominal")->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
-   }else fChain->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
+   fChain->SetBranchAddress("trkjet_SV1_masssvx", &trkjet_SV1_masssvx, &b_trkjet_SV1_masssvx);
+   fChain->SetBranchAddress("trkjet_truth", &trkjet_truth, &b_trkjet_truth);
    fChain->SetBranchAddress("trkjet_nTrks", &trkjet_nTrks, &b_trkjet_nTrks);
    fChain->SetBranchAddress("trkjet_assocMuon_dR", &trkjet_assocMuon_dR, &b_trkjet_assocMuon_dR);
    fChain->SetBranchAddress("trkjet_assocMuon_index", &trkjet_assocMuon_index, &b_trkjet_assocMuon_index);
    fChain->SetBranchAddress("trkjet_assocMuon_n", &trkjet_assocMuon_n, &b_trkjet_assocMuon_n);
    fChain->SetBranchAddress("trkjet_isMuonJet", &trkjet_isMuonJet, &b_trkjet_isMuonJet);
    fChain->SetBranchAddress("trkjet_isNonMuonJet", &trkjet_isNonMuonJet, &b_trkjet_isNonMuonJet);
-   fChain->SetBranchAddress("trkjet_assocTruthMuon_parentpdgId", &trkjet_assocTruthMuon_parentpdgId, &b_trkjet_assocTruthMuon_parentpdgId);
-   fChain->SetBranchAddress("trkjet_assocTruthMuon_ClosestUnmatched_dR", &trkjet_assocTruthMuon_ClosestUnmatched_dR, &b_trkjet_assocTruthMuon_ClosestUnmatched_dR);
-   fChain->SetBranchAddress("trkjet_assocMuon_Fake_quality", &trkjet_assocMuon_Fake_quality, &b_trkjet_assocMuon_Fake_quality);
    fChain->SetBranchAddress("trkjet_hasKShort", &trkjet_hasKShort, &b_trkjet_hasKShort);
    fChain->SetBranchAddress("trkjet_hasLambda", &trkjet_hasLambda, &b_trkjet_hasLambda);
    fChain->SetBranchAddress("trkjet_hasConversion", &trkjet_hasConversion, &b_trkjet_hasConversion);
