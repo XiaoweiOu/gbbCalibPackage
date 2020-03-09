@@ -27,7 +27,7 @@ class AsgToolTagger : public BJetTagger {
  private:
   bool m_isMC;
   bool m_useVRTrkJets;
-  TString m_corrFileName = "xAODBTaggingEfficiency/13TeV/2017-21-13TeV-MC16-CDI-2019-07-30_v1.root";
+  TString m_corrFileName = "xAODBTaggingEfficiency/13TeV/2019-21-13TeV-MC16-CDI-2019-10-07_v1.root";
 
   TString m_jetAuthor = "AntiKt2PV0TrackJets";
   // https://twiki.cern.ch/twiki/bin/view/AtlasProtected/BTaggingCalibrationDataInterface#xAOD_interface

@@ -22,7 +22,7 @@ BJetTagger* TaggerFactory::Create(TString config) {
     xbbTopFrac = configV[2].Atof();
   }
 
-  if (taggerName == "XbbScore") {
+  if (taggerName == "SubjetBScore") {
     return new XbbScoreTagger(operatingPt,xbbTopFrac);
     // TODO: implement case for custom cut values (or cut functions)
   } else {
