@@ -153,15 +153,15 @@ class HistHelper:
         return None
 
       channel = GetChannelNumber(path)
-      bookkeep_hist = file_curr.Get("Hist_BookKeeping") #Events in AOD is in Bin 1
+      bookkeep_hist = file_curr.Get("Hist_BookKeeping") #SumOfWeights in AOD is in Bin 4
       if self.MapOfChannelWeights[channel] == 0:
         print "missing channel: ",channel
         return None
-      if not bookkeep_hist.GetBinContent(1):
+      if not bookkeep_hist.GetBinContent(4):
         weight = 0;
         print "Warning: nevt in bookKeeping for tuple = 0, event weight set to 0 --- file: ",path
       else:
-        weight = self.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(1)
+        weight = self.MapOfChannelWeights[channel]/bookkeep_hist.GetBinContent(4)
 
 
       if not hist:
