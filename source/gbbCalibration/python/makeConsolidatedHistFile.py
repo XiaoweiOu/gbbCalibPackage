@@ -224,7 +224,7 @@ for histname in ListOfDataHists :
     print("Wrote "+histname)
   else:
     print("Cannot find hist "+histname+" in file "+pathData)
-    exit()
+    #exit()
 
 file_curr.Close()
 outfile.Close()
