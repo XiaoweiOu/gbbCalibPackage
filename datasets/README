@@ -1,6 +1,6 @@
-Latest n-tuple production tag for all datasets is v00-07-02. A *v* at the end of the tag indicates that it uses VR track-jets, while an *f* indicates R=0.2 track-jets.
+MAR02 ntuples are updated to use JZXWithSW samples for multijet MC and period containers for data
 
-Note that data16 is still missing the last 12 good runs of the year (~10% of that dataset).
-The data17 sample was also made with a later AnalysisBase release (21.2.51 as opposed to 21.2.40 for the rest)
+FEB14 ntuples are updated to AnalysisBase,21.2.108 for the 201903 b-tagging collection and HbbTagger tool
+  Fixes bug to TRK systematics in NOV22 ntuples
 
-The tag v00-07-01 is the same as v00-07-02 except that doesn't set the "useDijetMaps" flag in the TrackSmearingTool.
+NOV22 ntuples include new preselection (fatjet containing track-jet with muon) and track slimming, as well as updated JET systematics and added TRK uncertainties on VR jets. Also expanded set of included triggers and removed some branches. Framework not fully compatible with older samples.

@@ -1,0 +1,8 @@
+user.aemerman.data17_13TeV.periodB.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
+user.aemerman.data17_13TeV.periodC.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
+user.aemerman.data17_13TeV.periodD.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
+user.aemerman.data17_13TeV.periodE.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
+user.aemerman.data17_13TeV.periodF.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
+user.aemerman.data17_13TeV.periodH.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
+user.aemerman.data17_13TeV.periodI.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
+user.aemerman.data17_13TeV.periodK.DAOD_FTAG1.21.2.108_MAR02_vr_data17.grp17_v02_p4061_tuple.root
