@@ -134,6 +134,8 @@ bool GbbTupleAna::passTrigger(const float trigjet_pt, float& prescale, TString& 
     trigger_passed="HLT_j380";
   } else if (m_2017 && trigjet_pt > 500e3 && this->eve_HLT_j420) { //demand that full efficiency of turnon curve has been reached
     trigger_passed="HLT_j420";
+  } else if (m_2018 && trigjet_pt > 500e3 && this->eve_HLT_j420) { //demand that full efficiency of turnon curve has been reached
+    trigger_passed="HLT_j420";
   } else {
     return false;
   }
