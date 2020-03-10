@@ -665,22 +665,22 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
 
   if(!m_config->GetIsR20p7()){
 
-    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreHiggs"+nametag),";XbbScoreHiggs;Events;",
-     this->fat_XbbScoreHiggs->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
-    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreQCD"+nametag),";XbbScoreQCD;Events;",
-     this->fat_XbbScoreQCD->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
-    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreTop"+nametag),";XbbScoreTop;Events;",
-     this->fat_XbbScoreTop->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
-    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreRatiof0"+nametag),
-     ";log(XbbScoreHiggs/XbbScoreQCD);Events;",
-     std::log( this->fat_XbbScoreHiggs->at(gbbcand->ind_fj) /
-      this->fat_XbbScoreQCD->at(gbbcand->ind_fj) ),
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Higgs"+nametag),";SubjetBScore_Higgs;Events;",
+     this->fat_SubjetBScore_Higgs->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_QCD"+nametag),";SubjetBScore_QCD;Events;",
+     this->fat_SubjetBScore_QCD->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Top"+nametag),";SubjetBScore_Top;Events;",
+     this->fat_SubjetBScore_Top->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Ratiof0"+nametag),
+     ";log(SubjetBScore_Higgs/SubjetBScore_QCD);Events;",
+     std::log( this->fat_SubjetBScore_Higgs->at(gbbcand->ind_fj) /
+      this->fat_SubjetBScore_QCD->at(gbbcand->ind_fj) ),
      100,-1.,1.,event_weight
     );
-    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "XbbScoreRatiofp2"+nametag),
-     ";log(XbbScoreHiggs/(0.8*XbbScoreQCD+0.2*XbbScoreTop));Events;",
-     std::log( this->fat_XbbScoreHiggs->at(gbbcand->ind_fj) /
-      (0.8*this->fat_XbbScoreQCD->at(gbbcand->ind_fj) + 0.2*this->fat_XbbScoreTop->at(gbbcand->ind_fj)) ),
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Ratiofp25"+nametag),
+     ";log(SubjetBScore_Higgs/(0.75*SubjetBScore_QCD+0.25*SubjetBScore_Top));Events;",
+     std::log( this->fat_SubjetBScore_Higgs->at(gbbcand->ind_fj) /
+      (0.75*this->fat_SubjetBScore_QCD->at(gbbcand->ind_fj) + 0.25*this->fat_SubjetBScore_Top->at(gbbcand->ind_fj)) ),
      100,-1.,1.,event_weight
     );
   }
