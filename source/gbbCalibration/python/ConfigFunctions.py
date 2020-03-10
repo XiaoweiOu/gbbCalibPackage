@@ -71,8 +71,7 @@ def GetChannelWeights(xsecfile):
   tree.ReadFile(filepath)
   output = {}
   for entry in tree:
-    # Factor of 1e3 converts cross-section to pb
-    output[entry.dataset_number] = entry.crossSection*1e3*entry.kFactor*entry.genFiltEff
+    output[entry.dataset_number] = entry.crossSection*entry.kFactor*entry.genFiltEff
   print "Loaded cross-section information"
   return output
 
