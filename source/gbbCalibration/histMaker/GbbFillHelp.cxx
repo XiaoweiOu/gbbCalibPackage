@@ -666,22 +666,22 @@ void GbbTupleAna::FillAdvancedProperties(GbbCandidate* gbbcand, int i_trig_jet, 
   if(!m_config->GetIsR20p7()){
 
     m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Higgs"+nametag),";SubjetBScore_Higgs;Events;",
-     this->fat_SubjetBScore_Higgs->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
+     this->fat_SubjetBScore_Higgs->at(gbbcand->ind_fj),100,0.,1.,event_weight);
     m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_QCD"+nametag),";SubjetBScore_QCD;Events;",
-     this->fat_SubjetBScore_QCD->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
+     this->fat_SubjetBScore_QCD->at(gbbcand->ind_fj),100,0.,1.,event_weight);
     m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Top"+nametag),";SubjetBScore_Top;Events;",
-     this->fat_SubjetBScore_Top->at(gbbcand->ind_fj),100,-1.,1.,event_weight);
-    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Ratiof0"+nametag),
+     this->fat_SubjetBScore_Top->at(gbbcand->ind_fj),100,0.,1.,event_weight);
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_f0"+nametag),
      ";log(SubjetBScore_Higgs/SubjetBScore_QCD);Events;",
      std::log( this->fat_SubjetBScore_Higgs->at(gbbcand->ind_fj) /
       this->fat_SubjetBScore_QCD->at(gbbcand->ind_fj) ),
-     100,-1.,1.,event_weight
+     100,-10.,10.,event_weight
     );
-    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_Ratiofp25"+nametag),
+    m_HistSvc->FastFillTH1D(makeDiJetPlotName(gbbcand, "SubjetBScore_f0p25"+nametag),
      ";log(SubjetBScore_Higgs/(0.75*SubjetBScore_QCD+0.25*SubjetBScore_Top));Events;",
      std::log( this->fat_SubjetBScore_Higgs->at(gbbcand->ind_fj) /
       (0.75*this->fat_SubjetBScore_QCD->at(gbbcand->ind_fj) + 0.25*this->fat_SubjetBScore_Top->at(gbbcand->ind_fj)) ),
-     100,-1.,1.,event_weight
+     100,-10.,10.,event_weight
     );
   }
 }
@@ -700,23 +700,59 @@ void GbbTupleAna::FillTriggerTurnOnHistograms(int i_trigjet, float event_weight)
   if (eve_HLT_j380) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j380", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j400) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j400", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
   if (eve_HLT_j420) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j260_a10_lcw_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10_lcw_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j260_a10_lcw_subjes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10_lcw_subjes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j260_a10t_lcw_jes_L1J75) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j260_a10t_lcw_jes_L1J75", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j400_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j400_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j420_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10_lcw_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10t_lcw_jes_35smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j420_a10t_lcw_jes_40smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j440_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j440_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j440_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j440_a10t_lcw_jes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j460_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j460_a10_lcw_subjes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_j460_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_j460_a10t_lcw_jes_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_2j330_a10t_lcw_jes_35smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_2j330_a10t_lcw_jes_40smcINF_L1J100", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_mu20_iloose_L1MU15) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu20_iloose_L1MU15", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_mu24_ivarloose) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu24_ivarloose", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_mu24_ivarloose_L1MU15) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu24_ivarloose_L1MU15", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
-  if (eve_HLT_mu26_ivarmedium) m_HistSvc->FastFillTH1D("trigjet_pt_passHLT_mu26_ivarmedium", jet_pt->at(i_trigjet)/1e3, 100, 0., 1000., event_weight);
+
+  if (eve_HLT_j260_a10_lcw_L1J75) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j260_a10_lcw_L1J75", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260_a10_lcw_subjes_L1J75) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j260_a10_lcw_subjes_L1J75", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j260_a10t_lcw_jes_L1J75) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j260_a10t_lcw_jes_L1J75", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j400_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j400_a10_lcw_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j420_a10_lcw_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j420_a10_lcw_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j440_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j440_a10_lcw_subjes_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j440_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j440_a10t_lcw_jes_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j460_a10_lcw_subjes_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j460_a10_lcw_subjes_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+  if (eve_HLT_j460_a10t_lcw_jes_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j460_a10t_lcw_jes_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+
+  TLorentzVector fatjet1, fatjet2;
+  fatjet1.SetPtEtaPhiE(this->fat_pt->at(0),this->fat_eta->at(0),this->fat_phi->at(0),this->fat_E->at(0));
+  if (eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m_passHLT_2j330_a10t_lcw_jes_35smcINF_L1J100", fatjet1.M()/1e3, 100, 0., 100., event_weight);
+  if (eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m_passHLT_2j330_a10t_lcw_jes_40smcINF_L1J100", fatjet1.M()/1e3, 100, 0., 100., event_weight);
+
+  if (eve_HLT_mu20_iloose_L1MU15) m_HistSvc->FastFillTH1D("mu_pt_passHLT_mu20_iloose_L1MU15", muo_pt->at(0)/1e3, 50, 0., 50., event_weight);
+  if (eve_HLT_mu24_ivarloose) m_HistSvc->FastFillTH1D("mu_pt_passHLT_mu24_ivarloose", muo_pt->at(0)/1e3, 50, 0., 50., event_weight);
+  if (eve_HLT_mu24_ivarloose_L1MU15) m_HistSvc->FastFillTH1D("mu_pt_passHLT_mu24_ivarloose_L1MU15", muo_pt->at(0)/1e3, 50, 0., 50., event_weight);
+  if (eve_HLT_mu26_ivarmedium) m_HistSvc->FastFillTH1D("mu_pt_passHLT_mu26_ivarmedium", muo_pt->at(0)/1e3, 50, 0., 50., event_weight);
+
   m_HistSvc->FastFillTH1D("trigjet_pt_noHLTreq",this->jet_pt->at(i_trigjet)/1e3,100,0.,1000.,event_weight);
+  m_HistSvc->FastFillTH1D("mu_pt_noHLTreq",muo_pt->at(0)/1e3,50,0.,50.,event_weight);
+  m_HistSvc->FastFillTH1D("fatjet_pt_noHLTreq",fat_pt->at(0)/1e3,100,0.,1000.,event_weight);
+  if (fatjet1.M()/1e3 > 50) {
+    if (eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j420_a10t_lcw_jes_35smcINF_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+    if (eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt_passHLT_j420_a10t_lcw_jes_40smcINF_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+    m_HistSvc->FastFillTH1D("fatjet_pt_noHLTreq_m50",fat_pt->at(0)/1e3,100,0.,1000.,event_weight);
+  }
+  if (fatjet1.Pt()/1e3 > 450) {
+    if (eve_HLT_j420_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m_passHLT_j420_a10t_lcw_jes_35smcINF_L1J100", fatjet1.M()/1e3, 100, 0., 100., event_weight);
+    if (eve_HLT_j420_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m_passHLT_j420_a10t_lcw_jes_40smcINF_L1J100", fatjet1.M()/1e3, 100, 0., 100., event_weight);
+    m_HistSvc->FastFillTH1D("fatjet_m_noHLTreq_pt450",fatjet1.M()/1e3,100,0.,100.,event_weight);
+  }
+
+  if (fat_pt->size() > 1) {
+    fatjet2.SetPtEtaPhiE(this->fat_pt->at(1),this->fat_eta->at(1),this->fat_phi->at(1),this->fat_E->at(1));
+    if (fatjet1.M()/1e3 > 50 && fatjet2.M()/1e3 > 50) {
+      if (eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt1_passHLT_2j330_a10t_lcw_jes_35smcINF_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+      if (eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt1_passHLT_2j330_a10t_lcw_jes_40smcINF_L1J100", fat_pt->at(0)/1e3, 100, 0., 1000., event_weight);
+      if (eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt2_passHLT_2j330_a10t_lcw_jes_35smcINF_L1J100", fat_pt->at(1)/1e3, 100, 0., 1000., event_weight);
+      if (eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_pt2_passHLT_2j330_a10t_lcw_jes_40smcINF_L1J100", fat_pt->at(1)/1e3, 100, 0., 1000., event_weight);
+      m_HistSvc->FastFillTH1D("fatjet_pt1_noHLTreq_m50",fat_pt->at(0)/1e3,100,0.,1000.,event_weight);
+      m_HistSvc->FastFillTH1D("fatjet_pt2_noHLTreq_m50",fat_pt->at(1)/1e3,100,0.,1000.,event_weight);
+    }
+    if (fatjet1.Pt()/1e3 > 350 && fatjet2.Pt()/1e3 > 350) {
+      if (eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m1_passHLT_2j330_a10t_lcw_jes_35smcINF_L1J100", fatjet1.M()/1e3, 100, 0., 100., event_weight);
+      if (eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m1_passHLT_2j330_a10t_lcw_jes_40smcINF_L1J100", fatjet1.M()/1e3, 100, 0., 100., event_weight);
+      if (eve_HLT_2j330_a10t_lcw_jes_35smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m2_passHLT_2j330_a10t_lcw_jes_35smcINF_L1J100", fatjet2.M()/1e3, 100, 0., 100., event_weight);
+      if (eve_HLT_2j330_a10t_lcw_jes_40smcINF_L1J100) m_HistSvc->FastFillTH1D("fatjet_m2_passHLT_2j330_a10t_lcw_jes_40smcINF_L1J100", fatjet2.M()/1e3, 100, 0., 100., event_weight);
+      m_HistSvc->FastFillTH1D("fatjet_m1_noHLTreq_pt350",fatjet1.M()/1e3,100,0.,100.,event_weight);
+      m_HistSvc->FastFillTH1D("fatjet_m2_noHLTreq_pt350",fatjet2.M()/1e3,100,0.,100.,event_weight);
+    }
+  }
 
 }
