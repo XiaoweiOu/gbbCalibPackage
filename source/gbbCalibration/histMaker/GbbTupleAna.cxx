@@ -856,18 +856,18 @@ bool GbbTupleAna::Processgbb(int i_evt){
     }
 
     //variations of track-jet SFs
-    if (m_isMC && m_isNominal && !cat.IsNull()) {
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"indivSFs_"+cat),
-        ";product of track-jet SFs;Events / 0.05",
-        btag_sf,30,0.5,2.,total_evt_weight);
-      m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"btagSFs_"+cat),
-        ";track-jet SFs from tuple;Events / 0.05",
-        btag_SF_nom,30,0.5,2.,total_evt_weight);
-      if (m_RunMode & RunMode::FILL_TEMPLATES) {
-        FillTemplates(&gbbcand, total_evt_weight*btag_SF_up, cat+"_BTAGUP");
-        FillTemplates(&gbbcand, total_evt_weight*btag_SF_down, cat+"_BTAGDOWN");
-      }
-    }
+    //if (m_isMC && m_isNominal && !cat.IsNull()) {
+    //  m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"indivSFs_"+cat),
+    //    ";product of track-jet SFs;Events / 0.05",
+    //    btag_sf,30,0.5,2.,total_evt_weight);
+    //  m_HistSvc->FastFillTH1D( makeDiJetPlotName(&gbbcand,"btagSFs_"+cat),
+    //    ";track-jet SFs from tuple;Events / 0.05",
+    //    btag_SF_nom,30,0.5,2.,total_evt_weight);
+    //  if (m_RunMode & RunMode::FILL_TEMPLATES) {
+    //    FillTemplates(&gbbcand, total_evt_weight*btag_SF_up, cat+"_BTAGUP");
+    //    FillTemplates(&gbbcand, total_evt_weight*btag_SF_down, cat+"_BTAGDOWN");
+    //  }
+    //}
 
     //Fill BHad fragmentation information for extrapolation studies
     if (m_isMC && m_isNominal) {

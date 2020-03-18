@@ -3,14 +3,14 @@ import argparse
 #----------------- variables ------------------------
 
 ListOfVariables_general = [
-  'fjpt','fjptsc','fjm',
-  'fjpt_2TAG','fjptsc_2TAG','fjm_2TAG',
+  'fjpt','fjm',
+  'fjpt_2TAG','fjm_2TAG',
   'mjpt','nmjpt','mjeta','nmjeta',
   'mjpt_2TAG','nmjpt_2TAG','mjeta_2TAG','nmjeta_2TAG',
   #'fjD2','fjtau21','mjMV2c10','nmjMV2c10',
   #'fjD2_2TAG','fjtau21_2TAG','mjMV2c10_2TAG','nmjMV2c10_2TAG',
   #'mjptfrac','nmjptfrac','mjptfracVsmjtrkmult','nmjptfracVsnmjtrkmult','hasleading2trackjets',
-  'muSd0','muSd0BL',
+  #'muSd0','muSd0BL',
 
   #'mjmaxSd0_pt','nmjmaxSd0_pt','mjmaxd0_pt','nmjmaxd0_pt','mjmaxd0err_pt','nmjmaxd0err_pt',
   #'mjsubSd0_pt','nmjsubSd0_pt','mjsubd0_pt','nmjsubd0_pt','mjsubd0err_pt','nmjsubd0err_pt',
@@ -29,7 +29,7 @@ ListOfVariables_general = [
   'mjmeanSd0_NOT2TAG_1MUON','nmjmeanSd0_NOT2TAG_1MUON'
   ]
 
-ListOfVariables_r21 = [ 'XbbScoreHiggs','XbbScoreTop','XbbScoreQCD','XbbScoreRatiof0','XbbScoreRatiofp2','XbbScoreHiggs_2TAG','XbbScoreTop_2TAG','XbbScoreQCD_2TAG','XbbScoreRatiof0_2TAG','XbbScoreRatiofp2_2TAG']
+ListOfVariables_r21 = ['SubjetBScore_Higgs','SubjetBScore_Top','SubjetBScore_QCD','SubjetBScore_f0','SubjetBScore_f0p25','SubjetBScore_Higgs_2TAG','SubjetBScore_Top_2TAG','SubjetBScore_QCD_2TAG','SubjetBScore_f0_2TAG','SubjetBScore_f0p25_2TAG']
 
 ListOfVariables_r20p7 = []
 

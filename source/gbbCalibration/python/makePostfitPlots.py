@@ -590,22 +590,26 @@ results = ReadFitResults()
 # Get input histograms
 infile = TFile("{0}/trex_input.root".format(args.input))
 
-if 'SF' in args.plots:
-  MakeFitPlot(results, 'ScaleFactor')
-if 'Tmpl' in args.plots:
-  MakeTemplatePlots()
-if 'Kine' in args.plots:
-  MakeKinematicPlots()
-if 'NF' in args.plots:
-  for flav in MyConfig.GetFlavourPairs():
-    MakeFitPlot(results, flav.Data())
-    MakeFlavFracPlot(results, flav.Data(), prefit=True)
-    MakeFlavFracPlot(results, flav.Data(), prefit=False)
-if 'Pulls' in args.plots:
-  for syst in MyConfig.GetSystematics():
-    if '__1down' in syst.Data():
-      continue
-    if '__1up' in syst.Data():
-       MakeFitPlot(results, syst.Data()[:-5], zrange=[-1,1])
-    else:
-       MakeFitPlot(results, syst.Data(), zrange=[-1,1])
+for var in args.plots:
+  if 'SF' == var:
+    MakeFitPlot(results, 'ScaleFactor')
+  elif 'Tmpl' == var:
+    MakeTemplatePlots()
+  elif 'Kine' == var:
+    MakeKinematicPlots()
+  elif 'NF' == var:
+    for flav in MyConfig.GetFlavourPairs():
+      MakeFitPlot(results, flav.Data())
+      MakeFlavFracPlot(results, flav.Data(), prefit=True)
+      MakeFlavFracPlot(results, flav.Data(), prefit=False)
+  elif 'Pulls' == var:
+    for syst in MyConfig.GetSystematics():
+      if '__1down' in syst.Data():
+        continue
+      if '__1up' in syst.Data():
+         MakeFitPlot(results, syst.Data()[:-5], zrange=[-1,1])
+      else:
+         MakeFitPlot(results, syst.Data(), zrange=[-1,1])
+  else:
+    MakeRatioPlots(var,prefit=False,doChi2=True)
+    MakeRatioPlots(var+'_2TAG',prefit=False,doChi2=True)
