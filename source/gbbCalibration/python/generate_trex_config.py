@@ -19,6 +19,8 @@ parser.add_argument('--debug', type=int, default=2,
     help="Debug level for TRexFitter [default: 2]")
 parser.add_argument('--nosys', action='store_true',
     help="Run nominal-only fit")
+parser.add_argument('--doValid', action='store_true',
+    help="Make Validation Plots")
 args = parser.parse_args()
 
 import ConfigFunctions as config
@@ -33,6 +35,7 @@ bins = args.bins
 useMCstats = not args.noMCstat
 MCstatThreshold = 0.02
 year = args.year
+doValid=args.doValid
 
 MyConfig = config.LoadGlobalConfig()
 if args.cfg:
@@ -67,6 +70,8 @@ if args.cfg:
           useMCstats = int(tokens[1])
         elif tokens[0] == 'MCstatThreshold':
           MCstatThreshold = float(tokens[1])
+	elif tokens[0] == 'doValid':
+          doValid = int(tokens[1])
         elif tokens[0] == 'bins':
           bins = tokens[1]
         elif tokens[0] == 'year':
@@ -105,13 +110,14 @@ if doSystematics:
           ListOf2SidedSysts.append(sysName)
           twoSided = True
       if not twoSided:
-        ListOf1SidedSysts.append(sysName)
+        ListOf1SidedSysts.append(sysName+"__1up")
     else:
       if "__1down" not in sys.Data():
         ListOf1SidedSysts.append(sys.Data())
 
 ListOfFlavourPairs = MyConfig.GetFlavourPairs()
 ListOfTmplVars = MyConfig.GetTemplateVariables()
+ListOfPlotVariables = MyConfig.GetPlotVariables()
 if bins == "trkjet":
   ListOfPtBins = MyConfig.GetDiTrkJetRegions()
 elif bins == "fatjet":
@@ -138,7 +144,8 @@ def GetVarTitle(var):
     title += 'Non-muon-jet'
   elif 'mj' in var:
     title += 'Muon-jet'
-
+  else:
+    title += 'Fat-jet'
   if 'meanSd0' in var:
     title += ' #LT s_{d0} #GT'
 
@@ -159,6 +166,15 @@ def WriteRegionBlock(outfile,ptbin,var):
   outfile.write('  HistoName: "h_'+ptbin+'_'+var+'"\n') #TODO: use config.GetName() functions
   outfile.write('  VariableTitle: "'+GetVarTitle(var)+'"\n')
   outfile.write('  Label: "'+GetVarLabel(var)+'"\n')
+  outfile.write('\n')
+
+def WriteRegionBlockValid(outfile,ptbin,valid):
+  outfile.write('Region: "'+valid+'"\n')
+  outfile.write('  Type: VALIDATION\n')
+  outfile.write('  LogScale: TRUE\n')
+  outfile.write('  HistoName: "h_'+ptbin+'_'+valid+'"\n') #TODO: use config.GetName() functions
+  outfile.write('  VariableTitle: "'+GetVarTitle(valid)+'"\n')
+  outfile.write('  Label: "'+GetVarLabel(valid)+'"\n')
   outfile.write('\n')
 
 def WriteSampleBlock(outfile,flav):
@@ -224,7 +240,12 @@ def WriteConfigFile(ptbin,outdir):
     outfile.write('  HistoNameNominal: "_Nom"\n')
     outfile.write('  OutputDir: "'+outdir+'/TRExFit/"\n')
     outfile.write('  DebugLevel: 2\n')
-    outfile.write('  SystControlPlots: FALSE\n')
+    if doSystematics:
+    	outfile.write('  SystControlPlots: TRUE\n')
+	outfile.write('  GetChi2: STAT+SYST\n')
+    else:
+	outfile.write('  SystControlPlots: FALSE\n')
+    	outfile.write('  GetChi2: TRUE\n')
     if useMCstats:
       outfile.write('  UseGammaPulls: TRUE\n')
       outfile.write('  MCstatThreshold: {:.2f}\n'.format(MCstatThreshold))
@@ -252,7 +273,13 @@ def WriteConfigFile(ptbin,outdir):
         WriteRegionBlock(outfile,ptbin,var.Data())
       else:
         WriteRegionBlock(outfile,ptbin,var.Data())
-
+    if doValid:
+    	for valid in ListOfPlotVariables:
+      		if fitSF:
+        		WriteRegionBlockValid(outfile,ptbin,valid.Data()+'_2TAG')
+        		WriteRegionBlockValid(outfile,ptbin,valid.Data())
+      		else:
+        		WriteRegionBlockValid(outfile,ptbin,valid.Data())
     if not doAsimov:
       # write block for data
       outfile.write('Sample: "Data"\n')
