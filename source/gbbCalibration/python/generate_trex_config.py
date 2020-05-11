@@ -246,6 +246,7 @@ def WriteConfigFile(ptbin,outdir):
     else:
 	outfile.write('  SystControlPlots: FALSE\n')
     	outfile.write('  GetChi2: TRUE\n')
+    outfile.write('  PlotOptions: "CHI2"\n')
     if useMCstats:
       outfile.write('  UseGammaPulls: TRUE\n')
       outfile.write('  MCstatThreshold: {:.2f}\n'.format(MCstatThreshold))
