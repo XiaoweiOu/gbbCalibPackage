@@ -519,7 +519,8 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
       g_fitErr = TGraphAsymmErrors(nbins,bin_x,bin_y,err_x,err_x,err_y,err_y)
       g_fitErr.SetLineColor(kPink+9);
       g_fitErr.SetFillStyle(0)
-      g_fitErr.Draw('2')
+      g_fitErr.Draw('5')
+      leg.AddEntry(g_fitErr,"fit unc.","l")
       #AddHistogram(canv,g_fitErr,'2')
     leg.Draw()
     text = TLatex()
