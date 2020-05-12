@@ -69,6 +69,8 @@ for _file in ${CONFIGFILES[@]}; do
   if [ -f ${DIRNAME}/${_file} ] && [[ $_file == *.config ]]; then
     # runs fit and produces pre- and post-fit histograms and ranking plots
     trex-fitter hwfr "${DIRNAME}/${_file}"
+    trex-fitter d "${DIRNAME}/${_file}"
+    trex-fitter p "${DIRNAME}/${_file}"
   fi
 done
 

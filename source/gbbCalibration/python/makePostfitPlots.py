@@ -23,7 +23,7 @@ from PlotFunctions import *
 from TAxisFunctions import *
 import ConfigFunctions as config
 from ROOT import gROOT,SetOwnership,gStyle,TFile,Double
-from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine,TString
+from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine,TString, kPink
 
 gROOT.SetBatch(True)
 gROOT.SetStyle('ATLAS')
@@ -512,12 +512,15 @@ def MakeRatioPlots(var,prefit=True,doErr=True,doChi2=False,setLogy=False):
       bin_y = np.zeros(nbins)
       err_y = np.zeros(nbins)
       for ibin in range(1,nbins+1):
-        err_x[ibin-1] = (h_fitErr.GetBinLowEdge(ibin) - h_fitErr.GetBinLowEdge(ibin))/2
+	err_x[ibin-1] = (h_fitErr.GetBinWidth(ibin))/2
         bin_x[ibin-1] = h_fitErr.GetBinLowEdge(ibin) + err_x[ibin-1]
         bin_y[ibin-1] = h_mcSum.GetBinContent(ibin)
         err_y[ibin-1] = abs(h_fitErr.GetBinContent(ibin) - bin_y[ibin-1])
       g_fitErr = TGraphAsymmErrors(nbins,bin_x,bin_y,err_x,err_x,err_y,err_y)
-      g_fitErr.Draw('2')
+      g_fitErr.SetLineColor(kPink+9);
+      g_fitErr.SetFillStyle(0)
+      g_fitErr.Draw('5')
+      leg.AddEntry(g_fitErr,"fit unc.","l")
       #AddHistogram(canv,g_fitErr,'2')
     leg.Draw()
     text = TLatex()
