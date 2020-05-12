@@ -23,7 +23,7 @@ from PlotFunctions import *
 from TAxisFunctions import *
 import ConfigFunctions as config
 from ROOT import gROOT,SetOwnership,gStyle,TFile,Double
-from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine,TString
+from ROOT import TCanvas,TPad,TLegend,TH2D,THStack,TLatex,TGraphAsymmErrors,TLine,TString, kPink
 
 gROOT.SetBatch(True)
 gROOT.SetStyle('ATLAS')
