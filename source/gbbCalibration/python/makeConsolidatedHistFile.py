@@ -2,6 +2,7 @@ import argparse
 
 #----------------- variables ------------------------
 
+'''
 ListOfVariables_general = [
   'fjpt','fjm',
   'fjpt_2TAG','fjm_2TAG',
@@ -28,6 +29,16 @@ ListOfVariables_general = [
   'mjmeanSd0_2TAG_1MUON','nmjmeanSd0_2TAG_1MUON',
   'mjmeanSd0_NOT2TAG_1MUON','nmjmeanSd0_NOT2TAG_1MUON'
   ]
+'''
+
+ListOfVariables_general = [
+  'mjmeanSd0','nmjmeanSd0',
+  'mjmeanSd0_2TAG','nmjmeanSd0_2TAG',
+  'mjmeanSd0_NOT2TAG','nmjmeanSd0_NOT2TAG',
+  'mjpt','nmjpt',
+  'mjpt_NOT2TAG','mjpt_2TAG',
+  'nmjpt_NOT2TAG','nmjpt_2TAG'
+]
 
 ListOfVariables_r21 = ['SubjetBScore_Higgs','SubjetBScore_Top','SubjetBScore_QCD','SubjetBScore_f0','SubjetBScore_f0p25','SubjetBScore_Higgs_2TAG','SubjetBScore_Top_2TAG','SubjetBScore_QCD_2TAG','SubjetBScore_f0_2TAG','SubjetBScore_f0p25_2TAG']
 
@@ -80,9 +91,10 @@ from ROOT import TCanvas,TPad,TString
 
 # setting variables
 Lumi = config.GetLumi(args.year)
-print('Lumi is {}'.format(Lumi))
+print('Lumi is {0}'.format(Lumi))
 
 outfilename = args.outfile
+
 pathData, ListOfMCPaths, ListOfInclusiveMCPaths, xsecFile = config.GetPathsFromJSON(args.infiles)
 
 MyConfig = config.LoadGlobalConfig()
@@ -194,6 +206,7 @@ outfile=ROOT.TFile(outfilename,"RECREATE")
 for sys in ListOfSystematics:
   histHelper.ClearFileMap()
   syspath = sys.Data()+"/"
+
   if "Nom" in sys.Data():
     syspath = "Nominal/"
 
