@@ -13,7 +13,7 @@ parser.add_argument('--year', type=str, default="15+16",
 parser.add_argument('--debug', action='store_true',
     help="Add extra printouts")
 parser.add_argument('--plots', nargs='+',
-    help="List of plots to make. Options include 'SF','NF','Tmpl','Kine',...")
+    help="List of plots to make. Options include 'SF','NF','Tmpl','Kine','SubjetBScore'...")
 parser.add_argument('--asimov', action='store_true',
     help="Indicate if fit used MC pseudodata")
 args = parser.parse_args()
@@ -72,7 +72,6 @@ class FitResult():
 
 #-----------------------------------------------
 def ReadFitResults():
-
   if args.debug:
     print("####################")
     print("Reading Fit Results")
@@ -144,8 +143,9 @@ def ReadFitResults():
             row += 1
         elif readingNLL:
           nll = float(tokens[0])
+
           if args.debug:
-            print('  '+nll)
+            print('  '+str(nll))
 
     fitResults[region.Data()] = FitResult(nuisPars,matrix,nll)
   if args.debug:
@@ -575,7 +575,8 @@ def MakeTemplatePlots():
     #MakeRatioPlots(var.Data()+'_NOT2TAG',prefit=False,doChi2=True,setLogy=True)
 
 def MakeKinematicPlots():
-  for var in ['fjpt','fjm','mjpt','nmjpt']:
+  #for var in ['fjpt','fjm','mjpt','nmjpt']:
+   for var in ['mjpt','nmjpt']:
     MakeRatioPlots(var,prefit=True ,doChi2=True)
     MakeRatioPlots(var,prefit=False,doChi2=True)
 
@@ -585,11 +586,17 @@ def MakeKinematicPlots():
     #MakeRatioPlots(var+'_NOT2TAG',prefit=True ,doChi2=True)
     #MakeRatioPlots(var+'_NOT2TAG',prefit=False,doChi2=True)
 
+def MakeSubjetBScorePlots():
+   for var in ['SubjetBScore_Higgs_1MUON','SubjetBScore_Top_1MUON','SubjetBScore_QCD_1MUON','SubjetBScore_f0p25_1MUON']:
+    MakeRatioPlots(var,prefit=True ,doChi2=True)
+    MakeRatioPlots(var,prefit=False,doChi2=True)
+
 #-----------------------------------------------
 # Main function
 #-----------------------------------------------
 # Get fit results
 results = ReadFitResults()
+
 # Get input histograms
 infile = TFile("{0}/trex_input.root".format(args.input))
 
@@ -600,6 +607,8 @@ for var in args.plots:
     MakeTemplatePlots()
   elif 'Kine' == var:
     MakeKinematicPlots()
+  elif 'SubjetBScore' ==var:
+    MakeSubjetBScorePlots()
   elif 'NF' == var:
     for flav in MyConfig.GetFlavourPairs():
       MakeFitPlot(results, flav.Data())

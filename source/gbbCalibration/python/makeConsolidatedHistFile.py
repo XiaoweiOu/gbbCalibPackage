@@ -40,7 +40,7 @@ ListOfVariables_general = [
   'nmjpt_NOT2TAG','nmjpt_2TAG'
 ]
 
-ListOfVariables_r21 = ['SubjetBScore_Higgs','SubjetBScore_Top','SubjetBScore_QCD','SubjetBScore_f0','SubjetBScore_f0p25','SubjetBScore_Higgs_2TAG','SubjetBScore_Top_2TAG','SubjetBScore_QCD_2TAG','SubjetBScore_f0_2TAG','SubjetBScore_f0p25_2TAG']
+ListOfVariables_r21 = ['SubjetBScore_Higgs','SubjetBScore_Top','SubjetBScore_QCD','SubjetBScore_f0','SubjetBScore_f0p25','SubjetBScore_Higgs_2TAG','SubjetBScore_Top_2TAG','SubjetBScore_QCD_2TAG','SubjetBScore_f0_2TAG','SubjetBScore_f0p25_2TAG','SubjetBScore_Higgs_1MUON','SubjetBScore_Top_1MUON','SubjetBScore_QCD_1MUON','SubjetBScore_f0_1MUON','SubjetBScore_f0p25_1MUON']
 
 ListOfVariables_r20p7 = []
 

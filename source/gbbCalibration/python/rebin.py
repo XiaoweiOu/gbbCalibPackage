@@ -32,7 +32,7 @@ if infile.IsZombie():
   exit()
 
 # open output file
-outfile=TFile(args.outfile,"CREATE")
+outfile=TFile(args.outfile,"RECREATE")
 if outfile.IsZombie():
   print("Cannot create file "+args.outfile)
   exit()
@@ -281,6 +281,11 @@ for region in ListOfTJpt:
     RebinHistsAll(region,var)
     RebinHistsAll(region,TString(var.Data()+'_2TAG'))
     RebinHistsAll(region,TString(var.Data()+'_NOT2TAG'))
+
+  for var in [TString('SubjetBScore_Higgs_1MUON'),TString('SubjetBScore_Top_1MUON'),TString('SubjetBScore_QCD_1MUON'),TString('SubjetBScore_f0p25_1MUON')]:
+    RebinHistsAll(region,var)
+  #  RebinHistsAll(region,TString(var.Data()+'_2TAG'))
+
   # Copy plot variables from infile to outfile
   for var in ListOfPlotVars:
     if var in ListOfTmplVars:

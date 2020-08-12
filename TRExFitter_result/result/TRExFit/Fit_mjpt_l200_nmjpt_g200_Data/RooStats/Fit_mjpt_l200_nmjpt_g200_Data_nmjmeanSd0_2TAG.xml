@@ -1,0 +1,45 @@
+<!--
+This xml file created automatically on: 
+2020-8-1
+-->
+<!DOCTYPE Channel  SYSTEM 'HistFactorySchema.dtd'>  
+
+  <Channel Name="nmjmeanSd0_2TAG" InputFile="" >
+
+    <Data HistoName="nmjmeanSd0_2TAG_Data_regBin" InputFile="/home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_l200_nmjpt_g200_Data/Histograms/Fit_mjpt_l200_nmjpt_g200_Data_histos.root" HistoPath=""  /> 
+
+    <StatErrorConfig RelErrorThreshold="0.02" ConstraintType="Poisson" /> 
+
+    <Sample Name="BB"  HistoPath=""  HistoName="nmjmeanSd0_2TAG_BB_regBin"  InputFile="/home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_l200_nmjpt_g200_Data/Histograms/Fit_mjpt_l200_nmjpt_g200_Data_histos.root"  NormalizeByTheory="True" >
+      <StatError Activate="True"  InputFile=""  HistoName=""  HistoPath=""  /> 
+      <NormFactor Name="BB"  Val="1"  High="100"  Low="0"  Const="False"   /> 
+      <NormFactor Name="ScaleFactor"  Val="1"  High="10"  Low="0.1"  Const="False"   /> 
+    </Sample>
+
+
+    <Sample Name="BL"  HistoPath=""  HistoName="nmjmeanSd0_2TAG_BL_regBin"  InputFile="/home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_l200_nmjpt_g200_Data/Histograms/Fit_mjpt_l200_nmjpt_g200_Data_histos.root"  NormalizeByTheory="True" >
+      <StatError Activate="True"  InputFile=""  HistoName=""  HistoPath=""  /> 
+      <NormFactor Name="BL"  Val="1"  High="100"  Low="0"  Const="False"   /> 
+    </Sample>
+
+
+    <Sample Name="CC"  HistoPath=""  HistoName="nmjmeanSd0_2TAG_CC_regBin"  InputFile="/home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_l200_nmjpt_g200_Data/Histograms/Fit_mjpt_l200_nmjpt_g200_Data_histos.root"  NormalizeByTheory="True" >
+      <StatError Activate="True"  InputFile=""  HistoName=""  HistoPath=""  /> 
+      <NormFactor Name="CC"  Val="1"  High="100"  Low="0"  Const="False"   /> 
+    </Sample>
+
+
+    <Sample Name="CL"  HistoPath=""  HistoName="nmjmeanSd0_2TAG_CL_regBin"  InputFile="/home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_l200_nmjpt_g200_Data/Histograms/Fit_mjpt_l200_nmjpt_g200_Data_histos.root"  NormalizeByTheory="True" >
+      <StatError Activate="True"  InputFile=""  HistoName=""  HistoPath=""  /> 
+      <NormFactor Name="CL"  Val="1"  High="100"  Low="0"  Const="False"   /> 
+    </Sample>
+
+
+    <Sample Name="LL"  HistoPath=""  HistoName="nmjmeanSd0_2TAG_LL_regBin"  InputFile="/home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_l200_nmjpt_g200_Data/Histograms/Fit_mjpt_l200_nmjpt_g200_Data_histos.root"  NormalizeByTheory="True" >
+      <StatError Activate="True"  InputFile=""  HistoName=""  HistoPath=""  /> 
+      <NormFactor Name="LL"  Val="1"  High="100"  Low="0"  Const="False"   /> 
+    </Sample>
+
+
+
+  </Channel>  

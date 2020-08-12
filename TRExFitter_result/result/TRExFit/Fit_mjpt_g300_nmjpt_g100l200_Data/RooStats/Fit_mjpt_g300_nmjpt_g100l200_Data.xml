@@ -1,0 +1,20 @@
+<!--
+This xml file created automatically on: 
+2020-8-1
+-->
+<!DOCTYPE Combination  SYSTEM 'HistFactorySchema.dtd'>
+
+<Combination OutputFilePrefix="/home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_g300_nmjpt_g100l200_Data/RooStats/Fit_mjpt_g300_nmjpt_g100l200_Data" >
+
+
+  <Input>.//home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_g300_nmjpt_g100l200_Data/RooStats//Fit_mjpt_g300_nmjpt_g100l200_Data_mjmeanSd0_2TAG.xml</Input>
+  <Input>.//home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_g300_nmjpt_g100l200_Data/RooStats//Fit_mjpt_g300_nmjpt_g100l200_Data_mjmeanSd0.xml</Input>
+  <Input>.//home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_g300_nmjpt_g100l200_Data/RooStats//Fit_mjpt_g300_nmjpt_g100l200_Data_nmjmeanSd0_2TAG.xml</Input>
+  <Input>.//home/ouxiaowei/gbbCalibPackage/TRExFitter_result/result/TRExFit/Fit_mjpt_g300_nmjpt_g100l200_Data/RooStats//Fit_mjpt_g300_nmjpt_g100l200_Data_nmjmeanSd0.xml</Input>
+
+  <Measurement Name="Fit_mjpt_g300_nmjpt_g100l200_Data" Lumi="1" LumiRelErr="0.1" ExportOnly="True"  >
+    <POI>ScaleFactor</POI>  
+    <ParamSetting Const="True">Lumi</ParamSetting>
+  </Measurement> 
+
+</Combination>

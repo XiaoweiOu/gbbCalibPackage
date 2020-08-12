@@ -1,0 +1,7 @@
+Universe   = vanilla
+Executable = /home/ouxiaowei/gbbCalibPackage/run_data/job_file_5/runjob.sh
+Arguments  =
+Log        = /home/ouxiaowei/gbbCalibPackage/run_data/job_file_5/example.log
+Output     = /home/ouxiaowei/gbbCalibPackage/run_data/job_file_5/example.out
+Error      = /home/ouxiaowei/gbbCalibPackage/run_data/job_file_5/example.err
+Queue

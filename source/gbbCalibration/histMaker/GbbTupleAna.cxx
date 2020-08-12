@@ -428,7 +428,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //=========================================
 
   std::vector<float> selected_jets_pt;
-  std::vector<int> selected_jets_ind;
+  std::vector<int> selected_jets_ind;//index!
 
   for(unsigned int i=0; i<this->jet_pt->size(); i++){
 
@@ -714,7 +714,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   float btag_sf(-1.);
   if(m_Debug) std::cout<<"processgbb(): Getting tags"<<std::endl;
   if(!(m_RunMode & RunMode::FILL_REWEIGHT)){
-    isTagged = m_bTagger->accept(gbbcand,btag_sf);
+    isTagged = m_bTagger->accept(gbbcand,btag_sf);//source/gbbCalibration/histMaker/BTagging/XbbScoreTagger.cxx
   } else {
     std::cout << " not tagging mode. done." << std::endl;
     return false;

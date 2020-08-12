@@ -1,0 +1,27 @@
+{
+  "xsecFile" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/data/PMGxsecDB_mc16_use.txt",
+  "BasePath" : "/home/ouxiaowei/gbbCalibPackage/run/",
+  "Data" : "result_data/data_result.root",
+  "MuBase" : "result_MC/",
+  "IncBase" : "result_MC/",
+  "Sys" : ["Nominal/"],
+  "MuFilteredMC" : [
+"user.aemerman.mc16_13TeV.426351.DAOD_FTAG1.21.2.108_FEB14-2_vr_mc16d_Ghh_noSys.e7358_s3126_r10201_p4060_tuple/outhist_user.aemerman.mc16_13TeV.426351.DAOD_FTAG1.21.2.108_FEB14-2_vr_mc16d_Ghh_noSys.e7358_s3126_r10201_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.427005.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_mufilt_noSys.e5660_e5984_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.427005.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_mufilt_noSys.e5660_e5984_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.427005.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_mufilt_noSys.e5660_e5984_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.427005.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_mufilt_noSys.e5660_e5984_s3126_r10201_r10210_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.427106.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_mufilt_noSys.e5839_e5984_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.427106.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_mufilt_noSys.e5839_e5984_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.427106.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_mufilt_noSys.e5839_e5984_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.427106.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_mufilt_noSys.e5839_e5984_s3126_r10201_r10210_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.427107.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_mufilt_noSys.e5839_e5984_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.427107.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_mufilt_noSys.e5839_e5984_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.427107.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_mufilt_noSys.e5839_e5984_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.427107.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_mufilt_noSys.e5839_e5984_s3126_r10201_r10210_p4060_tuple.root"],
+  "InclusiveMC" : [
+"user.aemerman.mc16_13TeV.361023.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361023.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361023.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361023.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361024.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361024.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361024.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361024.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361025.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361025.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361025.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361025.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361026.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3569_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361026.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3569_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361026.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3569_e5984_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361026.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3569_e5984_s3126_r10201_r10210_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361027.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361027.DAOD_FTAG1.21.2.108_FEB14_vr_mc16a_noSys.e3668_s3126_r9364_r9315_p4060_tuple.root",
+"user.aemerman.mc16_13TeV.361027.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple/outhist_user.aemerman.mc16_13TeV.361027.DAOD_FTAG1.21.2.108_FEB14_vr_mc16d_noSys.e3668_s3126_r10201_r10210_p4060_tuple.root"]
+}

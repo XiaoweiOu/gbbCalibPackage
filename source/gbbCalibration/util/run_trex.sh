@@ -54,12 +54,17 @@ shift "$(($OPTIND -1))"
 # check input arguments
 [ -z $INFILE ] && loud_exit "Input file not set"
 [ -z $DIRNAME ] && loud_exit "Output directory not set"
-[ -d ${DIRNAME} ] && loud_exit "${DIRNAME} exists already"
+#[ -d ${DIRNAME} ] && loud_exit "${DIRNAME} exists already"
+
+if [ -d ${DIRNAME} ];then #remove existing directory
+ rm -r "${DIRNAME}"
+fi
 
 mkdir -p "${DIRNAME}"
 cp ${INFILE} ${DIRNAME}/trex_input.root
 
 # make TRExFitter config files
+
 python ${GBB_BUILD_DIR}/../source/gbbCalibration/python/generate_trex_config.py ${DIRNAME} ${CONFIGARGS} ${CONFIGNAME}
 [ $? -eq 0 ] || loud_exit "Failed to make config files"
 

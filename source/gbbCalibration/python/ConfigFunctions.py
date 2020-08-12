@@ -37,6 +37,7 @@ def GetPathsFromJSON(infile):
       #    muFiltMCPaths = [tbl["BasePath"]+tbl["MuBase"]+syspath+path for path in tbl["MuFilteredMC"]]
       #  if "InclusiveMC" in tbl:
       #    inclMCPaths = [tbl["BasePath"]+tbl["IncBase"]+syspath+path for path in tbl["InclusiveMC"]]
+
   return dataPath, muFiltMCPaths, inclMCPaths, xsecFile
 
 
@@ -79,7 +80,9 @@ def GetChannelWeights(xsecfile):
 #-----------------------------------------------
 def GetChannelNumber(filename):
   # Assume filename contains _13TeV.(channel).(other info)
+
   result = re.search(r'(?<=mc1(\d)_13TeV\.)[0-9]+',filename)
+ 
   if result:
     channel = int(result.group())
     if channel:
@@ -91,8 +94,9 @@ def GetChannelNumber(filename):
 
 #-----------------------------------------------
 def LoadGlobalConfig():
-  from ROOT import GlobalConfig
-  return GlobalConfig('GlobalConfig.cfg')
+  import ROOT
+#  from ROOT import GlobalConfig
+  return ROOT.GlobalConfig('GlobalConfig.cfg')
 
 
 #-----------------------------------------------
@@ -152,7 +156,9 @@ class HistHelper:
         return None
 
       channel = GetChannelNumber(path)
+
       bookkeep_hist = file_curr.Get("Hist_BookKeeping") #SumOfWeights in AOD is in Bin 4
+
       if self.MapOfChannelWeights[channel] == 0:
         print "missing channel: ",channel
         return None
