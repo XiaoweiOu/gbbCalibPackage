@@ -1,0 +1,401 @@
+import argparse
+import os
+
+parser = argparse.ArgumentParser(description='Write config files used to run TRExFitter.')
+parser.add_argument('output', help="Name of output directory")
+parser.add_argument('--bins', type=str, default="trkjet",
+    help="Use trkjet bins, fatjet bins or no bins (incl) [default: trkjet]")
+parser.add_argument('--year', type=str, default="15+16",
+    help="Year determines luminosity to normalize to [default: 15+16]")
+parser.add_argument('--asimov', action='store_true',
+    help="Do Asimov fit rather than fitting to data")
+parser.add_argument('--noMCstat', action='store_true',
+    help="Don't use MC stat errors in fit for comparison to old framework")
+parser.add_argument('--fitSF', action='store_true',
+    help="Fit scale factor directly (rather than only correcting flavor fractions)")
+parser.add_argument('--cfg', type=str,
+    help="Name of extra config file (located in gbbCalibration/data/configs)")
+parser.add_argument('--debug', type=int, default=2,
+    help="Debug level for TRexFitter [default: 2]")
+parser.add_argument('--nosys', action='store_true',
+    help="Run nominal-only fit")
+parser.add_argument('--doValid', action='store_true',
+    help="Make Validation Plots")
+args = parser.parse_args()
+
+import ConfigFunctions as config
+from ROOT import TString
+
+# define arguments
+debug = args.debug
+doAsimov = args.asimov
+doSystematics = not args.nosys
+fitSF = args.fitSF
+bins = args.bins
+useMCstats = not args.noMCstat
+MCstatThreshold = 0.02
+year = args.year
+doValid=args.doValid
+
+MyConfig = config.LoadGlobalConfig()
+if args.cfg:
+  trexConfig = config.GetDataFile('configs/'+args.cfg)
+  if not trexConfig:
+    exit()
+  else:
+    # Parse config file
+    # Expect each line to be in the form;
+    #   Key Value1(,Value2...)
+    with open(trexConfig,'r') as f:
+      line = f.readline()
+      while line:
+        line = line.strip()
+        if not line:
+          line = f.readline()
+          continue
+        elif line[0] == '#':
+          line = f.readline()
+          continue
+        tokens = line.split()
+        # check key against possible arguments and store value(s) in global variable
+        if tokens[0] == 'Debug':
+          debug = tokens[1]
+        elif tokens[0] == 'doAsimov':
+          doAsimov = int(tokens[1])
+        elif tokens[0] == 'doSystematics':
+          doSystematics = int(tokens[1])
+        elif tokens[0] == 'fitSF':
+          fitSF = int(tokens[1])
+        elif tokens[0] == 'useMCstats':
+          useMCstats = int(tokens[1])
+        elif tokens[0] == 'MCstatThreshold':
+          MCstatThreshold = float(tokens[1])
+	elif tokens[0] == 'doValid':
+          doValid = int(tokens[1])
+        elif tokens[0] == 'bins':
+          bins = tokens[1]
+        elif tokens[0] == 'year':
+          year = tokens[1]
+        else:
+          print('Unrecognized option string: '+tokens[0])
+
+        line = f.readline()
+
+if doSystematics:
+  ListOfSystematics = MyConfig.GetSystematics()
+  ListOfSystematicsSd0 = MyConfig.GetSystematics_Sd0()
+  #ListOfSystematicsWeightVar = MyConfig.GetSystematics_WeightVar()
+  # Reorganize systematics lists into 1-sided/2-sided
+  ListOf2SidedSysts = []
+  ListOf1SidedSysts = []
+  for sys in ListOfSystematics:
+    twoSided = False
+    if "__1up" in sys.Data():
+      sysName = sys.Data()[:-5]
+      for sys2 in ListOfSystematics:
+        if sysName in sys2.Data() and "__1down" in sys2.Data():
+          ListOf2SidedSysts.append(sysName)
+          twoSided = True
+      if not twoSided:
+        ListOf1SidedSysts.append(sysName+"__1up")
+    else:
+      if "__1down" not in sys.Data():
+        ListOf1SidedSysts.append(sys.Data())
+  for sys in ListOfSystematicsSd0:
+    twoSided = False
+    if "__1up" in sys.Data():
+      sysName = sys.Data()[:-5]
+      for sys2 in ListOfSystematicsSd0:
+        if sysName in sys2.Data() and "__1down" in sys2.Data():
+          ListOf2SidedSysts.append(sysName)
+          twoSided = True
+      if not twoSided:
+        ListOf1SidedSysts.append(sysName+"__1up")
+    else:
+      if "__1down" not in sys.Data():
+        ListOf1SidedSysts.append(sys.Data())
+
+FatJetFlavours = MyConfig.GetFatJetFlavours()
+if MyConfig.MergeFlavours():
+  FatJetFlavours = MyConfig.GetFlavourGroups()
+ListOfTmplVars = MyConfig.GetTemplateVariables()
+ListOfPlotVariables = MyConfig.GetPlotVariables()
+if bins == "trkjet":
+  ListOfPtBins = MyConfig.GetDiTrkJetRegions()
+elif bins == "fatjet":
+  ListOfPtBins = MyConfig.GetFatJetRegions()
+elif bins == "incl":
+  ListOfPtBins = [ TString("Incl") ]
+else:
+  print("Please choose either trkjet or fatjet binning. "+bins+" is not an option")
+
+Lumi = config.GetLumi(year)
+print("Lumi is "+str(Lumi)+" /pb.")
+
+#TODO: centralize
+colorDict = {
+  'BB' : '0,0,202',
+  'BL' : '109,176,253',
+  'CC' : '0,83,0',
+  'CL' : '0,253,172',
+  'LL' : '255,204,0'
+  }
+  #'BC' : '109,176,253', #TODO
+
+def getColorStr(flav):
+  for nf in colorDict:
+    if MyConfig.MergeFlavours():
+      return colorDict[flav]
+    else:
+      return colorDict[(MyConfig.GetFlavourGroup(flav)).Data()]
+  return '0,0,0'
+
+def GetVarTitle(var):
+  title = ''
+  if 'nmj' in var:
+    title += 'Non-muon-jet'
+  elif 'mj' in var:
+    title += 'Muon-jet'
+  else:
+    title += 'Fat-jet'
+  if 'meanSd0' in var:
+    title += ' #LT s_{d0} #GT'
+
+  return title
+
+def GetVarLabel(var):
+  if 'NOT2TAG' in var:
+    return 'failed double-B tag'
+  elif '2TAG' in var:
+    return 'passed double-B tag'
+  else:
+    return 'pre B-tagging'
+
+def WriteRegionBlock(outfile,ptbin,var):
+  outfile.write('Region: "'+var+'"\n')
+  outfile.write('  Type: SIGNAL\n')
+  outfile.write('  LogScale: TRUE\n')
+  outfile.write('  HistoName: "h_'+ptbin+'_'+var+'"\n') #TODO: use config.GetName() functions
+  outfile.write('  VariableTitle: "'+GetVarTitle(var)+'"\n')
+  outfile.write('  Label: "'+GetVarLabel(var)+'"\n')
+  outfile.write('\n')
+
+def WriteRegionBlockValid(outfile,ptbin,valid):
+  outfile.write('Region: "'+valid+'"\n')
+  outfile.write('  Type: VALIDATION\n')
+  outfile.write('  LogScale: TRUE\n')
+  outfile.write('  HistoName: "h_'+ptbin+'_'+valid+'"\n') #TODO: use config.GetName() functions
+  outfile.write('  VariableTitle: "'+GetVarTitle(valid)+'"\n')
+  outfile.write('  Label: "'+GetVarLabel(valid)+'"\n')
+  outfile.write('\n')
+
+def WriteNormFactorBlocks(outfile):
+  regStr = ''
+  for var in ListOfTmplVars:
+    if fitSF:
+      regStr += '{0},{0}_2TAG,'.format(var.Data())
+    else:
+      regStr += '{0},'.format(var.Data())
+
+  for flavGrp in MyConfig.GetFlavourGroups():
+    sampleStr = flavGrp.Data()
+    if not MyConfig.MergeFlavours():
+      sampleStr = ''
+      for flav in MyConfig.GetFlavoursInGroup(flavGrp):
+        sampleStr =+ '{0},'.format(flav.Data())
+      sampleStr = sampleStr[:-1]
+
+    outfile.write('NormFactor: "{}"\n'.format(flavGrp.Data()))
+    #outfile.write('  Regions: "{}"\n'.format(regStr[:-1]))
+    outfile.write('  Samples: {}\n'.format(sampleStr))
+    outfile.write('  Title: "NF_{}"\n'.format(flavGrp.Data()))
+    outfile.write('  Nominal: 1\n')
+    outfile.write('  Min: 0.1\n')
+    outfile.write('  Max: 10\n')
+    outfile.write('\n')
+
+def WriteSampleBlock(outfile,flav):
+  regStr = ''
+  for var in ListOfTmplVars:
+    if not MyConfig.MergeFlavours():
+      if flav[2] == 'x' and 'j3' in var.Data():
+        continue
+      if flav[1] == 'x' and any(x in var.Data() for x in ['j2','nmj']):
+        continue
+
+    if fitSF:
+      regStr += '"{0}","{0}_2TAG",'.format(var.Data())
+    else:
+      regStr += '"{0}",'.format(var.Data())
+
+  outfile.write('Sample: "'+flav+'"\n')
+  outfile.write('  Regions: {}\n'.format(regStr[:-1]))
+  outfile.write('  Type: BACKGROUND\n')
+  outfile.write('  Title: "'+flav+'"\n')
+  outfile.write('  HistoNameSuff: "_'+flav+'"\n')
+  outfile.write('  FillColorRGB: '+getColorStr(flav)+'\n')
+  outfile.write('  LineColorRGB: 0,0,0\n')
+  #outfile.write('  NormFactor: "'+flav+'",1,0,100\n')
+  if useMCstats:
+    outfile.write('  UseMCstat: TRUE\n')
+  else:
+    outfile.write('  UseMCstat: FALSE\n')
+  outfile.write('\n')
+
+def WriteSystBlock2Sided(outfile,sys):
+  outfile.write('Systematic: "'+sys+'"\n')
+  outfile.write('  Type: HISTO\n')
+  outfile.write('  Title: "'+sys+'"\n')
+  outfile.write('  Samples: all\n')
+  outfile.write('  HistoNameSufUp: "_'+sys+'__1up"\n')
+  outfile.write('  HistoNameSufDown: "_'+sys+'__1down"\n')
+  outfile.write('\n')
+
+def WriteSystBlock1Sided(outfile,sys):
+  outfile.write('Systematic: "'+sys+'"\n')
+  outfile.write('  Type: HISTO\n')
+  outfile.write('  Title: "'+sys+'"\n')
+  outfile.write('  Samples: all\n')
+  outfile.write('  HistoNameSufUp: "_'+sys+'"\n')
+  outfile.write('  Symmetrisation: ONESIDED\n')
+  outfile.write('\n')
+
+def WriteConfigFile(ptbin,outdir):
+  with open(outdir+'/fit_'+ptbin+'.config','w') as outfile:
+    jobStr = 'Fit_'+ptbin
+    if doAsimov:
+      jobStr += '_Asimov'
+    else:
+      jobStr += '_Data'
+    # write Job block
+    outfile.write('Job: "'+jobStr+'"\n')
+    #outfile.write('  Label: "R21"\n')
+    outfile.write('  CmeLabel: "13 TeV"\n')
+    outfile.write('  LumiLabel: "%1.1f fb^{-1}"\n' % float(Lumi/1000.))
+    if fitSF:
+      outfile.write('  POI: "ScaleFactor"\n')
+    else:
+      outfile.write('  POI: "BB"\n')
+    outfile.write('  ReadFrom: HIST\n')
+    outfile.write('  HistoPath: "'+outdir+'/"\n')
+    outfile.write('  HistoFile: "trex_input"\n')
+    outfile.write('  HistoNameNominal: "_Nom"\n')
+    outfile.write('  OutputDir: "'+outdir+'/TRExFit/"\n')
+    outfile.write('  DebugLevel: 2\n')
+    if doSystematics:
+    	outfile.write('  SystControlPlots: TRUE\n')
+	outfile.write('  GetChi2: STAT+SYST\n')
+    else:
+	outfile.write('  SystControlPlots: FALSE\n')
+    	outfile.write('  GetChi2: TRUE\n')
+    outfile.write('  PlotOptions: "CHI2"\n')
+    if useMCstats:
+      outfile.write('  UseGammaPulls: TRUE\n')
+      outfile.write('  MCstatThreshold: {:.2f}\n'.format(MCstatThreshold))
+    else:
+      outfile.write('  UseGammaPulls: FALSE\n')
+    outfile.write('\n')
+
+    # write Fit block
+    outfile.write('Fit: "myFit"\n')
+    outfile.write('  FitType: SPLUSB\n')
+    outfile.write('  FitRegion: CRSR\n')
+    outfile.write('  GetGoodnessOfFit: TRUE\n')
+    if doAsimov:
+      outfile.write('  FitBlind: TRUE\n')
+      outfile.write('  POIAsimov: 1\n')
+    else:
+      outfile.write('  FitBlind: FALSE\n')
+    outfile.write('\n')
+
+    # write region blocks
+    for var in ListOfTmplVars:
+      if fitSF:
+        WriteRegionBlock(outfile,ptbin,var.Data()+'_2TAG')
+        #WriteRegionBlock(outfile,ptbin,var.Data()+'_NOT2TAG')
+        WriteRegionBlock(outfile,ptbin,var.Data())
+      else:
+        WriteRegionBlock(outfile,ptbin,var.Data())
+
+    if doValid:
+    	for valid in ListOfPlotVariables:
+      		if fitSF:
+        		WriteRegionBlockValid(outfile,ptbin,valid.Data()+'_2TAG')
+        		WriteRegionBlockValid(outfile,ptbin,valid.Data())
+      		else:
+        		WriteRegionBlockValid(outfile,ptbin,valid.Data())
+
+    WriteNormFactorBlocks(outfile)
+
+    if not doAsimov:
+      # write block for data
+      outfile.write('Sample: "Data"\n')
+      outfile.write('  Title: "Data"\n')
+      outfile.write('  Type: DATA\n')
+      outfile.write('  HistoNameSuff: "_Data"\n')
+      outfile.write('\n')
+
+    # write blocks for mc samples
+    for flav in FatJetFlavours:
+      #if 'xx' in flav.Data():
+      #  continue
+      WriteSampleBlock(outfile,flav.Data())
+
+    if fitSF:
+      #outfile.write('Region: "NEvts_2TAG"\n')
+      #outfile.write('  Type: SIGNAL\n')
+      #outfile.write('  HistoName: "h_'+ptbin+'_NEvts_2TAG"\n') #TODO: use config.GetName() functions
+      #outfile.write('  VariableTitle: "N_{Events}^{BB-tagged}"\n')
+      #outfile.write('  Label: "BB-tagged Events"\n')
+      #outfile.write('\n')
+
+      #outfile.write('NormFactor: "ScaleFactor"\n')
+      #outfile.write('  Samples: "BB"\n')
+      #outfile.write('  Regions: "NEvts_2TAG"\n')
+      #outfile.write('  Title: "ScaleFactor"\n')
+      #outfile.write('  Nominal: 1\n')
+      #outfile.write('  Min: 0\n')
+      #outfile.write('  Max: 10\n')
+      #outfile.write('\n')
+
+      outfile.write('NormFactor: "ScaleFactor"\n')
+      outfile.write('  Samples: "BB"\n')
+      outfile.write('  Regions: ')
+      for var in ListOfTmplVars[:-1]:
+        outfile.write('"'+var.Data()+'_2TAG",')
+      outfile.write('"'+ListOfTmplVars[-1].Data()+'_2TAG"\n')
+      outfile.write('  Title: "ScaleFactor"\n')
+      outfile.write('  Nominal: 1\n')
+      outfile.write('  Min: 0.1\n')
+      outfile.write('  Max: 10\n')
+      outfile.write('\n')
+      #outfile.write('NormFactor: "AntiScaleFactor"\n')
+      #outfile.write('  Samples: "BB"\n')
+      #outfile.write('  Regions: "mjmeanSd0_NOT2TAG","nmjmeanSd0_NOT2TAG"\n')
+      #outfile.write('  Title: "ScaleFactor"\n')
+      #outfile.write('  Nominal: 1\n')
+      #outfile.write('  Min: 0.1\n')
+      #outfile.write('  Max: 10\n')
+      #outfile.write('  Expression: (1/ScaleFactor):ScaleFactor[1.,0.1,10.]\n')
+      #outfile.write('\n')
+
+    if doSystematics:
+      # write systematics blocks
+      for sys in ListOf1SidedSysts:
+        WriteSystBlock1Sided(outfile,sys)
+      for sys in ListOf2SidedSysts:
+        WriteSystBlock2Sided(outfile,sys)
+
+### All necessary functions defined, now do the work ###
+outdir = args.output
+if not os.path.isdir(outdir):
+  makeDir = raw_input('The output directory does not exist. Create? [y/n] ')
+  if makeDir.lower() == 'y':
+    os.mkdir(outdir)
+  else:
+    print('Exiting...')
+    exit()
+
+for ptbin in ListOfPtBins:
+  WriteConfigFile(ptbin.Data(),outdir)
+

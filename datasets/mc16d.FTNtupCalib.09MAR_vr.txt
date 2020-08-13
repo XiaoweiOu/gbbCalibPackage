@@ -1,0 +1,10 @@
+user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d.e7142_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.364704.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d.e7142_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.364705.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d.e7142_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.364706.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d.e7142_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.364707.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d.e7142_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.800031.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d_mufilt.e7876_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.800032.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d_mufilt.e7876_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.800033.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d_mufilt.e7876_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.800034.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d_mufilt.e7876_s3126_r10201_p4060_tuple.root
+user.aemerman.mc16_13TeV.800035.DAOD_FTAG1.21.2.108_09MAR_vr_mc16d_mufilt.e7876_s3126_r10201_p4060_tuple.root

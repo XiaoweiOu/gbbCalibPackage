@@ -1,0 +1,11 @@
+user.aemerman.mc16_13TeV.361023.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d.e3668_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.361024.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d.e3668_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.361025.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d.e3668_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.361026.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d.e3569_e5984_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.361027.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d.e3668_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.426351.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d_Ghh_nosys.e7358_e7400_s3126_r10201_p3736_tuple.root
+user.aemerman.mc16_13TeV.427003.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d_mufilt.e5660_e5984_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.427004.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d_mufilt.e5660_e5984_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.427005.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d_mufilt.e5660_e5984_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.427106.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d_mufilt.e5839_e5984_s3126_r10201_r10210_p3736_tuple.root
+user.aemerman.mc16_13TeV.427107.DAOD_FTAG1.21.2.90_NOV22_vr_mc16d_mufilt.e5839_e5984_s3126_r10201_r10210_p3736_tuple.root

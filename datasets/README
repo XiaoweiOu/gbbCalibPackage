@@ -1,0 +1,6 @@
+MAR02 ntuples are updated to use JZXWithSW samples for multijet MC and period containers for data
+
+FEB14 ntuples are updated to AnalysisBase,21.2.108 for the 201903 b-tagging collection and HbbTagger tool
+  Fixes bug to TRK systematics in NOV22 ntuples
+
+NOV22 ntuples include new preselection (fatjet containing track-jet with muon) and track slimming, as well as updated JET systematics and added TRK uncertainties on VR jets. Also expanded set of included triggers and removed some branches. Framework not fully compatible with older samples.

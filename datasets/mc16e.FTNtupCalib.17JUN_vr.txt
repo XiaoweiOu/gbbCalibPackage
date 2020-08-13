@@ -1,0 +1,10 @@
+user.aemerman.mc16_13TeV.800031.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_mufilt_min.e7876_s3126_r10724_p4060_tuple.root
+user.aemerman.mc16_13TeV.800032.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_mufilt_min.e7876_s3126_r10724_p4060_tuple.root
+user.aemerman.mc16_13TeV.800033.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_mufilt_min.e7876_s3126_r10724_p4060_tuple.root
+user.aemerman.mc16_13TeV.800034.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_mufilt_min.e7876_s3126_r10724_p4060_tuple.root
+user.aemerman.mc16_13TeV.800035.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_mufilt_min.e7876_s3126_r10724_p4060_tuple.root
+user.izvelisc.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_min.e7142_s3126_r10724_p4060_tuple.root
+user.izvelisc.mc16_13TeV.364704.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_min.e7142_s3126_r10724_p4060_tuple.root
+user.izvelisc.mc16_13TeV.364705.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_min.e7142_s3126_r10724_p4060_tuple.root
+user.izvelisc.mc16_13TeV.364706.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_min.e7142_s3126_r10724_p4060_tuple.root
+user.izvelisc.mc16_13TeV.364707.DAOD_FTAG1.21.2.108_17JUN-1_vr_mc16e_min.e7142_s3126_r10724_p4060_tuple.root

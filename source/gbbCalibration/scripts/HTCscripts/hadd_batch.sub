@@ -1,0 +1,10 @@
+
+executable	=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/scripts/HTCscripts/run_hadd_hist_batch.sh
+transfer_executable=True
+arguments	= $(FILEDIR) $(DO_MCONLY)
+output		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_hadd_hist_batch.$(Cluster).$(Process).out
+error		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_hadd_hist_batch.$(Cluster).$(Process).err
+log		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_hadd_hist_batch.$(Cluster).$(Process).log
+RequestMemory	= 4000
++RequestRuntime = 3600
+queue

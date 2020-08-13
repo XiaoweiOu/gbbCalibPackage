@@ -1,0 +1,28 @@
+Updating framework for new ntuples (assuming differences are only in some branches)
+   1. Store a copy of Tuple.h just in case
+   2. Open the new ntuple and run MakeClass() on the nominal tree. The generated *.C file can be discarded, and the *.h will become the new Tuple.h
+```
+root [3] FlavourTagging_Nominal->MakeClass()
+Info in <TTreePlayer::MakeClass>: Files: FlavourTagging_Nominal.h and FlavourTagging_Nominal.C generated from TTree: FlavourTagging_Nominal
+```
+   3. Make the following modifications to FlavourTagging_Nominal.h:
+      * Change the class name and include guard to TupleAna everywhere
+      * Add line ```#include <iostream>```
+      * Add line ```using namespace std;```
+      * Change the declaration of Init from
+        ```virtual void     Init(TTree *tree);``` to
+        ```virtual void     Init(TTree *tree, TString sysName = "Nom");```
+      * Change the constructor to call Init only if a TTree is provided, i.e. from
+        ```
+        if (tree == 0) {
+          ...
+        }
+        Init(tree);
+        ```
+        to
+        ```
+        if (tree == 0) {
+          std::cout<<"TupleAna constructor, no tree specified"<<std::endl;
+        } else Init(tree);
+        ```
+    4. Make other changes as necessary to GbbTupleAna code to account for new/changed branches etc

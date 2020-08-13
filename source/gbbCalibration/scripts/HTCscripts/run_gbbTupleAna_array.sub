@@ -1,0 +1,10 @@
+
+executable	=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/scripts/HTCscripts/run_gbbTupleAna_arrayList.sh
+transfer_executable=True
+arguments	= $(IN_PATH) $(SAMP) $(OUTDIR) $(TREENAME) $(CONFIGNAME) $(N_FILESPERJOB) $(Cluster) $(Process)
+output		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_gbbTupleAna_array.$(Cluster).$(Process).out
+error		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_gbbTupleAna_array.$(Cluster).$(Process).err
+log		=/afs/cern.ch/user/a/aemerman/workarea/gbbCalibration/rel20p7Code/gbbCalibration2016/logs/run_gbbTupleAna_array.$(Cluster).$(Process).log
+RequestMemory	= 6000
++RequestRuntime = 3600
+queue $(NJOBS) 
