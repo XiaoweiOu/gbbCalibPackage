@@ -1,0 +1,200 @@
+image: lukasheinrich/recast_cvmfs_assisted
+
+##
+## Various steps to be followed by the build
+##
+stages:
+  - build
+  - hstep
+  - wstep
+  - flsstep
+  - draw
+  - imagebuild
+  - cleanup
+
+## Checkout the submodule 
+variables:
+  GIT_SUBMODULE_STRATEGY: normal
+  BUILD_IMAGE: atlas/analysisbase:21.2.91 
+##
+## Common setup for all jobs
+##
+before_script:
+  - set +e
+  - source setup.sh #sources the setup IN the TREXfitter package (consistent with user's setup)
+  - export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}$PWD/build/lib
+  - root -l -b -q
+
+##
+## "Prepare" step: first compiles the code
+##    Artifact: keeps the log file of the compilation
+##
+compile:
+  stage: build
+  script:
+     - mkdir -p build && cd build
+     - cmake .. | tee cmake.log
+     - make clean #make sure we don't have residual compilation results
+     - make 2>&1 | tee -a cmake.log  #dump the log files
+  artifacts:
+     paths:
+      - build
+
+##
+## "Prepare" step: in parallel, dumps the inputs of the test
+##    Artifact: keeps the ExampleInputs folder
+##
+input_prod:
+    stage: build
+    script:
+      - root -l -b -q CreateHistograms.C
+      - ls -lrth ExampleInputs
+    artifacts:
+      paths:
+        - ExampleInputs
+
+##
+## "Hstep" step: produces the TRExFitter
+##    Artifact: keeps the FitExample folder
+##
+histograms:
+    stage: hstep
+    script:
+      - trex-fitter h config/myFit.config
+      - ls
+      - ls FitExample/Histograms/
+    artifacts:
+      paths:
+        - FitExample
+
+##
+## "Wsetp" step: produces the workspace
+##    Artifact: keeps the FitExample folder
+##
+workspace:
+    stage: wstep
+    script:
+      - trex-fitter w config/myFit.config >& LOG_w
+      - cat LOG_w | grep -v "TRExFitter" >& temp_log && mv temp_log LOG_w
+      - ls
+      - set -e
+      - ls FitExample
+      - ls FitExample/RooStats/
+      - source test/scripts/check_step_w.sh
+      - echo "=> Passed quick logfile checks"
+    artifacts:
+      paths:
+        - FitExample
+
+##
+## "flsstep" step: performs the fit
+##    Artifact: keeps the FitExample folder
+##
+fit:
+    stage: flsstep
+    script:
+      - trex-fitter f config/myFit.config >& LOG_f
+      - cat LOG_f | grep -v "TRExFitter" >& temp_log && mv temp_log LOG_f
+      - ls
+      - set -e
+      - ls FitExample
+      - ls FitExample/Fits/
+      - cat FitExample/Fits/*.txt
+      - source test/scripts/check_step_f.sh
+      - echo "=> Passed quick logfile checks"
+    artifacts:
+      paths:
+        - FitExample
+
+##
+## "flsstep" step: compute the limits
+##    Artifact: keeps the FitExample folder
+##
+limit:
+    stage: flsstep
+    script:
+      - trex-fitter l config/myFit.config >& LOG_l
+      - cat LOG_l | grep -v "TRExFitter" >& temp_log && mv temp_log LOG_l
+      - ls
+      - set -e
+      - ls FitExample
+      - ls FitExample/Limits/
+      - source test/scripts/check_step_l.sh
+      - echo "=> Passed quick logfile checks"
+    artifacts:
+      paths:
+        - FitExample
+
+##
+## "flsstep" step: compute the significance
+##    Artifact: keeps the FitExample folder
+##
+significance:
+    stage: flsstep
+    script:
+      - trex-fitter s config/myFit.config >& LOG_s
+      - cat LOG_s | grep -v "TRExFitter" >& temp_log && mv temp_log LOG_s
+      - ls
+      - set -e
+      - ls FitExample
+      - ls FitExample/Significance/
+      - source test/scripts/check_step_s.sh
+      - echo "=> Passed quick logfile checks"
+    artifacts:
+      paths:
+        - FitExample
+
+##
+## "draw" step: performs the prefit plots
+##    Artifact: keeps the Plots folder
+##
+draw_prefit:
+    stage: draw
+    script:
+      - trex-fitter d config/myFit.config >& LOG_d
+      - cat LOG_d | grep -v "TRExFitter" >& temp_log && mv temp_log LOG_d
+      - ls
+      - set -e
+      - ls FitExample
+      - ls FitExample/Plots/
+      - source test/scripts/check_step_d.sh
+      - echo "=> Passed quick logfile checks"
+    artifacts:
+      paths:
+        - FitExample/Plots/
+
+##
+## "draw" step: performs the postfit plots
+##    Artifact: keeps the Plots folder
+##
+draw_postfit:
+    stage: draw
+    script:
+      - trex-fitter p config/myFit.config >& LOG_p
+      - cat LOG_p | grep -v "TRExFitter" >& temp_log && mv temp_log LOG_p
+      - ls
+      - set -e
+      - ls FitExample
+      - ls FitExample/Plots/
+      - source test/scripts/check_step_p.sh
+      - echo "=> Passed quick logfile checks"
+    artifacts:
+      paths:
+        - FitExample/Plots/
+
+#
+# image creation step: creates Docker Container 
+#    Registry: stores the Docker container in the registry
+#
+build_img:
+  stage: imagebuild
+  image: gitlab-registry.cern.ch/ci-tools/docker-image-builder:no_kaniko
+  variables: 
+     GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - docker-image-build
+  script:
+    - ignore
+  variables:
+    FROM: $BUILD_IMAGE
+
