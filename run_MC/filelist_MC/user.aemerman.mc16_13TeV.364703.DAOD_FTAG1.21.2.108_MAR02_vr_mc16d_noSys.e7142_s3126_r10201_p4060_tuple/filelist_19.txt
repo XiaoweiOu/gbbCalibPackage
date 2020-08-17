@@ -1,0 +1,10 @@
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000165.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000106.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000151.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000162.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000112.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000168.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000125.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000128.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000179.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_MC/user.aemerman.mc16_13TeV.364703.DAOD_FTAG1.21.2.108_MAR02_vr_mc16d_noSys.e7142_s3126_r10201_p4060_tuple.root/user.aemerman.20712551._000174.tuple.root
