@@ -1,0 +1,13 @@
+stages:
+  - compile
+
+compile:
+  stage: compile
+  image: gipert/root-cern
+  script:
+    - pwd
+    - ls -l
+    - mkdir build
+    - cd build 
+    - cmake ..
+    - make

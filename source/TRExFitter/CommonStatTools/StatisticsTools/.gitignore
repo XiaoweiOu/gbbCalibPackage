@@ -1,0 +1,4 @@
+build/*
+.emacs/*
+.vim/*
+.vscode/*
