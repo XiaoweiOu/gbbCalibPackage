@@ -1,4 +1,6 @@
 # Ignore everything in this directory
 *
 # Except this file
-!.gitignore
+!job_combine.sh
+!job_list.py
+!job_submit.sh
