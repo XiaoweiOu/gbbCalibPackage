@@ -1,0 +1,10 @@
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data15_13TeV.periodD.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp15_v02_p4061_tuple.root/user.aemerman.21638559._000009.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data15_13TeV.periodD.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp15_v02_p4061_tuple.root/user.aemerman.21638559._000001.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data15_13TeV.periodD.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp15_v02_p4061_tuple.root/user.aemerman.21638559._000005.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data15_13TeV.periodD.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp15_v02_p4061_tuple.root/user.aemerman.21638559._000008.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data15_13TeV.periodD.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp15_v02_p4061_tuple.root/user.aemerman.21638559._000007.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data15_13TeV.periodD.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp15_v02_p4061_tuple.root/user.aemerman.21638559._000010.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data15_13TeV.periodD.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp15_v02_p4061_tuple.root/user.aemerman.21638559._000012.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data16_13TeV.periodC.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp16_v01_p4061_tuple.root/user.aemerman.21638582._000055.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data16_13TeV.periodC.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp16_v01_p4061_tuple.root/user.aemerman.21638582._000043.tuple.root
+/store/bl2/atlas/ouxiaowei/gbb_17JUN/data/user.aemerman.data16_13TeV.periodC.DAOD_FTAG1.21.2.108_17JUN_vr_data16_min.grp16_v01_p4061_tuple.root/user.aemerman.21638582._000056.tuple.root

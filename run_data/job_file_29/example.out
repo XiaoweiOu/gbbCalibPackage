@@ -1,0 +1,1196 @@
+[7mlsetup              [0m lsetup <tool1> [ <tool2> ...] (see lsetup -h):
+[7m lsetup agis        [0m  ATLAS Grid Information System
+[7m lsetup asetup      [0m  (or asetup) to setup an Athena release
+[7m lsetup atlantis    [0m  Atlantis: event display
+[7m lsetup eiclient    [0m  Event Index 
+[7m lsetup emi         [0m  EMI: grid middleware user interface 
+[7m lsetup ganga       [0m  Ganga: job definition and management client
+[7m lsetup lcgenv      [0m  lcgenv: setup tools from cvmfs SFT repository
+[7m lsetup panda       [0m  Panda: Production ANd Distributed Analysis
+[7m lsetup pod         [0m  Proof-on-Demand (obsolete)
+[7m lsetup pyami       [0m  pyAMI: ATLAS Metadata Interface python client
+[7m lsetup root        [0m  ROOT data processing framework
+[7m lsetup rucio       [0m  distributed data management system client
+[7m lsetup views       [0m  Set up a full LCG release
+[7m lsetup xcache      [0m  XRootD local proxy cache
+[7m lsetup xrootd      [0m  XRootD data access
+[7madvancedTools       [0m advanced tools menu
+[7mdiagnostics         [0m diagnostic tools menu
+[7mhelpMe              [0m more help
+[7mprintMenu           [0m show this menu
+[7mshowVersions        [0m show versions of installed software
+
+Using AnalysisBase/21.2.83 [cmake] with platform x86_64-slc6-gcc62-opt
+	at /cvmfs/atlas.cern.ch/repo/sw/software/21.2
+('Test area:', '/home/ouxiaowei/gbbCalibPackage/source')
+!!! source complete !!!
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 54177
+Processing event: 1000 of 54177
+Processing event: 2000 of 54177
+Processing event: 3000 of 54177
+Processing event: 4000 of 54177
+Processing event: 5000 of 54177
+Processing event: 6000 of 54177
+Processing event: 7000 of 54177
+Processing event: 8000 of 54177
+Processing event: 9000 of 54177
+Processing event: 10000 of 54177
+Processing event: 11000 of 54177
+Processing event: 12000 of 54177
+Processing event: 13000 of 54177
+Processing event: 14000 of 54177
+Processing event: 15000 of 54177
+Processing event: 16000 of 54177
+Processing event: 17000 of 54177
+Processing event: 18000 of 54177
+Processing event: 19000 of 54177
+Processing event: 20000 of 54177
+Processing event: 21000 of 54177
+Processing event: 22000 of 54177
+Processing event: 23000 of 54177
+Processing event: 24000 of 54177
+Processing event: 25000 of 54177
+Processing event: 26000 of 54177
+Processing event: 27000 of 54177
+Processing event: 28000 of 54177
+Processing event: 29000 of 54177
+Processing event: 30000 of 54177
+Processing event: 31000 of 54177
+Processing event: 32000 of 54177
+Processing event: 33000 of 54177
+Processing event: 34000 of 54177
+Processing event: 35000 of 54177
+Processing event: 36000 of 54177
+Processing event: 37000 of 54177
+Processing event: 38000 of 54177
+Processing event: 39000 of 54177
+Processing event: 40000 of 54177
+Processing event: 41000 of 54177
+Processing event: 42000 of 54177
+Processing event: 43000 of 54177
+Processing event: 44000 of 54177
+Processing event: 45000 of 54177
+Processing event: 46000 of 54177
+Processing event: 47000 of 54177
+Processing event: 48000 of 54177
+Processing event: 49000 of 54177
+Processing event: 50000 of 54177
+Processing event: 51000 of 54177
+Processing event: 52000 of 54177
+Processing event: 53000 of 54177
+Processing event: 54000 of 54177
+real entries processed54177
+wrote histo file=./result_data/filelist_281.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 105444
+Processing event: 1000 of 105444
+Processing event: 2000 of 105444
+Processing event: 3000 of 105444
+Processing event: 4000 of 105444
+Processing event: 5000 of 105444
+Processing event: 6000 of 105444
+Processing event: 7000 of 105444
+Processing event: 8000 of 105444
+Processing event: 9000 of 105444
+Processing event: 10000 of 105444
+Processing event: 11000 of 105444
+Processing event: 12000 of 105444
+Processing event: 13000 of 105444
+Processing event: 14000 of 105444
+Processing event: 15000 of 105444
+Processing event: 16000 of 105444
+Processing event: 17000 of 105444
+Processing event: 18000 of 105444
+Processing event: 19000 of 105444
+Processing event: 20000 of 105444
+Processing event: 21000 of 105444
+Processing event: 22000 of 105444
+Processing event: 23000 of 105444
+Processing event: 24000 of 105444
+Processing event: 25000 of 105444
+Processing event: 26000 of 105444
+Processing event: 27000 of 105444
+Processing event: 28000 of 105444
+Processing event: 29000 of 105444
+Processing event: 30000 of 105444
+Processing event: 31000 of 105444
+Processing event: 32000 of 105444
+Processing event: 33000 of 105444
+Processing event: 34000 of 105444
+Processing event: 35000 of 105444
+Processing event: 36000 of 105444
+Processing event: 37000 of 105444
+Processing event: 38000 of 105444
+Processing event: 39000 of 105444
+Processing event: 40000 of 105444
+Processing event: 41000 of 105444
+Processing event: 42000 of 105444
+Processing event: 43000 of 105444
+Processing event: 44000 of 105444
+Processing event: 45000 of 105444
+Processing event: 46000 of 105444
+Processing event: 47000 of 105444
+Processing event: 48000 of 105444
+Processing event: 49000 of 105444
+Processing event: 50000 of 105444
+Processing event: 51000 of 105444
+Processing event: 52000 of 105444
+Processing event: 53000 of 105444
+Processing event: 54000 of 105444
+Processing event: 55000 of 105444
+Processing event: 56000 of 105444
+Processing event: 57000 of 105444
+Processing event: 58000 of 105444
+Processing event: 59000 of 105444
+Processing event: 60000 of 105444
+Processing event: 61000 of 105444
+Processing event: 62000 of 105444
+Processing event: 63000 of 105444
+Processing event: 64000 of 105444
+Processing event: 65000 of 105444
+Processing event: 66000 of 105444
+Processing event: 67000 of 105444
+Processing event: 68000 of 105444
+Processing event: 69000 of 105444
+Processing event: 70000 of 105444
+Processing event: 71000 of 105444
+Processing event: 72000 of 105444
+Processing event: 73000 of 105444
+Processing event: 74000 of 105444
+Processing event: 75000 of 105444
+Processing event: 76000 of 105444
+Processing event: 77000 of 105444
+Processing event: 78000 of 105444
+Processing event: 79000 of 105444
+Processing event: 80000 of 105444
+Processing event: 81000 of 105444
+Processing event: 82000 of 105444
+Processing event: 83000 of 105444
+Processing event: 84000 of 105444
+Processing event: 85000 of 105444
+Processing event: 86000 of 105444
+Processing event: 87000 of 105444
+Processing event: 88000 of 105444
+Processing event: 89000 of 105444
+Processing event: 90000 of 105444
+Processing event: 91000 of 105444
+Processing event: 92000 of 105444
+Processing event: 93000 of 105444
+Processing event: 94000 of 105444
+Processing event: 95000 of 105444
+Processing event: 96000 of 105444
+Processing event: 97000 of 105444
+Processing event: 98000 of 105444
+Processing event: 99000 of 105444
+Processing event: 100000 of 105444
+Processing event: 101000 of 105444
+Processing event: 102000 of 105444
+Processing event: 103000 of 105444
+Processing event: 104000 of 105444
+Processing event: 105000 of 105444
+real entries processed105444
+wrote histo file=./result_data/filelist_282.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 35873
+Processing event: 1000 of 35873
+Processing event: 2000 of 35873
+Processing event: 3000 of 35873
+Processing event: 4000 of 35873
+Processing event: 5000 of 35873
+Processing event: 6000 of 35873
+Processing event: 7000 of 35873
+Processing event: 8000 of 35873
+Processing event: 9000 of 35873
+Processing event: 10000 of 35873
+Processing event: 11000 of 35873
+Processing event: 12000 of 35873
+Processing event: 13000 of 35873
+Processing event: 14000 of 35873
+Processing event: 15000 of 35873
+Processing event: 16000 of 35873
+Processing event: 17000 of 35873
+Processing event: 18000 of 35873
+Processing event: 19000 of 35873
+Processing event: 20000 of 35873
+Processing event: 21000 of 35873
+Processing event: 22000 of 35873
+Processing event: 23000 of 35873
+Processing event: 24000 of 35873
+Processing event: 25000 of 35873
+Processing event: 26000 of 35873
+Processing event: 27000 of 35873
+Processing event: 28000 of 35873
+Processing event: 29000 of 35873
+Processing event: 30000 of 35873
+Processing event: 31000 of 35873
+Processing event: 32000 of 35873
+Processing event: 33000 of 35873
+Processing event: 34000 of 35873
+Processing event: 35000 of 35873
+real entries processed35873
+wrote histo file=./result_data/filelist_283.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 57672
+Processing event: 1000 of 57672
+Processing event: 2000 of 57672
+Processing event: 3000 of 57672
+Processing event: 4000 of 57672
+Processing event: 5000 of 57672
+Processing event: 6000 of 57672
+Processing event: 7000 of 57672
+Processing event: 8000 of 57672
+Processing event: 9000 of 57672
+Processing event: 10000 of 57672
+Processing event: 11000 of 57672
+Processing event: 12000 of 57672
+Processing event: 13000 of 57672
+Processing event: 14000 of 57672
+Processing event: 15000 of 57672
+Processing event: 16000 of 57672
+Processing event: 17000 of 57672
+Processing event: 18000 of 57672
+Processing event: 19000 of 57672
+Processing event: 20000 of 57672
+Processing event: 21000 of 57672
+Processing event: 22000 of 57672
+Processing event: 23000 of 57672
+Processing event: 24000 of 57672
+Processing event: 25000 of 57672
+Processing event: 26000 of 57672
+Processing event: 27000 of 57672
+Processing event: 28000 of 57672
+Processing event: 29000 of 57672
+Processing event: 30000 of 57672
+Processing event: 31000 of 57672
+Processing event: 32000 of 57672
+Processing event: 33000 of 57672
+Processing event: 34000 of 57672
+Processing event: 35000 of 57672
+Processing event: 36000 of 57672
+Processing event: 37000 of 57672
+Processing event: 38000 of 57672
+Processing event: 39000 of 57672
+Processing event: 40000 of 57672
+Processing event: 41000 of 57672
+Processing event: 42000 of 57672
+Processing event: 43000 of 57672
+Processing event: 44000 of 57672
+Processing event: 45000 of 57672
+Processing event: 46000 of 57672
+Processing event: 47000 of 57672
+Processing event: 48000 of 57672
+Processing event: 49000 of 57672
+Processing event: 50000 of 57672
+Processing event: 51000 of 57672
+Processing event: 52000 of 57672
+Processing event: 53000 of 57672
+Processing event: 54000 of 57672
+Processing event: 55000 of 57672
+Processing event: 56000 of 57672
+Processing event: 57000 of 57672
+real entries processed57672
+wrote histo file=./result_data/filelist_284.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 54683
+Processing event: 1000 of 54683
+Processing event: 2000 of 54683
+Processing event: 3000 of 54683
+Processing event: 4000 of 54683
+Processing event: 5000 of 54683
+Processing event: 6000 of 54683
+Processing event: 7000 of 54683
+Processing event: 8000 of 54683
+Processing event: 9000 of 54683
+Processing event: 10000 of 54683
+Processing event: 11000 of 54683
+Processing event: 12000 of 54683
+Processing event: 13000 of 54683
+Processing event: 14000 of 54683
+Processing event: 15000 of 54683
+Processing event: 16000 of 54683
+Processing event: 17000 of 54683
+Processing event: 18000 of 54683
+Processing event: 19000 of 54683
+Processing event: 20000 of 54683
+Processing event: 21000 of 54683
+Processing event: 22000 of 54683
+Processing event: 23000 of 54683
+Processing event: 24000 of 54683
+Processing event: 25000 of 54683
+Processing event: 26000 of 54683
+Processing event: 27000 of 54683
+Processing event: 28000 of 54683
+Processing event: 29000 of 54683
+Processing event: 30000 of 54683
+Processing event: 31000 of 54683
+Processing event: 32000 of 54683
+Processing event: 33000 of 54683
+Processing event: 34000 of 54683
+Processing event: 35000 of 54683
+Processing event: 36000 of 54683
+Processing event: 37000 of 54683
+Processing event: 38000 of 54683
+Processing event: 39000 of 54683
+Processing event: 40000 of 54683
+Processing event: 41000 of 54683
+Processing event: 42000 of 54683
+Processing event: 43000 of 54683
+Processing event: 44000 of 54683
+Processing event: 45000 of 54683
+Processing event: 46000 of 54683
+Processing event: 47000 of 54683
+Processing event: 48000 of 54683
+Processing event: 49000 of 54683
+Processing event: 50000 of 54683
+Processing event: 51000 of 54683
+Processing event: 52000 of 54683
+Processing event: 53000 of 54683
+Processing event: 54000 of 54683
+real entries processed54683
+wrote histo file=./result_data/filelist_285.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 43454
+Processing event: 1000 of 43454
+Processing event: 2000 of 43454
+Processing event: 3000 of 43454
+Processing event: 4000 of 43454
+Processing event: 5000 of 43454
+Processing event: 6000 of 43454
+Processing event: 7000 of 43454
+Processing event: 8000 of 43454
+Processing event: 9000 of 43454
+Processing event: 10000 of 43454
+Processing event: 11000 of 43454
+Processing event: 12000 of 43454
+Processing event: 13000 of 43454
+Processing event: 14000 of 43454
+Processing event: 15000 of 43454
+Processing event: 16000 of 43454
+Processing event: 17000 of 43454
+Processing event: 18000 of 43454
+Processing event: 19000 of 43454
+Processing event: 20000 of 43454
+Processing event: 21000 of 43454
+Processing event: 22000 of 43454
+Processing event: 23000 of 43454
+Processing event: 24000 of 43454
+Processing event: 25000 of 43454
+Processing event: 26000 of 43454
+Processing event: 27000 of 43454
+Processing event: 28000 of 43454
+Processing event: 29000 of 43454
+Processing event: 30000 of 43454
+Processing event: 31000 of 43454
+Processing event: 32000 of 43454
+Processing event: 33000 of 43454
+Processing event: 34000 of 43454
+Processing event: 35000 of 43454
+Processing event: 36000 of 43454
+Processing event: 37000 of 43454
+Processing event: 38000 of 43454
+Processing event: 39000 of 43454
+Processing event: 40000 of 43454
+Processing event: 41000 of 43454
+Processing event: 42000 of 43454
+Processing event: 43000 of 43454
+real entries processed43454
+wrote histo file=./result_data/filelist_286.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 73144
+Processing event: 1000 of 73144
+Processing event: 2000 of 73144
+Processing event: 3000 of 73144
+Processing event: 4000 of 73144
+Processing event: 5000 of 73144
+Processing event: 6000 of 73144
+Processing event: 7000 of 73144
+Processing event: 8000 of 73144
+Processing event: 9000 of 73144
+Processing event: 10000 of 73144
+Processing event: 11000 of 73144
+Processing event: 12000 of 73144
+Processing event: 13000 of 73144
+Processing event: 14000 of 73144
+Processing event: 15000 of 73144
+Processing event: 16000 of 73144
+Processing event: 17000 of 73144
+Processing event: 18000 of 73144
+Processing event: 19000 of 73144
+Processing event: 20000 of 73144
+Processing event: 21000 of 73144
+Processing event: 22000 of 73144
+Processing event: 23000 of 73144
+Processing event: 24000 of 73144
+Processing event: 25000 of 73144
+Processing event: 26000 of 73144
+Processing event: 27000 of 73144
+Processing event: 28000 of 73144
+Processing event: 29000 of 73144
+Processing event: 30000 of 73144
+Processing event: 31000 of 73144
+Processing event: 32000 of 73144
+Processing event: 33000 of 73144
+Processing event: 34000 of 73144
+Processing event: 35000 of 73144
+Processing event: 36000 of 73144
+Processing event: 37000 of 73144
+Processing event: 38000 of 73144
+Processing event: 39000 of 73144
+Processing event: 40000 of 73144
+Processing event: 41000 of 73144
+Processing event: 42000 of 73144
+Processing event: 43000 of 73144
+Processing event: 44000 of 73144
+Processing event: 45000 of 73144
+Processing event: 46000 of 73144
+Processing event: 47000 of 73144
+Processing event: 48000 of 73144
+Processing event: 49000 of 73144
+Processing event: 50000 of 73144
+Processing event: 51000 of 73144
+Processing event: 52000 of 73144
+Processing event: 53000 of 73144
+Processing event: 54000 of 73144
+Processing event: 55000 of 73144
+Processing event: 56000 of 73144
+Processing event: 57000 of 73144
+Processing event: 58000 of 73144
+Processing event: 59000 of 73144
+Processing event: 60000 of 73144
+Processing event: 61000 of 73144
+Processing event: 62000 of 73144
+Processing event: 63000 of 73144
+Processing event: 64000 of 73144
+Processing event: 65000 of 73144
+Processing event: 66000 of 73144
+Processing event: 67000 of 73144
+Processing event: 68000 of 73144
+Processing event: 69000 of 73144
+Processing event: 70000 of 73144
+Processing event: 71000 of 73144
+Processing event: 72000 of 73144
+Processing event: 73000 of 73144
+real entries processed73144
+wrote histo file=./result_data/filelist_287.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 132679
+Processing event: 1000 of 132679
+Processing event: 2000 of 132679
+Processing event: 3000 of 132679
+Processing event: 4000 of 132679
+Processing event: 5000 of 132679
+Processing event: 6000 of 132679
+Processing event: 7000 of 132679
+Processing event: 8000 of 132679
+Processing event: 9000 of 132679
+Processing event: 10000 of 132679
+Processing event: 11000 of 132679
+Processing event: 12000 of 132679
+Processing event: 13000 of 132679
+Processing event: 14000 of 132679
+Processing event: 15000 of 132679
+Processing event: 16000 of 132679
+Processing event: 17000 of 132679
+Processing event: 18000 of 132679
+Processing event: 19000 of 132679
+Processing event: 20000 of 132679
+Processing event: 21000 of 132679
+Processing event: 22000 of 132679
+Processing event: 23000 of 132679
+Processing event: 24000 of 132679
+Processing event: 25000 of 132679
+Processing event: 26000 of 132679
+Processing event: 27000 of 132679
+Processing event: 28000 of 132679
+Processing event: 29000 of 132679
+Processing event: 30000 of 132679
+Processing event: 31000 of 132679
+Processing event: 32000 of 132679
+Processing event: 33000 of 132679
+Processing event: 34000 of 132679
+Processing event: 35000 of 132679
+Processing event: 36000 of 132679
+Processing event: 37000 of 132679
+Processing event: 38000 of 132679
+Processing event: 39000 of 132679
+Processing event: 40000 of 132679
+Processing event: 41000 of 132679
+Processing event: 42000 of 132679
+Processing event: 43000 of 132679
+Processing event: 44000 of 132679
+Processing event: 45000 of 132679
+Processing event: 46000 of 132679
+Processing event: 47000 of 132679
+Processing event: 48000 of 132679
+Processing event: 49000 of 132679
+Processing event: 50000 of 132679
+Processing event: 51000 of 132679
+Processing event: 52000 of 132679
+Processing event: 53000 of 132679
+Processing event: 54000 of 132679
+Processing event: 55000 of 132679
+Processing event: 56000 of 132679
+Processing event: 57000 of 132679
+Processing event: 58000 of 132679
+Processing event: 59000 of 132679
+Processing event: 60000 of 132679
+Processing event: 61000 of 132679
+Processing event: 62000 of 132679
+Processing event: 63000 of 132679
+Processing event: 64000 of 132679
+Processing event: 65000 of 132679
+Processing event: 66000 of 132679
+Processing event: 67000 of 132679
+Processing event: 68000 of 132679
+Processing event: 69000 of 132679
+Processing event: 70000 of 132679
+Processing event: 71000 of 132679
+Processing event: 72000 of 132679
+Processing event: 73000 of 132679
+Processing event: 74000 of 132679
+Processing event: 75000 of 132679
+Processing event: 76000 of 132679
+Processing event: 77000 of 132679
+Processing event: 78000 of 132679
+Processing event: 79000 of 132679
+Processing event: 80000 of 132679
+Processing event: 81000 of 132679
+Processing event: 82000 of 132679
+Processing event: 83000 of 132679
+Processing event: 84000 of 132679
+Processing event: 85000 of 132679
+Processing event: 86000 of 132679
+Processing event: 87000 of 132679
+Processing event: 88000 of 132679
+Processing event: 89000 of 132679
+Processing event: 90000 of 132679
+Processing event: 91000 of 132679
+Processing event: 92000 of 132679
+Processing event: 93000 of 132679
+Processing event: 94000 of 132679
+Processing event: 95000 of 132679
+Processing event: 96000 of 132679
+Processing event: 97000 of 132679
+Processing event: 98000 of 132679
+Processing event: 99000 of 132679
+Processing event: 100000 of 132679
+Processing event: 101000 of 132679
+Processing event: 102000 of 132679
+Processing event: 103000 of 132679
+Processing event: 104000 of 132679
+Processing event: 105000 of 132679
+Processing event: 106000 of 132679
+Processing event: 107000 of 132679
+Processing event: 108000 of 132679
+Processing event: 109000 of 132679
+Processing event: 110000 of 132679
+Processing event: 111000 of 132679
+Processing event: 112000 of 132679
+Processing event: 113000 of 132679
+Processing event: 114000 of 132679
+Processing event: 115000 of 132679
+Processing event: 116000 of 132679
+Processing event: 117000 of 132679
+Processing event: 118000 of 132679
+Processing event: 119000 of 132679
+Processing event: 120000 of 132679
+Processing event: 121000 of 132679
+Processing event: 122000 of 132679
+Processing event: 123000 of 132679
+Processing event: 124000 of 132679
+Processing event: 125000 of 132679
+Processing event: 126000 of 132679
+Processing event: 127000 of 132679
+Processing event: 128000 of 132679
+Processing event: 129000 of 132679
+Processing event: 130000 of 132679
+Processing event: 131000 of 132679
+Processing event: 132000 of 132679
+real entries processed132679
+wrote histo file=./result_data/filelist_288.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 158911
+Processing event: 1000 of 158911
+Processing event: 2000 of 158911
+Processing event: 3000 of 158911
+Processing event: 4000 of 158911
+Processing event: 5000 of 158911
+Processing event: 6000 of 158911
+Processing event: 7000 of 158911
+Processing event: 8000 of 158911
+Processing event: 9000 of 158911
+Processing event: 10000 of 158911
+Processing event: 11000 of 158911
+Processing event: 12000 of 158911
+Processing event: 13000 of 158911
+Processing event: 14000 of 158911
+Processing event: 15000 of 158911
+Processing event: 16000 of 158911
+Processing event: 17000 of 158911
+Processing event: 18000 of 158911
+Processing event: 19000 of 158911
+Processing event: 20000 of 158911
+Processing event: 21000 of 158911
+Processing event: 22000 of 158911
+Processing event: 23000 of 158911
+Processing event: 24000 of 158911
+Processing event: 25000 of 158911
+Processing event: 26000 of 158911
+Processing event: 27000 of 158911
+Processing event: 28000 of 158911
+Processing event: 29000 of 158911
+Processing event: 30000 of 158911
+Processing event: 31000 of 158911
+Processing event: 32000 of 158911
+Processing event: 33000 of 158911
+Processing event: 34000 of 158911
+Processing event: 35000 of 158911
+Processing event: 36000 of 158911
+Processing event: 37000 of 158911
+Processing event: 38000 of 158911
+Processing event: 39000 of 158911
+Processing event: 40000 of 158911
+Processing event: 41000 of 158911
+Processing event: 42000 of 158911
+Processing event: 43000 of 158911
+Processing event: 44000 of 158911
+Processing event: 45000 of 158911
+Processing event: 46000 of 158911
+Processing event: 47000 of 158911
+Processing event: 48000 of 158911
+Processing event: 49000 of 158911
+Processing event: 50000 of 158911
+Processing event: 51000 of 158911
+Processing event: 52000 of 158911
+Processing event: 53000 of 158911
+Processing event: 54000 of 158911
+Processing event: 55000 of 158911
+Processing event: 56000 of 158911
+Processing event: 57000 of 158911
+Processing event: 58000 of 158911
+Processing event: 59000 of 158911
+Processing event: 60000 of 158911
+Processing event: 61000 of 158911
+Processing event: 62000 of 158911
+Processing event: 63000 of 158911
+Processing event: 64000 of 158911
+Processing event: 65000 of 158911
+Processing event: 66000 of 158911
+Processing event: 67000 of 158911
+Processing event: 68000 of 158911
+Processing event: 69000 of 158911
+Processing event: 70000 of 158911
+Processing event: 71000 of 158911
+Processing event: 72000 of 158911
+Processing event: 73000 of 158911
+Processing event: 74000 of 158911
+Processing event: 75000 of 158911
+Processing event: 76000 of 158911
+Processing event: 77000 of 158911
+Processing event: 78000 of 158911
+Processing event: 79000 of 158911
+Processing event: 80000 of 158911
+Processing event: 81000 of 158911
+Processing event: 82000 of 158911
+Processing event: 83000 of 158911
+Processing event: 84000 of 158911
+Processing event: 85000 of 158911
+Processing event: 86000 of 158911
+Processing event: 87000 of 158911
+Processing event: 88000 of 158911
+Processing event: 89000 of 158911
+Processing event: 90000 of 158911
+Processing event: 91000 of 158911
+Processing event: 92000 of 158911
+Processing event: 93000 of 158911
+Processing event: 94000 of 158911
+Processing event: 95000 of 158911
+Processing event: 96000 of 158911
+Processing event: 97000 of 158911
+Processing event: 98000 of 158911
+Processing event: 99000 of 158911
+Processing event: 100000 of 158911
+Processing event: 101000 of 158911
+Processing event: 102000 of 158911
+Processing event: 103000 of 158911
+Processing event: 104000 of 158911
+Processing event: 105000 of 158911
+Processing event: 106000 of 158911
+Processing event: 107000 of 158911
+Processing event: 108000 of 158911
+Processing event: 109000 of 158911
+Processing event: 110000 of 158911
+Processing event: 111000 of 158911
+Processing event: 112000 of 158911
+Processing event: 113000 of 158911
+Processing event: 114000 of 158911
+Processing event: 115000 of 158911
+Processing event: 116000 of 158911
+Processing event: 117000 of 158911
+Processing event: 118000 of 158911
+Processing event: 119000 of 158911
+Processing event: 120000 of 158911
+Processing event: 121000 of 158911
+Processing event: 122000 of 158911
+Processing event: 123000 of 158911
+Processing event: 124000 of 158911
+Processing event: 125000 of 158911
+Processing event: 126000 of 158911
+Processing event: 127000 of 158911
+Processing event: 128000 of 158911
+Processing event: 129000 of 158911
+Processing event: 130000 of 158911
+Processing event: 131000 of 158911
+Processing event: 132000 of 158911
+Processing event: 133000 of 158911
+Processing event: 134000 of 158911
+Processing event: 135000 of 158911
+Processing event: 136000 of 158911
+Processing event: 137000 of 158911
+Processing event: 138000 of 158911
+Processing event: 139000 of 158911
+Processing event: 140000 of 158911
+Processing event: 141000 of 158911
+Processing event: 142000 of 158911
+Processing event: 143000 of 158911
+Processing event: 144000 of 158911
+Processing event: 145000 of 158911
+Processing event: 146000 of 158911
+Processing event: 147000 of 158911
+Processing event: 148000 of 158911
+Processing event: 149000 of 158911
+Processing event: 150000 of 158911
+Processing event: 151000 of 158911
+Processing event: 152000 of 158911
+Processing event: 153000 of 158911
+Processing event: 154000 of 158911
+Processing event: 155000 of 158911
+Processing event: 156000 of 158911
+Processing event: 157000 of 158911
+Processing event: 158000 of 158911
+real entries processed158911
+wrote histo file=./result_data/filelist_289.root
+TupleAna constructor, no tree specified
+==============================================
+doDebug: 0
+isR20p7: 0
+Systematics_R20p7: FATJET_JER__1up,JET_Rtrk_Baseline_Kin__1up,JET_Rtrk_Baseline_Kin__1down,JET_Rtrk_Modelling_Kin__1up,JET_Rtrk_Modelling_Kin__1down,JET_Rtrk_TotalStat_Kin__1up,JET_Rtrk_TotalStat_Kin__1down,JET_Rtrk_Tracking_Kin__1up,JET_Rtrk_Tracking_Kin__1down,FATJET_JMR__1up,JET_Rtrk_Baseline_Sub__1up,JET_Rtrk_Baseline_Sub__1down,JET_Rtrk_Modelling_Sub__1up,JET_Rtrk_Modelling_Sub__1down,JET_Rtrk_TotalStat_Sub__1up,JET_Rtrk_TotalStat_Sub__1down,JET_Rtrk_Tracking_Sub__1up,JET_Rtrk_Tracking_Sub__1down
+Systematics_R21: JET_EffectiveNP_R10_6restTerm__1up,JET_EffectiveNP_R10_6restTerm__1down,JET_EtaIntercalibration_Modelling__1up,JET_EtaIntercalibration_Modelling__1down,JET_EtaIntercalibration_NonClosure_2018data__1up,JET_EtaIntercalibration_NonClosure_2018data__1down,JET_EtaIntercalibration_R10_TotalStat__1up,JET_EtaIntercalibration_R10_TotalStat__1down,JET_EffectiveNP_R10_1__1up,JET_EffectiveNP_R10_1__1down,JET_EffectiveNP_R10_2__1up,JET_EffectiveNP_R10_2__1down,JET_EffectiveNP_R10_3__1up,JET_EffectiveNP_R10_3__1down,JET_EffectiveNP_R10_4__1up,JET_EffectiveNP_R10_4__1down,JET_EffectiveNP_R10_5__1up,JET_EffectiveNP_R10_5__1down,JET_Flavor_Composition__1up,JET_Flavor_Composition__1down,JET_Flavor_Response__1up,JET_Flavor_Response__1down,MUON_ID__1up,MUON_ID__1down,MUON_SAGITTA_RESBIAS__1up,MUON_SAGITTA_RESBIAS__1down,MUON_SCALE__1up,MUON_SCALE__1down,MUON_EFF_TTVA_SYS__1up,MUON_EFF_TTVA_SYS__1down,TRK_RES_D0_MEAS__1up,TRK_RES_D0_MEAS__1down,TRK_RES_Z0_MEAS__1up,TRK_RES_Z0_MEAS__1down,TRK_RES_D0_DEAD,TRK_RES_Z0_DEAD,TRK_BIAS_D0_WM,TRK_BIAS_QOVERP_SAGITTA_WM,TRK_BIAS_Z0_WM,TRK_EFF_LOOSE_GLOBAL,TRK_EFF_LOOSE_IBL,TRK_EFF_LOOSE_PHYSMODEL,TRK_EFF_LOOSE_PP0,TRK_FAKE_RATE_LOOSE,TRK_EFF_LOOSE_TIDE,TRK_FAKE_RATE_LOOSE_TIDE
+Systematics_Sd0: Conversion__1up,Conversion__1down,HadMatInt__1up,HadMatInt__1down,LightLongLived__1up,LightLongLived__1down,D0Smear__1up,D0Smear__1down,Z0Smear__1up,Z0Smear__1down,FakeMuons__1up
+Systematics_WeightVar: 
+MergeMap: BB:BBB,BBC,BBL,BBx,BCB,BLB,CBB,LBB|BL:BCC,BCL,BCx,CBC,CBL,CBx,CCB,BLC,BLL,BLx,LBC,LBL,LBx,CLB,LCB,LLB,Bxx|CC:CCC,CCL,CCx,CLC,LCC|CL:CLL,CLx,LCL,LCx,LLC,Cxx|LL:LLL,LLx,Lxx
+mergeFlavours: 1
+useLeadingJets: 0
+FatJetFlavours: 
+TrkJetPtBins: 200,300|100,200|100,200
+FatJetPtBins: 550,600,750,1000
+TemplateVariable: mjmeanSd0,nmjmeanSd0
+PlotVariables: 
+==============================================
+Loaded GlobalConfig
+RunMode: AllPlots
+minimalTree: 1
+BTagWP: SubjetBScore|FixedCutBEff_50|0
+GeneratorName: Pythia
+doJetPtEtaReweighting: 0
+JetPtEtaReweightingFile: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_nmu_out.root
+JetPtEtaReweightingFileInclusive: /global/homes/w/wuy45/temp/gbbCalibPackage/run/workspace/reweightedFile/reweighted_mu_out.root
+doTrackSmearing: 1
+noMuonReq: 0
+doApplyBTaggingSF 0
+doSd0Systematics (will only work if nominal): 0
+m_doEvemOddTemplates: 0
+m_doPostfitPtReweighting: 0
+m_PostfitPtReweightingFile: DEFAULT.root
+useVRTrkJets: 1
+==============================================
+creating HistogramService
+Running on Nominal sample!
+Processing event: 0 of 69754
+Processing event: 1000 of 69754
+Processing event: 2000 of 69754
+Processing event: 3000 of 69754
+Processing event: 4000 of 69754
+Processing event: 5000 of 69754
+Processing event: 6000 of 69754
+Processing event: 7000 of 69754
+Processing event: 8000 of 69754
+Processing event: 9000 of 69754
+Processing event: 10000 of 69754
+Processing event: 11000 of 69754
+Processing event: 12000 of 69754
+Processing event: 13000 of 69754
+Processing event: 14000 of 69754
+Processing event: 15000 of 69754
+Processing event: 16000 of 69754
+Processing event: 17000 of 69754
+Processing event: 18000 of 69754
+Processing event: 19000 of 69754
+Processing event: 20000 of 69754
+Processing event: 21000 of 69754
+Processing event: 22000 of 69754
+Processing event: 23000 of 69754
+Processing event: 24000 of 69754
+Processing event: 25000 of 69754
+Processing event: 26000 of 69754
+Processing event: 27000 of 69754
+Processing event: 28000 of 69754
+Processing event: 29000 of 69754
+Processing event: 30000 of 69754
+Processing event: 31000 of 69754
+Processing event: 32000 of 69754
+Processing event: 33000 of 69754
+Processing event: 34000 of 69754
+Processing event: 35000 of 69754
+Processing event: 36000 of 69754
+Processing event: 37000 of 69754
+Processing event: 38000 of 69754
+Processing event: 39000 of 69754
+Processing event: 40000 of 69754
+Processing event: 41000 of 69754
+Processing event: 42000 of 69754
+Processing event: 43000 of 69754
+Processing event: 44000 of 69754
+Processing event: 45000 of 69754
+Processing event: 46000 of 69754
+Processing event: 47000 of 69754
+Processing event: 48000 of 69754
+Processing event: 49000 of 69754
+Processing event: 50000 of 69754
+Processing event: 51000 of 69754
+Processing event: 52000 of 69754
+Processing event: 53000 of 69754
+Processing event: 54000 of 69754
+Processing event: 55000 of 69754
+Processing event: 56000 of 69754
+Processing event: 57000 of 69754
+Processing event: 58000 of 69754
+Processing event: 59000 of 69754
+Processing event: 60000 of 69754
+Processing event: 61000 of 69754
+Processing event: 62000 of 69754
+Processing event: 63000 of 69754
+Processing event: 64000 of 69754
+Processing event: 65000 of 69754
+Processing event: 66000 of 69754
+Processing event: 67000 of 69754
+Processing event: 68000 of 69754
+Processing event: 69000 of 69754
+real entries processed69754
+wrote histo file=./result_data/filelist_290.root
