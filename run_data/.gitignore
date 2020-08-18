@@ -1,0 +1,3 @@
+*.root
+!result_data_Eff50_f0/data_result.root
+!result_data/data_result.root
