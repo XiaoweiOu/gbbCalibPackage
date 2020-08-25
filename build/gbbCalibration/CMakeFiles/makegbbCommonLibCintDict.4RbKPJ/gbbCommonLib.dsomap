@@ -1,4 +1,0 @@
-[ libgbbCommonLib.so ]
-# List of selected classes
-class GlobalConfig
-header helpers/GlobalConfig.h

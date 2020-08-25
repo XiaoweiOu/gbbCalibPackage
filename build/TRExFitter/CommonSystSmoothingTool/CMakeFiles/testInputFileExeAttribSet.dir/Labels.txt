@@ -1,5 +1,0 @@
-# Target labels
- CommonSystSmoothingTool
-# Source files and their labels
-/home/ouxiaowei/gbbCalibPackage/build/TRExFitter/CommonSystSmoothingTool/CMakeFiles/testInputFileExeAttribSet
-/home/ouxiaowei/gbbCalibPackage/build/TRExFitter/CommonSystSmoothingTool/CMakeFiles/testInputFileExeAttribSet.rule

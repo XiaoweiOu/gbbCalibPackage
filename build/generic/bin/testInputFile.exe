@@ -1,5 +1,0 @@
-#!/bin/sh
-set -e
-echo "WARNING Please stop using testInputFile.exe, and use testInputFile instead"
-echo ""
-exec testInputFile "$@"

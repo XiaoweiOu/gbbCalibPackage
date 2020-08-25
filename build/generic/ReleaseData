@@ -1,9 +1,0 @@
-[release_metadata]
-release:21.2.83
-nightly name:JUN17_ntuple
-project name:WorkDir
-nightly release:f03d3e8
-date:2020-08-18T2010
-compiler:GNU-6.2.0
-cxxpath:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++
-cmake:3.11.0

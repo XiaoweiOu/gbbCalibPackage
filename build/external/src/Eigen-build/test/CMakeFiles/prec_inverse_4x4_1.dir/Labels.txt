@@ -1,4 +1,0 @@
-# Target labels
- BuildOfficial
-# Source files and their labels
-/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen/test/prec_inverse_4x4.cpp

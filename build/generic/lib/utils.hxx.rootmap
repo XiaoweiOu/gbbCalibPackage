@@ -1,7 +1,0 @@
-[ utils.hxx ]
-# List of selected classes
-class ExtendedMinimizer
-class ExtendedModel
-class RooMultiVarGaussianHighPrecision
-class TOwnedList
-header RooMultiVarGaussianHighPrecision.h

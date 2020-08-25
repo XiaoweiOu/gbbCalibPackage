@@ -1,6 +1,0 @@
-# Regular package(s) built in WorkDir - 21.2.83
-TRExFitter <unknown>
-TRExFitter/CommonStatTools <unknown>
-TRExFitter/CommonStatTools/StatisticsTools <unknown>
-TRExFitter/CommonSystSmoothingTool <unknown>
-gbbCalibration <unknown>

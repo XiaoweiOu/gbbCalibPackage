@@ -1,4 +1,0 @@
-# Target labels
- CommonSystSmoothingTool
-# Source files and their labels
-/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonSystSmoothingTool/util/testSmooth.cxx

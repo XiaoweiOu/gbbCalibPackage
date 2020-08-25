@@ -1,5 +1,0 @@
-# Target labels
- gbbCalibration
-# Source files and their labels
-/home/ouxiaowei/gbbCalibPackage/build/gbbCalibration/CMakeFiles/run_calculateSFExeAttribSet
-/home/ouxiaowei/gbbCalibPackage/build/gbbCalibration/CMakeFiles/run_calculateSFExeAttribSet.rule
