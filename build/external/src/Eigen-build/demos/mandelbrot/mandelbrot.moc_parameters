@@ -1,0 +1,7 @@
+-I/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen
+-I/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build
+-I/usr/include
+-DNDEBUG
+-o
+/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/demos/mandelbrot/mandelbrot.moc
+/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen/demos/mandelbrot/mandelbrot.h

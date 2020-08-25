@@ -27,16 +27,23 @@ ListOfVariables_general = [
   'mjmeanSd0_NOT2TAG_2MUON','nmjmeanSd0_NOT2TAG_2MUON',
   'mjmeanSd0_2TAG_1MUON','nmjmeanSd0_2TAG_1MUON',
   'mjmeanSd0_NOT2TAG_1MUON','nmjmeanSd0_NOT2TAG_1MUON'
+
+  'mjmeanSd0_B0','mjmeanSd0_Bpm','mjmeanSd0_B_s','mjmeanSd0_Lambda_B','mjmeanSd0_Cascade_Bm','mjmeanSd0_Cascade_B0'
   ]
+
+#ListOfVariables_general = ['mjmeanSd0_B0','mjmeanSd0_Bpm','mjmeanSd0_B_s','mjmeanSd0_Lambda_B','mjmeanSd0_Cascade_Bm','mjmeanSd0_Cascade_B0']
 
 ListOfVariables_r21 = ['SubjetBScore_Higgs','SubjetBScore_Top','SubjetBScore_QCD','SubjetBScore_f0','SubjetBScore_f0p25','SubjetBScore_Higgs_2TAG','SubjetBScore_Top_2TAG','SubjetBScore_QCD_2TAG','SubjetBScore_f0_2TAG','SubjetBScore_f0p25_2TAG']
 
 ListOfVariables_r20p7 = []
 
 ListOfVariables_minimal = [
-  'j1meanSd0','j2meanSd0','j3meanSd0',
-  'j1meanSd0_2TAG','j2meanSd0_2TAG','j3meanSd0_2TAG',
-  'j1meanSd0_NOT2TAG','j2meanSd0_NOT2TAG','j3meanSd0_NOT2TAG',
+  #'j1meanSd0','j2meanSd0','j3meanSd0',
+  #'j1meanSd0_2TAG','j2meanSd0_2TAG','j3meanSd0_2TAG',
+  #'j1meanSd0_NOT2TAG','j2meanSd0_NOT2TAG','j3meanSd0_NOT2TAG',
+
+  'j3meanSd0','j3meanSd0_2TAG','j3meanSd0_NOT2TAG',
+
   'fjpt',#'fjm',
   #'j1pt','j2pt','j3pt',
   'fjpt_NOT2TAG','fjpt_2TAG',
@@ -101,6 +108,14 @@ else:
   ListOfWeightVariations = MyConfig.GetSystematics_WeightVar()
 
 ListOfFatJetFlavours = MyConfig.GetFatJetFlavours()
+
+'''
+for flav in ListOfFatJetFlavours:
+  print flav
+exit(0)
+ListOfFatJetFlavours = [TString('BB'),TString('BL')]
+'''
+
 if args.mcflag == 'incl':
   print("Using inclusive samples for all flavours")
   ListOfInclusiveFatJetFlavours = ListOfFatJetFlavours

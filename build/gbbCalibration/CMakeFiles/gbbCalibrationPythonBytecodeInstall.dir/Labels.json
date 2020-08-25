@@ -1,0 +1,19 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/python/gbbCalibration/makeReweightHistos.pyc"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/python/gbbCalibration/makeReweightHistos.pyc.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gbbCalibration"
+		],
+		"name" : "gbbCalibrationPythonBytecodeInstall"
+	}
+}

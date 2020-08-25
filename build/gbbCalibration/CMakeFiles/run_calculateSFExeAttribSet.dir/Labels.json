@@ -1,0 +1,19 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/gbbCalibration/CMakeFiles/run_calculateSFExeAttribSet"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/gbbCalibration/CMakeFiles/run_calculateSFExeAttribSet.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gbbCalibration"
+		],
+		"name" : "run_calculateSFExeAttribSet"
+	}
+}

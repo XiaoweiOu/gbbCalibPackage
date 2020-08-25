@@ -792,7 +792,7 @@ bool GbbTupleAna::Processgbb(int i_evt){
   //8.) Fill histograms
   //=========================================
 
-  std::vector<TString> categories{""}, topo_categories{}, btag_categories{}, muon_categories{};
+  std::vector<TString> categories{""}, topo_categories{}, btag_categories{}, muon_categories{} ,Bhad_categories{};
 
   // B-tag categories not exclusive
   if (isTagged == 2) btag_categories.push_back("2TAG");
@@ -805,6 +805,16 @@ bool GbbTupleAna::Processgbb(int i_evt){
   else if (gbbcand.nRecoMuons == 1) muon_categories.push_back("1MUON");
   else if (gbbcand.nRecoMuons == 0) muon_categories.push_back("0MUON");
 
+  //Bhad type
+  if (trijet_flav.First("B")!=-1) {
+    if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_tj.at(0)))==511)Bhad_categories.push_back("B0"); //B0
+    else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_tj.at(0)))==521)Bhad_categories.push_back("Bpm"); //B+-
+    else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_tj.at(0)))==531)Bhad_categories.push_back("B_s"); //B_s
+    else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_tj.at(0)))==5122)Bhad_categories.push_back("Lambda_B"); //Lambda_B
+    else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_tj.at(0)))==5132)Bhad_categories.push_back("Cascade_Bm"); //Cascade_B-
+    else if(TMath::Abs(this->trkjet_BHad_pdgId->at(gbbcand.ind_tj.at(0)))==5232)Bhad_categories.push_back("Cascade_B0"); //Cascade_B0
+  }
+
   for (TString mcat : muon_categories) {
     categories.push_back(mcat);
     for (TString bcat : btag_categories) {
@@ -814,6 +824,10 @@ bool GbbTupleAna::Processgbb(int i_evt){
   for (TString bcat : btag_categories) {
     categories.push_back(bcat);
   }
+  for (TString Bcat : Bhad_categories) {
+    categories.push_back(Bcat);
+  }
+
 
   for (TString cat : categories) {
     if(m_Debug) std::cout<<"processgbb(): Fill histograms for category "<<cat.Data()<<std::endl;

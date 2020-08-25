@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+echo "WARNING Please stop using run_gbbTupleAna.exe, and use run_gbbTupleAna instead"
+echo ""
+exec run_gbbTupleAna "$@"

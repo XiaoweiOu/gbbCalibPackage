@@ -1,0 +1,19 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/SmoothSystematics"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/SmoothSystematics.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"CommonSystSmoothingTool"
+		],
+		"name" : "CommonSystSmoothingToolHeaderInstall"
+	}
+}

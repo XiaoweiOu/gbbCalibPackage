@@ -1,0 +1,61 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/GbbFillHelp.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/GbbSelectionHelp.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/GbbTupleAna.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/HistogramService.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/TupleAna.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/GbbStructures.h"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/GbbTupleAna.h"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/HistogramService.h"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/LinkDef.h"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/TupleAna.h"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/BTagging/AsgToolTagger.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/BTagging/BJetTagger.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/BTagging/XbbScoreTagger.cxx"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/BTagging/AsgToolTagger.h"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/BTagging/BJetTagger.h"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/histMaker/BTagging/XbbScoreTagger.h"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gbbCalibration"
+		],
+		"name" : "gbbTupleLib"
+	}
+}

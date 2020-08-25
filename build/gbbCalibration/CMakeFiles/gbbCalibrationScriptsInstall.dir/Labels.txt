@@ -1,0 +1,6 @@
+# Target labels
+ gbbCalibration
+# Source files and their labels
+/home/ouxiaowei/gbbCalibPackage/build/generic/bin/run_trex.sh
+/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/util/run_trex.sh
+/home/ouxiaowei/gbbCalibPackage/build/generic/bin/run_trex.sh.rule

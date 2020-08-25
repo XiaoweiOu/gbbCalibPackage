@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen/unsupported/test/gmres.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildUnsupported"
+		],
+		"name" : "gmres_1"
+	}
+}

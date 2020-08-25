@@ -1,0 +1,11 @@
+module "utils.hxx" {
+  requires cplusplus
+  module "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/include/RooMultiVarGaussianHighPrecision.h" { header "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/include/RooMultiVarGaussianHighPrecision.h" export * }
+  module "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/include/ExtendedModel.hxx" { header "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/include/ExtendedModel.hxx" export * }
+  module "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/include/ExtendedMinimizer.hxx" { header "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/include/ExtendedMinimizer.hxx" export * }
+  module "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/atlasrootstyle/AtlasLabels.h" { header "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/atlasrootstyle/AtlasLabels.h" export * }
+  module "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/atlasrootstyle/AtlasStyle.h" { header "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/atlasrootstyle/AtlasStyle.h" export * }
+  module "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/atlasrootstyle/AtlasUtils.h" { header "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonStatTools/StatisticsTools/atlasrootstyle/AtlasUtils.h" export * }
+  export *
+}
+

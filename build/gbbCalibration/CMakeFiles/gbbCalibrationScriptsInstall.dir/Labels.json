@@ -1,0 +1,22 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/run_trex.sh"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/util/run_trex.sh"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/run_trex.sh.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gbbCalibration"
+		],
+		"name" : "gbbCalibrationScriptsInstall"
+	}
+}

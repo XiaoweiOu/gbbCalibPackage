@@ -1,0 +1,9 @@
+# Target labels
+ gbbCalibration
+# Source files and their labels
+/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/helpers/GbbUtil.cxx
+/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/helpers/GlobalConfig.cxx
+/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/helpers/GlobalConfig.h
+/home/ouxiaowei/gbbCalibPackage/build/gbbCalibration/CMakeFiles/gbbCommonLibCintDict.cxx
+ gbbCalibration
+/home/ouxiaowei/gbbCalibPackage/build/gbbCalibration/CMakeFiles/gbbCommonLibCintDict.cxx.rule

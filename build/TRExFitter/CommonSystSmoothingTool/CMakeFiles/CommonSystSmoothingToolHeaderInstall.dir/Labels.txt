@@ -1,0 +1,5 @@
+# Target labels
+ CommonSystSmoothingTool
+# Source files and their labels
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/SmoothSystematics
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/SmoothSystematics.rule

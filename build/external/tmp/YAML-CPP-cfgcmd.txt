@@ -1,0 +1,1 @@
+cmd='/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake;-C<TMP_DIR>/YAML-CPP-cache-$<CONFIG>.cmake;-GUnix Makefiles;<SOURCE_DIR><SOURCE_SUBDIR>'

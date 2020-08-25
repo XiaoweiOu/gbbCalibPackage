@@ -1,0 +1,1353 @@
+The system is: Linux - 2.6.32-696.1.1.el6.x86_64 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/3.11.0/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/3.11.0/CompilerIdCXX/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_f12d6/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_f12d6.dir/build.make CMakeFiles/cmTC_f12d6.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f12d6.dir/testCCompiler.c.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc    -o CMakeFiles/cmTC_f12d6.dir/testCCompiler.c.o   -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_f12d6
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f12d6.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc      -rdynamic CMakeFiles/cmTC_f12d6.dir/testCCompiler.c.o  -o cmTC_f12d6 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_3c635/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_3c635.dir/build.make CMakeFiles/cmTC_3c635.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc    -o CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o   -c /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/share/cmake-3.11/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_3c635
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3c635.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc     -v -rdynamic CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o  -o cmTC_3c635 
+Using built-in specs.
+COLLECT_GCC=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc
+COLLECT_LTO_WRAPPER=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/build/contrib/gcc-6.2.0/src/gcc/6.2.0/configure --prefix=/build/gcc/lcgcmake-install/gcc/6.2.0/x86_64-slc6 -with-system-zlib --disable-multilib --enable-languages=all --with-gnu-ld --with-ld=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/ld --with-gnu-as --with-as=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/as
+Thread model: posix
+gcc version 6.2.0 (GCC) 
+COMPILER_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/
+LIBRARY_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_3c635' '-mtune=generic' '-march=x86-64'
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2 -plugin /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so -plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccT5GRnz.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_3c635 /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../.. CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o /usr/lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_3c635' '-mtune=generic' '-march=x86-64'
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_3c635/fast"]
+  ignore line: [gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_3c635.dir/build.make CMakeFiles/cmTC_3c635.dir/build]
+  ignore line: [gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc    -o CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o   -c /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/share/cmake-3.11/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_3c635]
+  ignore line: [/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3c635.dir/link.txt --verbose=1]
+  ignore line: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc     -v -rdynamic CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o  -o cmTC_3c635 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc]
+  ignore line: [COLLECT_LTO_WRAPPER=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: /build/gcc/build/contrib/gcc-6.2.0/src/gcc/6.2.0/configure --prefix=/build/gcc/lcgcmake-install/gcc/6.2.0/x86_64-slc6 -with-system-zlib --disable-multilib --enable-languages=all --with-gnu-ld --with-ld=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/ld --with-gnu-as --with-as=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/as]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 6.2.0 (GCC) ]
+  ignore line: [COMPILER_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/]
+  ignore line: [LIBRARY_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_3c635' '-mtune=generic' '-march=x86-64']
+  link line: [ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2 -plugin /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so -plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccT5GRnz.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_3c635 /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../.. CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o /usr/lib/../lib64/crtn.o]
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccT5GRnz.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_3c635] ==> ignore
+    arg [/usr/lib/../lib64/crt1.o] ==> ignore
+    arg [/usr/lib/../lib64/crti.o] ==> ignore
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o] ==> ignore
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..]
+    arg [CMakeFiles/cmTC_3c635.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o] ==> ignore
+    arg [/usr/lib/../lib64/crtn.o] ==> ignore
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc/x86_64-pc-linux-gnu/6.2.0]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit dirs: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc/x86_64-pc-linux-gnu/6.2.0;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib64;/lib64;/usr/lib64;/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64;/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib]
+  implicit fwks: []
+
+
+
+
+Detecting C [-std=c11] compiler features compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_d1448/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_d1448.dir/build.make CMakeFiles/cmTC_d1448.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d1448.dir/feature_tests.c.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc   -std=c11 -o CMakeFiles/cmTC_d1448.dir/feature_tests.c.o   -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_d1448
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d1448.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc      -rdynamic CMakeFiles/cmTC_d1448.dir/feature_tests.c.o  -o cmTC_d1448 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:1c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c99] compiler features compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_31e73/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_31e73.dir/build.make CMakeFiles/cmTC_31e73.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_31e73.dir/feature_tests.c.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc   -std=c99 -o CMakeFiles/cmTC_31e73.dir/feature_tests.c.o   -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_31e73
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_31e73.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc      -rdynamic CMakeFiles/cmTC_31e73.dir/feature_tests.c.o  -o cmTC_31e73 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c90] compiler features compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_31f30/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_31f30.dir/build.make CMakeFiles/cmTC_31f30.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_31f30.dir/feature_tests.c.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc   -std=c90 -o CMakeFiles/cmTC_31f30.dir/feature_tests.c.o   -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_31f30
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_31f30.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc      -rdynamic CMakeFiles/cmTC_31f30.dir/feature_tests.c.o  -o cmTC_31f30 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:0c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:0c_variadic_macros
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_859b2/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_859b2.dir/build.make CMakeFiles/cmTC_859b2.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_859b2.dir/testCXXCompiler.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++     -o CMakeFiles/cmTC_859b2.dir/testCXXCompiler.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_859b2
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_859b2.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++       -rdynamic CMakeFiles/cmTC_859b2.dir/testCXXCompiler.cxx.o  -o cmTC_859b2 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_580d6/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_580d6.dir/build.make CMakeFiles/cmTC_580d6.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++     -o CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o -c /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/share/cmake-3.11/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_580d6
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_580d6.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++      -v -rdynamic CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_580d6 
+Using built-in specs.
+COLLECT_GCC=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++
+COLLECT_LTO_WRAPPER=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/build/contrib/gcc-6.2.0/src/gcc/6.2.0/configure --prefix=/build/gcc/lcgcmake-install/gcc/6.2.0/x86_64-slc6 -with-system-zlib --disable-multilib --enable-languages=all --with-gnu-ld --with-ld=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/ld --with-gnu-as --with-as=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/as
+Thread model: posix
+gcc version 6.2.0 (GCC) 
+COMPILER_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/
+LIBRARY_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_580d6' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2 -plugin /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so -plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccK4YuMk.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_580d6 /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../.. CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o /usr/lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_580d6' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_580d6/fast"]
+  ignore line: [gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_580d6.dir/build.make CMakeFiles/cmTC_580d6.dir/build]
+  ignore line: [gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++     -o CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o -c /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/share/cmake-3.11/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_580d6]
+  ignore line: [/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_580d6.dir/link.txt --verbose=1]
+  ignore line: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++      -v -rdynamic CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_580d6 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++]
+  ignore line: [COLLECT_LTO_WRAPPER=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: /build/gcc/build/contrib/gcc-6.2.0/src/gcc/6.2.0/configure --prefix=/build/gcc/lcgcmake-install/gcc/6.2.0/x86_64-slc6 -with-system-zlib --disable-multilib --enable-languages=all --with-gnu-ld --with-ld=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/ld --with-gnu-as --with-as=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/as]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 6.2.0 (GCC) ]
+  ignore line: [COMPILER_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/]
+  ignore line: [LIBRARY_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_580d6' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2 -plugin /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so -plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccK4YuMk.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_580d6 /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../.. CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o /usr/lib/../lib64/crtn.o]
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccK4YuMk.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_580d6] ==> ignore
+    arg [/usr/lib/../lib64/crt1.o] ==> ignore
+    arg [/usr/lib/../lib64/crti.o] ==> ignore
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o] ==> ignore
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..]
+    arg [CMakeFiles/cmTC_580d6.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o] ==> ignore
+    arg [/usr/lib/../lib64/crtn.o] ==> ignore
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc/x86_64-pc-linux-gnu/6.2.0]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit dirs: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc/x86_64-pc-linux-gnu/6.2.0;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib64;/lib64;/usr/lib64;/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64;/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib]
+  implicit fwks: []
+
+
+
+
+Detecting CXX [-std=c++1z] compiler features compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_06a3d/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_06a3d.dir/build.make CMakeFiles/cmTC_06a3d.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_06a3d.dir/feature_tests.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++1z -o CMakeFiles/cmTC_06a3d.dir/feature_tests.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_06a3d
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_06a3d.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++       -rdynamic CMakeFiles/cmTC_06a3d.dir/feature_tests.cxx.o  -o cmTC_06a3d 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:1cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:1cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:1cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:1cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:1cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:1cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:1cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:1cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:1cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:1cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++14] compiler features compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_2f8cd/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_2f8cd.dir/build.make CMakeFiles/cmTC_2f8cd.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_2f8cd.dir/feature_tests.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++14 -o CMakeFiles/cmTC_2f8cd.dir/feature_tests.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_2f8cd
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2f8cd.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++       -rdynamic CMakeFiles/cmTC_2f8cd.dir/feature_tests.cxx.o  -o cmTC_2f8cd 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:1cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:1cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:1cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:1cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:1cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:1cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:1cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:1cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:1cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:1cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++11] compiler features compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_0fdc3/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_0fdc3.dir/build.make CMakeFiles/cmTC_0fdc3.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_0fdc3.dir/feature_tests.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++11 -o CMakeFiles/cmTC_0fdc3.dir/feature_tests.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_0fdc3
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0fdc3.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++       -rdynamic CMakeFiles/cmTC_0fdc3.dir/feature_tests.cxx.o  -o cmTC_0fdc3 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++98] compiler features compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_75dca/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_75dca.dir/build.make CMakeFiles/cmTC_75dca.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_75dca.dir/feature_tests.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++98 -o CMakeFiles/cmTC_75dca.dir/feature_tests.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_75dca
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_75dca.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++       -rdynamic CMakeFiles/cmTC_75dca.dir/feature_tests.cxx.o  -o cmTC_75dca 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:0cxx_alias_templates
+    Feature record: CXX_FEATURE:0cxx_alignas
+    Feature record: CXX_FEATURE:0cxx_alignof
+    Feature record: CXX_FEATURE:0cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:0cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:0cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:0cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:0cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:0cxx_default_function_template_args
+    Feature record: CXX_FEATURE:0cxx_defaulted_functions
+    Feature record: CXX_FEATURE:0cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:0cxx_delegating_constructors
+    Feature record: CXX_FEATURE:0cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:0cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:0cxx_explicit_conversions
+    Feature record: CXX_FEATURE:0cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:0cxx_extern_templates
+    Feature record: CXX_FEATURE:0cxx_final
+    Feature record: CXX_FEATURE:0cxx_func_identifier
+    Feature record: CXX_FEATURE:0cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:0cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:0cxx_inline_namespaces
+    Feature record: CXX_FEATURE:0cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:0cxx_local_type_template_args
+    Feature record: CXX_FEATURE:0cxx_long_long_type
+    Feature record: CXX_FEATURE:0cxx_noexcept
+    Feature record: CXX_FEATURE:0cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:0cxx_nullptr
+    Feature record: CXX_FEATURE:0cxx_override
+    Feature record: CXX_FEATURE:0cxx_range_for
+    Feature record: CXX_FEATURE:0cxx_raw_string_literals
+    Feature record: CXX_FEATURE:0cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:0cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:0cxx_rvalue_references
+    Feature record: CXX_FEATURE:0cxx_sizeof_member
+    Feature record: CXX_FEATURE:0cxx_static_assert
+    Feature record: CXX_FEATURE:0cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:0cxx_thread_local
+    Feature record: CXX_FEATURE:0cxx_trailing_return_types
+    Feature record: CXX_FEATURE:0cxx_unicode_literals
+    Feature record: CXX_FEATURE:0cxx_uniform_initialization
+    Feature record: CXX_FEATURE:0cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:0cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:0cxx_variadic_macros
+    Feature record: CXX_FEATURE:0cxx_variadic_templates
+Performing C++ SOURCE FILE Test EIGEN_COMPILER_SUPPORT_CPP11 succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_a03f3/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_a03f3.dir/build.make CMakeFiles/cmTC_a03f3.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_a03f3.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -DEIGEN_COMPILER_SUPPORT_CPP11   -std=c++11 -o CMakeFiles/cmTC_a03f3.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_a03f3
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a03f3.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -DEIGEN_COMPILER_SUPPORT_CPP11    -rdynamic CMakeFiles/cmTC_a03f3.dir/src.cxx.o  -o cmTC_a03f3 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_std=cpp03 succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_eca02/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_eca02.dir/build.make CMakeFiles/cmTC_eca02.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_eca02.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -DCOMPILER_SUPPORT_std=cpp03   -std=c++03 -o CMakeFiles/cmTC_eca02.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_eca02
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eca02.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -DCOMPILER_SUPPORT_std=cpp03    -rdynamic CMakeFiles/cmTC_eca02.dir/src.cxx.o  -o cmTC_eca02 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test standard_math_library_linked_to_automatically succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_5829f/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_5829f.dir/build.make CMakeFiles/cmTC_5829f.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_5829f.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -Dstandard_math_library_linked_to_automatically   -o CMakeFiles/cmTC_5829f.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_5829f
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5829f.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -Dstandard_math_library_linked_to_automatically    -rdynamic CMakeFiles/cmTC_5829f.dir/src.cxx.o  -o cmTC_5829f 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+#include<cmath>
+int main() { std::sin(0.0); std::log(0.0f); }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_WERROR succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_25459/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_25459.dir/build.make CMakeFiles/cmTC_25459.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_25459.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -DCOMPILER_SUPPORT_WERROR   -Werror -o CMakeFiles/cmTC_25459.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_25459
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_25459.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -DCOMPILER_SUPPORT_WERROR    -rdynamic CMakeFiles/cmTC_25459.dir/src.cxx.o  -o cmTC_25459 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_pedantic succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_bee9b/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_bee9b.dir/build.make CMakeFiles/cmTC_bee9b.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_bee9b.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -DCOMPILER_SUPPORT_pedantic -Werror   -pedantic -o CMakeFiles/cmTC_bee9b.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_bee9b
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bee9b.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -DCOMPILER_SUPPORT_pedantic -Werror    -rdynamic CMakeFiles/cmTC_bee9b.dir/src.cxx.o  -o cmTC_bee9b 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wall succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_c83e9/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_c83e9.dir/build.make CMakeFiles/cmTC_c83e9.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_c83e9.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -DCOMPILER_SUPPORT_Wall -Werror   -Wall -o CMakeFiles/cmTC_c83e9.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_c83e9
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c83e9.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -DCOMPILER_SUPPORT_Wall -Werror    -rdynamic CMakeFiles/cmTC_c83e9.dir/src.cxx.o  -o cmTC_c83e9 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wextra succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_77cfe/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_77cfe.dir/build.make CMakeFiles/cmTC_77cfe.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_77cfe.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -DCOMPILER_SUPPORT_Wextra -Werror   -Wextra -o CMakeFiles/cmTC_77cfe.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_77cfe
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_77cfe.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -DCOMPILER_SUPPORT_Wextra -Werror    -rdynamic CMakeFiles/cmTC_77cfe.dir/src.cxx.o  -o cmTC_77cfe 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wundef succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_3347d/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_3347d.dir/build.make CMakeFiles/cmTC_3347d.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_3347d.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -DCOMPILER_SUPPORT_Wundef -Werror   -Wundef -o CMakeFiles/cmTC_3347d.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_3347d
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3347d.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -DCOMPILER_SUPPORT_Wundef -Werror    -rdynamic CMakeFiles/cmTC_3347d.dir/src.cxx.o  -o cmTC_3347d 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wcastalign succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_8066e/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_8066e.dir/build.make CMakeFiles/cmTC_8066e.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_8066e.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -DCOMPILER_SUPPORT_Wcastalign -Werror   -Wcast-align -o CMakeFiles/cmTC_8066e.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_8066e
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8066e.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -DCOMPILER_SUPPORT_Wcastalign -Werror    -rdynamic CMakeFiles/cmTC_8066e.dir/src.cxx.o  -o cmTC_8066e 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wcharsubscripts succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_0df6d/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_0df6d.dir/build.make CMakeFiles/cmTC_0df6d.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_0df6d.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -DCOMPILER_SUPPORT_Wcharsubscripts -Werror   -Wchar-subscripts -o CMakeFiles/cmTC_0df6d.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_0df6d
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0df6d.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -DCOMPILER_SUPPORT_Wcharsubscripts -Werror    -rdynamic CMakeFiles/cmTC_0df6d.dir/src.cxx.o  -o cmTC_0df6d 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wnonvirtualdtor succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_abab1/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_abab1.dir/build.make CMakeFiles/cmTC_abab1.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_abab1.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -DCOMPILER_SUPPORT_Wnonvirtualdtor -Werror   -Wnon-virtual-dtor -o CMakeFiles/cmTC_abab1.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_abab1
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_abab1.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -DCOMPILER_SUPPORT_Wnonvirtualdtor -Werror    -rdynamic CMakeFiles/cmTC_abab1.dir/src.cxx.o  -o cmTC_abab1 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wunusedlocaltypedefs succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_9a997/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_9a997.dir/build.make CMakeFiles/cmTC_9a997.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_9a997.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -DCOMPILER_SUPPORT_Wunusedlocaltypedefs -Werror   -Wunused-local-typedefs -o CMakeFiles/cmTC_9a997.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_9a997
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9a997.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -DCOMPILER_SUPPORT_Wunusedlocaltypedefs -Werror    -rdynamic CMakeFiles/cmTC_9a997.dir/src.cxx.o  -o cmTC_9a997 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wpointerarith succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_0d84f/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_0d84f.dir/build.make CMakeFiles/cmTC_0d84f.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_0d84f.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -DCOMPILER_SUPPORT_Wpointerarith -Werror   -Wpointer-arith -o CMakeFiles/cmTC_0d84f.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_0d84f
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0d84f.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -DCOMPILER_SUPPORT_Wpointerarith -Werror    -rdynamic CMakeFiles/cmTC_0d84f.dir/src.cxx.o  -o cmTC_0d84f 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wwritestrings succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_2a66e/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_2a66e.dir/build.make CMakeFiles/cmTC_2a66e.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_2a66e.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -DCOMPILER_SUPPORT_Wwritestrings -Werror   -Wwrite-strings -o CMakeFiles/cmTC_2a66e.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_2a66e
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2a66e.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -DCOMPILER_SUPPORT_Wwritestrings -Werror    -rdynamic CMakeFiles/cmTC_2a66e.dir/src.cxx.o  -o cmTC_2a66e 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wformatsecurity succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_e18c5/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_e18c5.dir/build.make CMakeFiles/cmTC_e18c5.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_e18c5.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -DCOMPILER_SUPPORT_Wformatsecurity -Werror   -Wformat-security -o CMakeFiles/cmTC_e18c5.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_e18c5
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e18c5.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -DCOMPILER_SUPPORT_Wformatsecurity -Werror    -rdynamic CMakeFiles/cmTC_e18c5.dir/src.cxx.o  -o cmTC_e18c5 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wlogicalop succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_e53bc/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_e53bc.dir/build.make CMakeFiles/cmTC_e53bc.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_e53bc.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -DCOMPILER_SUPPORT_Wlogicalop -Werror   -Wlogical-op -o CMakeFiles/cmTC_e53bc.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_e53bc
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e53bc.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -DCOMPILER_SUPPORT_Wlogicalop -Werror    -rdynamic CMakeFiles/cmTC_e53bc.dir/src.cxx.o  -o cmTC_e53bc 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wdoublepromotion succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_83e5c/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_83e5c.dir/build.make CMakeFiles/cmTC_83e5c.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_83e5c.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -DCOMPILER_SUPPORT_Wdoublepromotion -Werror   -Wdouble-promotion -o CMakeFiles/cmTC_83e5c.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_83e5c
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_83e5c.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -DCOMPILER_SUPPORT_Wdoublepromotion -Werror    -rdynamic CMakeFiles/cmTC_83e5c.dir/src.cxx.o  -o cmTC_83e5c 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wnopsabi succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_ec16c/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_ec16c.dir/build.make CMakeFiles/cmTC_ec16c.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_ec16c.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -DCOMPILER_SUPPORT_Wnopsabi -Werror   -Wno-psabi -o CMakeFiles/cmTC_ec16c.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_ec16c
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ec16c.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -DCOMPILER_SUPPORT_Wnopsabi -Werror    -rdynamic CMakeFiles/cmTC_ec16c.dir/src.cxx.o  -o cmTC_ec16c 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wnovariadicmacros succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_ff49d/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_ff49d.dir/build.make CMakeFiles/cmTC_ff49d.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_ff49d.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -DCOMPILER_SUPPORT_Wnovariadicmacros -Werror   -Wno-variadic-macros -o CMakeFiles/cmTC_ff49d.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_ff49d
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff49d.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -DCOMPILER_SUPPORT_Wnovariadicmacros -Werror    -rdynamic CMakeFiles/cmTC_ff49d.dir/src.cxx.o  -o cmTC_ff49d 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_Wnolonglong succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_4ed3a/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_4ed3a.dir/build.make CMakeFiles/cmTC_4ed3a.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_4ed3a.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -DCOMPILER_SUPPORT_Wnolonglong -Werror   -Wno-long-long -o CMakeFiles/cmTC_4ed3a.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_4ed3a
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4ed3a.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -DCOMPILER_SUPPORT_Wnolonglong -Werror    -rdynamic CMakeFiles/cmTC_4ed3a.dir/src.cxx.o  -o cmTC_4ed3a 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_fnochecknew succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_8091d/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_8091d.dir/build.make CMakeFiles/cmTC_8091d.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_8091d.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -DCOMPILER_SUPPORT_fnochecknew -Werror   -fno-check-new -o CMakeFiles/cmTC_8091d.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_8091d
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8091d.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -DCOMPILER_SUPPORT_fnochecknew -Werror    -rdynamic CMakeFiles/cmTC_8091d.dir/src.cxx.o  -o cmTC_8091d 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_fnocommon succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_dcf58/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_dcf58.dir/build.make CMakeFiles/cmTC_dcf58.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_dcf58.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -DCOMPILER_SUPPORT_fnocommon -Werror   -fno-common -o CMakeFiles/cmTC_dcf58.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_dcf58
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dcf58.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -DCOMPILER_SUPPORT_fnocommon -Werror    -rdynamic CMakeFiles/cmTC_dcf58.dir/src.cxx.o  -o cmTC_dcf58 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_fstrictaliasing succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_829e9/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_829e9.dir/build.make CMakeFiles/cmTC_829e9.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_829e9.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -DCOMPILER_SUPPORT_fstrictaliasing -Werror   -fstrict-aliasing -o CMakeFiles/cmTC_829e9.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_829e9
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_829e9.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -DCOMPILER_SUPPORT_fstrictaliasing -Werror    -rdynamic CMakeFiles/cmTC_829e9.dir/src.cxx.o  -o cmTC_829e9 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_ansi succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_37317/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_37317.dir/build.make CMakeFiles/cmTC_37317.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_37317.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -DCOMPILER_SUPPORT_ansi -Werror   -ansi -o CMakeFiles/cmTC_37317.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_37317
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_37317.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -DCOMPILER_SUPPORT_ansi -Werror    -rdynamic CMakeFiles/cmTC_37317.dir/src.cxx.o  -o cmTC_37317 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_OPENMP succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_1c7b7/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_1c7b7.dir/build.make CMakeFiles/cmTC_1c7b7.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_1c7b7.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi -DCOMPILER_SUPPORT_OPENMP   -fopenmp -o CMakeFiles/cmTC_1c7b7.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_1c7b7
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1c7b7.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi -DCOMPILER_SUPPORT_OPENMP    -rdynamic CMakeFiles/cmTC_1c7b7.dir/src.cxx.o  -o cmTC_1c7b7 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Determining if the Q_WS_X11 exist passed with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_b388e/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_b388e.dir/build.make CMakeFiles/cmTC_b388e.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_b388e.dir/CheckSymbolExists.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi -O1 -g1    -o CMakeFiles/cmTC_b388e.dir/CheckSymbolExists.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+Linking CXX executable cmTC_b388e
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b388e.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi -O1 -g1     -rdynamic CMakeFiles/cmTC_b388e.dir/CheckSymbolExists.cxx.o  -o cmTC_b388e 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+File /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_X11
+  return ((int*)(&Q_WS_X11))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Compiling the Fortran compiler identification source file "CMakeFortranCompilerId.F" succeeded.
+Compiler: /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran 
+Build flags: 
+Id flags: -v 
+
+The output was:
+0
+Driving: /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran -v CMakeFortranCompilerId.F -l gfortran -l m -shared-libgcc
+Using built-in specs.
+COLLECT_GCC=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran
+COLLECT_LTO_WRAPPER=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/build/contrib/gcc-6.2.0/src/gcc/6.2.0/configure --prefix=/build/gcc/lcgcmake-install/gcc/6.2.0/x86_64-slc6 -with-system-zlib --disable-multilib --enable-languages=all --with-gnu-ld --with-ld=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/ld --with-gnu-as --with-as=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/as
+Thread model: posix
+gcc version 6.2.0 (GCC) 
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/f951 CMakeFortranCompilerId.F -ffixed-form -cpp=/tmp/ccodx0Pt.f90 -quiet -v -iprefix /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/ -isystem /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/include CMakeFortranCompilerId.F -quiet -dumpbase CMakeFortranCompilerId.F -mtune=generic -march=x86-64 -auxbase CMakeFortranCompilerId -version -fintrinsic-modules-path /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/finclude -o /tmp/cc3RaYrV.s
+GNU Fortran (GCC) version 6.2.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 6.2.0, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1, isl version 0.15
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../x86_64-pc-linux-gnu/include"
+ignoring duplicate directory "/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/../../lib/gcc/x86_64-pc-linux-gnu/6.2.0/include"
+ignoring duplicate directory "/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/../../lib/gcc/x86_64-pc-linux-gnu/6.2.0/include-fixed"
+ignoring nonexistent directory "/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/../../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../x86_64-pc-linux-gnu/include"
+ignoring duplicate directory "/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/include"
+  as it is a non-system directory that duplicates a system directory
+#include "..." search starts here:
+#include <...> search starts here:
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/finclude
+ /opt/intel/composer_xe_2013.3.163/mkl/include
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/include
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/include-fixed
+ /usr/local/include
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/../../include
+ /usr/include
+End of search list.
+GNU Fortran2008 (GCC) version 6.2.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 6.2.0, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.1, isl version 0.15
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ as -v --64 -o /tmp/ccrwXt8m.o /tmp/cc3RaYrV.s
+GNU assembler version 2.28 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.28
+Reading specs from /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/libgfortran.spec
+rename spec lib to liborig
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+COMPILER_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/
+LIBRARY_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2 -plugin /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so -plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccwjl7PO.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lquadmath -plugin-opt=-pass-through=-lm -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../.. /tmp/ccrwXt8m.o -lgfortran -lm -lgcc_s -lgcc -lquadmath -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o /usr/lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+
+
+Compilation of the Fortran compiler identification source "CMakeFortranCompilerId.F" produced "a.out"
+
+The Fortran compiler identification is GNU, found in "/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/3.11.0/CompilerIdFortran/a.out"
+
+Determining if the Fortran compiler works passed with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_3d578/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_3d578.dir/build.make CMakeFiles/cmTC_3d578.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building Fortran object CMakeFiles/cmTC_3d578.dir/testFortranCompiler.f.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran    -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/testFortranCompiler.f -o CMakeFiles/cmTC_3d578.dir/testFortranCompiler.f.o
+Linking Fortran executable cmTC_3d578
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3d578.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran      CMakeFiles/cmTC_3d578.dir/testFortranCompiler.f.o  -o cmTC_3d578 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Detecting Fortran compiler ABI info compiled with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_1b4bb/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_1b4bb.dir/build.make CMakeFiles/cmTC_1b4bb.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building Fortran object CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran    -c /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/share/cmake-3.11/Modules/CMakeFortranCompilerABI.F -o CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o
+Linking Fortran executable cmTC_1b4bb
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1b4bb.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran   -v   CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o  -o cmTC_1b4bb 
+Driving: /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran -v CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o -o cmTC_1b4bb -l gfortran -l m -shared-libgcc
+Using built-in specs.
+COLLECT_GCC=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran
+COLLECT_LTO_WRAPPER=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: /build/gcc/build/contrib/gcc-6.2.0/src/gcc/6.2.0/configure --prefix=/build/gcc/lcgcmake-install/gcc/6.2.0/x86_64-slc6 -with-system-zlib --disable-multilib --enable-languages=all --with-gnu-ld --with-ld=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/ld --with-gnu-as --with-as=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/as
+Thread model: posix
+gcc version 6.2.0 (GCC) 
+Reading specs from /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/libgfortran.spec
+rename spec lib to liborig
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_1b4bb' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+COMPILER_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/
+LIBRARY_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_1b4bb' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2 -plugin /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so -plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccLJKgzM.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lquadmath -plugin-opt=-pass-through=-lm -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_1b4bb /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../.. CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o -lgfortran -lm -lgcc_s -lgcc -lquadmath -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o /usr/lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_1b4bb' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Parsed Fortran implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_1b4bb/fast"]
+  ignore line: [gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp']
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_1b4bb.dir/build.make CMakeFiles/cmTC_1b4bb.dir/build]
+  ignore line: [gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp']
+  ignore line: [Building Fortran object CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o]
+  ignore line: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran    -c /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/share/cmake-3.11/Modules/CMakeFortranCompilerABI.F -o CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o]
+  ignore line: [Linking Fortran executable cmTC_1b4bb]
+  ignore line: [/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1b4bb.dir/link.txt --verbose=1]
+  ignore line: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran   -v   CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o  -o cmTC_1b4bb ]
+  ignore line: [Driving: /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran -v CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o -o cmTC_1b4bb -l gfortran -l m -shared-libgcc]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran]
+  ignore line: [COLLECT_LTO_WRAPPER=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: /build/gcc/build/contrib/gcc-6.2.0/src/gcc/6.2.0/configure --prefix=/build/gcc/lcgcmake-install/gcc/6.2.0/x86_64-slc6 -with-system-zlib --disable-multilib --enable-languages=all --with-gnu-ld --with-ld=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/ld --with-gnu-as --with-as=/build/gcc/lcgcmake-install/binutils/2.28/x86_64-slc6/bin/as]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 6.2.0 (GCC) ]
+  ignore line: [Reading specs from /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/libgfortran.spec]
+  ignore line: [rename spec lib to liborig]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_1b4bb' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  ignore line: [COMPILER_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/]
+  ignore line: [LIBRARY_PATH=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64/:/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64/:/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_1b4bb' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2 -plugin /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so -plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccLJKgzM.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lquadmath -plugin-opt=-pass-through=-lm -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_1b4bb /usr/lib/../lib64/crt1.o /usr/lib/../lib64/crti.o /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64 -L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64 -L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../.. CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o -lgfortran -lm -lgcc_s -lgcc -lquadmath -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o /usr/lib/../lib64/crtn.o]
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../libexec/gcc/x86_64-pc-linux-gnu/6.2.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccLJKgzM.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lquadmath] ==> ignore
+    arg [-plugin-opt=-pass-through=-lm] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_1b4bb] ==> ignore
+    arg [/usr/lib/../lib64/crt1.o] ==> ignore
+    arg [/usr/lib/../lib64/crti.o] ==> ignore
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtbegin.o] ==> ignore
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+    arg [-L/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64] ==> dir [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64]
+    arg [-L/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..] ==> dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..]
+    arg [CMakeFiles/cmTC_1b4bb.dir/CMakeFortranCompilerABI.F.o] ==> ignore
+    arg [-lgfortran] ==> lib [gfortran]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lquadmath] ==> lib [quadmath]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/crtend.o] ==> ignore
+    arg [/usr/lib/../lib64/crtn.o] ==> ignore
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc/x86_64-pc-linux-gnu/6.2.0]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../../../lib64] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64]
+  collapse library dir [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64] ==> [/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64]
+  collapse library dir [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/../lib/gcc/x86_64-pc-linux-gnu/6.2.0/../../..] ==> [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib]
+  implicit libs: [gfortran;m;gcc_s;gcc;quadmath;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit dirs: [/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc/x86_64-pc-linux-gnu/6.2.0;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib/gcc;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib64;/lib64;/usr/lib64;/opt/intel/composer_xe_2013.3.163/compiler/lib/intel64;/opt/intel/composer_xe_2013.3.163/mkl/lib/intel64;/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/lib]
+  implicit fwks: []
+
+
+Determining if the Fortran compiler supports Fortran 90 passed with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_6010b/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_6010b.dir/build.make CMakeFiles/cmTC_6010b.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building Fortran object CMakeFiles/cmTC_6010b.dir/testFortranCompilerF90.f90.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran    -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/testFortranCompilerF90.f90 -o CMakeFiles/cmTC_6010b.dir/testFortranCompilerF90.f90.o
+Linking Fortran executable cmTC_6010b
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6010b.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gfortran      CMakeFiles/cmTC_6010b.dir/testFortranCompilerF90.f90.o  -o cmTC_6010b 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Performing C++ SOURCE FILE Test COMPILER_SUPPORT_FASTMATH succeeded with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_70bd9/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_70bd9.dir/build.make CMakeFiles/cmTC_70bd9.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_70bd9.dir/src.cxx.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++    -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi -DCOMPILER_SUPPORT_FASTMATH   -ffast-math -o CMakeFiles/cmTC_70bd9.dir/src.cxx.o -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_70bd9
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_70bd9.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/g++   -std=c++03 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi -DCOMPILER_SUPPORT_FASTMATH    -rdynamic CMakeFiles/cmTC_70bd9.dir/src.cxx.o  -o cmTC_70bd9 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_6e3a7/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_6e3a7.dir/build.make CMakeFiles/cmTC_6e3a7.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6e3a7.dir/CheckIncludeFile.c.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc    -o CMakeFiles/cmTC_6e3a7.dir/CheckIncludeFile.c.o   -c /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_6e3a7
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6e3a7.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc      -rdynamic CMakeFiles/cmTC_6e3a7.dir/CheckIncludeFile.c.o  -o cmTC_6e3a7 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function pthread_create exists in the pthread passed with the following output:
+Change Dir: /home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_5cecc/fast"
+gmake[3]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTC_5cecc.dir/build.make CMakeFiles/cmTC_5cecc.dir/build
+gmake[4]: Entering directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5cecc.dir/CheckFunctionExists.c.o
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_5cecc.dir/CheckFunctionExists.c.o   -c /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/share/cmake-3.11/Modules/CheckFunctionExists.c
+Linking C executable cmTC_5cecc
+/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Cmake/3.11.0/Linux-x86_64/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5cecc.dir/link.txt --verbose=1
+/cvmfs/sft.cern.ch/lcg/releases/gcc/6.2.0-b9934/x86_64-slc6/bin/gcc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_5cecc.dir/CheckFunctionExists.c.o  -o cmTC_5cecc -lpthread 
+gmake[4]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+gmake[3]: Leaving directory `/home/ouxiaowei/gbbCalibPackage/build/external/src/Eigen-build/CMakeFiles/CMakeTmp'
+
+

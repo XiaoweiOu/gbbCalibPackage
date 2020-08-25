@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonSystSmoothingTool/util/testInputFile.cxx"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"CommonSystSmoothingTool"
+		],
+		"name" : "testInputFile"
+	}
+}

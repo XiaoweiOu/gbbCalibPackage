@@ -32,7 +32,7 @@ if infile.IsZombie():
   exit()
 
 # open output file
-outfile=TFile(args.outfile,"CREATE")
+outfile=TFile(args.outfile,"RECREATE")
 if outfile.IsZombie():
   print("Cannot create file "+args.outfile)
   exit()

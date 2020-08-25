@@ -1,0 +1,4 @@
+[ libExoStats.so ]
+# List of selected classes
+class RooExpandedFitResult
+header TRExFitter/CommonStatTools/RooExpandedFitResult.h

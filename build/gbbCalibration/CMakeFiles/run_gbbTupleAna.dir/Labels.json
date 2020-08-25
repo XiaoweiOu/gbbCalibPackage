@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/gbbCalibration/util/run_gbbTupleAna.cxx"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gbbCalibration"
+		],
+		"name" : "run_gbbTupleAna"
+	}
+}

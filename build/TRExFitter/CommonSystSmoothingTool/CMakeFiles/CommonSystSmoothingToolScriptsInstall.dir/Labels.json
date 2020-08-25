@@ -1,0 +1,49 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/CopyHists.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/Ratio.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/testInputFile.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/testSmooth.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonSystSmoothingTool/python/CopyHists.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonSystSmoothingTool/python/Ratio.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonSystSmoothingTool/python/testInputFile.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/source/TRExFitter/CommonSystSmoothingTool/python/testSmooth.py"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/CopyHists.py.rule"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/Ratio.py.rule"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/testInputFile.py.rule"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/bin/testSmooth.py.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"CommonSystSmoothingTool"
+		],
+		"name" : "CommonSystSmoothingToolScriptsInstall"
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/helpers"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/histMaker"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/scaleFactorCalculator"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/helpers.rule"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/histMaker.rule"
+		},
+		{
+			"file" : "/home/ouxiaowei/gbbCalibPackage/build/generic/include/scaleFactorCalculator.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gbbCalibration"
+		],
+		"name" : "gbbCalibrationHeaderInstall"
+	}
+}

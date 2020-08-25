@@ -1,0 +1,9 @@
+# Target labels
+ gbbCalibration
+# Source files and their labels
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/helpers
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/histMaker
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/scaleFactorCalculator
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/helpers.rule
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/histMaker.rule
+/home/ouxiaowei/gbbCalibPackage/build/generic/include/scaleFactorCalculator.rule

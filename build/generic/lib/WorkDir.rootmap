@@ -1,0 +1,12 @@
+[ libCommonSystSmoothingToolLib.so ]
+# List of selected classes
+class PlotHist
+class SmoothHist
+class SmoothingTool
+header SmoothSystematics/PlotHist.h
+header SmoothSystematics/SmoothHist.h
+header SmoothSystematics/SmoothingTool.h
+[ libgbbCommonLib.so ]
+# List of selected classes
+class GlobalConfig
+header helpers/GlobalConfig.h
