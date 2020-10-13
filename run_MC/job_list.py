@@ -13,7 +13,7 @@ def job_list(varlist):
       inputname=os.path.join(dir_name,file)
       resultname=file.split(".txt")[0] 
       for var in varlist:
-       run_command.append("run_gbbTupleAna " +inputname+" ./result_MC/"+var+"/"+dirs+"/"+resultname+".root FlavourTagging_"+var+" run_GbbTupleAna_Calib.cfg")
+       run_command.append("run_gbbTupleAna " +inputname+" /lustre/collider/ouxiaowei/gbbCalibPackage/result_MC/"+var+"/"+dirs+"/"+resultname+".root FlavourTagging_"+var+" run_GbbTupleAna_Calib.cfg")
 
     #print run_command
     run_cal=len(run_command)
@@ -68,7 +68,7 @@ def get_list(varlist):
 
    #create directory for looping MC result
    for var in varlist:
-    ResultPath=os.path.join('/home/ouxiaowei/gbbCalibPackage/run_MC/result_MC/',var)
+    ResultPath=os.path.join('/lustre/collider/ouxiaowei/gbbCalibPackage/result_MC/',var)
     result_path=os.path.join(ResultPath,help_path)
     if os.path.exists(result_path)==False:
      os.makedirs(result_path)
